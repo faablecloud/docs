@@ -1,1 +1,2 @@
-# docs
+# Build Docs
+	gitbook build src docs
