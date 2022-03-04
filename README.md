@@ -1,3 +1,7 @@
+```
+title: Quickstart
+```
+
 ![](https://api-cabled.app.faable.com/screenshot?url=https://core-brand-cards.app.faable.com/card/faable?title=Documentation)
 
 # Introduction to Faable Cloud
