@@ -1,6 +1,6 @@
 # Summary​
 
-- [Quickstart](docs/README.md)
+- [Quickstart](README.md)
 
 ## Faable Cloud
 
@@ -14,3 +14,12 @@
 
 - [Next](guides/next.md)
 - [Node.js](guides/nodejs-express.md)
+
+--
+
+- [FAQ](faq.md)
+- [Access Dashboard](https://www.faable.com/dashboard)
+- [Help me deploy my site](https://calendly.com/boyander/marc-faable-cloud)
+
+![](https://www.faable.com/logo/Wide.png)
+©2022 Faable. All rights reserved.
