@@ -1,3 +1,7 @@
+---
+title: Next
+---
+
 ![](https://api-cabled.app.faable.com/screenshot?url=https://core-brand-cards.app.faable.com/card/faable?title=Deploy%20Node.js%20to%20Faable)
 
 # Deploy Express (Node.js) app to Faable
