@@ -2,6 +2,8 @@
 title: FAQ
 ---
 
+![](https://www.faable.com/logo/Wide.png)
+
 ```
 👋🏻 Hey developer!,
 
