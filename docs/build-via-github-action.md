@@ -4,7 +4,7 @@ We are going to configure continuous deploy in your github repo by creating a Gi
 
 Create a file inside `.github/workflows` and name it `deploy.yaml`, configure the github action as follows:
 
-```bash
+```yaml
 name: FaableCloud Deploy
 on:
   push:
