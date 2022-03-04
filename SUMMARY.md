@@ -19,7 +19,7 @@
 
 - [FAQ](faq.md)
 - [Access Dashboard](https://www.faable.com/dashboard)
-- [Help me deploy my site](https://calendly.com/boyander/marc-faable-cloud)
+- [Help me deploy my site](https://calendly.com/faable/helpdesk)
 
 ![](https://www.faable.com/logo/Wide.png)
 ©2022 Faable. All rights reserved.

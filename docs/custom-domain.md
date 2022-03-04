@@ -11,4 +11,5 @@ www     IN      CNAME       balance.faable.com
 
 - Access [Faable Dashboard](https://www.faable.com/dashboard) and inside your app, click on domains and add `www.example.com` to your app.
 - Wait ~2 minutes for SSL Certificates to be obtained for your domain automatically.
-- 🚀 Your site is ready at: `www.example.com`
+
+🚀 Your site is ready at: `www.example.com`
