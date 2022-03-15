@@ -2,7 +2,7 @@
 
 We are going to configure continuous deploy in your github repo by creating a Github Action that will be run each time you commit a change to your `main` branch.
 
-Create a file inside `.github/workflows` and name it `deploy.yaml`, configure the github action as follows:
+Create a file inside the folder `.github/workflows` and name it `deploy.yaml`, configure the github action as follows:
 
 ```yaml
 name: FaableCloud Deploy
@@ -17,9 +17,13 @@ jobs:
       - uses: faablecloud/action-deploy@main
         with:
           faable_app_name: "<app_service_name>"
-          faable_api_key: ${{ secrets.FAABLE_API_SECRET }}
+          faable_api_key: ${{ secrets.FAABLE_API_KEY }}
           faable_user: "<account_name>"
 ```
+
+## Configure the `FAABLE_API_KEY` in the repo secrets
+
+Inside the repo you want to deploy, go to Settings and create an **action secret** named `FAABLE_API_KEY`, you will found it in the faable (cloud dashboard)[https://www.faable.com/dashboard].
 
 ## Building your app
 
