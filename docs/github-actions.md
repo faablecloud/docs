@@ -1,4 +1,4 @@
-# Deploy to Faable
+# Deploy via Github Actions
 
 You can configure continuous deployment every time code is pushed into your github repo by creating a Github Action.
 The following code creates an action that will be run each time you commit a change to `main` branch. You can change the `main` branch and set it to any branch on your repo that you want to deploy.
