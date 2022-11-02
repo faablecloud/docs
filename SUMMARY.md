@@ -9,6 +9,7 @@
 - [Custom Domain](docs/custom-domain.md)
 - [Environment Vars](docs/environment-variables.md)
 - [Account Setup](docs/account-setup.md)
+- [Custom SSL Certificates](docs/custom-ssl-certificates.md)
 
 ## Guides
 
