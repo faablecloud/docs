@@ -1,9 +1,10 @@
-# Deploy via Github Actions
+# Github Actions
 
-You can configure continuous deployment every time code is pushed into your github repo by creating a Github Action.
-The following code creates an action that will be run each time you commit a change to `main` branch. You can change the `main` branch and set it to any branch on your repo that you want to deploy.
+To configure continuous deployment every time code is pushed into your github repo, create a Github Action.
 
-Create a file inside the folder `.github/workflows` and name it `deploy.yaml`, configure the github action as follows:
+Following code creates an action that will be run each time you commit a change to `main` branch. You can change `main` branch and set it to any branch on your repo that you want to deploy.
+
+Create a file inside `.github/workflows` directory and name it `deploy.yaml`, configure github action as follows:
 
 ```yaml
 name: FaableCloud Deploy
@@ -22,9 +23,9 @@ jobs:
           faable_user: "<account_name>"
 ```
 
-## Configure the `FAABLE_API_KEY` in the repo secrets
+## Configure `FAABLE_API_KEY` in Repository Secrets
 
-Inside the repo you want to deploy, go to Settings and create an **action secret** named `FAABLE_API_KEY`, you will found it in the faable (cloud dashboard)[https://www.faable.com/dashboard].
+Inside repo you want to deploy, go to Settings and create an **action secret** named `FAABLE_API_KEY`, you will found it in the [Dashboard](https://www.faable.com/dashboard).
 
 ## Building your app
 
@@ -39,7 +40,7 @@ In cases where your are developing an app with a `build` step like a `typescript
 }
 ```
 
-If your build script has a name different than `build`. Add the `npm_build_command` configuration to your desired script in the action config.
+If your build script has a name different than `build`. Add `npm_build_command` configuration to your desired script in action config.
 
 ```yaml
 name: FaableCloud Deploy
