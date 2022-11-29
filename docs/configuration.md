@@ -1,6 +1,6 @@
-# Project configuration
+# App config
 
-To serve your app from Faable check that the following is true.
+To serve your **APP** from Faable check that the following is true.
 
 ## Start script
 

@@ -2,19 +2,23 @@
 
 - [Quickstart](README.md)
 
-## Faable Cloud
+## Deployment
 
-- [Project Config](docs/project-config.md)
-- [Github Action Build](docs/build-via-github-action.md)
+- [Configuration](docs/configuration.md)
+- [Github Actions](docs/github-actions.md)
+- [Environment Variables](docs/env.md)
+- [Health Check](docs/health.md)
+
+##  Advanced
+
 - [Custom Domain](docs/custom-domain.md)
-- [Environment Vars](docs/environment-variables.md)
-- [Account Setup](docs/account-setup.md)
 - [Custom SSL Certificates](docs/custom-ssl-certificates.md)
 
 ## Guides
 
-- [Next](guides/next.md)
-- [Node.js](guides/nodejs-express.md)
+- [NextJS](guides/next.md)
+- [Express](guides/express.md)
+- [Fastify](guides/fastify.md)
 
 --
 
