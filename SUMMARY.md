@@ -8,6 +8,7 @@
 - [Github Actions](docs/github-actions.md)
 - [Environment Variables](docs/env.md)
 - [Health Check](docs/health.md)
+- [App Container Types](docs/app_container_types.md)
 
 ##  Advanced
 
@@ -22,6 +23,7 @@
 
 --
 
+- [Usage & Pricing](usage.md)
 - [FAQ](faq.md)
 - [Access Dashboard](https://www.faable.com/dashboard)
 - [Help me deploy my site](https://calendly.com/faable/helpdesk)
