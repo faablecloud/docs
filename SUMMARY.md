@@ -8,10 +8,13 @@
 - [Github Actions](docs/github-actions.md)
 - [Environment Variables](docs/env.md)
 - [Health Check](docs/health.md)
-- [App Container Types](docs/app_container_types.md)
+- [Container Types](docs/container-types.md)
 
-##  Advanced
+## Advanced
 
+- [Project Config](docs/project-config.md)
+- [Github Action Build](docs/github-actions.md)
+- [Runtime](docs/runtime.md)
 - [Custom Domain](docs/custom-domain.md)
 - [Custom SSL Certificates](docs/custom-ssl-certificates.md)
 
