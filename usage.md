@@ -11,6 +11,7 @@ Each faable platform plan has a cost associated with the number of requested res
 | Hobby | 1 | 10 GB | Free (invitation only) |
 | Pro | 2 | 50 GB | 25 € |
 | Enterprise | 10 | 100GB | 79 € |
+| Custom | ∞ | ∞ GB | Ask Sales |
 
 
 ## Bandwith Costs
