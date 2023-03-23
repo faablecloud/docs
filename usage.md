@@ -6,7 +6,7 @@ Faable platform charges based on usage. In any given month you receive the bill 
 
 Each faable platform plan has a cost associated with the number of requested resources. See the price table below for plan pricing.
 
-| Plan  | App Containers | Bandwith | Tech Support | Price per month |
+| Plan  | Apps | Bandwith | Tech Support | Price per month |
 | ---- | ------- | -------------- | -------- | ----- |  
 | Hobby | 1 | 10 GB | Community | Free |
 | Pro | 2 | 50 GB | Community | 25€ <sup>*</sup> 
@@ -22,7 +22,7 @@ Bandwith is billed monthly on exceding traffic from App Containers. See the pric
 | Type | Traffic | Billing | Price |
 | ------- | ------- | ----- | ---- |
 | Ingress and Egress | Included on Plan | Monthly | Free |
-| Ingress | Traffic excess plan | Monthly | Free |
-| Egress | Traffic excess plan | Monthly | 0.24€ <sup>*</sup> per GB unit |
+| Ingress | Plan exceeded | Monthly | Free |
+| Egress | Plan exceeded | Monthly | 0.24€ <sup>*</sup> per GB unit |
 
 <sup>*</sup> Plus taxes. Spanish IVA is 21%.
