@@ -10,7 +10,7 @@ Each faable platform plan has a cost associated with the number of requested res
 | ---- | ------- | -------------- | -------- | ----- |  
 | Hobby | 1 | 10 GB | Community | Free |
 | Pro | 2 | 50 GB | Community | 25€ <sup>*</sup> 
-| Pro Plus | 2 | 50 GB | Email | 25€ <sup>*</sup> |
+| Pro Plus | 2 | 50 GB | Email | 50€ <sup>*</sup> |
 | Enterprise | 10 | 100GB | Phone + Email | 79€ <sup>*</sup>
 | Custom | ∞ | ∞ GB | Account Manager | Ask Sales |
 
