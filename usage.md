@@ -9,8 +9,8 @@ Each faable platform plan has a cost associated with the number of requested res
 | Plan | App Containers | Bandwith | Price per month |
 | ---- | -------------- | -------- | ----- |  
 | Hobby | 1 | 10 GB | Free (invitation only) |
-| Pro | 2 | 50 GB | 25 €<sup>1</sup> |
-| Enterprise | 10 | 100GB | 79 €<sup>1</sup> |
+| Pro | 2 | 50 GB | 25 € <sup>*</sup> |
+| Enterprise | 10 | 100GB | 79 € <sup>*</sup> |
 | Custom | ∞ | ∞ GB | Ask Sales |
 
 <sup>*</sup> Plus taxes. Spanish IVA is 21%.
