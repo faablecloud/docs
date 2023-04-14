@@ -2,11 +2,46 @@
 
 This page covers the protection and compliance measures Faable takes to ensure the security of your data, including DDoS protection, SOC2 Type 2 compliance, Data encryption, and more.
 
-## SOC2
+## Security
+
+## DDoS protection
+
+A Distributed Denial of Service attack (DDoS) happens when multiple connected devices are used to simultaneously overwhelm a website with targeted, fake traffic. The end goal of this attack is to bring down the servers hosting the website.
+
+DDoS attacks often target the layer 3 (network), layer 4 (transport), and layer 7 (application) layers of the OSI model. Faable's DDoS protection mitigates L3, L4, and L7 DDoS attacks, and protects the entire platform and all customers from attacks that would otherwise affect reliability.
+
+**Layer 3 DDoS**
+The goal of a Layer 3 (L3) DDoS attack is to crash and slow down networks, servers, and programs. They target the network layer, as opposed to the transport or application layer. Layer 3 DDoS attacks are often used to target specific IP addresses, but can also target entire networks.
+
+**Layer 4 DDoS**
+The goal of a Layer 4 (L4) DDoS attack is to crash and slow down applications. They target the 3-way-handshake performed on TCP connections. This is often called a SYN flood. Layer 4 DDoS attacks are used to target specific ports, but can also target entire protocols.
+
+**Layer 7 DDoS**
+The goal of a Layer 7 (L7) DDoS attack is to crash and slow down software at the application layer by targeting protocols such as HTTP GET and POST requests. They are often silent and look to leverage vulnerabilities by sending many innocuous requests to a single page.
+
+## Access control
+
+Apps can be protected with Password protection and SSO protection. Password protection is available for Teams on Pro and Enterprise plans, while SSO protection is only available for Teams on the Enterprise plan. Both methods can be used to protect production deployments.
+
+### Password protection
+
+Password protection applies to production deployments. This feature can be enabled via the Teams Project dashboard. Read more about in the documentation here.
+
+### Faable Authentication
+
+Faable Authentication protection applies to production deployments. When enabled, a person with a Personal Account that is a member of a Team, can use their login credentials to access the deployment. This feature can be enabled via the Teams Project dashboard.
+
+Both Password protection, and Faable Authentication can be enabled at the same time. When this is the case, the person trying to access the deployment will be presented with an option to use either method to access the deployment.
+
+Read more about in the documentation here.
+
+## Compliance
+
+### SOC2
 
 System and Organization Control type 2 (SOC2) is a form of auditing that ensures a cloud service provider manages customer data, and protects privacy. Faable is SOC2 Type 2 compliant.
 
-## GDPR
+### GDPR
 
 General Data Protection Regulation (GDPR), is a comprehensive EU-wide data protection law that governs the use, sharing, transfer, and processing of EU resident personal data.
 
@@ -18,7 +53,7 @@ Hold our sub-processors to the same level of data protection that we are committ
 Honor our EU customer's right to access and erasure, among others
 For more information on how Faable protects your personal data, and the data of your customers, please refer to our Privacy Policy.
 
-## PCI
+### PCI
 
 Payment Card Industry Data Security Standard (PCI) is a standard that defines the security and privacy requirements for payment card processing.
 
