@@ -7,25 +7,31 @@ Following code creates an action that will be run each time you commit a change 
 Create a file inside `.github/workflows` directory and name it `deploy.yaml`, configure github action as follows:
 
 ```yaml
-name: FaableCloud Deploy
+name: Faable Deploy
+env:
+  FAABLE_APIKEY: ${{ secrets.FAABLE_APIKEY }}
 on:
   push:
     branches: [main]
 jobs:
-  deploy-to-faable:
+  Deploy-Preview:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: faablecloud/action-deploy@main
+      - name: Install Faable CLI
+        run: npm i -g @faable/faable
+      - uses: actions/setup-node@v3
         with:
-          faable_app_name: "<app_service_name>"
-          faable_api_key: ${{ secrets.FAABLE_API_KEY }}
-          faable_user: "<account_name>"
+          node-version: "16"
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+      - name: Deploy Project to Faable
+        run: faable deploy
 ```
 
-## Configure `FAABLE_API_KEY` in Repository Secrets
+## Configure `FAABLE_APIKEY` in Repository Secrets
 
-Inside repo you want to deploy, go to Settings and create an **action secret** named `FAABLE_API_KEY`, you will found it in the [Dashboard](https://www.faable.com/dashboard).
+Inside repo you want to deploy, go to Settings and create an **action secret** named `FAABLE_APIKEY`, you will found it in the [Dashboard](https://www.faable.com/dashboard).
 
 ## Building your app
 
@@ -43,27 +49,32 @@ In cases where your are developing an app with a `build` step like a `typescript
 If your build script has a name different than `build`. Add `npm_build_command` configuration to your desired script in action config.
 
 ```yaml
-name: FaableCloud Deploy
+name: Faable Deploy
+env:
+  FAABLE_APIKEY: ${{ secrets.FAABLE_APIKEY }}
 on:
   push:
     branches: [main]
 jobs:
-  deploy-to-faable:
+  Deploy-Preview:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: faablecloud/action-deploy@main
+      - name: Install Faable CLI
+        run: npm i -g @faable/faable
+      - uses: actions/setup-node@v3
         with:
-          faable_app_name: "<app_service_name>"
-          faable_api_key: ${{ secrets.FAABLE_API_KEY }}
-          faable_user: "<account_name>"
-          npm_build_command: build_app
+          node-version: "16"
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+      - name: Deploy Project to Faable
+        run: faable deploy --npm-build-script your_build_script
 ```
 
-## Multiple branch deployment
+## Deploy multiple environments
 
-npm_build_command: core.getInput("npm_build_command") || "build",
-    npm_start_command: core.getInput("npm_start_command") || "start",
- Also you can enable multi branch deployment by creating multiple `.yaml` files and configure those independently.
+In order to test features or prefiew changes before releasing to production maybe want to deploy your project in multiple environments with different configurations.
 
-A use case for this can be if you want to enable a `beta` version of your site with different environment vars.
+A use case for be if you want to enable a `staging`, `beta` or `preprod` version of your site with different environment vars.
+
+To solve this issue, create multiple Github actinons `.yaml` files and configure those to point to different **Faable Apps**.

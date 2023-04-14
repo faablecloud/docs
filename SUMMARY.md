@@ -4,10 +4,10 @@
 
 ## Deployment
 
-- [Configuration](docs/configuration.md)
+- [Node.js Configuration](docs/configuration.md)
 - [Github Actions](docs/github-actions.md)
 - [Environment Variables](docs/env.md)
-- [Health Check](docs/health.md)
+- [Checks](docs/checks.md)
 - [Container Types](docs/container-types.md)
 
 ## Advanced
@@ -20,16 +20,15 @@
 
 ## Guides
 
-- [NextJS](guides/next.md)
-- [Express](guides/express.md)
 - [Fastify](guides/fastify.md)
+- [Express](guides/express.md)
+- [NextJS](guides/next.md)
 
 --
 
 - [Usage & Pricing](usage.md)
 - [FAQ](faq.md)
 - [Access Dashboard](https://www.faable.com/dashboard)
-- [Help me deploy my site](https://calendly.com/faable/helpdesk)
 
 ![](https://www.faable.com/logo/Wide.png)
 ©2022 Faable. All rights reserved.
