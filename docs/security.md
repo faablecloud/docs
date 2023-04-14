@@ -11,12 +11,15 @@ A Distributed Denial of Service attack (DDoS) happens when multiple connected de
 DDoS attacks often target the layer 3 (network), layer 4 (transport), and layer 7 (application) layers of the OSI model. Faable's DDoS protection mitigates L3, L4, and L7 DDoS attacks, and protects the entire platform and all customers from attacks that would otherwise affect reliability.
 
 **Layer 3 DDoS**
+
 The goal of a Layer 3 (L3) DDoS attack is to crash and slow down networks, servers, and programs. They target the network layer, as opposed to the transport or application layer. Layer 3 DDoS attacks are often used to target specific IP addresses, but can also target entire networks.
 
 **Layer 4 DDoS**
+
 The goal of a Layer 4 (L4) DDoS attack is to crash and slow down applications. They target the 3-way-handshake performed on TCP connections. This is often called a SYN flood. Layer 4 DDoS attacks are used to target specific ports, but can also target entire protocols.
 
 **Layer 7 DDoS**
+
 The goal of a Layer 7 (L7) DDoS attack is to crash and slow down software at the application layer by targeting protocols such as HTTP GET and POST requests. They are often silent and look to leverage vulnerabilities by sending many innocuous requests to a single page.
 
 ## Access control
