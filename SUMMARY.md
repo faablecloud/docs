@@ -17,7 +17,11 @@
 - [Runtime](docs/runtime.md)
 - [Custom Domain](docs/custom-domain.md)
 - [Custom SSL Certificates](docs/custom-ssl-certificates.md)
-- [Security & Compliance measures](docs/security.md)
+
+## Security
+
+- [Security & Compliance measures](security/security.md)
+- [Web Application Firewall](security/waf.md)
 
 ## Guides
 
