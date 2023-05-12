@@ -2,26 +2,26 @@
 
 - [Quickstart](README.md)
 
-## Deployment
+## Apps
 
-- [Node.js Configuration](docs/configuration.md)
-- [Github Actions](docs/github-actions.md)
-- [Environment Variables](docs/env.md)
-- [Checks](docs/checks.md)
-- [Container Types](docs/container-types.md)
-
-## Advanced
-
-- [Project Config](docs/project-config.md)
-- [Github Action Build](docs/github-actions.md)
+- [Node.js Configuration](apps/configuration.md)
+- [Github Actions](apps/github-actions.md)
+- [Environment Variables](apps/env.md)
+- [Checks](apps/checks.md)
+- [Container Types](apps/container-types.md)
 - [Runtime](docs/runtime.md)
-- [Custom Domain](docs/custom-domain.md)
-- [Custom SSL Certificates](docs/custom-ssl-certificates.md)
 
-## Security
+## Domains
 
-- [Security & Compliance measures](security/security.md)
-- [Web Application Firewall](security/waf.md)
+- [Add a Domain](domains/add-a-domain.md)
+- [Custom SSL Certificates](domains/custom-ssl-certificates.md)
+- [Edge CDN](domains/edge-cdn.md)
+
+## Faable Platform
+
+- [Usage & Pricing](platform/pricing.md)
+- [Security & Compliance measures](platform/security/security.md)
+- [Web Application Firewall](platform/security/waf.md)
 
 ## Guides
 
@@ -31,7 +31,6 @@
 
 --
 
-- [Usage & Pricing](usage.md)
 - [FAQ](faq.md)
 - [Access Dashboard](https://www.faable.com/dashboard)
 
