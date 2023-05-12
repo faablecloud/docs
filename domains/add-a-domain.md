@@ -12,6 +12,10 @@ www    IN      CNAME      <domain_id>.domains.faable.link.
 
 ## Apex Domains
 
-If you domain is an Apex domain create an `ALIAS` record instead pointing to `<domain_id>.domains.faable.link`.
+If you domain is an Apex domain create an `ALIAS` record instead.
+
+```txt
+.    IN      ALIAS      <domain_id>.domains.faable.link.
+```
 
 Check with your DNS provider that it allows you to create an alias record as domain apex as it is not widely supported.
