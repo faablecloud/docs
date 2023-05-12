@@ -4,7 +4,7 @@ title: Quickstart
 
 ![](https://api-cabled.app.faable.com/screenshot?url=https://core-brand-cards.app.faable.com/card/faable?title=Documentation)
 
-**Faable Cloud** is a platform for frontend frameworks and backend microservices to build and integrate with your headless content, commerce, or database.
+**Faable Cloud** is a platform to deploy frontend and backend services. Build and integrate it with your headless content, ecommerce, or database.
 
 We make it easy for develper teams to develop and ship awesome user experiences, where performance is the default.
 
@@ -14,14 +14,25 @@ The fastest way to get started with Faable is to create an account and create a 
 
 To deploy your app, start by Creating your account
 
-- Sign-up into Faable with your github account and access the [Dashboard](https://www.faable.com/dashboard)
-- Create a service and assign it a `<service_name>`
+- Sign-up into Faable [Dashboard](https://www.faable.com/dashboard)
+- [Create an **App**](https://www.faable.com/dashboard/apps)
 
-Prepare your Node.js or React app to be deployed:
+Prepare your App project to be deployed to Faable Cloud. Install Faable CLI and login.
 
-- [Configure your project](docs/configuration.md)
-- Obtain the `FAABLE_API_KEY` for your app service
-- 👨🏼‍💻 [Configure your repository for automatic deployment with a Github action](docs/github-actions.md)
-- 🚀 Your site is ready at: `<service_name>.app.faable.com`
+```bash
+npm i -g @faable/faable
+```
 
-To configure your app with a custom domain like `www.example.com` see [our custom domain guide](docs/custom-domain.md)
+Then deploy your App to Faable.
+
+```bash
+faable
+```
+
+🌍 Your site is ready at: `<app_name>.faable.link`
+
+### Next Steps
+
+- [Customize your repository](apps/configuration.md)
+- [Add a Domain to your App](domains/add-a-domain.md)
+- [Setup Environment Variables](domains/env.md)
