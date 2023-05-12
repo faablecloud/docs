@@ -15,7 +15,7 @@ The fastest way to get started with Faable is to create an account and create a 
 To deploy your app, start by Creating your account
 
 - Sign-up into Faable [Dashboard](https://www.faable.com/dashboard)
-- [Create an **App**](https://www.faable.com/dashboard/apps)
+- [Create an App](https://www.faable.com/dashboard/apps)
 
 Prepare your App project to be deployed to Faable Cloud. Install Faable CLI and login.
 
@@ -23,7 +23,7 @@ Prepare your App project to be deployed to Faable Cloud. Install Faable CLI and 
 npm i -g @faable/faable
 ```
 
-Then deploy your App to Faable.
+Then deploy your App to Faable by running the CLI in your terminal.
 
 ```bash
 faable
