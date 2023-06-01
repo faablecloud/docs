@@ -6,12 +6,22 @@ Faable platform charges based on usage. In any given month you receive the bill 
 
 Each faable platform plan has a cost associated with the number of requested resources. See the price table below for plan pricing.
 
-| Plan       | Apps | Bandwith | Tech Support    | Per month, taxes excluded |
-| ---------- | ---- | -------- | --------------- | ------------------------- |
-| Hobby      | 1    | 10 GB    | Community       | Free                      |
-| Pro        | 2    | 50 GB    | Community       | 25€                       |
-| Enterprise | 4    | 100GB    | Phone + Email   | 79€                       |
-| Custom     | ∞    | ∞ GB     | Account Manager | Ask Sales                 |
+| Plan       | Apps | Bandwith | Per month, taxes excluded |
+| ---------- | ---- | -------- | ------------------------- |
+| Hobby      | 1    | 10 GB    | Free                      |
+| Pro        | 2    | 50 GB    | 25€                       |
+| Enterprise | 4    | 100GB    | 79€                       |
+| Custom     | ∞    | ∞ GB     | Ask Sales                 |
+
+## Faable Support Plans
+
+With Faable range of support plans, you get access to troubleshooting tips, unlimited customized support, and quick response times, so you can get new products to market faster. Get the support your business needs to better focus on creating awesome apps and serving your customers.
+
+| Plan       | Response Time | Support channels                                                  | Additional Resources | Price        |
+| ---------- | ------------- | ----------------------------------------------------------------- | -------------------- | ------------ |
+| Default    |               | [Community Only](https://github.com/orgs/faablecloud/discussions) |                      | Free         |
+| Starter    | < 6 hours     | Email                                                             |                      | 100 €/month  |
+| Enterprise | < 2 hours     | Email + Google Hangouts + Live Chat                               | Technical Advisor    | 1000 €/month |
 
 ## Bandwith Costs
 
