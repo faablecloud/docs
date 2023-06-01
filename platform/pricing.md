@@ -17,11 +17,11 @@ Each faable platform plan has a cost associated with the number of requested res
 
 With Faable range of support plans, you get access to troubleshooting tips, unlimited customized support, and quick response times, so you can get new products to market faster. Get the support your business needs to better focus on creating awesome apps and serving your customers.
 
-| Plan       | Response Time | Support channels                                                  | Additional Resources | Price        |
-| ---------- | ------------- | ----------------------------------------------------------------- | -------------------- | ------------ |
-| Default    |               | [Community Only](https://github.com/orgs/faablecloud/discussions) |                      | Free         |
-| Starter    | < 6 hours     | Email                                                             |                      | 100 €/month  |
-| Enterprise | < 2 hours     | Email + Google Hangouts + Live Chat                               | Technical Advisor    | 1000 €/month |
+| Plan       | Response Time | Support channels                                                  | Additional Resources                | Price        |
+| ---------- | ------------- | ----------------------------------------------------------------- | ----------------------------------- | ------------ |
+| Default    |               | [Community Only](https://github.com/orgs/faablecloud/discussions) |                                     | Free         |
+| Starter    | < 6 hours     | Email                                                             | Customer Support                    | 100 €/month  |
+| Enterprise | < 2 hours     | Email + Google Hangouts + Live Chat                               | Technical Advisor, Customer Support | 1000 €/month |
 
 ## Bandwith Price
 
