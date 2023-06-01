@@ -2,7 +2,7 @@
 
 Faable platform charges based on usage. In any given month you receive the bill for the previous month of use, not the current one.
 
-## Platform Plan Costs
+## Faable Platform Plans
 
 Each faable platform plan has a cost associated with the number of requested resources. See the price table below for plan pricing.
 
@@ -23,7 +23,7 @@ With Faable range of support plans, you get access to troubleshooting tips, unli
 | Starter    | < 6 hours     | Email                                                             |                      | 100 €/month  |
 | Enterprise | < 2 hours     | Email + Google Hangouts + Live Chat                               | Technical Advisor    | 1000 €/month |
 
-## Bandwith Costs
+## Bandwith Price
 
 Bandwith is billed monthly on exceding traffic from App Containers. See the price table for montly traffic pricing.
 
