@@ -20,7 +20,7 @@ With Faable range of support plans, you get access to troubleshooting tips, unli
 | Plan       | Response Time | Support channels                                                  | Additional Resources                | Price        |
 | ---------- | ------------- | ----------------------------------------------------------------- | ----------------------------------- | ------------ |
 | Default    | -             | [Community Only](https://github.com/orgs/faablecloud/discussions) | -                                   | Free         |
-| Starter    | < 6 hours     | Email                                                             | Customer Support                    | 100 €/month  |
+| Starter    | < 6 hours     | Email                                                             | Customer Support                    | 350 €/month  |
 | Enterprise | < 2 hours     | Email + Google Hangouts + Live Chat                               | Technical Advisor, Customer Support | 1000 €/month |
 
 ## Bandwith Price
