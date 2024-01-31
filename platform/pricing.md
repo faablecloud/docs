@@ -2,7 +2,7 @@
 
 Faable platform charges based on usage. In any given month you receive the bill for the previous month of use, not the current one.
 
-## Faable Platform Plans
+## Platform Plans
 
 Each faable platform plan has a cost associated with the number of requested resources. See the price table below for plan pricing.
 
@@ -13,7 +13,7 @@ Each faable platform plan has a cost associated with the number of requested res
 | Enterprise | 4    | 100GB    | 79€                       |
 | Custom     | ∞    | ∞ GB     | Ask Sales                 |
 
-## Faable Support Plans
+## Support Plans
 
 With Faable range of support plans, you get access to troubleshooting tips, unlimited customized support, and quick response times, so you can get new products to market faster. Get the support your business needs to better focus on creating awesome apps and serving your customers.
 
