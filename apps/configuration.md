@@ -50,7 +50,7 @@ node --version
 v20.9.0
 ```
 
-To specify the version of Node.js to use on Faable, use the engines section of the `package.json``. Drop the v to save only the version number.
+To specify the version of Node.js to use on Faable, use the engines section of the `package.json`. Drop the v to save only the version number.
 
 ```json
 {
