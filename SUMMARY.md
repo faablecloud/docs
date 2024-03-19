@@ -3,7 +3,7 @@
 - [Quickstart](README.md)
 - [Access Dashboard](https://www.faable.com/dashboard)
 
-## 🚀 FDS, Faable Deploy Service
+## Faable Deploy
 
 - [Github Actions](fds/github-actions.md)
 - [Environment Variables](fds/env.md)
