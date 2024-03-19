@@ -1,6 +1,36 @@
 # Apps Runtime
 
-Faable applications run in a collection of Linux Containers. This document describes how apps work i the Faable platform.
+Apps run in our platform as Linux Containers. This document describes how apps work in Faable Deploy.
+
+## Node.js Runtimes
+
+Node versions adhere to Semver, the semantic versioning convention popularized by GitHub. Semver uses a version scheme in the form `MAJOR.MINOR.PATCH`.
+
+Faable supports the Current version of Node.js and all Active Long-Term-Support (LTS) versions. Faable supports new releases within 24 hours of the official release from the Node team. As the Node.js release schedule illustrates, Faable currently supports Node.js versions 18.x and 20.x.
+
+## Specifying a Node.js Version
+
+Always specify a Node.js version that matches the runtime that you’re developing and testing with. To find your version locally:
+
+```bash
+node --version
+v20.9.0
+```
+
+To specify the version of Node.js to use on Faable, use the engines section of the `package.json`. Drop the v to save only the version number.
+
+```json
+{
+  "name": "example-app",
+  "description": "a really cool app",
+  "version": "1.0.0",
+  "engines": {
+    "node": "20.x"
+  }
+}
+```
+
+> If a Node version isn’t specified in the engines section, Node.js 20.x is used automatically.
 
 ## App Manager
 
@@ -8,7 +38,7 @@ The app manager keeps apps running automatically; so operating your app is maint
 
 ## Restarting
 
-The Faable Runtime implements an incremental restart policy for crashing apps.
+Faable Deploy Runtime implements an incremental restart policy for crashing apps.
 
 - When an app crashes it will be continuously restarted.
 - If an app keeps restarting for 5 minutes, it will be stopped and marked as crashed. Crashed apps must be restarted manually.
