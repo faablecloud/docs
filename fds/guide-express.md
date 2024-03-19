@@ -1,8 +1,4 @@
-# App config
-
-To serve your **APP** from Faable check that the following is true.
-
-## Start script
+# Guide: Deploy node.js Express
 
 Make sure your app has a `start` script inside `package.json`
 
