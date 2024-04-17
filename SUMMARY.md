@@ -1,23 +1,27 @@
 # Summary​
 
-- [Quickstart](README.md)
-- [Access Dashboard](https://www.faable.com/dashboard)
+- [Access Dashboard](https://faable.com/dashboard)
 
 ## Faable Deploy
 
-- [Github Actions](fds/github-actions.md)
-- [Environment Variables](fds/env.md)
-- [Example: Deploy node.js Express](fds/guide-express.md)
-- [App Types](fds/container-types.md)
-- [Container Runtime](fds/runtime.md)
-- [Add a Domain](fds/domain-configure.md)
-- [Domain Custom SSL Certificates](fds/domain-custom-ssl-certificates.md)
+- [Quickstart](README.md)
+- [Github Actions](deploy/github-actions.md)
+- [Environment Variables](deploy/env.md)
+- [Example: Deploy node.js Express](deploy/guide-express.md)
+- [App Types](deploy/container-types.md)
+- [Container Runtime](deploy/runtime.md)
+- [Add a Domain](deploy/domain-configure.md)
+- [Domain Custom SSL Certificates](deploy/domain-custom-ssl-certificates.md)
+- [Web Application Firewall](deploy/security-waf.md)
+
+## Faable Auth
+
+- [Features](auth/features-vs-others.md)
 
 ## Platform
 
 - [Usage & Pricing](platform/pricing.md)
 - [Security & Compliance measures](platform/security-compliance.md)
-- [Web Application Firewall](platform/security-waf.md)
 
-![](https://www.faable.com/logo/Wide.png)
+![](https://faable.com/logo/Wide.png)
 ©2024 Faable. All rights reserved.
