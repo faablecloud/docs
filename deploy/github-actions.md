@@ -26,7 +26,7 @@ jobs:
           cache: "yarn"
       - run: yarn install --frozen-lockfile
       - name: Deploy Project to Faable
-        run: faable deploy
+        run: faable deploy <app_name>
 ```
 
 ## Configure `FAABLE_APIKEY` in Repository Secrets
