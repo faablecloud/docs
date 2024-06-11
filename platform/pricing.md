@@ -6,12 +6,12 @@ Faable platform charges based on usage. In any given month you receive the bill 
 
 Each faable platform plan has a cost associated with the number of requested resources. See the price table below for plan pricing.
 
-| Plan       | Apps | Bandwith | Per month, taxes excluded |
-| ---------- | ---- | -------- | ------------------------- |
-| Hobby      | 1    | 10 GB    | Free                      |
-| Pro        | 2    | 50 GB    | 25€                       |
-| Enterprise | 4    | 100GB    | 79€                       |
-| Custom     | ∞    | ∞ GB     | Ask Sales                 |
+| Plan       | Instance Size | Included Bandwith | App/month |
+| ---------- | ------------- | ----------------- | --------- |
+| Hobby      | 1vCPU · 1GB   | 10 GB             | Free      |
+| Pro        | 2vCPU · 2GB   | 50 GB             | 25€       |
+| Enterprise | 4vCPU · 8GB   | 100GB             | 79€       |
+| Custom     | Custom        | ∞ GB              | Ask Sales |
 
 ## Support Plans
 
@@ -21,7 +21,7 @@ With Faable range of support plans, you get access to troubleshooting tips, unli
 | ---------- | ------------- | ----------------------------------------------------------------- | ----------------------------------- | ------------ |
 | Default    | -             | [Community Only](https://github.com/orgs/faablecloud/discussions) | -                                   | Free         |
 | Starter    | < 6 hours     | Email                                                             | Customer Support                    | 350 €/month  |
-| Enterprise | < 2 hours     | Email + Google Hangouts + Live Chat                               | Technical Advisor, Customer Support | 1000 €/month |
+| Enterprise | < 2 hours     | Email + Dedicated Support via Slack                               | Technical Advisor, Customer Support | 1000 €/month |
 
 ## Bandwith Price
 
