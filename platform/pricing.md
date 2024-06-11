@@ -13,6 +13,8 @@ Each faable platform plan has a cost associated with the number of requested res
 | Enterprise | 4vCPU · 8GB   | 100GB             | 79€       |
 | Custom     | Custom        | ∞ GB              | Ask Sales |
 
+- All prices are shown without taxes included
+
 ## Support Plans
 
 With Faable range of support plans, you get access to troubleshooting tips, unlimited customized support, and quick response times, so you can get new products to market faster. Get the support your business needs to better focus on creating awesome apps and serving your customers.
@@ -27,8 +29,10 @@ With Faable range of support plans, you get access to troubleshooting tips, unli
 
 Bandwith is billed monthly on exceding traffic from App Containers. See the price table for montly traffic pricing.
 
-| Type               | Traffic          | Billing | Price per GB, taxes excluded |
-| ------------------ | ---------------- | ------- | ---------------------------- |
-| Ingress and Egress | Included on Plan | Monthly | Free                         |
-| Ingress            | Plan exceeded    | Monthly | Free                         |
-| Egress             | Plan exceeded    | Monthly | 0.24€                        |
+| Type           | Billing Threshold | Billing | Price per GB |
+| -------------- | ----------------- | ------- | ------------ |
+| Ingress        | 100GB             | Monthly | Free         |
+| Ingress Excess | -                 | Monthly | Ask Sales    |
+| Egress         | 1GB               | Monthly | 0.24€        |
+
+- All prices are shown without taxes included
