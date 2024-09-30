@@ -2,28 +2,29 @@
 
 Faable platform charges based on usage. In any given month you receive the bill for the previous month of use, not the current one.
 
-## Platform Plans
+## Instance Price
 
-Each faable platform plan has a cost associated with the number of requested resources. See the price table below for plan pricing.
+Each deployed app has a cost associated with requested instance size. See the price table below.
 
-| Plan       | Instance Size | Included Bandwith | App/month |
-| ---------- | ------------- | ----------------- | --------- |
-| Hobby      | 1vCPU · 1GB   | 10 GB             | Free      |
-| Pro        | 2vCPU · 2GB   | 50 GB             | 25€       |
-| Enterprise | 4vCPU · 8GB   | 100GB             | 79€       |
-| Custom     | Custom        | ∞ GB              | Ask Sales |
+| Name      | Size          | Bandwith | Price               |
+| --------- | ------------- | -------- | ------------------- |
+| bi.xs     | .5 CPU · 1GB  | 10 GB    | 2 months free trial |
+| bi.small  | 1 CPU · 1,5GB | 50 GB    | 25€                 |
+| bi.medium | 2 CPU · 2GB   | 50 GB    | 40€                 |
+| bi.large  | 4 CPU · 4GB   | 100 GB   | 75€                 |
+| bi.xlarge | 4 CPU · 8GB   | 100 GB   | 120€                |
 
-- All prices are shown without taxes included
+Instances are billed **per month**. Prices are shown without taxes included.
 
 ## Support Plans
 
 With Faable range of support plans, you get access to troubleshooting tips, unlimited customized support, and quick response times, so you can get new products to market faster. Get the support your business needs to better focus on creating awesome apps and serving your customers.
 
-| Plan       | Response Time | Support channels                                                  | Additional Resources                | Price        |
-| ---------- | ------------- | ----------------------------------------------------------------- | ----------------------------------- | ------------ |
-| Default    | -             | [Community Only](https://github.com/orgs/faablecloud/discussions) | -                                   | Free         |
-| Starter    | < 6 hours     | Email                                                             | Customer Support                    | 350 €/month  |
-| Enterprise | < 2 hours     | Email + Dedicated Support via Slack                               | Technical Advisor, Customer Support | 1000 €/month |
+| Plan       | Response Time | Support channel                                              | Also includes                       | Price        |
+| ---------- | ------------- | ------------------------------------------------------------ | ----------------------------------- | ------------ |
+| Default    | -             | [Community](https://github.com/orgs/faablecloud/discussions) | -                                   | Free         |
+| Starter    | < 6 hours     | Email                                                        | Customer Support                    | 350 €/month  |
+| Enterprise | < 2 hours     | Email + Dedicated Support via Slack                          | Technical Advisor, Customer Support | 1000 €/month |
 
 ## Bandwith Price
 
