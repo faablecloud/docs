@@ -1,4 +1,4 @@
-# Security and Compliance measures
+# Security and Compliance
 
 This page covers the protection and compliance measures Faable takes to ensure the security of your data, including DDoS protection, SOC2 Type 2 compliance, Data encryption, and more.
 

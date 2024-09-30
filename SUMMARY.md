@@ -1,6 +1,6 @@
 # Summary​
 
-- [Access Dashboard](https://faable.com/dashboard)
+- [Access Dashboard](https://dashboard.faable.com)
 
 ## Faable Deploy
 
