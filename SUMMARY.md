@@ -2,9 +2,11 @@
 
 - [Access Dashboard](https://dashboard.faable.com)
 
+- [Home](README.md)
+
 ## Deploy
 
-- [Get Started with Deploy](README.md)
+- [Get Started with Deploy](deploy/get-started.md)
 - [Github Actions](deploy/github-actions.md)
 - [Environment Variables](deploy/env.md)
 - [App Types](deploy/container-types.md)
