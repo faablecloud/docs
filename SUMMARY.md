@@ -2,25 +2,27 @@
 
 - [Access Dashboard](https://dashboard.faable.com)
 
-## Faable Deploy
+## Deploy
 
-- [Quickstart](README.md)
+- [Get Started with Deploy](README.md)
 - [Github Actions](deploy/github-actions.md)
 - [Environment Variables](deploy/env.md)
-- [Example: Deploy node.js Express](deploy/guide-express.md)
 - [App Types](deploy/container-types.md)
-- [Container Runtime](deploy/runtime.md)
-- [Add a Domain](deploy/domain-configure.md)
-- [Domain Custom SSL Certificates](deploy/domain-custom-ssl-certificates.md)
+- [Runtime](deploy/runtime.md)
+- [Configure your Domain](deploy/domain-configure.md)
+- [Custom SSL Certificates](deploy/domain-custom-ssl-certificates.md)
 - [Web Application Firewall](deploy/security-waf.md)
+- [Quickstart: Express](deploy/guide-express.md)
 
-## Faable Auth
+## Auth & Identity
 
-- [Features](auth/features-vs-others.md)
+- [Get Started with Auth](auth/get-started.md)
+- [Quickstart React Native](auth/quickstart/react-native.md)
+- [Features](auth/features.md)
 
 ## Platform
 
-- [Usage & Pricing](platform/pricing.md)
+- [Pricing](platform/pricing.md)
 - [Security & Compliance measures](platform/security-compliance.md)
 
 ![](https://faable.com/logo/Wide.png)
