@@ -10,8 +10,8 @@ O bien puedes implementarlo tu mismo usando el SDK y la librería de Cliente.
 
 Librería de Cliente:
 
-- https://www.npmjs.com/package/@faable/auth-js
+- [@faable/auth-js](https://www.npmjs.com/package/@faable/auth-js)
 
 SDK:
 
-- https://npmjs.com/package/@faable/auth-sdk
+- [@faable/auth-sdk](https://npmjs.com/package/@faable/auth-sdk)
