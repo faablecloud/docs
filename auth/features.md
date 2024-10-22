@@ -1,4 +1,4 @@
-# Feature comparison
+# Features
 
 | Feature                              | Faable Auth | Firebase Auth        | Auth0       | AWS Cognito | Azure AD |
 | ------------------------------------ | ----------- | -------------------- | ----------- | ----------- | -------- |
@@ -8,5 +8,5 @@
 | Webhooks                             | ✅          | ✅                   | ✅          | ✅          | ✅       |
 | Rules                                | ✅          | ❌                   | ✅          | ❌          | ✅       |
 | Custom Claims                        | ✅          | ❌                   | ✅          | ❌          | ✅       |
-| SMS Authentication                   | ✅          | ❌                   | ✅          | ❌          | ✅       |
-| Magic Link                           | ✅          | ❌                   | ✅          | ❌          | ❌       |
+| SMS Authentication                   | ❌          | ❌                   | ❌          | ❌          | ✅       |
+| Magic Link                           | ✅          | ❌                   | ❌          | ❌          | ❌       |

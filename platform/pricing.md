@@ -2,7 +2,7 @@
 
 Faable platform charges based on usage. In any given month you receive the bill for the previous month of use, not the current one.
 
-## Instance Price
+## Deploy Instance Price
 
 Each deployed app has a cost associated with requested instance size. See the price table below.
 
