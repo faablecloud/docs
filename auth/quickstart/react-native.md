@@ -96,7 +96,7 @@ export default function App() {
 }
 ```
 
-## ⚙️ Faable Auth Configuration
+## ⚙️ Setup credentials
 
 Create an auth folder and inside it create a `faableauth.ts` file and write all the necessary configuration.
 
@@ -254,7 +254,7 @@ export const LoginButton = () => {
 };
 ```
 
-## Reference
+**Links:**
 
 Here's the code repository with al, so you can clone it.
 
