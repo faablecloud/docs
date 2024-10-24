@@ -1,25 +1,25 @@
-# Quickstart React Native: Login Social con Google
+# Quickstart Expo and React Native: Google Social Login
 
-En esta guía vamosa realizar la implementación del servicio de autenticación Faable Auth en React Native. El Identity Provider nos habilita con una única configuración el poder realizar login usando Google, Facebook/Meta, Github, Shopify, Slack, entre otros.
+In this guide we are going to implement the Faable Auth authentication service in React Native. The Identity Provider enables us to log in using Google, Facebook/Meta, Github, Shopify, Slack, among others, with a single configuration.
 
-> ⚠️ Antes de empezar:
+> ⚠️ Before starting:
 >
-> - Comprueba que tienes instalado el simulador según la plataforma que estés desarrollando, iOS o Android.
-> - Utiliza tu editor de código favorito, en este caso utilizaremos en VS Code.
+> - Make sure you have the simulator installed according to the platform you are developing on, ios or Android.
+> - Use your favorite code editor, in this case we will use VSCode.
 
-## 🚀 Iniciar el proyecto
+## 🚀 Start
 
-Abrimos una nueva terminal para crear un nuevo proyecto.
+Open a new terminal to create a new project.
 
 ```bash
 npx create-expo-app --template
 ```
 
-Seguimos estos pasos para completar la instalación.
+Complete the installation questions.
 
-1. Elegir “Blank (TypeScript)”.
-2. Agregar nombre de la aplicación.
-3. Esperar que finalice la instalación.
+1. Choose “Blank (TypeScript)”
+2. Name your app
+3. Wait for npm to install packages
 
 ```js
 $ npx create-expo-app --template
@@ -45,21 +45,13 @@ To run your project, navigate to the directory and run one of the following npm 
 - npm run web
 ```
 
-Al acabar la instalación ejecutamos el proyecto para comprobar que todo funciona correctamente.
-
-En Android:
-
-```bash
-npm run android
-```
-
-En iOS:
+Once the installation is complete, we run the project to check that everything is working correctly.
 
 ```bash
 npm run ios
 ```
 
-Así queda la estructura de carpetas que acabamos de crear.
+We will end up with this folder structure.
 
 ```txt
 📁faable-login-expo
@@ -77,9 +69,9 @@ Así queda la estructura de carpetas que acabamos de crear.
 └── tsconfig.json
 ```
 
-## 🧩 Botón de Login
+## 🧩 Login Button
 
-Creamos un nuevo archivo donde metemos el componente, lo llamamos LoginButton.tsx y escribimos su código.
+We create a new file where we put the component, we call it `LoginButton.tsx` here's the code for it.
 
 ```tsx
 export const LoginButton = () => {
@@ -91,7 +83,7 @@ export const LoginButton = () => {
 };
 ```
 
-Modificamos el archivo App.tsx donde agregaremos un componente LoginButton, que será el que pulsará el usuario para iniciar sesión.
+Modify the `App.tsx` file to add our `<LoginButton/>` component for the user to log in.
 
 ```tsx
 export default function App() {
@@ -104,17 +96,17 @@ export default function App() {
 }
 ```
 
-## ⚙️ Configuración de Faable Auth
+## ⚙️ Faable Auth Configuration
 
-Creamos una carpeta auth y dentro creamos un archivo faableauth.ts donde escribiremos toda la configuración necesaria.
+Create an auth folder and inside it create a `faableauth.ts` file and write all the necessary configuration.
 
-Instalamos los paquetes necesarios para configurar **Faable Auth**.
+Install **Faable Auth** required packages.
 
 ```bash
 npm i @faable/auth-js @faable/auth-helpers-react expo-auth-session react-native-url-polyfill @react-native-async-storage/async-storage
 ```
 
-Dentro del fichero `faableauth.ts`, definimos las constantes requeridas para las operaciones de inicio y cierre de sesión.
+Start writing code inside `faableauth.ts` file as required by expo to properly configure user session handling with oauth2 protocol.
 
 ```tsx
 import "react-native-url-polyfill/auto";
@@ -124,21 +116,20 @@ import { makeRedirectUri } from "expo-auth-session";
 import _ as WebBrowser from "expo-web-browser";
 import _ as QueryParams from "expo-auth-session/build/QueryParams";
 
-// Constantes
+
 WebBrowser.maybeCompleteAuthSession(); // Required for web only
 const redirectTo = makeRedirectUri(); // Redirection URI
 ```
 
-> ⚠️ ADVERTENCIA: importar la librería de react-native-url-polyfill/auto es necesaria para que @faable/auth-js funcione correctamente.
+> ⚠️ WARNING: importing the `react-native-url-polyfill/auto` library is required for `@faable/auth-js` to work properly.
 
-Creamos una instancia del cliente que se compartirá en toda la aplicación y colocaremos las credenciales de configuración para Faable Auth.
+create an instance of the client that will be shared across the entire application and place the configuration credentials for Faable Auth.
 
 ```tsx
 import "react-native-url-polyfill/auto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@faable/auth-js";
 
-// Configuración del singleton
 const faableAuthUrl = "https://<account_id>.auth.faable.link";
 const clientId = "<xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx>";
 
@@ -149,12 +140,9 @@ export const faableAuth = createClient({
 });
 ```
 
-> ✅ Usa las credenciales que encontrarás en el dashboard. Faable Auth está en fase beta por lo que deberás solicitar el acceso uniéndote a nuestro Discord.
-
-Desarrollamos las funciones acorde a las necesidades del proyecto, en este caso serán: obtener una sesión, iniciar sesión y cerrar sesión.
+> ✅ Use the credentials you'll find on the [Faable Dashboard](https://dashboard.faable.com). Faable Auth is in beta so you'll need to request access by joining our [Discord channel](https://discord.gg/98JtRzYp).
 
 ```js
-// Obtener la sesión con sus tokens
 const createSessionFromUrl = async (url: string) => {
   const { params, errorCode } = QueryParams.getQueryParams(url);
 
@@ -174,7 +162,7 @@ const createSessionFromUrl = async (url: string) => {
   return data.session;
 };
 
-// Función de login
+// Oauth2 Login with FaableAuth
 const login = async () => {
   try {
     const { data, error } = await faableAuth.signInWithOauthConnection({
@@ -202,15 +190,13 @@ const login = async () => {
   }
 };
 
-// Función de logout
-const logout = async () => {
-  await faableAuth.signOut();
-};
+// Clear session
+const logout = async () => faableAuth.signOut();
 ```
 
-> ⚠️ **IMPORTANTE**: Debes definir que conexión social vas a usar para hacer login. Encontrarás los id de conexión en el dashboard. Los id de conexión tienen este formato: connection_xxxxxxxxxxxxxxxxxxxxxx
+> ⚠️ **IMPORTANT**: You must define which social connection you are going to use to log in. You will find the connection IDs in the dashboard. The connection IDs have this format `connection_xxxxxxxxxxxxxxxxxxxxxx`
 
-Definimos un contexto global para toda la aplicación en el archivo principal del proyecto App.tsx. Configuramos el contexto pasando como prop la instancia de faableauth que hemos configurado previamente.
+We define a global context for the entire application in the main project file `App.tsx`. Configure the context by passing as a prop the instance of faableauth that we have previously configured.
 
 ```tsx
 export default function App() {
@@ -225,9 +211,9 @@ export default function App() {
 }
 ```
 
-## 👤 Perfil del Usuario
+## 👤 User Profile
 
-Volvemos al archivo LoginButton.tsx para colocar la lógica necesaria que nos permita mostrar la información del usuario cuando este haya completado el flujo de login. Para ello usaremos el hook useSession() que nos permite acceder a los datos de la sesión y del usuario.
+Return to the `LoginButton.tsx` file to place the needed logic that allows us to display the user's information when the user has completed the login flow. To do this, we will use the `useSession()` hook provided with our helper library `@faable/auth-helpers-react` that allows us to **access the session and user data**.
 
 ```tsx
 import { Image } from "expo-image";
@@ -268,8 +254,8 @@ export const LoginButton = () => {
 };
 ```
 
-## Referencia
+## Reference
 
-Te dejamos por aquí todo el código del ejemplo en un repositorio, para que lo clones.
+Here's the code repository with al, so you can clone it.
 
-- [Repositorio Código Ejemplo](https://github.com/faablecloud/faableauth-examples/tree/main/react-native-expo)
+- [React-Native-Expo-FaableAuth Example Code](https://github.com/faablecloud/faableauth-examples/tree/main/react-native-expo)
