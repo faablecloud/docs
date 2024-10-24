@@ -7,6 +7,8 @@ In this guide we are going to implement the Faable Auth authentication service i
 > - Make sure you have the simulator installed according to the platform you are developing on, ios or Android.
 > - Use your favorite code editor, in this case we will use VSCode.
 
+![](img/login_button.webp)
+
 ## 🚀 Start
 
 Open a new terminal to create a new project.
@@ -97,6 +99,8 @@ export default function App() {
 ```
 
 ## ⚙️ Setup credentials
+
+![](img/google_authorization_server.webp)
 
 Create an auth folder and inside it create a `faableauth.ts` file and write all the necessary configuration.
 
@@ -212,6 +216,8 @@ export default function App() {
 ```
 
 ## 👤 User Profile
+
+![](img/login_successful.webp)
 
 Return to the `LoginButton.tsx` file to place the needed logic that allows us to display the user's information when the user has completed the login flow. To do this, we will use the `useSession()` hook provided with our helper library `@faable/auth-helpers-react` that allows us to **access the session and user data**.
 
