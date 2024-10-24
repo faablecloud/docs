@@ -19,7 +19,7 @@
 ## Auth & Identity
 
 - [Get Started with Auth](auth/get-started.md)
-- [Quickstart React Native](auth/quickstart/react-native.md)
+- [Quickstart Expo](auth/quickstart/expo-react-native.md)
 - [Features](auth/features.md)
 
 ## Platform
