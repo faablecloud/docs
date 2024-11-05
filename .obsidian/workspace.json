@@ -1,0 +1,167 @@
+{
+  "main": {
+    "id": "578239dbc9e12f53",
+    "type": "split",
+    "children": [
+      {
+        "id": "d34323aa53f7a4fb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "170d0e89847cdd8e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "platform/pricing.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "453e5714f134ec21",
+    "type": "split",
+    "children": [
+      {
+        "id": "326d267915169dcc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "98948825f42de84d",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "def8a220d9ec3a21",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "ae649b372f1258ce",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "1bb601b0dbe3503b",
+    "type": "split",
+    "children": [
+      {
+        "id": "8dfeaeb93f992cdc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "48e99f2e1602b2f0",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "platform/pricing.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "d6fc2bf688b63fb0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "platform/pricing.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "1d9227c5a1f0e436",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "9c961b7ee9b98dd0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "platform/pricing.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false
+    }
+  },
+  "active": "170d0e89847cdd8e",
+  "lastOpenFiles": [
+    "deploy/github-actions.md",
+    "deploy/get-started.md",
+    "deploy/runtime.md",
+    "deploy/security-waf.md",
+    "deploy/guides",
+    "deploy/domain-custom-ssl-certificates.md",
+    "deploy/env.md",
+    "deploy/domain-configure.md",
+    "deploy/container-types.md",
+    "auth/get-started.md",
+    "auth/features.md",
+    "auth/quickstart/expo-react-native.md",
+    "auth/quickstart/img/login_successful.webp",
+    "auth/quickstart/img/login_button.webp",
+    "auth/quickstart/img/google_authorization_server.webp"
+  ]
+}

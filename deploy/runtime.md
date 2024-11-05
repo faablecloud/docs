@@ -1,8 +1,8 @@
-# Apps Runtime
+#  Runtime
 
-Apps run in our platform as Linux Containers. This document describes how apps work in Faable Deploy.
+Your app run in our platform as Linux Containers. This document describes how apps work in Faable Deploy.
 
-## Node.js Runtimes
+## Node.js
 
 Node versions adhere to Semver, the semantic versioning convention popularized by GitHub. Semver uses a version scheme in the form `MAJOR.MINOR.PATCH`.
 
@@ -31,6 +31,10 @@ To specify the version of Node.js to use on Faable, use the engines section of t
 ```
 
 > If a Node version isn’t specified in the engines section, Node.js 20.x is used automatically.
+
+## Environment variables
+
+You can set environment variables for your App in the [Dashboard](https://www.faable.com/dashboard/apps)
 
 ## App Manager
 

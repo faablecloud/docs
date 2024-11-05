@@ -14,12 +14,20 @@
 - [Configure your Domain](deploy/domain-configure.md)
 - [Custom SSL Certificates](deploy/domain-custom-ssl-certificates.md)
 - [Web Application Firewall](deploy/security-waf.md)
-- [Quickstart: Express](deploy/guide-express.md)
+- [Quickstart: Express](guide-express.md)
 
-## Auth & Identity
+## Auth
 
 - [Get Started with Auth](auth/get-started.md)
 - [Quickstart Expo](auth/quickstart/expo-react-native.md)
+- [Users](auth/users.md)
+- [APIs](auth/apis.md)
+- [Clients](auth/clients.md)
+- [Connections](auth/connections.md)
+- [Identites](auth/identities.md)
+- [Roles](auth/roles.md)
+- [Teams](auth/teams.md)
+- [Webhooks](auth/webhooks.md)
 - [Features](auth/features.md)
 
 ## Platform
