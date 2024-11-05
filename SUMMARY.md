@@ -27,6 +27,7 @@
 - [Identites](auth/identities.md)
 - [Roles](auth/roles.md)
 - [Teams](auth/teams.md)
+- [OAuth](auth/oauth.md)
 - [Webhooks](auth/webhooks.md)
 - [Features](auth/features.md)
 
