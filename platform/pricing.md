@@ -6,13 +6,15 @@ Faable platform charges based on usage. In any given month you receive the bill 
 
 Each deployed app has a cost associated with requested instance size. See the price table below.
 
-| Name      | Size          | Bandwith | Price               |
-| --------- | ------------- | -------- | ------------------- |
-| bi.xs     | .5 CPU · 1GB  | 10 GB    | 2 months free trial |
-| bi.small  | 1 CPU · 1,5GB | 50 GB    | 25€                 |
-| bi.medium | 2 CPU · 2GB   | 50 GB    | 40€                 |
-| bi.large  | 4 CPU · 4GB   | 100 GB   | 75€                 |
-| bi.xlarge | 4 CPU · 8GB   | 100 GB   | 120€                |
+| Name       | Size          | Bandwith | Price               |
+| ---------- | ------------- | -------- | ------------------- |
+| bi.xs      | .5 CPU · 1GB  | 10 GB    | 2 months free trial |
+| bi.small   | 1 CPU · 1,5GB | 50 GB    | 25€                 |
+| bi.base    | 1 CPU · 3GB   | 50 GB    | 40€                 |
+| bi.medium  | 2 CPU · 3GB   | 100 GB   | 50€                 |
+| bi.large   | 2 CPU · 6GB   | 100 GB   | 75€                 |
+| bi.xlarge  | 4 CPU · 8GB   | 100 GB   | 90€                 |
+| bi.2xlarge | 6 CPU · 16GB  | 100 GB   | 120€                |
 
 Instances are billed **per month**. Prices are shown without taxes included.
 
