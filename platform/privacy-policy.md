@@ -6,38 +6,43 @@ title: Política de Privacidad
 
 A continuación, ponemos a su disposición la política de privacidad de Faable Cloud SLU, en adelante "Faable", que regula la recogida y el tratamiento de los datos que sean proporcionados por el usuario en esta web.
 
-Responsable:
-El responsable del tratamiento de los datos de personal es Faable. Los datos de contacto son:
+Responsable: El responsable del tratamiento de los datos de personal es Faable.
 
-Correo electrónico: privacy@faable.com
+Los datos de contacto son:
+
+- Correo electrónico: privacy@faable.com
+
 Obtención de los datos:
-Los datos solicitados son los adecuados y necesarios para la finalidad para la que se recogen. Los miembros nos aseguran que todos los datos que nos facilita son veraces, auténticos y están actualizados. Los datos que se solicitan pueden ser:
+
+- Los datos solicitados son los adecuados y necesarios para la finalidad para la que se recogen.
+- Los miembros nos aseguran que todos los datos que nos facilita son veraces, auténticos y están actualizados. Los datos que se solicitan pueden ser:
 
 ## Datos identificativos y de contacto.
 
-Información requerida para la prevención del blanqueo de capitales y de la financiación del terrorismo.
-La información requerida por la regulación de mercado de valores.
-Información sobre las operaciones en las que Faable esté involucrada.
-Información sobre cookies.
-Información sobre su formación académica para la gestión de Recursos Humanos.
+- Información requerida para la prevención del blanqueo de capitales y de la financiación del terrorismo.
+- La información requerida por la regulación de mercado de valores.
+- Información sobre las operaciones en las que Faable esté involucrada.
+- Información sobre cookies.
+- Información sobre su formación académica para la gestión de Recursos Humanos.
+
 Los datos serán guardados durante 10 años a partir de la cancelación del contrato entre el interesado y Faable.
 
 ## Finalidad de los datos:
 
 Los datos recogidos a través de la web de Faable tienen las siguientes finalidades:
 
-Permitir que el interesado se haga miembro y forme parte de Faable.
-Actividades comerciales a través de cualquier medio incluido los electrónicos.
-Actividades de información con el objetivo de informar a los miembros el estado de sus productos, así como la actualidad de Faable.
-Gestionar todas las actividades relacionadas con el Cumplimiento Normativo.
-Actividades de reclutamiento.
+- Permitir que el interesado se haga miembro y forme parte de Faable.
+- Actividades comerciales a través de cualquier medio incluido los electrónicos.
+- Actividades de información con el objetivo de informar a los miembros el estado de sus productos, así como la actualidad de Faable.
+- Gestionar todas las actividades relacionadas con el Cumplimiento Normativo.
+- Actividades de reclutamiento.
 
 ## Destinatarios:
 
 Faable podrá facilitar los dataos a los siguientes destinatarios:
 
-Organismos públicos o privados a los que legalmente exista obligación de facilitárselos ya sean nacionales o internacionales.
-Terceros proveedores de servicios como auditores, fiscales o asesores legales.
+- Organismos públicos o privados a los que legalmente exista obligación de facilitárselos ya sean nacionales o internacionales.
+- Terceros proveedores de servicios como auditores, fiscales o asesores legales.
 
 ## Derechos de los interesados:
 
