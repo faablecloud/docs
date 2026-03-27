@@ -10,11 +10,11 @@ Start by creating an account on the [Faable Dashboard](https://dashboard.faable.
 
 ---
 
-## 🚀 The Faable Platform Products
+## 📦 The Faable Platform Products
 
 Our ecosystem is composed of two primary cloud products, each designed to solve specific challenges in the software development lifecycle.
 
-### [Faable Deploy](deploy/get-started.md)
+### 🚀 [Faable Deploy](deploy/get-started.md)
 
 A zero-config CI/CD platform that seamlessly builds and hosts applications directly from your linked Git repositories.
 
