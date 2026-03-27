@@ -4,6 +4,9 @@ Passwordless authentication allows users to log in without needing to remember o
 
 Faable Auth provides a simple and secure way to implement this flow using our SDK or API.
 
+> [!IMPORTANT]
+> **Free Tier Limitation**: If you are on the **Community (Free)** plan, Passwordless authentication is limited to a total of **100 emails** (absolute lifetime limit). For unlimited passwordless sessions, consider upgrading to the **Professional** plan.
+
 ---
 
 ## 📸 Flow Overview

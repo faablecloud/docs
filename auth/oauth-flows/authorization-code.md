@@ -70,10 +70,17 @@ await auth.signInWithOauthConnection({
 > [!IMPORTANT]
 > Ensure that the `redirectTo` URL is configured in the **Allowed Callback URLs** whitelist in the Faable dashboard.
 
+### Session Auto-Refresh
+
+One of the key benefits of using the `@faable/auth-js` SDK is that it automatically manages the **Refresh Token** flow for you. When the client is initialized, it checks the session's validity and refreshes the Access Token transparently if it has expired.
+
+For more details, see the **[Refresh Token Flow](refresh-token.md)** documentation.
+
 ---
 
 ## 🔗 Further Reading
 
 - **[@faable/auth-js](https://www.npmjs.com/package/@faable/auth-js)**: Our official JavaScript/TypeScript SDK for seamless authentication.
-- **[RFC 7636 - Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)**: The official standard for PKCE in OAuth 2.0.
-- **[OAuth 2.0 Authorization Code Grant](https://oauth.net/2/grant-types/authorization-code/)**: General information about the Authorization Code flow.
+- **[Refresh Token Flow](refresh-token.md)**: Details on how Faable Auth manages token renewal.
+- **[RFC 6749 - The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1)**: Official standard for the Authorization Code flow.
+- **[RFC 7636 - Proof Key for Code Exchange (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636)**: Official security standard for public clients.

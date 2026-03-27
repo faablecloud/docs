@@ -1,8 +1,8 @@
-# Usage & Pricing
+# Faable Deploy: Pricing 💳
 
 Faable platform charges based on usage. In any given month you receive the bill for the previous month of use, not the current one.
 
-## Deploy Instance Price
+## Faable Deploy Instance Price
 
 Each deployed app has a cost associated with requested instance size. See the price table below.
 
@@ -38,4 +38,5 @@ Bandwith is billed monthly on exceding traffic from App Containers. See the pric
 | Ingress Excess | -                 | Monthly | Ask Sales    |
 | Egress         | 1GB               | Monthly | 0.24€        |
 
-- All prices are shown without taxes included
+- All prices shown are without taxes included.
+
