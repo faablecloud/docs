@@ -33,6 +33,3 @@
 - [Privacy Policy](platform/privacy-policy.md)
 - [Terms of Service](platform/terms-of-service.md)
 - [Security & Compliance measures](platform/security-compliance.md)
-
-![](https://faable.com/logo/Wide.png)
-©2024 Faable. All rights reserved.
