@@ -1,4 +1,4 @@
-# Quickstart Expo and React Native: Google Social Login
+# Quickstart React Native
 
 In this guide we are going to implement the Faable Auth authentication service in React Native. The Identity Provider enables us to log in using Google, Facebook/Meta, Github, Shopify, Slack, among others, with a single configuration.
 

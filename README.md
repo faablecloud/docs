@@ -2,11 +2,11 @@
 title: Faable Cloud
 ---
 
-Start by Creating an Account in and access the Dashboard:
+Start by Creating an Account in and access the [Faable Dashboard](https://dashboard.faable.com)
 
-- [Go to Dashboard](https://dashboard.faable.com)
+## Products
 
-## Services:
+The Faable platform products:
 
-- [Deploy](deploy/get-started.md): A service to quickly deploy your web service.
-- [Auth](auth/get-started.md): Identity and Access management for your Website and APIs.
+- [Faable Deploy](deploy/get-started.md): is a zero-config CI/CD platform that seamlessly builds and hosts applications from linked Git repositories.
+- [Faable Auth](auth/get-started.md): is a multi-tenant identity server that securely manages user authentication and machine-to-machine tokens.

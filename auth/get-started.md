@@ -1,14 +1,15 @@
 # Get Started
 
-Faable Auth es una plataforma de Identidades y Usuarios para gestionar el acceso a tus Aplicaciones y APIs.
+Faable Auth is an Identity and User management platform to manage access to your Applications and APIs.
 
-Puedes empezar usando un Quickstart
+You can get started using a Quickstart
 
+- [Next.js](quickstart/nextjs.md)
 - [React Native](quickstart/react-native.md)
 
-O bien puedes implementarlo tu mismo usando el SDK y la librería de Cliente.
+Or you can implement it yourself using the SDK and the Client library.
 
-Librería de Cliente:
+Client Library:
 
 - [@faable/auth-js](https://www.npmjs.com/package/@faable/auth-js)
 

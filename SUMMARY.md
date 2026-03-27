@@ -4,31 +4,30 @@
 
 - [Home](README.md)
 
-## Deploy
+## Faable Deploy
 
 - [Get Started with Deploy](deploy/get-started.md)
 - [Github Actions](deploy/github-actions.md)
-- [Environment Variables](deploy/env.md)
 - [App Types](deploy/container-types.md)
 - [Runtime](deploy/runtime.md)
 - [Configure your Domain](deploy/domain-configure.md)
 - [Custom SSL Certificates](deploy/domain-custom-ssl-certificates.md)
 - [Web Application Firewall](deploy/security-waf.md)
-- [Quickstart: Express](guide-express.md)
+- [Quickstart: Express](deploy/guides/guide-express.md)
 
-## Auth
+## Faable Auth
 
 - [Get Started with Auth](auth/get-started.md)
-- [Quickstart Expo](auth/quickstart/expo-react-native.md)
-- [Users](auth/users.md)
-- [APIs](auth/apis.md)
+- [Quickstart Next.js](auth/quickstart/nextjs.md)
+- [Quickstart React Native](auth/quickstart/react-native.md)
 - [Clients](auth/clients.md)
 - [Connections](auth/connections.md)
-- [Identites](auth/identities.md)
-- [Roles](auth/roles.md)
-- [Teams](auth/teams.md)
 - [OAuth](auth/oauth.md)
-- [Webhooks](auth/webhooks.md)
+- [Authorization Code Flow](auth/oauth-flows/authorization-code.md)
+- [Social Login](auth/social/google.md)
+  - [Google Login](auth/social/google.md)
+  - [Facebook Login](auth/social/facebook.md)
+  - [Apple Login](auth/social/apple.md)
 - [Features](auth/features.md)
 
 ## Platform

@@ -5,8 +5,6 @@
 | Price for 2500 MAU                   | Free        | Google Cloud Pricing | 175 $/month | -           | -        |
 | Social Auth (Google, Facebook, etc.) | ✅          | ✅                   | ✅          | ✅          | ✅       |
 | Role-based Access Control            | ✅          | ❌                   | ✅          | ❌          | ❌       |
-| Webhooks                             | ✅          | ✅                   | ✅          | ✅          | ✅       |
-| Rules                                | ✅          | ❌                   | ✅          | ❌          | ✅       |
+| Actions                              | ✅          | ❌                   | ✅          | ❌          | ✅       |
 | Custom Claims                        | ✅          | ❌                   | ✅          | ❌          | ✅       |
-| SMS Authentication                   | ❌          | ❌                   | ❌          | ❌          | ✅       |
-| Magic Link                           | ✅          | ❌                   | ❌          | ❌          | ❌       |
+| Passwordless Auth                    | ✅          | ❌                   | ❌          | ❌          | ❌       |
