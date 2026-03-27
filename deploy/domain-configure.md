@@ -1,6 +1,6 @@
 # Add a Domain
 
-Go to [Faable Dashboard > Domains](https://www.faable.com/dashboard/domains) and create a Domain entry. Follow instructions to link it to your deployed Faable App.
+Go to [Faable Dashboard > Projects > Domains](https://dashboard.faable.com) and create a Domain entry. Follow instructions to link it to your deployed Faable App.
 
 Then point your domain `example.com` to Faable Cloud. You have to create a `CNAME` record in your DNS server pointing it to our datacenter as follows:
 

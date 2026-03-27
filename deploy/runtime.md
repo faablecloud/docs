@@ -1,4 +1,4 @@
-#  Runtime
+# Runtime
 
 Your app run in our platform as Linux Containers. This document describes how apps work in Faable Deploy.
 
@@ -34,7 +34,7 @@ To specify the version of Node.js to use on Faable, use the engines section of t
 
 ## Environment variables
 
-You can set environment variables for your App in the [Dashboard](https://www.faable.com/dashboard/apps)
+You can set environment variables for your App in the [Dashboard](https://dashboard.faable.com)
 
 ## App Manager
 

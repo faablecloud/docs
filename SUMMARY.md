@@ -22,7 +22,6 @@
 - [Quickstart React Native](auth/quickstart/react-native.md)
 - [Clients](auth/clients.md)
 - [Connections](auth/connections.md)
-- [OAuth](auth/oauth.md)
 - [Authorization Code Flow](auth/oauth-flows/authorization-code.md)
 - [Social Login](auth/social/google.md)
   - [Google Login](auth/social/google.md)

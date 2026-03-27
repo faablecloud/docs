@@ -10,4 +10,4 @@ Faable Cloud offers a WAF security product that detects malicious request traffi
 
 Faable WAF is configured by default with OWASP Core Rule Set that protects from OWASP Top 10 vulnerabilites. Core Rule Set is automatically reviewed and updated by Faable Platform as new vulnerabilities appear.
 
-Also Faable Team monitors Core Rule Set to inform Faable WAF clients of malicious attacks. WAF logs can be accesed in [Faable Dashboard](https://www.faable.com/dashboard).
+Also Faable Team monitors Core Rule Set to inform Faable WAF clients of malicious attacks. WAF logs can be accesed in [Faable Dashboard](https://dashboard.faable.com).

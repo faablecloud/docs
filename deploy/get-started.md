@@ -6,8 +6,9 @@ The fastest way to get started with Faable Deploy is to create an account and cr
 
 To deploy your app, start by Creating your account
 
-- Sign-up into Faable [Dashboard](https://faable.com/account/login)
-- [Create an App](https://faable.com/deploy/apps)
+1. Sign-up into [Faable Dashboard](https://dashboard.faable.com)
+2. Create a Project
+3. Create an App
 
 Prepare your App project to be deployed to Faable Cloud. Install Faable CLI and login.
 

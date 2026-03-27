@@ -7,33 +7,28 @@ Following code creates an action that will be run each time you commit a change 
 Create a file inside `.github/workflows` directory and name it `deploy.yaml`, configure github action as follows:
 
 ```yaml
-name: Faable Deploy
-env:
-  FAABLE_APIKEY: ${{ secrets.FAABLE_APIKEY }}
+name: Deploy to Faable
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  issues: write
 jobs:
-  Deploy-Preview:
+  deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v2
-      - name: Install Faable CLI
-        run: npm i -g @faable/faable
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-          cache: "yarn"
-      - run: yarn install --frozen-lockfile
-      - name: Deploy Project to Faable
-        run: faable deploy <app_name>
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+      - run: npm ci
+      - run: npx @faable/faable@latest deploy
 ```
 
-## Configure `FAABLE_APIKEY` in Repository Secrets
-
-Inside repo you want to deploy, go to Settings and create an **action secret** named `FAABLE_APIKEY`, you will found it in the [Dashboard](https://www.faable.com/dashboard).
-
-## Building your app
+## Build script
 
 In cases where your are developing an app with a `build` step like a `typescript` or `next` app it is handled automatically if a `build` script is present in `package.json`. Check your `package.json`.
 
@@ -49,26 +44,25 @@ In cases where your are developing an app with a `build` step like a `typescript
 If your build script has a name different than `build`. Add `npm_build_command` configuration to your desired script in action config.
 
 ```yaml
-name: Faable Deploy
-env:
-  FAABLE_APIKEY: ${{ secrets.FAABLE_APIKEY }}
+name: Deploy to Faable
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  issues: write
 jobs:
-  Deploy-Preview:
+  deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v2
-      - name: Install Faable CLI
-        run: npm i -g @faable/faable
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-          cache: "yarn"
-      - run: yarn install --frozen-lockfile
-      - name: Deploy Project to Faable
-        run: faable deploy --npm-build-script your_build_script
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+      - run: npm ci
+      - run: npx @faable/faable@latest deploy --npm-build-script your_build_script
 ```
 
 ## Deploy multiple environments
