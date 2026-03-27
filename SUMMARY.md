@@ -1,8 +1,6 @@
 # Summary​
 
-- [Access Dashboard](https://dashboard.faable.com)
-
-- [Home](README.md)
+- [Faable Platform](README.md)
 
 ## Faable Deploy
 

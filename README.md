@@ -1,12 +1,46 @@
 ---
-title: Faable Cloud
+title: Faable Cloud Platform
 ---
 
-Start by Creating an Account in and access the [Faable Dashboard](https://dashboard.faable.com)
+# Welcome to the Faable Cloud Platform
 
-## Products
+**Faable** is a comprehensive cloud platform built to empower developers. From zero-configuration deployments to robust, secure authentication, Faable provides the infrastructure you need to build, deploy, and scale modern applications with ease.
 
-The Faable platform products:
+Start by creating an account on the [Faable Dashboard](https://dashboard.faable.com) to access and manage your projects.
 
-- [Faable Deploy](deploy/get-started.md): is a zero-config CI/CD platform that seamlessly builds and hosts applications from linked Git repositories.
-- [Faable Auth](auth/get-started.md): is a multi-tenant identity server that securely manages user authentication and machine-to-machine tokens.
+---
+
+## 🚀 The Faable Platform Products
+
+Our ecosystem is composed of two primary cloud products, each designed to solve specific challenges in the software development lifecycle.
+
+### [Faable Deploy](deploy/get-started.md)
+
+A zero-config CI/CD platform that seamlessly builds and hosts applications directly from your linked Git repositories.
+
+- **Automated Deployments:** Just link your Git repository and let Faable handle the continuous integration and deployment workflow.
+- **Custom Domains & SSL:** Configure custom domains effortlessly, complete with free, automated SSL certificates.
+- **Advanced Security:** Built-in Web Application Firewall (WAF) to keep your workloads safe without manual configuration.
+
+👉 **[Dive into Faable Deploy](deploy/get-started.md)**
+
+### 🔐 [Faable Auth](auth/get-started.md)
+
+A scalable, multi-tenant identity server that securely manages user authentication and authorization.
+
+- **Seamless Integrations:** Easy-to-use quickstarts for frameworks like Next.js and React Native.
+- **Social Login:** Out-of-the-box support for federated identity providers like Google, Facebook, and Apple.
+- **Standardized Protocols:** Full support for OAuth 2.0, OpenID Connect (OIDC), and Machine-to-Machine (M2M) communication.
+
+👉 **[Dive into Faable Auth](auth/get-started.md)**
+
+---
+
+## 📚 Platform & Policies
+
+For information regarding our operational and legal guidelines, check the sections below:
+
+- **[Pricing](platform/pricing.md)**
+- **[Security & Compliance](platform/security-compliance.md)**
+- **[Terms of Service](platform/terms-of-service.md)**
+- **[Privacy Policy](platform/privacy-policy.md)**
