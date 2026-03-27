@@ -1,6 +1,6 @@
-# Authorization Code Flow with PKCE
+# OAuth 2.0: Authorization Code Flow with PKCE
 
-The **Authorization Code Flow with PKCE** (Proof Key for Code Exchange) is the security standard for applications that cannot securely store secrets, such as Single Page Applications (SPA) or native mobile apps.
+The **OAuth 2.0 Authorization Code Flow with PKCE** (Proof Key for Code Exchange) is the security standard for applications that cannot securely store secrets, such as Single Page Applications (SPA) or native mobile apps.
 
 This flow adds an extra layer of security through a cryptographic "challenge" that ensures the authorization code can only be exchanged for tokens by the same client that initiated the request.
 
@@ -28,7 +28,7 @@ sequenceDiagram
 
 ### Step 1: Redirect to `/authorize` endpoint
 
-To start the flow, you must redirect the user to your Faable Auth domain. Your application needs to generate a random `code_verifier` and encode it as a challenge: `base64UrlEncode(sha256(code_verifier))`.
+To start the OAuth 2.0 authentication flow, you must redirect the user to your Faable Auth domain. Your application needs to generate a random `code_verifier` and encode it as a challenge: `base64UrlEncode(sha256(code_verifier))`.
 
 > [!TIP]
 > If you are using our SDK `@faable/auth-js`, this entire PKCE cryptographic process happens automatically and transparently.
