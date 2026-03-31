@@ -6,6 +6,7 @@
     "next": "^16.2.1",
     "nextra": "^4.6.1",
     "nextra-theme-docs": "^4.6.1",
+    "pagefind": "^1.4.0",
     "postcss": "^8.5.8",
     "posthog-js": "^1.364.3",
     "react": "^19.2.4",
@@ -15,6 +16,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
   }
 }
