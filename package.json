@@ -1,4 +1,5 @@
 {
+  "name": "@faablecloud/docs",
   "dependencies": {
     "next": "^16.2.1",
     "nextra": "^4.6.1",
