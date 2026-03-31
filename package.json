@@ -1,5 +1,6 @@
 {
   "name": "@faablecloud/docs",
+  "version": "0.0.0-dev",
   "dependencies": {
     "@next/third-parties": "^16.2.1",
     "@tailwindcss/postcss": "^4.2.2",
