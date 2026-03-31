@@ -1,7 +1,6 @@
-# Faable Auth: Pricing 💳
+# Pricing
 
 Faable Auth is billed based on your **Monthly Active Users (MAU)**.
-
 
 ### 🆓 Community (Free)
 

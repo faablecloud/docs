@@ -1,4 +1,4 @@
-# Next.js Quickstart
+# Next.js
 
 Add Faable Auth to your Next.js application to easily authenticate your users. This guide shows you how to integrate the Faable Auth login flow using the secure **Authorization Code Flow with PKCE**, meaning the token exchange happens automatically and securely on the client side.
 
@@ -22,12 +22,12 @@ npm install @faable/auth-js @faablecloud/auth-helpers-react
 First, initialize the Faable Auth client. You can define this directly in your app setup or in a separate file.
 
 ```javascript
-import { createClient } from '@faable/auth-js';
+import { createClient } from "@faable/auth-js";
 
 // Replace with your actual domain and client ID
 export const faableauth = createClient(
-  'YOUR_FAABLE_AUTH_DOMAIN', 
-  'YOUR_CLIENT_ID'
+  "YOUR_FAABLE_AUTH_DOMAIN",
+  "YOUR_CLIENT_ID",
 );
 ```
 
@@ -37,8 +37,8 @@ To make the authentication state available throughout your React component tree,
 
 ```tsx
 // pages/_app.tsx
-import { SessionContextProvider } from '@faablecloud/auth-helpers-react';
-import { faableauth } from '../lib/faable'; // Adjust path to where you initialized the client
+import { SessionContextProvider } from "@faablecloud/auth-helpers-react";
+import { faableauth } from "../lib/faable"; // Adjust path to where you initialized the client
 
 export default function App({ Component, pageProps }) {
   return (
@@ -51,14 +51,14 @@ export default function App({ Component, pageProps }) {
 
 ## Accessing User State
 
-Once the provider is wrapping your application, any component can access the authentication state. 
+Once the provider is wrapping your application, any component can access the authentication state.
 
 You can use the `useSession` and `useUser` hooks to get the current session (which includes the `access_token`) and the user's profile information.
 
 ```tsx
 // pages/profile.tsx
-import { useSession, useUser } from '@faablecloud/auth-helpers-react';
-import { faableauth } from '../lib/faable';
+import { useSession, useUser } from "@faablecloud/auth-helpers-react";
+import { faableauth } from "../lib/faable";
 
 export default function Profile() {
   const session = useSession();
@@ -68,7 +68,7 @@ export default function Profile() {
     // This automatically starts the PKCE flow
     await faableauth.auth.signInWithOAuth({
       options: {
-        redirectTo: window.location.origin + '/callback',
+        redirectTo: window.location.origin + "/callback",
       },
     });
   };

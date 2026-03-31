@@ -1,4 +1,4 @@
-# Add a Domain
+# Custom Domain
 
 Go to [Faable Dashboard > Projects > Domains](https://dashboard.faable.com) and create a Domain entry. Follow instructions to link it to your deployed Faable App.
 

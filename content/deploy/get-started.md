@@ -1,3 +1,5 @@
+# Get started
+
 **Faable Deploy** is a platform to deploy frontend and backend services. Build and integrate it with your headless content, ecommerce, or database.
 
 We make it easy for develper teams to develop and ship awesome user experiences, where performance is the default.

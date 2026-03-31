@@ -1,8 +1,4 @@
----
-title: Política de Privacidad
----
-
-# Política de Privacidad
+# Privacy Policy
 
 A continuación, ponemos a su disposición la política de privacidad de Faable Cloud SLU, en adelante "Faable", que regula la recogida y el tratamiento de los datos que sean proporcionados por el usuario en esta web.
 

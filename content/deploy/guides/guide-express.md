@@ -1,4 +1,4 @@
-# Guide: Deploy node.js Express
+# Deploy node.js Express
 
 Make sure your app has a `start` script inside `package.json`
 
