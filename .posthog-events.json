@@ -1,0 +1,12 @@
+[
+  {
+    "event": "doc_link_clicked",
+    "description": "User clicked a link within the documentation, capturing the destination URL, link text, and whether the link is external or internal",
+    "file": "mdx-components.js"
+  },
+  {
+    "event": "dashboard_cta_clicked",
+    "description": "User clicked the Faable Dashboard link (dashboard.faable.com) — a high-intent conversion signal indicating interest in signing up or logging in",
+    "file": "mdx-components.js"
+  }
+]

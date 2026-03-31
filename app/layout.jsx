@@ -1,10 +1,10 @@
 import '../globals.css'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Banner, Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
-import Image from 'next/image'
  
 export const metadata = {
   // Define your metadata here
@@ -38,9 +38,7 @@ export default async function RootLayout({ children }) {
       // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
       suppressHydrationWarning
     >
-      <Head
-      
-      >
+      <Head>
         {/* Your additional tags should be passed as `children` of `<Head>` element */}
       </Head>
       <body>
@@ -54,6 +52,7 @@ export default async function RootLayout({ children }) {
         >
           {children}
         </Layout>
+        <GoogleAnalytics gaId="G-S8X2QYX44Z" />
       </body>
     </html>
   )
