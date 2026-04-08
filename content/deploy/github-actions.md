@@ -41,29 +41,7 @@ In cases where your are developing an app with a `build` step like a `typescript
 }
 ```
 
-If your build script has a name different than `build`. Add `npm_build_command` configuration to your desired script in action config.
-
-```yaml
-name: Deploy to Faable
-on:
-  push:
-    branches:
-      - main
-permissions:
-  id-token: write
-  contents: write
-  pull-requests: write
-  issues: write
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-      - run: npm ci
-      - run: npx @faable/faable@latest deploy --npm-build-script your_build_script
-```
+If your build script has a name different than `build` use the flag `--npm_build_command` in the CLI to specify the desired script in action config.
 
 ## Deploy multiple environments
 

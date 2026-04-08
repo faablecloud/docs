@@ -25,3 +25,11 @@ faable deploy $APP_NAME
 ```
 
 🌍 Your site is ready at: `<app_name>.faable.link`
+
+## App Container Types
+
+Faable Apps run inside Linux containers. We offer a sort of different container sizes to serve small-scale projects or high-traffic ones.
+
+Containers are diferentiated by Memory, CPU and Bandwith. Check your app requirements and select according to your needs.
+
+Containers monthly exceding bandwith is billed separatdly at the end of billing cycle. For more information see [Pricing](/deploy/pricing)
