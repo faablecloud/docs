@@ -12,7 +12,7 @@ Start by creating an account on the [Faable Dashboard](https://dashboard.faable.
 
 Our ecosystem is composed of two primary cloud products, each designed to solve specific challenges in the software development lifecycle.
 
-### 🚀 [Faable Deploy](deploy/get-started.md)
+### 🚀 [Faable Deploy](/deploy/get-started.md)
 
 A zero-config CI/CD platform that seamlessly builds and hosts applications directly from your linked Git repositories.
 
@@ -20,9 +20,9 @@ A zero-config CI/CD platform that seamlessly builds and hosts applications direc
 - **Custom Domains & SSL:** Configure custom domains effortlessly, complete with free, automated SSL certificates.
 - **Advanced Security:** Built-in Web Application Firewall (WAF) to keep your workloads safe without manual configuration.
 
-👉 **[Dive into Faable Deploy](deploy/get-started.md)**
+👉 **[Dive into Faable Deploy](/deploy/get-started.md)**
 
-### 🔐 [Faable Auth](auth/get-started.md)
+### 🔐 [Faable Auth](/auth/get-started.md)
 
 A scalable, multi-tenant identity server that securely manages user authentication and authorization.
 
@@ -30,4 +30,4 @@ A scalable, multi-tenant identity server that securely manages user authenticati
 - **Social Login:** Out-of-the-box support for federated identity providers like Google, Facebook, and Apple.
 - **Standardized Protocols:** Full support for OAuth 2.0, OpenID Connect (OIDC), and Machine-to-Machine (M2M) communication.
 
-👉 **[Dive into Faable Auth](auth/get-started.md)**
+👉 **[Dive into Faable Auth](/auth/get-started.md)**
