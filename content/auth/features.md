@@ -1,3 +1,8 @@
+---
+title: Features
+description: Discover the powerful features of Faable Auth, including social login, passwordless authentication, role-based access control (RBAC), and standard OAuth2/OIDC support.
+---
+
 # Features
 
 Faable Auth is a modern, developer-first identity platform built for scale. We provide all the enterprise-grade features you need to secure your applications, with a focus on simplicity, extensibility, and fair pricing.

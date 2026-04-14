@@ -1,3 +1,8 @@
+---
+title: Security and Compliance
+description: Learn about Faable Cloud infrastructure security. Explore our data encryption, backup strategies, and penetration testing protocols to keep your data safe.
+---
+
 # Security and Compliance
 
 This page covers the protection and compliance measures Faable takes to ensure the security of your data, including DDoS protection, SOC2 Type 2 compliance, Data encryption, and more.

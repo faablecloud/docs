@@ -1,3 +1,8 @@
+---
+title: Custom Domain
+description: Learn how to configure a custom domain for your Faable application. Step-by-step guide to setting up CNAME and ALIAS records in your DNS.
+---
+
 # Custom Domain
 
 Go to [Faable Dashboard > Projects > Domains](https://dashboard.faable.com) and create a Domain entry. Follow instructions to link it to your deployed Faable App.

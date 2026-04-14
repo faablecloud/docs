@@ -1,3 +1,8 @@
+---
+title: Connections
+description: Learn about Connections in Faable Auth. Configure database, social, passwordless, and enterprise identity providers for a seamless login experience.
+---
+
 # Connections
 
 In Faable Auth, a **Connection** represents a source of users. It defines how your users will authenticate when logging into your application. Connections are the core building blocks that enable different authentication methods without having to write custom integrations for each one of them.

@@ -1,3 +1,8 @@
+---
+title: Pricing
+description: Transparent pricing for Faable Deploy. Explore instance sizes, support plans, and bandwidth pricing tailored for modern web applications.
+---
+
 # Pricing
 
 Faable platform charges based on usage. In any given month you receive the bill for the previous month of use, not the current one.

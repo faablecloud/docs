@@ -1,3 +1,8 @@
+---
+title: Privacy Policy
+description: Faable Cloud Privacy Policy. Learn how we collect, use, and protect your personal data in compliance with data protection regulations.
+---
+
 # Privacy Policy
 
 A continuación, ponemos a su disposición la política de privacidad de Faable Cloud SLU, en adelante "Faable", que regula la recogida y el tratamiento de los datos que sean proporcionados por el usuario en esta web.

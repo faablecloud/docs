@@ -1,3 +1,8 @@
+---
+title: Google Social Login
+description: Set up Google Social Login for your Faable Auth application. Step-by-step guide to configuring Google Cloud Console and enabling federated identity.
+---
+
 ## Google Social Login
 
 Google is a popular social connection that allows users to log in to your application using their Google profile.

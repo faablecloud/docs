@@ -63,12 +63,11 @@ export const metadata = {
   },
 };
 
-const banner = <Banner storageKey="some-key">Nextra 4.0 is released 🎉</Banner>;
 const navbar = (
   <Navbar
     logo={
       <div className="flex gap-4">
-        <img src="https://faable.com/assets/logo/Emblem.png" width="35" />
+        <img src="https://faable.com/assets/logo/Emblem.png" width="35" alt="Faable" height="35" />
         <p className="font-bold text-2xl">Faable Docs</p>
       </div>
     }

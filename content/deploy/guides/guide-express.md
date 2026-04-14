@@ -1,3 +1,8 @@
+---
+title: Deploy Node.js Express
+description: Deploy a Node.js Express application to Faable Cloud. Learn how to configure port binding and use the Faable CLI for seamless deployment.
+---
+
 # Deploy node.js Express
 
 Make sure your app has a `start` script inside `package.json`

@@ -1,3 +1,8 @@
+---
+title: Web Application Firewall (WAF)
+description: Protect your applications with Faable's Web Application Firewall (WAF). Detect and block malicious traffic using OWASP Core Rule Set policies.
+---
+
 # Web Application Firewall
 
 A WAF is a firewall designed to protect your web services from cyberatacks by analyzing and filtering HTTP traffic. A WAF is placed between your web service and internet, therefore anyone accessing your web service must be allowed to pass according to the WAF policy installed.

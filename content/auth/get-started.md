@@ -1,3 +1,8 @@
+---
+title: Get Started
+description: Get started with Faable Auth, a scalable identity and user management platform. Explore quickstarts for Next.js, React Native, and SDK integrations.
+---
+
 # Get Started
 
 Faable Auth is an Identity and User management platform to manage access to your Applications and APIs.

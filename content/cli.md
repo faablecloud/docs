@@ -1,3 +1,8 @@
+---
+title: Faable CLI
+description: Master the Faable CLI to manage and deploy your applications from the terminal. Learn about installation, authentication, and deployment workflows.
+---
+
 # Faable CLI
 
 The Faable CLI (`@faable/faable`) is your command-line interface for managing and deploying applications on the Faable platform. Whether you are building with Node.js or Docker, the CLI streamlines your development workflow from initialization to production.

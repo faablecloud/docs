@@ -1,3 +1,8 @@
+---
+title: GitHub Actions
+description: Set up continuous deployment with GitHub Actions for your Faable projects. Automate your build and deploy workflow for multiple environments.
+---
+
 # Github Actions
 
 To configure continuous deployment every time code is pushed into your github repo, create a Github Action.

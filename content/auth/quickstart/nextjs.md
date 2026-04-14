@@ -1,3 +1,8 @@
+---
+title: Next.js Quickstart
+description: Integrate Faable Auth into your Next.js application in minutes. Learn how to set up authentication, protect routes, and manage user sessions.
+---
+
 # Next.js
 
 Add Faable Auth to your Next.js application to easily authenticate your users. This guide shows you how to integrate the Faable Auth login flow using the secure **Authorization Code Flow with PKCE**, meaning the token exchange happens automatically and securely on the client side.

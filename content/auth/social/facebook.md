@@ -1,3 +1,8 @@
+---
+title: Facebook Social Login
+description: Enable Facebook Social Login in Faable Auth. Learn how to create a Facebook App, configure redirect URIs, and sync user profile data.
+---
+
 ## Facebook Social Login
 
 The Facebook social connection allows users to log in to your application using their Facebook profile.

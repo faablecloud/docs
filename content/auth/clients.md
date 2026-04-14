@@ -1,3 +1,8 @@
+---
+title: Clients
+description: Understand how to register and configure application Clients in Faable Auth for web, mobile, and machine-to-machine integrations.
+---
+
 # Clients
 
 In Faable Auth, a **Client** represents an application that needs to authenticate users or request authorization to access APIs. Depending on what you are building, a Client could be a Single Page Application (React, Vue, Angular), a native mobile app (iOS, React Native), a server-side web application (Express, Next.js), or a backend machine-to-machine service.

@@ -1,3 +1,8 @@
+---
+title: Get Started
+description: Launch your applications quickly with Faable Deploy. Learn how to set up zero-config CI/CD, custom domains, and automated SSL for your projects.
+---
+
 # Get started
 
 **Faable Deploy** is a platform to deploy frontend and backend services. Build and integrate it with your headless content, ecommerce, or database.

@@ -1,3 +1,8 @@
+---
+title: Terms of Service
+description: Read the Faable Cloud Terms of Service. Understand your rights and responsibilities when using our cloud platform and associated services.
+---
+
 # Terms of Service
 
 Subject to these Terms of Service (this "Agreement"), Faable Cloud SLU. ("Faable", "we", "us" and/or "our") provides access to Faable cloud platform, including, without limitation, this website, certain API's and domain registration services (collectively, the "Services"). By using or accessing the Services, you acknowledge that you have read, understand, and agree to be bound by this Agreement.

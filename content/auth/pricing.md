@@ -1,3 +1,8 @@
+---
+title: Pricing
+description: Simple and transparent pricing for Faable Auth. Explore our Community and Professional plans based on Monthly Active Users (MAU).
+---
+
 # Pricing
 
 Faable Auth is billed based on your **Monthly Active Users (MAU)**.

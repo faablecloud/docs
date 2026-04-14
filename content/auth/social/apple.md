@@ -1,3 +1,8 @@
+---
+title: Apple Social Login
+description: Implement Sign In with Apple in your application using Faable Auth. Detailed instructions for configuring identifiers, services, and keys in the Apple Developer portal.
+---
+
 ## Apple Social Login
 
 The Apple social connection allows users to log in to your application using their Apple account. The Apple App Store Developer guidelines require Sign In With Apple (SIWA) be available in applications that only use third-party sign-in options, such as Facebook or Google.
