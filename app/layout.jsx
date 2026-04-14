@@ -72,8 +72,16 @@ const navbar = (
         <p className="font-bold text-2xl">Faable Docs</p>
       </div>
     }
-    // ... Your additional navbar options
-  ></Navbar>
+  >
+    <a
+      href="https://dashboard.faable.com"
+      target="_blank"
+      rel="noopener"
+      className="nx-text-sm nx-font-medium hover:nx-opacity-75"
+    >
+      Dashboard
+    </a>
+  </Navbar>
 );
 const footer = <Footer>{new Date().getFullYear()} © Faable Cloud.</Footer>;
 
