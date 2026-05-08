@@ -7,10 +7,6 @@ description: Discover the powerful features of Faable Auth, including social log
 
 Faable Auth is a modern, developer-first identity platform built for scale. We provide all the enterprise-grade features you need to secure your applications, with a focus on simplicity, extensibility, and fair pricing.
 
----
-
-## 🆚 Feature Comparison
-
 See how Faable Auth stands against industry leaders.
 
 | Feature                         |     **Faable Auth**     |      Auth0      | Firebase Auth | AWS Cognito |
@@ -22,6 +18,7 @@ See how Faable Auth stands against industry leaders.
 | **Custom Actions / Hooks**      |           ✅            |       ✅        |      ❌       |     ✅      |
 | **M2M (Client Credentials)**    |           ✅            |       ✅        |      ❌       |     ✅      |
 | **Developer Experience (DX)**   |        **High**         |     Medium      |      Low      |     Low     |
+| **Custom Domain**               |           ✅            |       ✅        |      ❌       |     ✅      |
 
 ---
 
@@ -46,6 +43,12 @@ Inject custom logic into your authentication flows. Use **Faable Actions** to ca
 Secure your backend services and background workers using the standardized **Client Credentials** flow. Ideal for service-to-service communication without human intervention.
 
 👉 **[Learn more about Client Credentials](oauth-flows/client-credentials.md)**
+
+### 🌐 Custom Domain
+
+Serve the Faable Auth login UI from your own branded domain (e.g. `auth.example.com`). Ownership is verified via a DNS TXT record, and a TLS certificate is automatically provisioned and renewed — no extra configuration needed.
+
+👉 **[Set up a Custom Domain](custom-domain.md)**
 
 ### 📱 Modern SDKs
 
