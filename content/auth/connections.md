@@ -18,6 +18,8 @@ Faable Auth supports various connection types to accommodate different authentic
 - **Passwordless Connections:** Enable users to log in without a password, using methods like Magic Links sent via email or OTPs (One-Time Passwords) sent via SMS or email.
 - **Enterprise Connections:** Integrate with corporate identity providers like Azure Active Directory, Okta, or any other SAML / OpenID Connect compliant server.
 
+Internally, these types are grouped into four **categories** — `database`, `social`, `passwordless`, and `oidc` — that the dashboard and SDK use to filter listings (e.g. `GET /connections?category=social`).
+
 ## Using Connections for OAuth Login
 
 When a developer uses Faable Auth to implement a login flow (such as the standard OAuth2 Authorization Code flow), the concept of a connection is crucial.

@@ -42,6 +42,19 @@ To start the OAuth 2.0 authentication flow, you must redirect the user to your F
 
 The user will see the Faable login screen and authenticate using their default connection (Email/Password, Google, GitHub, etc.).
 
+#### Controlling the prompt
+
+The optional `prompt` parameter on `/authorize` lets you control whether the user sees the login UI. It accepts a space-separated list of values:
+
+| Value | Behavior |
+|-------|----------|
+| `none` | **SSO probe.** No UI is ever displayed; the request errors if interaction would be needed. Cannot be combined with other values. Useful for silent re-authentication from a SPA. |
+| `login` | Forces the user to re-authenticate, even if there's an active session. |
+| `consent` | Forces the consent step before issuing tokens. Currently behaves like `login` (a dedicated consent screen is on the roadmap). |
+| `select_account` | Accepted for compatibility but currently ignored. |
+
+Unknown prompt values are accepted silently — they don't change behavior. Most applications can leave `prompt` unset and rely on Faable's default behavior.
+
 ### Step 3: Callback and Code Reception
 
 After a successful login, Faable will redirect back to your application with a `code` parameter in the URL:
