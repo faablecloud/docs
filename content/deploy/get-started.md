@@ -1,40 +1,82 @@
 ---
 title: Get Started
-description: Launch your applications quickly with Faable Deploy. Learn how to set up zero-config CI/CD, custom domains, and automated SSL for your projects.
+description: Deploy your first app on Faable Deploy in minutes — push to GitHub, run a workflow, and serve at <app>.faable.link with free SSL.
 ---
 
-# Get started
+# Get Started with Faable Deploy
 
-**Faable Deploy** is a platform to deploy frontend and backend services. Build and integrate it with your headless content, ecommerce, or database.
+Faable Deploy is a zero-config CI/CD platform for frontends and backends. Your code runs in Linux containers, gets a public URL with free automatic SSL, and a built-in Web Application Firewall — no infrastructure to manage.
 
-We make it easy for develper teams to develop and ship awesome user experiences, where performance is the default.
+## How Faable Deploy is structured
 
-The fastest way to get started with Faable Deploy is to create an account and create a github action in your repository.
+Four concepts model the whole product:
 
-To deploy your app, start by Creating your account
+- **Account** — your billing and team boundary on Faable.
+- **Apps** — one app per repo (or one per environment, e.g. `staging` / `production`). Each app gets `<app>.faable.link` plus optional [custom domains](domains/custom-domain.md).
+- **Instances** — the Linux containers your app runs on. Pick a size from the [catalog](pricing.md#compute-catalog) (`bi.xs` through `bi.2xlarge`).
+- **CI** — GitHub Actions is the recommended way to deploy; the CLI is available for ad-hoc deploys.
 
-1. Sign-up into [Faable Dashboard](https://dashboard.faable.com)
-2. Create a Project
-3. Create an App
+## Prerequisites
 
-Prepare your App project to be deployed to Faable Cloud. Install Faable CLI and login.
+1. Create an account on the **[Faable Dashboard](https://dashboard.faable.com)**.
+2. Create a **Project** and an **App** inside it. Note the **App name**.
+3. Have a Git repository ready (Node.js, Go, Python, static frontend — anything that runs in a container).
+
+## Deploy your first app (recommended: GitHub Actions)
+
+Faable Deploy integrates with **GitHub Actions** via OpenID Connect — no API tokens to rotate. Drop a workflow file in your repo and every push to your release branch deploys automatically.
+
+Create `.github/workflows/deploy.yaml`:
+
+```yaml
+name: Deploy to Faable
+on:
+  push:
+    branches: [main]
+permissions:
+  id-token: write          # required for OIDC auth against Faable
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+      - run: npm ci
+      - run: npx @faable/faable@latest deploy
+```
+
+Commit and push to `main`. When the workflow finishes:
+
+🌍 Your app is live at `https://<app_name>.faable.link`.
+
+> [!TIP]
+> If your `package.json` defines a `build` script, Faable runs it automatically before deployment. For multi-environment setups (staging/preview/production) and custom build commands, see [GitHub Actions](github-actions.md).
+
+## Alternative — deploy from your laptop with the CLI
+
+For ad-hoc deploys (local testing, debugging) install the CLI:
 
 ```bash
 npm i -g @faable/faable
+faable login
+faable deploy <app_name>
 ```
 
-Then deploy your App to Faable by running the CLI in your terminal.
+Both paths produce the same result and can coexist on the same app.
 
-```bash
-faable deploy $APP_NAME
-```
+## What's next
 
-🌍 Your site is ready at: `<app_name>.faable.link`
+| Topic | What you'll learn |
+|---|---|
+| **[GitHub Actions](github-actions.md)** | Multi-environment deploys, custom build scripts, secrets. |
+| **[Runtime](runtime.md)** | Supported Node versions, environment variables, the app restart policy. |
+| **[Custom Domains](domains/custom-domain.md)** | Map `app.example.com` to your app with auto-renewed SSL. |
+| **[Security & WAF](security-waf.md)** | The built-in Web Application Firewall that ships with every app. |
+| **[Express guide](guides/guide-express.md)** | Deploy an Express backend end-to-end. |
+| **[CLI reference](../cli.md)** | Every flag and command the CLI supports. |
 
-## App Container Types
+## Pricing & limits
 
-Faable Apps run inside Linux containers. We offer a sort of different container sizes to serve small-scale projects or high-traffic ones.
-
-Containers are diferentiated by Memory, CPU and Bandwith. Check your app requirements and select according to your needs.
-
-Containers monthly exceding bandwith is billed separatdly at the end of billing cycle. For more information see [Pricing](/deploy/pricing)
+See **[Deploy pricing](pricing.md)** for the instance catalog and bandwidth allowances, and the [unified platform pricing](../platform/pricing.md) for plans and support tiers.
