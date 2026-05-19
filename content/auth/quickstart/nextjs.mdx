@@ -1,0 +1,212 @@
+---
+title: Next.js Quickstart
+description: Integrate Faable Auth into your Next.js application in minutes. Learn how to set up authentication, protect routes, and manage user sessions.
+---
+
+import { Tabs } from 'nextra/components'
+
+# Next.js
+
+Add Faable Auth to your Next.js application to easily authenticate your users. This guide shows you how to integrate the Faable Auth login flow using the secure **Authorization Code Flow with PKCE**, meaning the token exchange happens automatically and securely on the client side.
+
+The examples below cover both the **App Router** (`app/`, Next.js 13+) and the **Pages Router** (`pages/`). Pick the tab that matches your project.
+
+## Prerequisites
+
+Before you start, you need to prepare your Faable Auth environment:
+
+1. **Faable Auth Domain.** In the [Faable Dashboard](https://dashboard.faable.com), go to **Auth → (your account) → Settings → Auth Configuration → Domain**. That value (e.g. `your-tenant.auth.faable.link`) is what you'll pass as `domain` below.
+
+   > The **Custom Domains** section on that same Settings page is optional — it lets you serve the hosted login under your own brand (e.g. `auth.yourcompany.com`). You do **not** need to create one to follow this guide; the default `*.auth.faable.link` works out of the box. See [Custom Domain](../custom-domain.md) if you want to set one up later.
+
+2. **Client.** In the dashboard, create a new [Client](../clients.md) for your application and note its **Client ID**. Configure the **Allowed Callback URLs** to include your callback (e.g. `http://localhost:3000/callback` for local development).
+
+## Installation
+
+Install the required Faable packages in your Next.js project:
+
+```bash
+npm install @faable/auth-js @faable/auth-helpers-react
+```
+
+## Initialize the Faable Auth client
+
+Create a shared client instance you can import from anywhere in your app.
+
+```ts
+// lib/faable.ts
+import { createClient } from "@faable/auth-js";
+
+export const faableauth = createClient({
+  domain: "your-tenant.auth.faable.link", // from Dashboard → Auth → Settings → Domain
+  clientId: "<your_client_id>",
+});
+```
+
+## Add the session provider
+
+The `SessionContextProvider` from `@faable/auth-helpers-react` exposes the current session to your components. In the App Router it must live inside a `"use client"` boundary; in the Pages Router it goes in `_app.tsx`.
+
+<Tabs items={['App Router', 'Pages Router']}>
+  <Tabs.Tab>
+
+Create a small client component that owns the provider:
+
+```tsx
+// app/providers/ClientSide.tsx
+"use client";
+
+import { SessionContextProvider } from "@faable/auth-helpers-react";
+import { faableauth } from "../../lib/faable";
+
+export function ClientSide({ children }: { children: React.ReactNode }) {
+  return (
+    <SessionContextProvider faableauthClient={faableauth}>
+      {children}
+    </SessionContextProvider>
+  );
+}
+```
+
+Then wrap your root layout with it. The layout itself stays a server component — only `ClientSide` is client-side.
+
+```tsx
+// app/layout.tsx
+import { ClientSide } from "./providers/ClientSide";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <ClientSide>{children}</ClientSide>
+      </body>
+    </html>
+  );
+}
+```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+Wrap your app in `pages/_app.tsx`:
+
+```tsx
+// pages/_app.tsx
+import type { AppProps } from "next/app";
+import { SessionContextProvider } from "@faable/auth-helpers-react";
+import { faableauth } from "../lib/faable";
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <SessionContextProvider faableauthClient={faableauth}>
+      <Component {...pageProps} />
+    </SessionContextProvider>
+  );
+}
+```
+
+  </Tabs.Tab>
+</Tabs>
+
+## Add the callback route
+
+After login the user is redirected to the callback URL you registered on your Client. `@faable/auth-js` reads the tokens from the URL automatically; the route just needs to mount the SDK and send the user somewhere afterwards.
+
+<Tabs items={['App Router', 'Pages Router']}>
+  <Tabs.Tab>
+
+```tsx
+// app/callback/page.tsx
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "@faable/auth-helpers-react";
+
+export default function CallbackPage() {
+  const router = useRouter();
+  const session = useSession();
+
+  useEffect(() => {
+    if (session) router.replace("/");
+  }, [session, router]);
+
+  return <p>Signing you in…</p>;
+}
+```
+
+  </Tabs.Tab>
+  <Tabs.Tab>
+
+```tsx
+// pages/callback.tsx
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useSession } from "@faable/auth-helpers-react";
+
+export default function CallbackPage() {
+  const router = useRouter();
+  const session = useSession();
+
+  useEffect(() => {
+    if (session) router.replace("/");
+  }, [session, router]);
+
+  return <p>Signing you in…</p>;
+}
+```
+
+  </Tabs.Tab>
+</Tabs>
+
+## Accessing user state
+
+Anywhere inside the provider, use the `useSession` and `useUser` hooks to read the current session and user profile. Call `signInWithOauthConnection` on the client to start the login, and `signOut` to clear it.
+
+```tsx
+// app/page.tsx  (or pages/index.tsx)
+"use client";
+
+import { useSession, useUser } from "@faable/auth-helpers-react";
+import { faableauth } from "../lib/faable";
+
+export default function Home() {
+  const session = useSession();
+  const user = useUser();
+
+  const handleLogin = async () => {
+    await faableauth.signInWithOauthConnection({
+      redirectTo: window.location.origin + "/callback",
+    });
+  };
+
+  const handleLogout = async () => {
+    await faableauth.signOut();
+  };
+
+  if (!session) {
+    return (
+      <div>
+        <p>You are not logged in.</p>
+        <button onClick={handleLogin}>Log In</button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h1>Welcome, {user?.email}</h1>
+      <p>Your Access Token: {session.access_token}</p>
+      <button onClick={handleLogout}>Log Out</button>
+    </div>
+  );
+}
+```
+
+> By default, `signInWithOauthConnection` opens your hosted login page and the user picks which connection to use. To skip that picker and force a specific provider (e.g. Google), pass `connection: "connection_xxxxxxxxxxxxxxxxxxxxxx"` — you'll find the ID in **Dashboard → Auth → Connections**.
+
+When `handleLogin` runs, `@faable/auth-js` takes care of redirecting the user, generating the PKCE verifier, and exchanging the code for tokens when the user is sent back to your callback URL.

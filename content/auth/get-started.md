@@ -74,7 +74,7 @@ Once a user can sign in, Faable Auth gives you the building blocks for the rest 
 
 - **[`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js)** — client SDK for browsers and React Native (PKCE, session management, token refresh).
 - **[`@faable/auth-sdk`](https://www.npmjs.com/package/@faable/auth-sdk)** — server-side SDK for Node.js (token verification, admin operations).
-- **[`@faablecloud/auth-helpers-react`](https://www.npmjs.com/package/@faablecloud/auth-helpers-react)** — React hooks for session and user state.
+- **[`@faable/auth-helpers-react`](https://www.npmjs.com/package/@faable/auth-helpers-react)** — React hooks for session and user state.
 
 ## Pricing & limits
 
