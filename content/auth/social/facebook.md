@@ -29,12 +29,21 @@ While setting up the Facebook Login product, use the following settings:
 | Field                     | Value to Provide                                                                                                   |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Client OAuth Settings     | Enable Web OAuth Login (web applications) or Client OAuth Login (native applications), depending on your app type. |
-| Valid OAuth Redirect URIs | `https://YOUR_DOMAIN/login/callback`                                                                               |
+| Valid OAuth Redirect URIs | `https://YOUR_DOMAIN/callback`                                                                                     |
 | Deauthorize Callback URL  | Enter the URL you would like Facebook to call when a user does not consent to your app.                            |
 
 ## Find your FaableAuth domain name
 
-If your FaableAuth domain name is not shown above and you are not using our custom domains feature, your domain name is your tenant name, your regional subdomain (unless your tenant is in the US region and was created before June 2020), plus `.auth.faable.link`. For example, if your tenant name were `exampleco-enterprises`, your FaableAuth domain name would be `exampleco-enterprises.auth.faable.link` and your redirect URI would be `https://exampleco-enterprises.auth.faable.link/login/callback`.
+If you are not using our custom domains feature, your domain name is your tenant name plus `.auth.faable.link`. For example, if your tenant name were `exampleco-enterprises`, your FaableAuth domain name would be `exampleco-enterprises.auth.faable.link` and your redirect URI would be `https://exampleco-enterprises.auth.faable.link/callback`.
+
+## Create the connection in FaableAuth
+
+Once you have the App ID and App Secret from Facebook:
+
+1. In the FaableAuth Dashboard, navigate to **Auth → Social Login** and click **Create**.
+1. Choose **Facebook** as the connection type.
+1. Enter the **App ID** as the Client ID and **App Secret** as the Client Secret.
+1. Save the connection.
 
 ## Test connection
 

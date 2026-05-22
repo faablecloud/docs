@@ -55,7 +55,7 @@ Continue and register. Download a copy of your key.
 
 Now that you have your application information, update your FaableAuth configuration.
 
-In your FaableAuth dashboard, navigate to Authentication > Social Connections and Create Connection. Find the Apple connection and enable Apple access to FaableAuth.
+In your FaableAuth Dashboard, navigate to **Auth → Social Login** and click **Create**. Choose **Apple** as the connection type to enable Apple access to FaableAuth.
 
 Name your social connection and update the fields with the information below.
 

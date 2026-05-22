@@ -210,3 +210,66 @@ export default function Home() {
 > By default, `signInWithOauthConnection` opens your hosted login page and the user picks which connection to use. To skip that picker and force a specific provider (e.g. Google), pass `connection: "connection_xxxxxxxxxxxxxxxxxxxxxx"` — you'll find the ID in **Dashboard → Auth → Connections**.
 
 When `handleLogin` runs, `@faable/auth-js` takes care of redirecting the user, generating the PKCE verifier, and exchanging the code for tokens when the user is sent back to your callback URL.
+
+## Custom username + password login
+
+If you want to build your own login form instead of using the hosted login page, use `signInWithUsernamePassword`. This is useful when you have a **Database Connection** configured on your tenant and want full control over the UI.
+
+Make sure you have a database connection enabled on your Client (**Dashboard → Auth → Database**). The credentials are submitted directly to Faable Auth's `/usernamepassword/login` endpoint, which on success auto-submits a form that completes the OAuth handshake against your callback URL — same end state as `signInWithOauthConnection`.
+
+```tsx
+// app/login/page.tsx  (or pages/login.tsx)
+"use client";
+
+import { useState } from "react";
+import { faableauth } from "../../lib/faable";
+
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    const { error } = await faableauth.signInWithUsernamePassword({
+      username: email,
+      password,
+      redirect_uri: window.location.origin + "/callback",
+    });
+    if (error) setError(error.message);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+        required
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+        required
+      />
+      <button type="submit">Log in</button>
+      {error && <p>{error}</p>}
+    </form>
+  );
+}
+```
+
+Parameters:
+
+| Field          | Required | Description                                                                                                            |
+| -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `username`     | Yes      | The user's email (or username, depending on your Database Connection's identifier settings).                           |
+| `password`     | Yes      | The user's password. Submitted over TLS to Faable Auth — never store it client-side.                                   |
+| `redirect_uri` | No       | Overrides the `redirect_uri` configured on the client. Must be in your Client's **Allowed Callback URLs** whitelist.   |
+| `state`        | No       | Opaque value round-tripped through the OAuth flow. Useful for CSRF protection or preserving navigation intent.         |
+
+On success the user lands on your callback URL with an authorization code that `@faable/auth-js` exchanges for a session — exactly like the hosted-login flow. On failure, the returned `error` carries the server message (wrong credentials, blocked user, etc.).

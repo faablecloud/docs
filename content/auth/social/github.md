@@ -22,7 +22,7 @@ Before you begin:
 
 You will need your Faable Auth domain to register the redirect URI on GitHub.
 
-1. In the Faable Auth Dashboard, navigate to **Settings > Custom Domains**.
+1. In the Faable Auth Dashboard, navigate to **Auth → Settings → Custom Domains**.
 2. If you haven't configured a custom domain, your Faable Auth domain is `{YOUR_FAABLEAUTH_NAME}.auth.faable.link`.
 3. Your redirect URI is:
 
@@ -58,7 +58,7 @@ GitHub offers two flavors of integrations: **OAuth Apps** and **GitHub Apps**. F
 
 Once you have the Client ID and Client Secret from GitHub:
 
-1. In the Faable Auth Dashboard, navigate to **Authentication > Social Connections** and click **Create Connection**.
+1. In the Faable Auth Dashboard, navigate to **Auth → Social Login** and click **Create**.
 2. Choose **GitHub** as the connection type.
 3. Fill in the fields:
 
