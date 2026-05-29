@@ -7,6 +7,7 @@ import { getPageMap } from "nextra/page-map";
 import "nextra-theme-docs/style.css";
 
 export const metadata = {
+  metadataBase: new URL("https://faable.com"),
   title: {
     template: "%s | Faable Docs",
     default: "Faable Docs | Cloud Platform for Modern Developers",
