@@ -9,73 +9,47 @@ Faable Deploy is a zero-config CI/CD platform for frontends and backends. Your c
 
 ## How Faable Deploy is structured
 
-Four concepts model the whole product:
+Three concepts model the whole product:
 
 - **Account** — your billing and team boundary on Faable.
 - **Apps** — one app per repo (or one per environment, e.g. `staging` / `production`). Each app gets `<app>.faable.link` plus optional [custom domains](domains/custom-domain.md).
 - **Instances** — the Linux containers your app runs on. Pick a size from the [catalog](pricing.md#compute-catalog) (`bi.xs` through `bi.2xlarge`).
-- **CI** — GitHub Actions is the recommended way to deploy; the CLI is available for ad-hoc deploys.
 
-## Prerequisites
+## Deploy your first app
 
-1. Create an account on the **[Faable Dashboard](https://dashboard.faable.com)**.
-2. Create a **Project** and an **App** inside it. Note the **App name**.
-3. Have a Git repository ready (Node.js, Go, Python, static frontend — anything that runs in a container).
+1. In the **[Faable Dashboard](https://dashboard.faable.com)**, create a **Project** and an **App**.
+2. Open the app and click **Link repository**. Pick your GitHub org and repo (install the **Faable GitHub App** if prompted). Faable commits the GitHub Actions workflow to your repo for you.
+3. **Push to your release branch.** Your app builds and goes live at `https://<app>.faable.link`.
 
-## Deploy your first app (recommended: GitHub Actions)
-
-Faable Deploy integrates with **GitHub Actions** via OpenID Connect — no API tokens to rotate. Drop a workflow file in your repo and every push to your release branch deploys automatically.
-
-Create `.github/workflows/deploy.yaml`:
-
-```yaml
-name: Deploy to Faable
-on:
-  push:
-    branches: [main]
-permissions:
-  id-token: write          # required for OIDC auth against Faable
-  contents: write
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-      - run: npm ci
-      - run: npx @faable/faable@latest deploy
-```
-
-Commit and push to `main`. When the workflow finishes:
-
-🌍 Your app is live at `https://<app_name>.faable.link`.
+That's it — no `app_id`, API tokens, or YAML to write. Deploys authenticate via OIDC and resolve the app from the linked repository.
 
 > [!TIP]
-> If your `package.json` defines a `build` script, Faable runs it automatically before deployment. For multi-environment setups (staging/preview/production) and custom build commands, see [GitHub Actions](github-actions.md).
+> If your `package.json` defines a `build` script, Faable runs it automatically before deployment. For multi-environment setups (staging/preview/production), custom build commands, or writing the workflow yourself, see [GitHub Actions](github-actions.md).
 
-## Alternative — deploy from your laptop with the CLI
+## Deploy from your laptop with the CLI
 
-For ad-hoc deploys (local testing, debugging) install the CLI:
+For ad-hoc deploys (local testing, debugging) install the CLI and link the repo once:
 
 ```bash
 npm i -g @faable/faable
 faable login
-faable deploy <app_name>
+faable link      # once per repo — auto-detects the repo, pick the app
+faable deploy    # deploy current repository
 ```
 
-Both paths produce the same result and can coexist on the same app.
+> [!TIP]
+> Got `Request failed with status code 404` on `faable deploy`? The repository isn't linked to any app yet. Link it from the dashboard (or run `faable link`) and deploy again.
 
 ## What's next
 
-| Topic | What you'll learn |
-|---|---|
-| **[GitHub Actions](github-actions.md)** | Multi-environment deploys, custom build scripts, secrets. |
-| **[Runtime](runtime.md)** | Supported Node versions, environment variables, the app restart policy. |
-| **[Custom Domains](domains/custom-domain.md)** | Map `app.example.com` to your app with auto-renewed SSL. |
-| **[Security & WAF](security-waf.md)** | The built-in Web Application Firewall that ships with every app. |
-| **[Express guide](guides/guide-express.md)** | Deploy an Express backend end-to-end. |
-| **[CLI reference](../cli.md)** | Every flag and command the CLI supports. |
+| Topic                                          | What you'll learn                                                       |
+| ---------------------------------------------- | ----------------------------------------------------------------------- |
+| **[GitHub Actions](github-actions.md)**        | Multi-environment deploys, custom build scripts, secrets.               |
+| **[Runtime](runtime.md)**                      | Supported Node versions, environment variables, the app restart policy. |
+| **[Custom Domains](domains/custom-domain.md)** | Map `app.example.com` to your app with auto-renewed SSL.                |
+| **[Security & WAF](security-waf.md)**          | The built-in Web Application Firewall that ships with every app.        |
+| **[Express guide](guides/guide-express.md)**   | Deploy an Express backend end-to-end.                                   |
+| **[CLI reference](../cli.md)**                 | Every flag and command the CLI supports.                                |
 
 ## Pricing & limits
 

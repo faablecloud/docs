@@ -36,10 +36,8 @@ The `login` command opens your default browser to complete the authentication pr
 faable login
 ```
 
-**Options:**
-
-- `--apikey <key>`: Authenticate using a pre-generated API Key (useful for CI/CD).
-- `--token <token>`: Authenticate using an OIDC token.
+> [!NOTE]
+> For CI/CD, you don't need to log in at all — GitHub Actions authenticates via **OIDC** automatically.
 
 ### Whoami
 
@@ -71,13 +69,13 @@ faable init
 
 ### Link
 
-Link your current directory to an existing Faable application. If no `app_id` is provided, the CLI will prompt you to select one from your account.
+Link your current repository to one of your Faable apps. The CLI **auto-detects your Git remote origin** and prompts you to select the app from a list — you never need to look up an `app_id`.
 
 ```bash
-faable link [app_id]
+faable link
 ```
 
-The CLI automatically detects your Git remote origin and links it to the Faable project.
+This mirrors the dashboard's **Link repository** action. Linking requires the **Faable GitHub App** to be installed on the repository; if it isn't, the CLI tells you how to install it. Once linked, `faable deploy` and GitHub Actions resolve the app automatically.
 
 ## Deployment
 
@@ -88,7 +86,18 @@ Deploying your application is the core feature of the Faable CLI. It handles run
 Deploy the current project to Faable.
 
 ```bash
-faable deploy [app_id]
+faable deploy
+```
+
+The app is resolved automatically — no `app_id` required:
+
+- **In GitHub Actions**: from the repository linked to your app, via OIDC.
+- **Locally**: from the app saved by `faable link` (in `faable.json`).
+
+Pass an app explicitly only for **monorepos** with several apps linked to the same repository:
+
+```bash
+faable deploy <app_id>
 ```
 
 **What happens during deploy:**
