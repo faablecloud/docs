@@ -1,5 +1,6 @@
 export default {
   "get-started": "Get Started",
+  academy: "🎓 Academy (Integrator)",
   "oauth-flows": "OAuth 2.0 Flows",
   oidc: "OpenID Connect",
   extensibility: "Extensibility",
