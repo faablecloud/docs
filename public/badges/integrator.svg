@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" fill="none" role="img" aria-label="Faable Auth Integrator badge">
+  <defs>
+    <linearGradient id="hex" x1="120" y1="70" x2="480" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6366F1"/>
+      <stop offset="0.55" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+    <linearGradient id="ribbon" x1="180" y1="470" x2="420" y2="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#D97706"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#1e1b4b" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- Hexagon shield -->
+  <g filter="url(#soft)">
+    <path d="M300 60 L500 175 L500 405 L300 520 L100 405 L100 175 Z" fill="url(#hex)"/>
+  </g>
+  <path d="M300 60 L500 175 L500 405 L300 520 L100 405 L100 175 Z" fill="url(#glow)"/>
+  <path d="M300 96 L469 193 L469 387 L300 484 L131 387 L131 193 Z" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="3"/>
+
+  <!-- Lock + check emblem -->
+  <g transform="translate(300 252)">
+    <rect x="-78" y="-12" width="156" height="120" rx="22" fill="#ffffff"/>
+    <path d="M-46 -12 v-30 a46 46 0 0 1 92 0 v30" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round"/>
+    <path d="M-30 50 l24 26 l44 -54" fill="none" stroke="#7C3AED" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Top wordmark -->
+  <text x="300" y="150" text-anchor="middle" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="6" fill="#ffffff" fill-opacity="0.92">FAABLE AUTH</text>
+
+  <!-- Ribbon -->
+  <g filter="url(#soft)">
+    <path d="M150 470 H450 a16 16 0 0 1 16 16 v54 a16 16 0 0 1 -16 16 H150 a16 16 0 0 1 -16 -16 v-54 a16 16 0 0 1 16 -16 Z" fill="url(#ribbon)"/>
+  </g>
+  <text x="300" y="530" text-anchor="middle" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="4" fill="#ffffff">INTEGRATOR</text>
+</svg>

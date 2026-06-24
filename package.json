@@ -18,6 +18,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind"
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
+    "issue-badge": "node scripts/issue-badge.mjs"
   }
 }

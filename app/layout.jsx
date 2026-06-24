@@ -1,11 +1,6 @@
 import "../globals.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
-import { Footer, Layout, Navbar } from "nextra-theme-docs";
-import { Banner, Head } from "nextra/components";
-import { getPageMap } from "nextra/page-map";
-import "nextra-theme-docs/style.css";
-
 export const metadata = {
   metadataBase: new URL("https://faable.com"),
   title: {
@@ -64,28 +59,10 @@ export const metadata = {
   },
 };
 
-const navbar = (
-  <Navbar
-    logo={
-      <div className="flex gap-4">
-        <img src="https://faable.com/assets/logo/Emblem.png" width="35" alt="Faable" height="35" />
-        <p className="font-bold text-2xl">Faable Docs</p>
-      </div>
-    }
-  >
-    <a
-      href="https://dashboard.faable.com"
-      target="_blank"
-      rel="noopener"
-      className="nx-text-sm nx-font-medium hover:nx-opacity-75"
-    >
-      Dashboard
-    </a>
-  </Navbar>
-);
-const footer = <Footer>{new Date().getFullYear()} © Faable Cloud.</Footer>;
-
-export default async function RootLayout({ children }) {
+// Root layout is intentionally minimal: <html>/<body> + global styles and
+// analytics only. The Nextra docs theme chrome lives in app/(site)/layout.jsx
+// so non-docs pages (e.g. /badge/[id] credential pages) render clean.
+export default function RootLayout({ children }) {
   return (
     <html
       // Not required, but good for SEO
@@ -95,20 +72,8 @@ export default async function RootLayout({ children }) {
       // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
       suppressHydrationWarning
     >
-      <Head>
-        {/* Your additional tags should be passed as `children` of `<Head>` element */}
-      </Head>
       <body>
-        <Layout
-          // banner={banner}
-          navbar={navbar}
-          pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/faablecloud/docs"
-          footer={footer}
-          // ... Your additional layout options
-        >
-          {children}
-        </Layout>
+        {children}
         <GoogleAnalytics gaId="G-S8X2QYX44Z" />
       </body>
     </html>
