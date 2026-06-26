@@ -13,7 +13,7 @@ const navbar = (
     }
   >
     <a
-      href="https://dashboard.faable.com"
+      href="https://dashboard.faable.com?utm_source=docs&utm_medium=referral&utm_content=navbar"
       target="_blank"
       rel="noopener"
       className="nx-text-sm nx-font-medium hover:nx-opacity-75"

@@ -80,7 +80,7 @@ export default function NotFound() {
         </Link>
         <span aria-hidden>·</span>
         <a
-          href="https://dashboard.faable.com"
+          href="https://dashboard.faable.com?utm_source=docs&utm_medium=referral&utm_content=404"
           target="_blank"
           rel="noopener"
           className="hover:underline"
