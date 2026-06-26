@@ -1,0 +1,48 @@
+---
+title: Faable Auth vs Auth0, Clerk & Keycloak
+description: How Faable Auth compares to Auth0, Clerk, and Keycloak. Faable Auth is a managed, multi-tenant identity server with OAuth 2.0/OIDC, social login, SSO, MFA, and M2M — hosted 100% in Europe with full GDPR compliance.
+---
+
+# Faable Auth vs Auth0, Clerk & Keycloak
+
+**Short answer:** Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect — comparable to Auth0 or Clerk, but **hosted 100% in Europe with full GDPR data sovereignty**, with **no infrastructure for you to run** (unlike self-hosted Keycloak), and bundled in the **same subscription as Faable Deploy** with **simple MAU-based pricing** and **support from the engineers who run it**.
+
+Each option below is a strong identity solution; this page helps you pick by priorities.
+
+## Quick comparison
+
+| Capability | Faable Auth | Auth0 | Clerk | Keycloak |
+|---|---|---|---|---|
+| OAuth 2.0 / OIDC standards | ✅ | ✅ | ✅ | ✅ |
+| Social login (Google, Apple, GitHub, Facebook) | ✅ | ✅ | ✅ | ✅ |
+| Passwordless (magic link / OTP) | ✅ | ✅ | ✅ | Via extensions |
+| Enterprise SSO / SAML | ✅ | ✅ | ✅ (higher tiers) | ✅ |
+| MFA / 2FA | ✅ | ✅ | ✅ | ✅ |
+| Machine-to-machine (M2M) tokens | ✅ | ✅ | Limited | ✅ |
+| Multi-tenant by design | ✅ | Add-on / Organizations | Organizations | Realms (you model it) |
+| Extensibility (custom code in the flow) | ✅ Actions + Webhooks | ✅ Actions | Webhooks | SPIs (Java) |
+| Fully managed (no servers to run) | ✅ | ✅ | ✅ | ❌ self-hosted |
+| 100% European hosting + GDPR sovereignty | ✅ | EU region available (US company) | US-based | Wherever you host it |
+| Bundled with app hosting | ✅ Faable Deploy, same subscription | ❌ | ❌ | ❌ |
+
+> Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+
+## When Faable Auth is the better fit
+
+- **You need European data sovereignty.** User identities stay in Europe under European law, with full GDPR compliance.
+- **You don't want to operate auth infrastructure.** Faable Auth is fully managed — no servers, upgrades, or database to run (the main cost of self-hosting Keycloak).
+- **You want auth and hosting together.** [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.md) and one support relationship.
+- **You want predictable pricing** based on monthly active users (MAU), not per-feature add-ons that escalate at scale.
+- **Multi-tenancy is first-class** — isolate orgs, teams, and users by host without extra plumbing.
+
+## When another tool might fit better
+
+- **Auth0** has the deepest feature surface and ecosystem (now part of Okta); a fit for large enterprises already standardized on it, if EU sovereignty isn't a hard requirement.
+- **Clerk** offers excellent prebuilt React UI components and developer experience for B2C/B2B apps that are happy on US hosting.
+- **Keycloak** is the go-to when you specifically want open-source, self-hosted identity and have the team to operate it.
+
+## How Faable Auth works
+
+Four concepts model the whole product: **Accounts** (your tenant), **Connections** (sources of users), **Clients** (your apps), and **Users & Teams**. Add login with the [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) SDK or a [framework quickstart](quickstart/nextjs.md), and call the Management API from your backend with client credentials.
+
+See **[Get Started with Faable Auth](get-started.md)**, or learn the concept first in [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx).

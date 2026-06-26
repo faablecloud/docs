@@ -7,6 +7,8 @@ description: Deploy your first app on Faable Deploy in minutes — push to GitHu
 
 Faable Deploy is a zero-config CI/CD platform for frontends and backends. Your code runs in Linux containers, gets a public URL with free automatic SSL, and a built-in Web Application Firewall — no infrastructure to manage.
 
+> New to the concept? Read [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx). Comparing platforms? See [Faable Deploy vs Vercel, Render & Railway](compare.mdx).
+
 ## How Faable Deploy is structured
 
 Three concepts model the whole product:

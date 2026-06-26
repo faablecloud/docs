@@ -7,6 +7,8 @@ description: Set up Faable Auth in minutes — create a tenant, register a clien
 
 Faable Auth is a multi-tenant identity platform built around the OAuth 2.0 and OpenID Connect standards. You get social login, passwordless, enterprise SSO/SAML, RBAC, MFA, custom domains and audit logs out of the box — without writing or maintaining any of the protocol plumbing yourself.
 
+> New to the concept? Read [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx). Comparing platforms? See [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx).
+
 ## How Faable Auth is structured
 
 Four concepts are enough to model the whole product:

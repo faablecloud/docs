@@ -1,0 +1,45 @@
+---
+title: Faable Deploy vs Vercel, Render & Railway
+description: How Faable Deploy compares to Vercel, Render, and Railway for deploying apps from Git. Faable is a zero-config, 100% European, GDPR-compliant platform that bundles hosting, a built-in WAF, and authentication in one subscription.
+---
+
+# Faable Deploy vs Vercel, Render & Railway
+
+**Short answer:** Faable Deploy is a zero-config platform that builds and hosts apps straight from a GitHub repository — like Vercel, Render, or Railway — but with three differences that matter for European teams: **hosting is 100% in Europe with full GDPR data sovereignty**, a **Web Application Firewall is built in**, and hosting ships in the **same subscription as Faable Auth** (identity) with **support from the engineers who run the platform**.
+
+Use this page to decide which fits your project. The comparison is intentionally honest: each tool is excellent at what it was built for.
+
+## Quick comparison
+
+| Capability | Faable Deploy | Vercel | Render | Railway |
+|---|---|---|---|---|
+| Deploy from Git, zero config | ✅ | ✅ | ✅ | ✅ |
+| Frontend & backend (Linux containers) | ✅ | Frontend-first (+ serverless functions) | ✅ | ✅ |
+| Free automatic SSL | ✅ | ✅ | ✅ | ✅ |
+| Built-in Web Application Firewall (WAF) | ✅ OWASP CRS, included | Add-on / Enterprise | ❌ (DIY) | ❌ (DIY) |
+| Autoscaling | ✅ | ✅ | ✅ | Vertical/limited |
+| 100% European hosting + GDPR sovereignty | ✅ | Primarily US company; some EU regions | US-based | US-based |
+| Bundled identity / auth | ✅ Faable Auth, same subscription | ❌ | ❌ | ❌ |
+| Pricing currency | EUR, no surprise egress tiers | USD | USD | USD |
+| Support from platform engineers | ✅ | Tiered / Enterprise | Tiered | Community / tiered |
+
+> Competitor capabilities change frequently — always confirm current details on each vendor's own pricing and docs.
+
+## When Faable Deploy is the better fit
+
+- **You need European data sovereignty.** Your data stays in Europe, under European law, with full GDPR compliance — not a US company with optional EU regions.
+- **You want one platform, not five.** Hosting, authentication ([Faable Auth](../auth/get-started.md)), SSL, and a [Web Application Firewall](security-waf.md) come together in a [single subscription](../platform/pricing.md), instead of stitching together a host, an auth vendor, and a security layer.
+- **You ship full-stack apps and AI agents**, not only frontends — your code runs in Linux containers with autoscaling.
+- **You want to talk to a human engineer**, not a bot, when something breaks.
+
+## When another tool might fit better
+
+- **Vercel** is hard to beat for pure frontend / Next.js edge rendering and preview-deploy DX if European hosting and a bundled WAF aren't requirements.
+- **Render** is a mature general-purpose PaaS with managed databases and background workers if you want those primitives first-party.
+- **Railway** offers a very fluid usage-based experience and a large template ecosystem for spinning up infrastructure quickly.
+
+## How deploying works on Faable
+
+Connect your GitHub repository, push your code, and Faable detects your stack, builds it, and serves it at `https://<app>.faable.link` with free SSL — no Dockerfiles, YAML, or servers to provision. Deploys authenticate via OIDC and resolve the app from the linked repository.
+
+See **[Get Started with Faable Deploy](get-started.md)** to ship your first app, or the [Deploy pricing](pricing.md) for the instance catalog and bandwidth allowances.

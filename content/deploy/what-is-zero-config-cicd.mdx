@@ -1,0 +1,37 @@
+---
+title: What is zero-config CI/CD?
+description: Zero-config CI/CD is continuous integration and deployment that works straight from your Git repository with no build files, pipelines, or servers to configure. Learn what it means and how Faable Deploy implements it.
+---
+
+# What is zero-config CI/CD?
+
+**Zero-config CI/CD is continuous integration and continuous deployment that works directly from your Git repository without you writing or maintaining any build configuration, pipeline definitions, or server provisioning.** You connect a repo, push code, and the platform automatically detects your stack, builds it, and deploys it to a live URL.
+
+## The terms, briefly
+
+- **CI (Continuous Integration)** — every push is automatically built and validated, so changes integrate continuously instead of in big, risky batches.
+- **CD (Continuous Deployment)** — once a build passes, it is automatically released to a live environment, so shipping is the default rather than a manual event.
+- **Zero-config** — you don't write `Dockerfiles`, YAML pipelines, or infrastructure-as-code to make CI/CD happen. The platform infers everything it can from your repository.
+
+## Why it matters
+
+Traditional CI/CD is powerful but expensive to set up and own: pipeline YAML, build runners, container images, secrets, and deployment scripts all have to be written and kept working. Zero-config CI/CD removes that operational tax so small teams can ship production apps without a dedicated platform engineer.
+
+| Traditional CI/CD | Zero-config CI/CD |
+|---|---|
+| Write and maintain pipeline YAML | Push to a branch |
+| Build and manage container images | Stack auto-detected and built |
+| Provision and patch servers | No servers to manage |
+| Configure SSL and domains manually | Free automatic SSL |
+
+## How Faable Deploy implements zero-config CI/CD
+
+With [Faable Deploy](get-started.md), you link a GitHub repository, and Faable commits the workflow to your repo for you. Every push to your release branch builds your app and serves it at `https://<app>.faable.link` with free SSL, a global edge network, autoscaling, and a built-in [Web Application Firewall](security-waf.md) — no `app_id`, API tokens, or YAML to write. Deploys authenticate via OIDC and resolve the app from the linked repository.
+
+If you outgrow the defaults, you can still customize the [GitHub Actions workflow](github-actions.md) for multi-environment deploys, custom build commands, and secrets.
+
+## Related
+
+- [Get Started with Faable Deploy](get-started.md)
+- [Faable Deploy vs Vercel, Render & Railway](compare.mdx)
+- [Runtime](runtime.md)

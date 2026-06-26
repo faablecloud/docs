@@ -1,0 +1,42 @@
+---
+title: What is a multi-tenant identity server?
+description: A multi-tenant identity server is a single authentication system that securely isolates the users of many applications or organizations (tenants) from each other. Learn what it means and how Faable Auth implements it.
+---
+
+# What is a multi-tenant identity server?
+
+**A multi-tenant identity server is a single authentication and authorization system that serves many separate applications or organizations — called tenants — while keeping each tenant's users, settings, and data fully isolated from the others.** One deployment, many independent identity boundaries.
+
+## The terms, briefly
+
+- **Identity server** — the system that authenticates users (verifies who they are) and authorizes them (decides what they can access), typically using the OAuth 2.0 and OpenID Connect standards. It issues the tokens your apps trust.
+- **Tenant** — a self-contained boundary: one customer, organization, or product. Each tenant has its own users, connections, and configuration.
+- **Multi-tenant** — the same identity server hosts many tenants at once, isolating them from each other instead of running a separate server per tenant.
+
+## Single-tenant vs multi-tenant
+
+| | Single-tenant | Multi-tenant |
+|---|---|---|
+| Tenants per deployment | One | Many, isolated |
+| New customer/org | Stand up new infrastructure | Create a tenant — instant |
+| Operational cost | Grows with each tenant | Shared, scales centrally |
+| Typical use | One internal app | SaaS, B2B, many products |
+
+Multi-tenancy is what lets a SaaS business onboard a new customer organization without provisioning new infrastructure, and lets a team run several products from one identity system.
+
+## How Faable Auth implements multi-tenancy
+
+[Faable Auth](get-started.md) is multi-tenant by design. Four concepts model the whole product:
+
+- **Account** — your tenant, hosted at `https://<account>.auth.faable.link` or your own [custom domain](custom-domain.md).
+- **Connections** — the sources of users for that tenant: database (email + password), social, passwordless, or generic OIDC.
+- **Clients** — the applications that run OAuth flows against the tenant.
+- **Users & Teams** — identities grouped into teams with role-based access control (RBAC).
+
+Tenants are isolated by host, so orgs, teams, and users stay separate without extra plumbing. On top of this you get social login, passwordless, enterprise SSO/SAML, MFA, machine-to-machine tokens, [Actions](extensibility/actions.md), and [Webhooks](extensibility/webhooks.md) — all hosted 100% in Europe under GDPR.
+
+## Related
+
+- [Get Started with Faable Auth](get-started.md)
+- [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
+- [Connections](connections.md) · [Clients](clients.md)
