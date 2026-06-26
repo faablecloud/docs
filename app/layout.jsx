@@ -1,5 +1,5 @@
 import "../globals.css";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { ProdGoogleAnalytics } from "./components/ProdGoogleAnalytics";
 
 export const metadata = {
   metadataBase: new URL("https://faable.com"),
@@ -87,7 +87,7 @@ export default function RootLayout({ children }) {
     >
       <body>
         {children}
-        <GoogleAnalytics gaId="G-S8X2QYX44Z" />
+        <ProdGoogleAnalytics gaId="G-S8X2QYX44Z" />
       </body>
     </html>
   );
