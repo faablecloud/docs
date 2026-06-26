@@ -30,6 +30,19 @@ export const metadata = {
     ],
   },
   authors: [{ name: "Faable Team", url: "https://faable.com" }],
+  // llms.txt discovery for AI crawlers (llmstxt.org) — emits
+  // <link rel="alternate" type="text/plain" title="llms.txt" href=...>
+  alternates: {
+    types: {
+      "text/plain": [
+        { url: "https://faable.com/docs/llms.txt", title: "llms.txt" },
+        {
+          url: "https://faable.com/docs/llms-full.txt",
+          title: "llms-full.txt",
+        },
+      ],
+    },
+  },
   openGraph: {
     title: "Faable Docs - Empowering Developers to Build and Scale",
     description:
