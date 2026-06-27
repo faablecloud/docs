@@ -1,0 +1,44 @@
+---
+title: Faable Auth vs AWS Cognito
+description: How Faable Auth compares to Amazon Cognito as a managed identity provider. Faable Auth is a multi-tenant OAuth 2.0 / OIDC identity server with first-class developer experience, hosted 100% in Europe under GDPR — without AWS lock-in.
+---
+
+# Faable Auth vs AWS Cognito
+
+**Short answer:** Faable Auth and Amazon Cognito are both managed identity providers built on OAuth 2.0 and OpenID Connect, but they target different teams. Cognito fits organizations already deep in the AWS ecosystem who accept its configuration complexity. Faable Auth is a **multi-tenant identity server with a simpler developer experience**, **hosted 100% in Europe with full GDPR data sovereignty**, **bundled with [Faable Deploy](../deploy/get-started.md) hosting**, and **no AWS account or IAM to manage**.
+
+## Quick comparison
+
+| Capability | Faable Auth | AWS Cognito |
+|---|---|---|
+| OAuth 2.0 / OIDC standards | ✅ | ✅ |
+| Social login (Google, Apple, GitHub, Facebook) | ✅ | ✅ |
+| Passwordless (magic link / OTP) | ✅ | Limited (custom flows) |
+| Enterprise SSO / SAML | ✅ | ✅ |
+| MFA / 2FA | ✅ | ✅ |
+| Machine-to-machine (M2M) tokens | ✅ | ✅ (app clients) |
+| Multi-tenant by design | ✅ | User pools (you model isolation) |
+| Developer experience | ✅ Focused dashboard + SDK | Powerful but complex (IAM, pools, app clients) |
+| 100% European hosting + GDPR sovereignty | ✅ | Region-configurable within AWS |
+| Ecosystem lock-in | None (standards-based) | Tied to AWS |
+| Bundled with app hosting | ✅ Faable Deploy, same subscription | ❌ |
+
+> Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+
+## When Faable Auth is the better fit
+
+- **You're not committed to AWS** and don't want to manage IAM, user pools, and app clients to ship login.
+- **You need European data sovereignty** with a straightforward GDPR posture rather than configuring AWS regions and data-processing terms.
+- **You want auth and hosting together** — [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.md).
+- **You value developer experience** — a focused [dashboard](https://dashboard.faable.com) and [SDK](https://www.npmjs.com/package/@faable/auth-js) over assembling Cognito primitives.
+
+## When AWS Cognito might fit better
+
+- You're **all-in on AWS** and want identity that integrates natively with other AWS services (IAM roles, AppSync, API Gateway authorizers).
+- You need Cognito-specific features tightly coupled to the AWS control plane.
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
+- [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx)
+- [Get Started with Faable Auth](get-started.md)

@@ -1,0 +1,42 @@
+---
+title: Migrate from Auth0 to Faable Auth
+description: A step-by-step guide to migrating from Auth0 to Faable Auth. Map Auth0 tenants, applications, connections, and Actions to Faable, export your users, and switch your OAuth 2.0 / OIDC integration with minimal downtime.
+---
+
+# Migrate from Auth0 to Faable Auth
+
+**Short answer:** Migrating from Auth0 to Faable Auth is mostly a mapping exercise, because both are standards-based OAuth 2.0 / OpenID Connect identity servers. You recreate your Auth0 *tenant* as a Faable *Account*, your *Applications* as *Clients*, and your *Connections* (social, database, enterprise) one-to-one, then export your users from Auth0 and import them into Faable. Your app code changes only the issuer URL, client ID, and endpoints — the OAuth flows stay the same. The main reasons teams move are **European data sovereignty (full GDPR)**, **predictable MAU-based pricing**, and **bundling auth with [Faable Deploy](../../deploy/get-started.md) hosting** in one subscription.
+
+## Concept mapping
+
+| Auth0 | Faable Auth | Notes |
+|---|---|---|
+| Tenant | [Account](../what-is-a-multi-tenant-identity-server.mdx) | Your isolated identity boundary, at `https://<account>.auth.faable.link` |
+| Application | [Client](../clients.md) | SPA, native, regular web, or M2M |
+| Connection (social/DB/enterprise) | [Connection](../connections.md) | `database`, `social`, `passwordless`, `oidc` categories |
+| Organizations | Teams within an account | Multi-tenant by design |
+| Actions / Rules / Hooks | [Actions](../extensibility/actions.md) + [Webhooks](../extensibility/webhooks.md) | Custom code in the login flow and async events |
+| Management API | [Management API](../apis.md) | Called from your backend with client credentials |
+| Universal Login | Universal Login | Hosted login screen, same concept |
+| M2M Application | M2M Client (Client Credentials) | Service-to-service tokens |
+
+## Migration steps
+
+1. **Create your Account.** Sign up in the [Faable Dashboard](https://dashboard.faable.com/account/register) and note your issuer URL (`https://<account>.auth.faable.link`, or a [custom domain](../custom-domain.md)).
+2. **Recreate Connections.** For each Auth0 connection, create the equivalent Faable [Connection](../connections.md) — reuse the same upstream OAuth client IDs/secrets for [social providers](../social/google.md) so users keep the same accounts.
+3. **Recreate Clients.** For each Auth0 Application, create a [Client](../clients.md) of the matching type and copy over your **Allowed Callback URLs**, **Logout URLs**, and **Web Origins**.
+4. **Port your custom logic.** Translate Auth0 Actions/Rules into Faable [Actions](../extensibility/actions.md) (in-flow) and [Webhooks](../extensibility/webhooks.md) (async, e.g. sync to your CRM).
+5. **Export and import users.** Export your users from Auth0 (Management API or a bulk export job). Password hashes can be imported so users don't need to reset; social-only users re-link automatically on first login through the same provider.
+6. **Update your app.** Point your SDK or OIDC client at the new issuer, client ID, and endpoints. With [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) or a [framework quickstart](../quickstart/nextjs.md) this is a few config values.
+7. **Cut over.** Run both in parallel behind a feature flag if you want zero downtime, then flip traffic to Faable and decommission the Auth0 tenant.
+
+## Things that change (and things that don't)
+
+- **No change:** the OAuth 2.0 Authorization Code (+ PKCE) and Client Credentials flows, ID/Access token semantics, and your overall login UX.
+- **Changes:** the issuer/domain, client IDs/secrets, and the Management API base URL and payloads (similar shape, not identical).
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](../compare.mdx)
+- [Get Started with Faable Auth](../get-started.md) · [Clients](../clients.md) · [Connections](../connections.md)
+- [Authorization Code Flow](../oauth-flows/authorization-code.md)

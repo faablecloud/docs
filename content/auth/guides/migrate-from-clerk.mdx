@@ -1,0 +1,41 @@
+---
+title: Migrate from Clerk to Faable Auth
+description: A step-by-step guide to migrating from Clerk to Faable Auth. Move from Clerk's prebuilt components to a standards-based OAuth 2.0 / OIDC identity server hosted in Europe, map your instances, applications, and users, and switch with minimal disruption.
+---
+
+# Migrate from Clerk to Faable Auth
+
+**Short answer:** Migrating from Clerk to Faable Auth means moving from Clerk's component-first model to a standards-based OAuth 2.0 / OpenID Connect identity server. You recreate your Clerk *instance* as a Faable *Account*, your *application* as one or more *Clients*, and your social/email connections one-to-one, then export your users from Clerk and import them into Faable. The biggest practical difference is the integration style: instead of Clerk's prebuilt React components you use standard OAuth flows via [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) or a [framework quickstart](../quickstart/nextjs.md). Teams typically move for **European data sovereignty (GDPR)**, **standards portability (no vendor-specific SDK lock-in)**, and **bundling with [Faable Deploy](../../deploy/get-started.md)**.
+
+## Concept mapping
+
+| Clerk | Faable Auth | Notes |
+|---|---|---|
+| Instance (dev/prod) | [Account](../what-is-a-multi-tenant-identity-server.mdx) | Your isolated identity boundary |
+| Application | [Client](../clients.md) | SPA, native, regular web, or M2M |
+| Social connection / Email & password | [Connection](../connections.md) | `social`, `database`, `passwordless` |
+| Organizations | Teams within an account | Multi-tenant by design |
+| Prebuilt components (`<SignIn/>`, `<UserButton/>`) | Universal Login + your UI | Hosted login screen; build your own UI with the SDK |
+| Webhooks | [Webhooks](../extensibility/webhooks.md) | Async events to your backend |
+| Backend API / JWT verification | [APIs](../apis.md) + standard OIDC JWTs | Verify tokens against the JWKS endpoint |
+
+## Migration steps
+
+1. **Create your Account** in the [Faable Dashboard](https://dashboard.faable.com/account/register) and note your issuer URL.
+2. **Recreate Connections** for each Clerk login method — email/password as a [database connection](../connections.md), social as [social connections](../social/google.md), and [magic link / OTP](../passwordless.mdx) as passwordless.
+3. **Create your Client(s).** Most Clerk apps map to a single SPA or regular-web [Client](../clients.md); copy your redirect/callback URLs.
+4. **Replace components with flows.** Swap Clerk's React components for the standard [Authorization Code + PKCE](../oauth-flows/authorization-code.md) flow using the SDK. Hosted Universal Login covers the login UI; you keep full control of the rest of your app.
+5. **Export and import users.** Export users from Clerk's Backend API and import them into Faable, including password hashes where available so users don't reset passwords.
+6. **Verify tokens the standard way.** Replace Clerk's session helpers with standard OIDC JWT verification against Faable's JWKS endpoint (built into the SDK and [quickstarts](../quickstart/nextjs.md)).
+7. **Cut over** behind a flag, then decommission the Clerk instance.
+
+## Things that change (and things that don't)
+
+- **No change:** your underlying need — sign-up, login, sessions, MFA, social login — all supported.
+- **Changes:** you move from Clerk-specific components to standard OAuth/OIDC flows, which removes SDK lock-in but means building (or restyling) some UI.
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](../compare.mdx)
+- [Get Started with Faable Auth](../get-started.md) · [Clients](../clients.md) · [Connections](../connections.md)
+- [Quickstart: Next.js](../quickstart/nextjs.md)

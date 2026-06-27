@@ -1,0 +1,45 @@
+---
+title: Faable Deploy vs Heroku
+description: How Faable Deploy compares to Heroku for deploying apps from Git. Faable is a zero-config, 100% European, GDPR-compliant platform with a built-in WAF and bundled authentication — a modern Heroku alternative hosted in the EU.
+---
+
+# Faable Deploy vs Heroku
+
+**Short answer:** Faable Deploy and Heroku share the same core promise — push your code and it runs, no servers to manage — but Faable is a **modern, 100% European alternative** built for today's pricing and compliance expectations. Faable Deploy runs your app in **Linux containers from a Git push**, includes a **built-in Web Application Firewall**, hosts **entirely in Europe under GDPR**, prices in **EUR**, and **bundles [Faable Auth](../auth/get-started.md)** in the same subscription.
+
+## Quick comparison
+
+| Capability | Faable Deploy | Heroku |
+|---|---|---|
+| Deploy from Git, zero config | ✅ | ✅ |
+| Frontend & backend (Linux containers) | ✅ | ✅ (dynos) |
+| Free automatic SSL | ✅ | ✅ |
+| Built-in Web Application Firewall (WAF) | ✅ OWASP CRS, included | ❌ (DIY / add-on) |
+| Autoscaling | ✅ | ✅ (higher tiers) |
+| 100% European hosting + GDPR sovereignty | ✅ | US-based (Salesforce); some EU regions |
+| Bundled identity / auth | ✅ Faable Auth, same subscription | ❌ (add-ons) |
+| Pricing currency | EUR | USD |
+| Support from platform engineers | ✅ | Tiered |
+
+> Competitor capabilities change frequently — always confirm current details on each vendor's own pricing and docs.
+
+## When Faable Deploy is the better fit
+
+- **You need European data sovereignty** under GDPR, not a US platform with optional regions.
+- **You want security included** — a [built-in WAF](security-waf.md) instead of bolting on add-ons.
+- **You want one platform** — hosting, [auth](../auth/get-started.md), SSL, and WAF in a [single subscription](pricing.md).
+- **You're modernizing off Heroku** and want a comparable push-to-deploy workflow without re-platforming onto raw cloud infrastructure.
+
+## When Heroku might fit better
+
+- You depend on **Heroku's add-on marketplace** and managed data services as first-party primitives.
+- Your team is standardized on Heroku tooling and EU hosting isn't a requirement.
+
+## How deploying works on Faable
+
+Connect your GitHub repository, push your code, and Faable detects your stack, builds it, and serves it at `https://<app>.faable.link` with free SSL — no Dockerfiles or servers to provision. See [Get Started](get-started.md) and [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx).
+
+## Related
+
+- [Faable Deploy vs Vercel, Render & Railway](compare.mdx) · [Faable Deploy vs Fly.io](compare-fly-io.mdx)
+- [Migrate from Vercel](guides/migrate-from-vercel.mdx) · [Migrate from Netlify](guides/migrate-from-netlify.mdx)

@@ -1,0 +1,41 @@
+---
+title: Faable Deploy vs Fly.io
+description: How Faable Deploy compares to Fly.io for deploying containerized apps. Faable is a zero-config, 100% European, GDPR-compliant platform with a built-in WAF and bundled authentication, focused on simplicity over low-level infrastructure control.
+---
+
+# Faable Deploy vs Fly.io
+
+**Short answer:** Faable Deploy and Fly.io both run apps in containers close to your users, but they sit at different levels of abstraction. Fly.io gives you fine-grained control over machines, regions, and networking — powerful, but more to manage. Faable Deploy is **zero-config**: push to Git and it builds and serves your app, with a **built-in Web Application Firewall**, **100% European hosting under GDPR**, **EUR pricing**, and **bundled [Faable Auth](../auth/get-started.md)** — trading low-level control for simplicity.
+
+## Quick comparison
+
+| Capability | Faable Deploy | Fly.io |
+|---|---|---|
+| Deploy from Git, zero config | ✅ | Config-driven (`fly.toml`, CLI) |
+| Frontend & backend (Linux containers) | ✅ | ✅ (Firecracker microVMs) |
+| Free automatic SSL | ✅ | ✅ |
+| Built-in Web Application Firewall (WAF) | ✅ OWASP CRS, included | ❌ (DIY) |
+| Autoscaling | ✅ | ✅ (configurable) |
+| Low-level infra control (regions, machines) | Abstracted away | ✅ Fine-grained |
+| 100% European hosting + GDPR sovereignty | ✅ | US-based; EU regions available |
+| Bundled identity / auth | ✅ Faable Auth, same subscription | ❌ |
+| Pricing currency | EUR | USD |
+
+> Competitor capabilities change frequently — always confirm current details on each vendor's own pricing and docs.
+
+## When Faable Deploy is the better fit
+
+- **You want simplicity over control.** Push to deploy, no `fly.toml`, machine sizing, or region orchestration to manage.
+- **You need European data sovereignty** under GDPR with EUR billing.
+- **You want security and auth included** — a [built-in WAF](security-waf.md) and [Faable Auth](../auth/get-started.md) in one [subscription](pricing.md).
+- **You ship standard web apps and AI agents** and don't need microVM-level tuning.
+
+## When Fly.io might fit better
+
+- You want **granular control** over regions, machine sizes, and networking, and you're comfortable managing configuration.
+- You need specific low-level capabilities (custom Firecracker setups, advanced multi-region orchestration).
+
+## Related
+
+- [Faable Deploy vs Vercel, Render & Railway](compare.mdx) · [Faable Deploy vs Heroku](compare-heroku.mdx)
+- [Get Started with Faable Deploy](get-started.md) · [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx)

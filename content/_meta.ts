@@ -4,4 +4,5 @@ export default {
   auth: "🔐 Faable Auth",
   cli: "🔧 CLI",
   platform: "Platform & Policies",
+  faq: "FAQ",
 };
