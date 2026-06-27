@@ -1,15 +1,17 @@
 import { generateStaticParamsFor, importPage } from 'nextra/pages'
 import { useMDXComponents as getMDXComponents } from '../../../mdx-components'
- 
+import { datesForMdxPath } from '../../_lib/last-modified'
+import { buildBreadcrumb, buildArticle, buildFaqPage } from '../../_lib/page-schema'
+
 export const generateStaticParams = generateStaticParamsFor('mdxPath')
- 
+
 export async function generateMetadata(props, parent) {
   const params = await props.params
   const { metadata } = await importPage(params.mdxPath)
   const previousMetadata = await parent
-  
+
   const path = params.mdxPath ? params.mdxPath.join('/') : ''
-  
+
   return {
     ...metadata,
     alternates: {
@@ -30,46 +32,8 @@ export async function generateMetadata(props, parent) {
     }
   }
 }
- 
+
 const Wrapper = getMDXComponents().wrapper
-
-const SITE_URL = 'https://faable.com/docs'
-
-// Turn a path slug ("get-started") into a readable label ("Get Started")
-function humanize(slug) {
-  return slug
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-}
-
-// Build a schema.org BreadcrumbList from the page path. The leaf uses the real
-// page title; intermediate segments are humanized from their slug.
-function buildBreadcrumb(mdxPath, leafTitle) {
-  const segments = mdxPath ?? []
-  if (segments.length === 0) return null // homepage: a one-item breadcrumb is noise
-
-  const items = [{ name: 'Docs', url: SITE_URL }]
-  let acc = ''
-  segments.forEach((segment, i) => {
-    acc += `/${segment}`
-    const isLast = i === segments.length - 1
-    items.push({
-      name: isLast && leafTitle ? leafTitle : humanize(segment),
-      url: `${SITE_URL}${acc}`,
-    })
-  })
-
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: item.name,
-      item: item.url,
-    })),
-  }
-}
 
 export default async function Page(props) {
   const params = await props.params
@@ -79,17 +43,47 @@ export default async function Page(props) {
     metadata,
     sourceCode
   } = await importPage(params.mdxPath)
-  const breadcrumb = buildBreadcrumb(params.mdxPath, metadata?.title)
+
+  const mdxPath = params.mdxPath ?? []
+  const route = mdxPath.length ? `/${mdxPath.join('/')}` : '/'
+  const { published, modified } = datesForMdxPath(mdxPath)
+
+  // Structured data: BreadcrumbList (navigation), TechArticle (a dated,
+  // attributed, citable unit), and FAQPage on pages that opt in via
+  // `schema: faq` frontmatter.
+  const breadcrumb = buildBreadcrumb(mdxPath, metadata?.title)
+  const article = buildArticle({
+    route,
+    title: metadata?.title,
+    description: metadata?.description,
+    published,
+    modified,
+  })
+  const faqPage = metadata?.schema === 'faq' ? buildFaqPage(route) : null
+  const schemas = [breadcrumb, article, faqPage].filter(Boolean)
+
+  const lastUpdated = modified.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
   return (
     <>
-      {breadcrumb && (
+      {schemas.map((schema, i) => (
         <script
+          key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
-      )}
+      ))}
       <Wrapper toc={toc} metadata={metadata} sourceCode={sourceCode}>
         <MDXContent {...props} params={params} />
+        {mdxPath.length > 0 && (
+          <p style={{ fontSize: '0.85rem', opacity: 0.55, marginTop: '3rem' }}>
+            Last updated on <time dateTime={modified.toISOString()}>{lastUpdated}</time>
+          </p>
+        )}
       </Wrapper>
     </>
   )

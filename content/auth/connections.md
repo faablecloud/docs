@@ -36,6 +36,6 @@ Now that you understand what Connections are, you can learn how to integrate the
 
 - **[Clients](clients.md):** Learn how to register your front-end application or backend API to use these connections.
 - **[Authorization Code Flow](oauth-flows/authorization-code.md):** Understand the standard OAuth2 flow used to redirect users to Faable Auth and handle the login callback.
-- **[Social Login Setup](social/google.md):** See an example of how to configure a specific social connection like Google.
+- **[Social Login](social/index.mdx):** Set up Google, GitHub, Apple, or Facebook sign-in from one place.
 - **[Quickstart Next.js](quickstart/nextjs.md):** Jump straight into the code and see a full authentication implementation in action.
 - **[Quickstart React Native](quickstart/react-native.md):** Jump straight into the code and see a full authentication implementation in action.
