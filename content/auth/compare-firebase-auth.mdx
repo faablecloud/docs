@@ -1,0 +1,43 @@
+---
+title: Faable Auth vs Firebase Authentication
+description: How Faable Auth compares to Firebase Authentication. Faable Auth is a standards-based, multi-tenant OAuth 2.0 / OIDC identity server hosted 100% in Europe under GDPR — without Google ecosystem lock-in — with enterprise SSO and M2M tokens.
+---
+
+# Faable Auth vs Firebase Authentication
+
+**Short answer:** Faable Auth and Firebase Authentication both make it easy to add login to an app, but Firebase is optimized for B2C mobile/web apps inside Google's ecosystem, while Faable Auth is a **standards-based, multi-tenant OAuth 2.0 / OpenID Connect identity server** built for B2B and multi-tenant SaaS. Faable Auth is **hosted 100% in Europe under GDPR**, has **first-class enterprise SSO/SAML and machine-to-machine tokens**, and is **bundled with [Faable Deploy](../deploy/get-started.md)** — without tying you to Google Cloud.
+
+## Quick comparison
+
+| Capability | Faable Auth | Firebase Authentication |
+|---|---|---|
+| OAuth 2.0 / OIDC standards | ✅ | Partial (Google-centric tokens) |
+| Social login (Google, Apple, GitHub, Facebook) | ✅ | ✅ |
+| Passwordless (magic link / OTP) | ✅ | ✅ (email link, phone) |
+| Enterprise SSO / SAML | ✅ | ✅ (Identity Platform tier) |
+| MFA / 2FA | ✅ | ✅ |
+| Machine-to-machine (M2M) tokens | ✅ | ❌ (not the focus) |
+| Multi-tenant by design | ✅ | Tenants in Identity Platform tier |
+| 100% European hosting + GDPR sovereignty | ✅ | Google Cloud regions |
+| Ecosystem lock-in | None (standards-based) | Tied to Firebase/Google Cloud |
+| Bundled with app hosting | ✅ Faable Deploy, same subscription | Firebase Hosting (separate model) |
+
+> Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+
+## When Faable Auth is the better fit
+
+- **You're building B2B or multi-tenant SaaS** and want [multi-tenancy](what-is-a-multi-tenant-identity-server.mdx), enterprise SSO, and [M2M tokens](clients.md) as first-class features.
+- **You need European data sovereignty** under GDPR rather than Google Cloud regional settings.
+- **You want standards portability** — plain OAuth 2.0 / OIDC you can move, not Firebase-specific SDKs.
+- **You want auth and hosting in one [subscription](pricing.md)** with [Faable Deploy](../deploy/get-started.md).
+
+## When Firebase Authentication might fit better
+
+- You're building a **consumer mobile app** already using Firebase (Firestore, Cloud Messaging, Analytics) and want identity that plugs straight into that stack.
+- You want Firebase's client SDKs and realtime database tightly integrated.
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
+- [Faable Auth vs AWS Cognito](compare-aws-cognito.mdx) · [Faable Auth vs Supabase Auth](compare-supabase-auth.mdx)
+- [Get Started with Faable Auth](get-started.md)

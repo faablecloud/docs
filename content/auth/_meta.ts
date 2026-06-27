@@ -3,6 +3,10 @@ export default {
   "what-is-a-multi-tenant-identity-server":
     "What is a multi-tenant identity server?",
   compare: "Faable Auth vs Auth0, Clerk & Keycloak",
+  "compare-aws-cognito": "vs AWS Cognito",
+  "compare-firebase-auth": "vs Firebase Authentication",
+  "compare-supabase-auth": "vs Supabase Auth",
+  guides: "Migration Guides",
   academy: "🎓 Academy (Integrator)",
   "oauth-flows": "OAuth 2.0 Flows",
   oidc: "OpenID Connect",

@@ -1,0 +1,58 @@
+---
+title: Frequently Asked Questions
+description: Frequently asked questions about Faable — what it is, European hosting and GDPR data residency, pricing and free tier, supported frameworks, the built-in WAF, MAU-based auth pricing, and how Faable Deploy and Faable Auth are bundled.
+---
+
+# Frequently Asked Questions
+
+Direct answers to the most common questions about Faable. For details, follow the links in each answer.
+
+## What is Faable?
+
+**Faable is a European cloud platform that combines two products in one subscription: [Faable Deploy](deploy/get-started.md), a zero-config platform that builds and hosts apps straight from a Git repository, and [Faable Auth](auth/get-started.md), a multi-tenant OAuth 2.0 / OpenID Connect identity server.** It lets developers ship and secure full-stack apps and AI agents without managing infrastructure.
+
+## Is Faable hosted in Europe? Is it GDPR-compliant?
+
+**Yes. Faable is hosted 100% in Europe with full GDPR data sovereignty** — your apps and user identities stay in European datacenters under European law. This is a core difference from US platforms that offer optional EU regions.
+
+## How much does Faable cost?
+
+**Faable uses one subscription covering both Deploy and Auth, with three platform tiers: Hobby (0 €), Pro (15 €/month + usage), and Business (99 €/month + usage).** Pricing is hybrid — a monthly platform fee plus usage for compute, bandwidth overage, and monthly active users (MAU) above the included allowance. See the [pricing page](platform/pricing.md) for full details.
+
+## Is there a free tier?
+
+**Yes. The Hobby plan is free (0 €)** and lets you try Faable end-to-end with one account and basic limits. Apps on the Hobby plan auto-delete after 7 days; upgrade to [Pro](platform/pricing.md) for 24/7 production apps and custom domains.
+
+## Can I deploy directly from GitHub?
+
+**Yes. Connect your GitHub repository, push your code, and Faable detects your stack, builds it, and serves it at `https://<app>.faable.link` with free automatic SSL** — no Dockerfiles, YAML, or servers to provision. See [What is zero-config CI/CD?](deploy/what-is-zero-config-cicd.mdx) and [Get Started](deploy/get-started.md).
+
+## What frameworks and stacks does Faable Deploy support?
+
+**Faable Deploy runs any stack that listens on the `$PORT` environment variable in a Linux container — including Node.js, Next.js, Express, and other web frameworks, plus static frontends.** Your server binds to `0.0.0.0` on `$PORT` and Faable handles the rest (see the [Express guide](deploy/guides/guide-express.md)).
+
+## Does Faable Auth replace Auth0, Clerk, or Keycloak?
+
+**Yes. Faable Auth is a standards-based OAuth 2.0 / OpenID Connect identity server that covers the same use cases as Auth0, Clerk, Cognito, Firebase, Supabase Auth, and Keycloak** — social login, passwordless, enterprise SSO/SAML, MFA, and machine-to-machine tokens. See the [comparison](auth/compare.mdx) and the [migration guides](auth/guides/migrate-from-auth0.mdx).
+
+## How is Faable Auth priced — what is MAU?
+
+**Faable Auth is priced by monthly active users (MAU): the number of distinct users who authenticate in a calendar month.** Each platform tier includes an MAU allowance, and you pay usage only above it — there are no per-feature add-ons. See [Faable Auth pricing](auth/pricing.md).
+
+## Does Faable include a Web Application Firewall?
+
+**Yes. Faable Deploy includes a built-in Web Application Firewall (WAF) powered by the OWASP Core Rule Set, protecting against the OWASP Top 10** (injection, XSS, and more). It's included rather than a paid add-on — see the [WAF docs](deploy/security-waf.md).
+
+## Are Deploy and Auth sold separately?
+
+**No. Both products are covered by a single Faable subscription** — one platform fee unlocks Deploy and Auth together, with one support relationship. See [pricing](platform/pricing.md).
+
+## Where is my data stored?
+
+**All Faable data — application workloads and user identities — is stored in European datacenters under GDPR.** This applies to both Faable Deploy and Faable Auth.
+
+## Related
+
+- [Get Started with Faable Deploy](deploy/get-started.md) · [Get Started with Faable Auth](auth/get-started.md)
+- [Pricing](platform/pricing.md)
+- [Faable Deploy vs Vercel, Render & Railway](deploy/compare.mdx) · [Faable Auth vs Auth0, Clerk & Keycloak](auth/compare.mdx)

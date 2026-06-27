@@ -1,0 +1,43 @@
+---
+title: Migrate from Keycloak to Faable Auth
+description: A step-by-step guide to migrating from self-hosted Keycloak to managed Faable Auth. Map realms, clients, and identity providers, export your users, and drop the operational overhead of running your own identity infrastructure — while staying in Europe under GDPR.
+---
+
+# Migrate from Keycloak to Faable Auth
+
+**Short answer:** Migrating from self-hosted Keycloak to Faable Auth removes the servers, upgrades, and database you currently operate, while keeping the same OAuth 2.0 / OpenID Connect standards. You map each Keycloak *realm* to a Faable *Account*, your Keycloak *clients* to Faable *Clients*, and your *identity providers* to Faable *Connections*, then export your users and import them into Faable. The motivation is almost always the same: **stop operating identity infrastructure** while staying **100% in Europe under GDPR** — Faable Auth is fully managed, so there is nothing to patch, scale, or back up.
+
+## Concept mapping
+
+| Keycloak | Faable Auth | Notes |
+|---|---|---|
+| Realm | [Account](../what-is-a-multi-tenant-identity-server.mdx) | Your isolated identity boundary |
+| Client | [Client](../clients.md) | SPA, native, regular web, or M2M |
+| Identity Provider (social/OIDC/SAML) | [Connection](../connections.md) | `social`, `oidc` categories |
+| User federation (LDAP/AD) | OIDC/enterprise [Connection](../connections.md) | Connect via standard protocols |
+| Authentication SPI (Java) | [Actions](../extensibility/actions.md) | Custom in-flow logic, no Java/SPI to maintain |
+| Admin REST API | [Management API](../apis.md) | Called with client credentials |
+| Self-hosted servers + DB | Fully managed | No infrastructure for you to run |
+
+## Migration steps
+
+1. **Create your Account** in the [Faable Dashboard](https://dashboard.faable.com/account/register) and note your issuer URL.
+2. **Map realms to accounts.** Each Keycloak realm becomes a Faable [Account](../what-is-a-multi-tenant-identity-server.mdx); if you ran one realm per customer, model those as teams/accounts.
+3. **Recreate Connections.** Translate each Keycloak Identity Provider into a Faable [Connection](../connections.md) (social or generic [OIDC](../connections.md)), reusing upstream client credentials.
+4. **Recreate Clients** with the same redirect URIs, web origins, and flow types.
+5. **Replace SPIs with Actions.** Move custom authenticator SPIs to [Actions](../extensibility/actions.md) — JavaScript in the flow instead of compiled Java extensions.
+6. **Export and import users.** Use Keycloak's export (`realm-export` / Admin REST API) to extract users and credentials, then import into Faable. Password hashes can be carried over so users don't reset.
+7. **Decommission your Keycloak deployment** once traffic is on Faable — and reclaim the operational time you spent running it.
+
+## What you stop maintaining
+
+- Server provisioning, JVM tuning, and clustering
+- Database backups, migrations, and version upgrades
+- Security patching of the Keycloak runtime
+- High-availability and scaling for login spikes
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](../compare.mdx)
+- [What is a multi-tenant identity server?](../what-is-a-multi-tenant-identity-server.mdx)
+- [Get Started with Faable Auth](../get-started.md) · [Connections](../connections.md)

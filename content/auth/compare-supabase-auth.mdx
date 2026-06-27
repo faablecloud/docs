@@ -1,0 +1,43 @@
+---
+title: Faable Auth vs Supabase Auth
+description: How Faable Auth compares to Supabase Auth. Faable Auth is a standalone, multi-tenant OAuth 2.0 / OIDC identity server hosted 100% in Europe under GDPR, with enterprise SSO and M2M tokens — not coupled to a single database.
+---
+
+# Faable Auth vs Supabase Auth
+
+**Short answer:** Faable Auth and Supabase Auth are both managed authentication services, but Supabase Auth is designed as part of the Supabase backend (Postgres + APIs), while Faable Auth is a **standalone, multi-tenant OAuth 2.0 / OpenID Connect identity server** you can put in front of any stack. Faable Auth is **hosted 100% in Europe under GDPR**, offers **first-class enterprise SSO/SAML and machine-to-machine tokens**, and is **bundled with [Faable Deploy](../deploy/get-started.md)** — without requiring you to adopt a specific database.
+
+## Quick comparison
+
+| Capability | Faable Auth | Supabase Auth |
+|---|---|---|
+| OAuth 2.0 / OIDC standards | ✅ | ✅ (GoTrue) |
+| Social login (Google, Apple, GitHub, Facebook) | ✅ | ✅ |
+| Passwordless (magic link / OTP) | ✅ | ✅ |
+| Enterprise SSO / SAML | ✅ | ✅ (Pro/Team tiers) |
+| MFA / 2FA | ✅ | ✅ |
+| Machine-to-machine (M2M) tokens | ✅ | Limited |
+| Multi-tenant by design | ✅ | You model it in Postgres / RLS |
+| Standalone (any database/stack) | ✅ | Coupled to Supabase Postgres |
+| 100% European hosting + GDPR sovereignty | ✅ | Region-configurable |
+| Bundled with app hosting | ✅ Faable Deploy, same subscription | Part of the Supabase platform |
+
+> Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+
+## When Faable Auth is the better fit
+
+- **You want identity independent of your database.** Faable Auth sits in front of any backend; you're not adopting Postgres + RLS to get auth.
+- **You're building multi-tenant B2B SaaS** and want [multi-tenancy](what-is-a-multi-tenant-identity-server.mdx), SSO, and [M2M](clients.md) without extra plumbing.
+- **You need European data sovereignty** under GDPR.
+- **You want auth and hosting together** via [Faable Deploy](../deploy/get-started.md) in one [subscription](pricing.md).
+
+## When Supabase Auth might fit better
+
+- You're **already building on Supabase** (Postgres, storage, edge functions) and want auth tightly integrated with row-level security in the same database.
+- You want the all-in-one Supabase developer experience for a single-tenant app.
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
+- [Faable Auth vs AWS Cognito](compare-aws-cognito.mdx) · [Faable Auth vs Firebase Authentication](compare-firebase-auth.mdx)
+- [Get Started with Faable Auth](get-started.md)
