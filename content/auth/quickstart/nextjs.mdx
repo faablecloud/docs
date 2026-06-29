@@ -114,7 +114,12 @@ export default function App({ Component, pageProps }: AppProps) {
 
 ## Add the callback route
 
-After login the user is redirected to the callback URL you registered on your Client. `@faable/auth-js` reads the tokens from the URL automatically; the route just needs to mount the SDK and send the user somewhere afterwards.
+After login the user is redirected to the callback URL you registered on your Client. `@faable/auth-js` reads the tokens from the URL automatically, but your callback route should **await** that processing so it can:
+
+- redirect **only once** the token exchange has finished, and
+- show an error instead of getting stuck on "Signing you in…" if the exchange fails (e.g. an expired login attempt).
+
+Call `handleRedirectCallback()` for exactly that. It returns `{ error, returnTo }`: on success send the user onward (to `returnTo` if you set one when starting the login — see below), and on failure surface `error.message`.
 
 <Tabs items={['App Router', 'Pages Router']}>
   <Tabs.Tab>
@@ -123,18 +128,22 @@ After login the user is redirected to the callback URL you registered on your Cl
 // app/callback/page.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@faable/auth-helpers-react";
+import { faableauth } from "../../lib/faable";
 
 export default function CallbackPage() {
   const router = useRouter();
-  const session = useSession();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (session) router.replace("/");
-  }, [session, router]);
+    faableauth.handleRedirectCallback().then(({ error, returnTo }) => {
+      if (error) setError(error.message);
+      else router.replace(returnTo ?? "/");
+    });
+  }, [router]);
 
+  if (error) return <p>Sign-in failed: {error}</p>;
   return <p>Signing you in…</p>;
 }
 ```
@@ -144,24 +153,40 @@ export default function CallbackPage() {
 
 ```tsx
 // pages/callback.tsx
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useSession } from "@faable/auth-helpers-react";
+import { faableauth } from "../lib/faable";
 
 export default function CallbackPage() {
   const router = useRouter();
-  const session = useSession();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (session) router.replace("/");
-  }, [session, router]);
+    faableauth.handleRedirectCallback().then(({ error, returnTo }) => {
+      if (error) setError(error.message);
+      else router.replace(returnTo ?? "/");
+    });
+  }, [router]);
 
+  if (error) return <p>Sign-in failed: {error}</p>;
   return <p>Signing you in…</p>;
 }
 ```
 
   </Tabs.Tab>
 </Tabs>
+
+> **Returning the user to where they were.** Pass `returnTo` when you start the
+> login and it round-trips back to you here — no `sessionStorage` bookkeeping
+> needed. It is stored locally next to the PKCE verifier and never sent to the
+> server:
+>
+> ```ts
+> await faableauth.signInWithOauthConnection({
+>   redirectTo: window.location.origin + "/callback",
+>   returnTo: "/dashboard",
+> });
+> ```
 
 ## Accessing user state
 
