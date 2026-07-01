@@ -7,7 +7,22 @@ description: Let your users update their account email safely. Faable Auth verif
 
 Faable Auth provides a built-in flow for users to update the email address on their account. The flow is designed around **proof of ownership**: the new email is never applied until the user clicks a verification link, and an optional second step can require the old email to confirm as well — useful for high-risk accounts.
 
-You can drive this flow from your application's profile/settings screen with two HTTP calls.
+You can drive this flow from your application's profile/settings screen with a single client-side call, or directly over HTTP.
+
+## Client library
+
+From a signed-in browser session, [`@faable/auth-js`](quickstart/nextjs.mdx) exposes `changeEmail()`. It uses the active session's access token, so the user can only change their own address:
+
+```ts
+const { data, error } = await auth.changeEmail({
+  new_email: "new@example.com",
+  verification_mode: "old_and_new", // optional; raises the tenant default
+  redirect_uri: "https://app.example.com/settings/email-changed",
+});
+// data: { status: 'verification_sent', ticket_id, verification_mode }
+```
+
+This calls the endpoints below for you. The rest of this page documents the underlying HTTP contract.
 
 ## Endpoints
 

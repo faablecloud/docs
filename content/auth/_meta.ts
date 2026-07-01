@@ -8,6 +8,7 @@ export default {
   "compare-supabase-auth": "vs Supabase Auth",
   guides: "Migration Guides",
   academy: "🎓 Academy (Integrator)",
+  signup: "Signup",
   social: "Social Login",
   "oauth-flows": "OAuth 2.0 Flows",
   oidc: "OpenID Connect",
