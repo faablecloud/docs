@@ -5,26 +5,26 @@ description: Add social login (Google, GitHub, Apple, Facebook) to your app with
 
 # Social Login
 
-**Social login lets your users sign in with an account they already have — Google, GitHub, Apple, or Facebook — instead of creating a new password.** In Faable Auth, each provider is a [social connection](../connections.md): you register an app with the provider, paste its client ID and secret into the [Faable Dashboard](https://dashboard.faable.com), and enable the connection on your [client](../clients.md). Faable handles the OAuth handshake and returns standard OIDC tokens, so your app code is identical regardless of which provider the user chose.
+**Social login lets your users sign in with an account they already have — Google, GitHub, Apple, or Facebook — instead of creating a new password.** In Faable Auth, each provider is a [social connection](/auth/connections): you register an app with the provider, paste its client ID and secret into the [Faable Dashboard](https://dashboard.faable.com), and enable the connection on your [client](/auth/clients). Faable handles the OAuth handshake and returns standard OIDC tokens, so your app code is identical regardless of which provider the user chose.
 
 ## Supported providers
 
 | Provider | Setup guide |
 |---|---|
-| Google | [Configure Google](google.md) |
-| GitHub | [Configure GitHub](github.md) |
-| Apple | [Configure Apple](apple.md) |
-| Facebook | [Configure Facebook](facebook.md) |
+| Google | [Configure Google](/auth/social/google) |
+| GitHub | [Configure GitHub](/auth/social/github) |
+| Apple | [Configure Apple](/auth/social/apple) |
+| Facebook | [Configure Facebook](/auth/social/facebook) |
 
 ## How it works
 
 1. **Register an app** with the provider (e.g. a Google OAuth client) and copy its client ID and secret.
-2. **Create a social [connection](../connections.md)** in the Faable Dashboard and paste those credentials.
-3. **Enable the connection** on the [client](../clients.md) that runs your login flow.
+2. **Create a social [connection](/auth/connections)** in the Faable Dashboard and paste those credentials.
+3. **Enable the connection** on the [client](/auth/clients) that runs your login flow.
 4. **Log in.** Send users to the `/authorize` endpoint — they pick a provider on the Universal Login screen, or you can target one directly with `connection=google-oauth2`. Faable normalizes the result into standard OAuth 2.0 / OIDC tokens.
 
 ## Related
 
-- [Connections](../connections.md) · [Clients](../clients.md)
-- [Authorization Code Flow](../oauth-flows/authorization-code.mdx)
-- [Get Started with Faable Auth](../get-started.md)
+- [Connections](/auth/connections) · [Clients](/auth/clients)
+- [Authorization Code Flow](/auth/oauth-flows/authorization-code)
+- [Get Started with Faable Auth](/auth/get-started)

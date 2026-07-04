@@ -25,10 +25,10 @@ run and extend the auth server itself) is planned later.
 ## How the course works
 
 1. **Read the 5 modules** (~15–20 min each). They are intentionally short and link
-   into the full [Faable Auth docs](../get-started.md) for depth.
-2. **Do the [hands-on lab](lab.md)** in a throwaway practice tenant. This is where
+   into the full [Faable Auth docs](/auth/get-started) for depth.
+2. **Do the [hands-on lab](/auth/academy/lab)** in a throwaway practice tenant. This is where
    the learning sticks — you create a client, integrate a tiny app, and mint an M2M token.
-3. **Take the [certification exam](exam.md)**: ~18 questions (concepts) + 3 practical
+3. **Take the [certification exam](/auth/academy/exam)**: ~18 questions (concepts) + 3 practical
    tasks you complete in your lab tenant and submit evidence for.
 
 ### Earning the credential
@@ -43,11 +43,11 @@ or the platform team grades the practical tasks against the rubric.
 
 | Module | You'll learn |
 |---|---|
-| [1 · OAuth & OIDC Foundations](01-oauth-foundations.md) | Why OAuth exists; `id_token` vs `access_token`; scopes; the actors in a flow. |
-| [2 · Tenant Building Blocks](02-tenant-building-blocks.md) | Account, Connections, Clients, Users & Teams — and how multi-tenancy works by host. |
-| [3 · Login & Flows](03-login-and-flows.md) | Authorization Code + PKCE, social, passwordless OTP, refresh tokens. |
-| [4 · Integrate Your App](04-integrate-your-app.md) | Add login with `@faable/auth-js`, handle the callback, read the session. |
-| [5 · Server-side & Management API](05-server-and-management-api.md) | `client_credentials`, audience + scopes, `@faable/auth-sdk`, Actions & webhooks. |
+| [1 · OAuth & OIDC Foundations](/auth/academy/01-oauth-foundations) | Why OAuth exists; `id_token` vs `access_token`; scopes; the actors in a flow. |
+| [2 · Tenant Building Blocks](/auth/academy/02-tenant-building-blocks) | Account, Connections, Clients, Users & Teams — and how multi-tenancy works by host. |
+| [3 · Login & Flows](/auth/academy/03-login-and-flows) | Authorization Code + PKCE, social, passwordless OTP, refresh tokens. |
+| [4 · Integrate Your App](/auth/academy/04-integrate-your-app) | Add login with `@faable/auth-js`, handle the callback, read the session. |
+| [5 · Server-side & Management API](/auth/academy/05-server-and-management-api) | `client_credentials`, audience + scopes, `@faable/auth-sdk`, Actions & webhooks. |
 
 ## What this course is *not*
 
@@ -56,4 +56,4 @@ enforcement layer, Mongo/Valkey internals). That's the **Operator** track.
 
 ---
 
-Ready? Start with **[Module 1 — OAuth & OIDC Foundations](01-oauth-foundations.md)**.
+Ready? Start with **[Module 1 — OAuth & OIDC Foundations](/auth/academy/01-oauth-foundations)**.

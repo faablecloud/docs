@@ -12,21 +12,21 @@ Faable Auth implements the standard OAuth 2.0 / OpenID Connect grants. Which one
 
 | Your situation                                                        | Use this flow                                          |
 | :--------------------------------------------------------------------- | :------------------------------------------------------ |
-| A user logs into your web, SPA, or mobile app                          | [Authorization Code with PKCE](authorization-code.md)    |
-| A backend service calls an API — no user involved                      | [Client Credentials](client-credentials.md)              |
-| A user logs into a CLI tool, Smart TV, or IoT device                   | [Device Code](device-code.md)                            |
-| You already have a session and want to renew it without re-login       | [Refresh Token](refresh-token.md)                        |
-| A CI job or workload has a JWT from a trusted issuer (GitHub Actions)  | [Token Exchange](token-exchange.md)                      |
+| A user logs into your web, SPA, or mobile app                          | [Authorization Code with PKCE](/auth/oauth-flows/authorization-code)    |
+| A backend service calls an API — no user involved                      | [Client Credentials](/auth/oauth-flows/client-credentials)              |
+| A user logs into a CLI tool, Smart TV, or IoT device                   | [Device Code](/auth/oauth-flows/device-code)                            |
+| You already have a session and want to renew it without re-login       | [Refresh Token](/auth/oauth-flows/refresh-token)                        |
+| A CI job or workload has a JWT from a trusted issuer (GitHub Actions)  | [Token Exchange](/auth/oauth-flows/token-exchange)                      |
 
 ## At a glance
 
 | Flow                                                  | User present | Needs `client_secret` | Returns                                    | Typical client                     |
 | :----------------------------------------------------- | :----------- | :--------------------- | :------------------------------------------ | :---------------------------------- |
-| [Authorization Code + PKCE](authorization-code.md)      | Yes          | No                     | Access + ID + Refresh token                  | SPA, mobile, server-side web        |
-| [Client Credentials](client-credentials.md)             | No           | **Yes**                | Access token                                 | Backend service, cron, CI           |
-| [Device Code](device-code.md)                           | Yes          | No                     | Access + ID + Refresh token                  | CLI, Smart TV, IoT                  |
-| [Refresh Token](refresh-token.md)                       | Already authenticated | No             | New access + ID + rotated refresh token      | Any client holding a refresh token  |
-| [Token Exchange](token-exchange.md)                     | No           | No                     | Access token (30 min)                        | CI job, federated workload          |
+| [Authorization Code + PKCE](/auth/oauth-flows/authorization-code)      | Yes          | No                     | Access + ID + Refresh token                  | SPA, mobile, server-side web        |
+| [Client Credentials](/auth/oauth-flows/client-credentials)             | No           | **Yes**                | Access token                                 | Backend service, cron, CI           |
+| [Device Code](/auth/oauth-flows/device-code)                           | Yes          | No                     | Access + ID + Refresh token                  | CLI, Smart TV, IoT                  |
+| [Refresh Token](/auth/oauth-flows/refresh-token)                       | Already authenticated | No             | New access + ID + rotated refresh token      | Any client holding a refresh token  |
+| [Token Exchange](/auth/oauth-flows/token-exchange)                     | No           | No                     | Access token (30 min)                        | CI job, federated workload          |
 
 All of them exchange credentials at the same endpoint — `POST /oauth/token` on your tenant domain — and return the same standard token response. In the browser, the [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) SDK picks and drives the right flow for you (PKCE + automatic refresh).
 
@@ -46,11 +46,11 @@ They're legacy. OAuth 2.0 best practice (and the OAuth 2.1 draft) replaces the I
 
 ### Where do I get the credentials each flow needs?
 
-Register a [Client](../clients.md) in the [Faable Dashboard](https://dashboard.faable.com) — it gives you the `client_id` (and a `client_secret` for confidential clients). If your tokens target your own backend, also register an [API](../apis.md) to get an `audience` and define permissions.
+Register a [Client](/auth/clients) in the [Faable Dashboard](https://dashboard.faable.com) — it gives you the `client_id` (and a `client_secret` for confidential clients). If your tokens target your own backend, also register an [API](/auth/apis) to get an `audience` and define permissions.
 
 ## Related
 
-- [Clients](../clients.md) — register the application that runs the flow.
-- [APIs](../apis.md) — register the backend the tokens are for.
-- [Connections](../connections.md) — the login methods your users see.
+- [Clients](/auth/clients) — register the application that runs the flow.
+- [APIs](/auth/apis) — register the backend the tokens are for.
+- [Connections](/auth/connections) — the login methods your users see.
 - [OAuth 2.0 grant types overview](https://oauth.net/2/grant-types/) — background reading.

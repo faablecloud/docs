@@ -68,7 +68,7 @@ Faable signs tokens as **JWTs** (RS256). A JWT has three parts —
 `header.payload.signature` — base64url-encoded and dot-separated. Anyone can *read*
 the payload (it's not encrypted), but only Faable can *sign* it. Resource servers
 verify the signature against Faable's public keys, published at the
-[JWKS endpoint](../oidc) (`/.well-known/jwks.json`), and discovered via
+[JWKS endpoint](/auth/validate-access-tokens) (`/.well-known/jwks.json`), and discovered via
 `/.well-known/openid-configuration`.
 
 > ⚠️ Because the payload is readable, **never put secrets in token claims**, and

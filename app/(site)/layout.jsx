@@ -6,19 +6,18 @@ import "nextra-theme-docs/style.css";
 const navbar = (
   <Navbar
     logo={
-      <div className="flex gap-4">
-        <img src="https://faable.com/assets/logo/Emblem.png" width="35" alt="Faable" height="35" />
-        <p className="font-bold text-2xl">Faable Docs</p>
+      <div className="flex items-center gap-2 sm:gap-4">
+        <img
+          src="https://faable.com/assets/logo/Emblem.png"
+          width="35"
+          height="35"
+          alt="Faable"
+          className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+        />
+        <p className="font-bold text-lg sm:text-2xl">Faable Docs</p>
       </div>
     }
   >
-    <a
-      href="https://faable.com?utm_source=docs&utm_medium=referral&utm_content=navbar_home"
-      rel="noopener"
-      className="nx-text-sm nx-font-medium hover:nx-opacity-75"
-    >
-      Faable.com
-    </a>
     <a
       href="https://dashboard.faable.com?utm_source=docs&utm_medium=referral&utm_content=navbar"
       target="_blank"
