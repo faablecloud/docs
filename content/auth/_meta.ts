@@ -1,5 +1,6 @@
 export default {
   "get-started": "Get Started",
+  quickstart: "Quickstarts",
   "what-is-a-multi-tenant-identity-server":
     "What is a multi-tenant identity server?",
   compare: "Faable Auth vs Auth0, Clerk & Keycloak",

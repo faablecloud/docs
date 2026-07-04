@@ -33,6 +33,7 @@ Pick the path that matches your stack.
 
 The fastest way to add login to an existing app.
 
+- **[React Quickstart](quickstart/react.md)** — Vite SPA + session hooks from `@faable/auth-helpers-react`.
 - **[Next.js Quickstart](quickstart/nextjs.md)** — App Router + client SDK with PKCE.
 - **[React Native Quickstart](quickstart/react-native.md)** — Expo + Faable Auth helpers.
 
