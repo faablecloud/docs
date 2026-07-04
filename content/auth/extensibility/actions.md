@@ -109,9 +109,9 @@ exports.onExecutePostLogin = async (event, api) => {
 
 If the user clicks through your ToS page and you redirect them back to Faable's `/continue` endpoint, a corresponding `continue` Action picks up — typically to mark the metadata field and let the flow proceed.
 
-### Example — track signup conversions in your analytics
+### Example — onboard new users only
 
-OAuth signups (Google, GitHub…) never hit your register page, so page-based conversion tracking undercounts them. Since **every** flow passes through `post-login`, an Action is the one place that catches all signups. Use `event.stats.is_new_user` and forward the conversion to your analytics backend:
+Send brand-new accounts through a one-time onboarding step, while returning users go straight in. Works for **every** signup flow — email/password, magic link, Google, GitHub — because they all pass through `post-login`:
 
 ```js
 /**
@@ -119,26 +119,26 @@ OAuth signups (Google, GitHub…) never hit your register page, so page-based co
  * @param {Api} api - The Faable Auth API object
  */
 exports.onExecutePostLogin = async (event, api) => {
-  // Only fire on the user's first login (their signup), not on every login.
-  if (!event.stats.is_new_user) return;
-
-  await fetch("https://eu.i.posthog.com/i/v0/e/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      api_key: "<your PostHog project token>",
-      event: "user_signed_up",
-      distinct_id: event.user.user_id,
-      properties: {
-        email: event.user.email,
-        connection: event.connection?.strategy, // e.g. "github", "google", "auth"
-      },
-    }),
-  });
+  // Only divert the user's very first login (their signup).
+  if (event.stats.is_new_user) {
+    api.redirect.sendUserTo("https://app.example.com/onboarding");
+  }
 };
 ```
 
-The same pattern works for any conversion backend (GA4 Measurement Protocol, a Slack webhook, your own API). Failures inside the Action are logged to [Logs](../logs.md); a tracking hiccup never blocks the login itself unless you explicitly call `api.access.deny()`.
+### Tracking signup conversions
+
+For **signup analytics** (Google Ads conversions, PostHog events…), you don't need an Action at all: when a flow creates a new account, the redirect back to your app carries a one-time **`signup=true`** query parameter — for every flow (register form, passwordless, social OAuth). Fire your conversion client-side when you see it:
+
+```js
+// On your OAuth landing/callback page:
+const params = new URLSearchParams(window.location.search);
+if (params.get("signup") === "true") {
+  analytics.capture("user_signed_up"); // your one-time conversion event
+}
+```
+
+The parameter only ever appears once (it lives in the callback URL, never in a token claim), and it survives Action redirects: if a `post-login` Action pauses the flow, the eventual redirect after `/continue` still carries it.
 
 ### Console logging
 
