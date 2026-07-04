@@ -1,0 +1,168 @@
+---
+schema: faq
+title: Validate Access Tokens in Your API — Node.js & Express
+description: Verify Faable Auth JWT access tokens in your backend — check the RS256 signature against your tenant's JWKS, validate issuer and audience, and enforce scopes and permissions in Express.
+---
+
+# Validate Access Tokens in Your API 🛡️
+
+Your frontend or a machine-to-machine client sends requests to your backend with an access token:
+
+```
+Authorization: Bearer eyJhbGciOiJSUzI1NiIs...
+```
+
+This guide shows how to **verify that token in your API** — Node.js/Express in the examples, but the checks are the same in any stack. Validation is fully local: your API verifies the token's signature against your tenant's public keys, so there's **no call to Faable on each request**.
+
+A valid token must pass four checks:
+
+1. **Signature** — RS256, against your tenant's JWKS (public keys).
+2. **Issuer (`iss`)** — your tenant URL, exactly.
+3. **Audience (`aud`)** — the `identifier` of your registered [API](apis.md).
+4. **Expiry (`exp`)** — handled automatically by any JWT library.
+
+Then you authorize the request using the token's `scope` / `permissions` claims.
+
+---
+
+## 🔍 What's Inside a Faable Access Token
+
+Access tokens are RS256-signed JWTs. Decoded, they look like this:
+
+```json
+{
+  "sub": "user_66f1a2b3c4d5e6f7a8b9c0d1",
+  "scope": "openid profile email read:orders",
+  "permissions": "read:orders",
+  "client_id": "AbC123xYz...",
+  "account": "acc_6612ab34cd56ef7890ab12cd",
+  "aud": "https://api.myapp.com",
+  "iss": "https://your-domain.auth.faable.link",
+  "iat": 1751641200,
+  "exp": 1751727600
+}
+```
+
+| Claim         | Description                                                                                                                       |
+| :------------ | :---------------------------------------------------------------------------------------------------------------------------------- |
+| `sub`         | Who the token represents: a user id (`user_…`) for login flows, or the `client_id` for [machine-to-machine](oauth-flows/client-credentials.md) tokens. |
+| `scope`       | Space-separated string of granted scopes.                                                                                            |
+| `permissions` | Space-separated **string** (not an array) of granted API permissions. Only present when your API uses the `access_token_authz` token dialect — see [APIs](apis.md). |
+| `aud`         | The `identifier` of the API the token was issued for.                                                                                 |
+| `iss`         | Your tenant URL — **no trailing slash**.                                                                                              |
+| `exp`         | Expiry (seconds since epoch). Lifetime comes from your API's `token_lifetime` (default 24 h).                                          |
+| `teams` / `roles` | Optional string arrays, included when your API enables `include_teams_in_access_token` / `include_roles_in_access_token`.          |
+
+Your tenant publishes its public keys at <TennantDomain url="/.well-known/jwks.json"/> and its OIDC metadata at <TennantDomain url="/.well-known/openid-configuration"/>. Keys rotate — always resolve them by the token header's `kid` via JWKS instead of pinning a fixed key (any JWKS library does this for you).
+
+---
+
+## 💻 Express Middleware with `jose`
+
+The complete pattern using [`jose`](https://www.npmjs.com/package/jose), which caches the JWKS and re-fetches it on key rotation automatically:
+
+```ts
+import express from "express";
+import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
+
+const ISSUER = "https://your-domain.auth.faable.link"; // your tenant — NO trailing slash
+const AUDIENCE = "https://api.myapp.com"; // your API's identifier in the dashboard
+
+const JWKS = createRemoteJWKSet(new URL(`${ISSUER}/.well-known/jwks.json`));
+
+async function checkJwt(req, res, next) {
+  const token = req.headers.authorization?.replace(/^Bearer /, "");
+  if (!token) return res.status(401).json({ error: "missing_token" });
+
+  try {
+    const { payload } = await jwtVerify(token, JWKS, {
+      issuer: ISSUER,
+      audience: AUDIENCE, // also rejects OIDC-only tokens issued without an audience
+      algorithms: ["RS256"],
+    });
+    req.auth = payload; // exp/iat already validated by jwtVerify
+    next();
+  } catch {
+    res.status(401).json({ error: "invalid_token" });
+  }
+}
+
+// Authorize per-route: `scope` and `permissions` are space-separated strings
+const requireScope =
+  (required: string) =>
+  (req, res, next) => {
+    const granted = new Set(
+      `${req.auth.scope ?? ""} ${req.auth.permissions ?? ""}`.split(" ")
+    );
+    if (!granted.has(required)) {
+      return res.status(403).json({ error: "insufficient_scope" });
+    }
+    next();
+  };
+
+const app = express();
+
+app.get("/orders", checkJwt, requireScope("read:orders"), (req, res) => {
+  res.json({ orders: [], for: req.auth.sub });
+});
+
+app.listen(3000);
+```
+
+The same four checks apply in any language — Python, Go, Java, .NET all have JWKS-aware JWT libraries; point them at your tenant's discovery URL.
+
+---
+
+## ⚠️ Pitfalls That Cause "Invalid Token"
+
+These are the mistakes we see most often, especially when porting middleware from other providers:
+
+- **Trailing slash on the issuer.** Faable's `iss` is `https://your-domain.auth.faable.link` — no trailing slash. Auth0-style configs with a trailing `/` reject every token.
+- **Treating `permissions` as an array.** Faable emits it as a **space-separated string**; Auth0 emits an array. `payload.permissions.includes("read:orders")` on a string does a substring match — split on spaces first (as `requireScope` above does).
+- **Skipping the `audience` check.** A token requested without an `audience` is still valid OIDC-wise, but its `aud` falls back to `<tenant>/userinfo` — it was never meant for your API. Always validate `aud` against your API identifier; that single check rejects these.
+- **Validating access tokens against the `client_id`.** The **ID token's** `aud` is the client id; the **access token's** `aud` is the API identifier. Your backend validates access tokens — use the API identifier.
+- **Pinning a single public key.** Tenant signing keys rotate. Resolve keys via JWKS using the token header's `kid` (remote JWKS helpers handle caching and rotation).
+
+---
+
+## 🧪 Testing Your Middleware
+
+Get a real token for your API with the [Client Credentials flow](oauth-flows/client-credentials.md) and call your endpoint:
+
+```bash
+TOKEN=$(curl -s -X POST 'https://your-domain.auth.faable.link/oauth/token' \
+  -H 'content-type: application/json' \
+  -d '{"grant_type":"client_credentials","client_id":"...","client_secret":"...","audience":"https://api.myapp.com"}' \
+  | jq -r .access_token)
+
+curl http://localhost:3000/orders -H "authorization: Bearer $TOKEN"
+```
+
+---
+
+## ❓ FAQ
+
+### Does my API call Faable on every request?
+
+No. Verification is local — your API checks the RS256 signature against the JWKS, which the library caches. Faable is only contacted when the JWKS cache is cold or a new `kid` appears (key rotation).
+
+### What's the difference between `scope` and `permissions`?
+
+`scope` is what the client requested and was granted (standard OAuth). `permissions` appears when your API uses the `access_token_authz` dialect: with `enforce_policies` enabled it's the requested scopes **filtered against your API's permission catalog**, so it's the claim to trust for authorization. See [APIs](apis.md).
+
+### How do I know if the caller is a user or a machine?
+
+Look at `sub`: user tokens carry a `user_…` id; [machine-to-machine](oauth-flows/client-credentials.md) tokens carry the client's `client_id`.
+
+### Can I use a library other than jose?
+
+Yes — any JWT library with JWKS support works (`express-oauth2-jwt-bearer`, `jwks-rsa` + `jsonwebtoken`, or your stack's equivalent). Configure it with your tenant issuer (no trailing slash), your API identifier as audience, and RS256.
+
+---
+
+## 🔗 Related
+
+- **[APIs](apis.md)** — register your API, define its `identifier` (audience) and permission catalog.
+- **[Client Credentials Flow](oauth-flows/client-credentials.md)** — how machine clients obtain the tokens your API validates.
+- **[Authorization Code Flow](oauth-flows/authorization-code.md)** — how user tokens are issued, with [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js).
+- **[RFC 7517 — JSON Web Key (JWK)](https://datatracker.ietf.org/doc/html/rfc7517)** and **[RFC 9068 — JWT Access Tokens](https://datatracker.ietf.org/doc/html/rfc9068)** — the standards involved.

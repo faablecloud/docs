@@ -116,6 +116,7 @@ For server-to-server calls (no end user), see [Client Credentials](oauth-flows/c
 
 ## Next steps
 
+- [Validate Access Tokens](validate-access-tokens.md) — verify these tokens in your backend (Express middleware included).
 - [Clients](clients.md) — register the application that will request tokens.
 - [Client Credentials flow](oauth-flows/client-credentials.mdx) — machine-to-machine token issuance for an API.
 - [Authorization Code flow](oauth-flows/authorization-code.mdx) — user-driven token issuance.

@@ -16,5 +16,6 @@ export default {
   "change-email": "Change Email",
   "team-invitations": "Team Invitations",
   apis: "APIs",
+  "validate-access-tokens": "Validate Access Tokens",
   logs: "Logs",
 };
