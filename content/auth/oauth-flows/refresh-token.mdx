@@ -1,4 +1,5 @@
 ---
+schema: faq
 title: Refresh Token Flow — Keep Sessions Alive Without Re-Login
 description: Renew access tokens silently with the OAuth 2.0 Refresh Token flow in Faable Auth. Automatic rotation, SDK auto-refresh with @faable/auth-js, and raw HTTP examples.
 ---
@@ -129,19 +130,19 @@ Errors use the standard OAuth 2.0 format: `{ "error": "...", "error_description"
 
 ## ❓ FAQ
 
-**Where do I get a refresh token in the first place?**
+### Where do I get a refresh token in the first place?
 From a user login: the [Authorization Code flow](authorization-code.md) and the [Device Code flow](device-code.md) both return one alongside the access token.
 
-**Why is a new refresh token returned every time?**
+### Why is a new refresh token returned every time?
 Rotation limits the damage of a leaked token: each refresh token is superseded by the next one. Always persist the latest value.
 
-**Can I extend the scopes when refreshing?**
+### Can I extend the scopes when refreshing?
 No — RFC 6749 §6 only allows narrowing. Scopes not granted originally are silently dropped. To gain new scopes, send the user through login again.
 
-**Does the Client Credentials flow use refresh tokens?**
+### Does the Client Credentials flow use refresh tokens?
 No. Machine-to-machine clients simply [request a new token](client-credentials.md) with their credentials when the current one expires.
 
-**Do I have to implement any of this in a browser app?**
+### Do I have to implement any of this in a browser app?
 No — use `@faable/auth-js` and it's fully automatic, including multi-tab session sync.
 
 ---

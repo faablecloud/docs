@@ -82,12 +82,13 @@ function stripInlineMarkdown(s) {
     .trim()
 }
 
-// Parse "## Question?" + following body into Q&A pairs. Only H2 headings that
-// read as questions (end with "?") are treated as FAQ entries, so sections like
-// "## Related" are ignored.
+// Parse "## Question?" / "### Question?" + following body into Q&A pairs.
+// Only headings that read as questions (end with "?") are treated as FAQ
+// entries, so sections like "## Related" are ignored. H3 support lets pages
+// keep their FAQ under a single "## FAQ" section (e.g. the oauth-flow pages).
 function parseFaq(body) {
   const faqs = []
-  const matches = [...body.matchAll(/^##\s+(.+?)\s*$/gm)]
+  const matches = [...body.matchAll(/^###?\s+(.+?)\s*$/gm)]
   for (let i = 0; i < matches.length; i++) {
     const question = matches[i][1].trim()
     if (!question.endsWith('?')) continue

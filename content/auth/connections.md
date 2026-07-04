@@ -25,8 +25,8 @@ Internally, these types are grouped into four **categories** — `database`, `so
 When a developer uses Faable Auth to implement a login flow (such as the standard OAuth2 Authorization Code flow), the concept of a connection is crucial.
 
 1.  **Creation:** First, you create and configure a Connection in the Faable Dashboard (e.g., you create a Google social connection and provide your Google Client ID and Secret). Each connection is assigned a unique name.
-2.  **Authentication Request:** When your application redirects the user to the Faable Auth `/authorize` endpoint to log in, you can optionally include the `connection` parameter in the URL.
-    - If you specify a specific connection (e.g., `connection=google-oauth2`), Faable Auth will directly redirect the user to that provider's login page, bypassing the generic login screen.
+2.  **Authentication Request:** When your application redirects the user to the Faable Auth `/authorize` endpoint to log in, you can optionally include the `connection_id` parameter in the URL.
+    - If you specify a specific connection (e.g., `connection_id=connection_abc123`, shown in the dashboard), Faable Auth will directly redirect the user to that provider's login page, bypassing the generic login screen. (The legacy `connection` parameter, which takes the connection name, is still accepted as a deprecated alias.)
     - If you don't specify a connection, Faable Auth will display the Universal Login screen, presenting the user with options for all the connections that are enabled for your client application (e.g., an email/password form alongside a "Log in with Google" button).
 3.  **Unified Profile:** Regardless of the connection used to log in, Faable Auth normalizes the user data. It handles the specific handshake with the external provider and returns a standard set of OAuth2/OIDC tokens (Access Token, ID Token) to your application. This means your application's logic remains exactly the same whether the user logged in with a password, a magic link, or their GitHub account.
 
@@ -35,7 +35,9 @@ When a developer uses Faable Auth to implement a login flow (such as the standar
 Now that you understand what Connections are, you can learn how to integrate them into your application by exploring the following topics:
 
 - **[Clients](clients.md):** Learn how to register your front-end application or backend API to use these connections.
+- **[OAuth 2.0 Flows](oauth-flows/index.mdx):** Choose the right flow for your application type.
 - **[Authorization Code Flow](oauth-flows/authorization-code.md):** Understand the standard OAuth2 flow used to redirect users to Faable Auth and handle the login callback.
 - **[Social Login](social/index.mdx):** Set up Google, GitHub, Apple, or Facebook sign-in from one place.
+- **[Passwordless](passwordless.md):** Magic links and one-time codes, no password to remember.
 - **[Quickstart Next.js](quickstart/nextjs.md):** Jump straight into the code and see a full authentication implementation in action.
 - **[Quickstart React Native](quickstart/react-native.md):** Jump straight into the code and see a full authentication implementation in action.

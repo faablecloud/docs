@@ -1,0 +1,54 @@
+---
+schema: faq
+title: OAuth 2.0 Flows — Which One Should I Use?
+description: Choose the right OAuth 2.0 flow for your application with Faable Auth — Authorization Code with PKCE, Client Credentials (M2M), Device Code for CLIs, and Refresh Tokens.
+---
+
+# OAuth 2.0 Flows
+
+Faable Auth implements the standard OAuth 2.0 / OpenID Connect grants. Which one you need depends on two questions: **is a user logging in?** and **can your app keep a secret?**
+
+## Choosing a flow
+
+| Your situation                                                        | Use this flow                                          |
+| :--------------------------------------------------------------------- | :------------------------------------------------------ |
+| A user logs into your web, SPA, or mobile app                          | [Authorization Code with PKCE](authorization-code.md)    |
+| A backend service calls an API — no user involved                      | [Client Credentials](client-credentials.md)              |
+| A user logs into a CLI tool, Smart TV, or IoT device                   | [Device Code](device-code.md)                            |
+| You already have a session and want to renew it without re-login       | [Refresh Token](refresh-token.md)                        |
+
+## At a glance
+
+| Flow                                                  | User present | Needs `client_secret` | Returns                                    | Typical client                     |
+| :----------------------------------------------------- | :----------- | :--------------------- | :------------------------------------------ | :---------------------------------- |
+| [Authorization Code + PKCE](authorization-code.md)      | Yes          | No                     | Access + ID + Refresh token                  | SPA, mobile, server-side web        |
+| [Client Credentials](client-credentials.md)             | No           | **Yes**                | Access token                                 | Backend service, cron, CI           |
+| [Device Code](device-code.md)                           | Yes          | No                     | Access + ID + Refresh token                  | CLI, Smart TV, IoT                  |
+| [Refresh Token](refresh-token.md)                       | Already authenticated | No             | New access + ID + rotated refresh token      | Any client holding a refresh token  |
+
+All of them exchange credentials at the same endpoint — `POST /oauth/token` on your tenant domain — and return the same standard token response. In the browser, the [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) SDK picks and drives the right flow for you (PKCE + automatic refresh).
+
+## FAQ
+
+### Which OAuth flow should I use?
+
+If a user logs into your web, SPA, or mobile app, use Authorization Code with PKCE. If a backend service calls an API with no user involved, use Client Credentials. If the user logs in on a CLI, Smart TV, or IoT device, use Device Code. To renew an existing session without re-login, use the Refresh Token flow.
+
+### Do I ever combine flows?
+
+Yes, all the time: a SPA uses **Authorization Code + PKCE** to log the user in and **Refresh Token** to stay logged in, while its backend uses **Client Credentials** to call other services. Same tenant, same users, same tokens.
+
+### What about the Implicit flow or Resource Owner Password?
+
+They're legacy. OAuth 2.0 best practice (and the OAuth 2.1 draft) replaces the Implicit flow with Authorization Code + PKCE, and discourages sending user passwords through your app. Faable Auth steers you to the modern grants above.
+
+### Where do I get the credentials each flow needs?
+
+Register a [Client](../clients.md) in the [Faable Dashboard](https://dashboard.faable.com) — it gives you the `client_id` (and a `client_secret` for confidential clients). If your tokens target your own backend, also register an [API](../apis.md) to get an `audience` and define permissions.
+
+## Related
+
+- [Clients](../clients.md) — register the application that runs the flow.
+- [APIs](../apis.md) — register the backend the tokens are for.
+- [Connections](../connections.md) — the login methods your users see.
+- [OAuth 2.0 grant types overview](https://oauth.net/2/grant-types/) — background reading.

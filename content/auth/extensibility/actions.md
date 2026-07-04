@@ -66,8 +66,17 @@ event = {
   client: { client_id: string; name: string };
   connection: { name: string; strategy: string };
   request: { ip: string; userAgent: string };
+  stats: {
+    // true when this login is the user's SIGNUP — the identity was created
+    // by the same flow that triggered the action. Always false on `continue`
+    // resumes, even if the original paused flow was a signup.
+    is_new_user: boolean;
+  };
 };
 ```
+
+> [!TIP]
+> `event.stats.is_new_user` distinguishes a **signup** from a returning login, regardless of how the user registered (email/password form, Google, GitHub…). Every flow passes through `post-login`, which makes it the one reliable place to react to new accounts.
 
 ### The `api` object
 
@@ -99,6 +108,37 @@ exports.onExecutePostLogin = async (event, api) => {
 ```
 
 If the user clicks through your ToS page and you redirect them back to Faable's `/continue` endpoint, a corresponding `continue` Action picks up — typically to mark the metadata field and let the flow proceed.
+
+### Example — track signup conversions in your analytics
+
+OAuth signups (Google, GitHub…) never hit your register page, so page-based conversion tracking undercounts them. Since **every** flow passes through `post-login`, an Action is the one place that catches all signups. Use `event.stats.is_new_user` and forward the conversion to your analytics backend:
+
+```js
+/**
+ * @param {Event} event - The event object
+ * @param {Api} api - The Faable Auth API object
+ */
+exports.onExecutePostLogin = async (event, api) => {
+  // Only fire on the user's first login (their signup), not on every login.
+  if (!event.stats.is_new_user) return;
+
+  await fetch("https://eu.i.posthog.com/i/v0/e/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      api_key: "<your PostHog project token>",
+      event: "user_signed_up",
+      distinct_id: event.user.user_id,
+      properties: {
+        email: event.user.email,
+        connection: event.connection?.strategy, // e.g. "github", "google", "auth"
+      },
+    }),
+  });
+};
+```
+
+The same pattern works for any conversion backend (GA4 Measurement Protocol, a Slack webhook, your own API). Failures inside the Action are logged to [Logs](../logs.md); a tracking hiccup never blocks the login itself unless you explicitly call `api.access.deny()`.
 
 ### Console logging
 

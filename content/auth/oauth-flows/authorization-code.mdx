@@ -1,4 +1,5 @@
 ---
+schema: faq
 title: Authorization Code Flow with PKCE — Secure User Login
 description: Implement secure user login with the OAuth 2.0 Authorization Code flow with PKCE in Faable Auth. Step-by-step guide with SDK and raw HTTP examples for SPAs, mobile, and web apps.
 ---
@@ -219,19 +220,19 @@ Errors on `/authorize` are returned to your `redirect_uri` as `?error=...&error_
 
 ## ❓ FAQ
 
-**Do I need a `client_secret` for this flow?**
+### Do I need a `client_secret` for this flow?
 No. PKCE replaces the secret for public clients (SPAs, mobile). That's the point: the flow is secure without shipping any secret to the browser.
 
-**What is PKCE, in one sentence?**
+### What is PKCE, in one sentence?
 Your app invents a random secret (`code_verifier`), sends only its hash when the flow starts, and reveals the secret when exchanging the code — proving both requests came from the same app.
 
-**Does this flow return a refresh token?**
+### Does this flow return a refresh token?
 Yes. Use it with the [Refresh Token flow](refresh-token.md) to renew access tokens silently. The `@faable/auth-js` SDK does this automatically.
 
-**How do users actually log in?**
+### How do users actually log in?
 With whatever [connections](../connections.md) you enable on the client: email/password, passwordless OTP, Google, GitHub, or custom OIDC providers. The flow is identical for all of them.
 
-**When should I use Client Credentials instead?**
+### When should I use Client Credentials instead?
 When there is no user — a backend service, cron job, or CI pipeline calling an API. See [Client Credentials](client-credentials.md).
 
 ---

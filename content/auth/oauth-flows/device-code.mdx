@@ -1,4 +1,5 @@
 ---
+schema: faq
 title: Add User Login to Your CLI — OAuth 2.0 Device Flow
 description: Implement a "yourcli login" command with Faable Auth using the OAuth 2.0 Device Authorization Grant (RFC 8628). Complete Node.js example — also works for Smart TVs and IoT devices.
 ---
@@ -219,22 +220,22 @@ console.log("You are logged in!");
 
 ## ❓ FAQ
 
-**Do I need a `client_secret` in my CLI?**
+### Do I need a `client_secret` in my CLI?
 No. CLIs are public clients — the flow is designed to work with only the `client_id`, so there's nothing secret to embed (or leak) in your distributed binary.
 
-**How do I keep the user logged in between CLI runs?**
+### How do I keep the user logged in between CLI runs?
 Request the `offline_access` scope, store the returned `refresh_token` securely, and exchange it for a fresh access token on startup with the [Refresh Token flow](refresh-token.md).
 
-**How long does the user have to approve?**
+### How long does the user have to approve?
 5 minutes (`expires_in: 300`). After that, request a new code pair and show a fresh `user_code`.
 
-**How does the user log in on the approval page?**
+### How does the user log in on the approval page?
 With any [connection](../connections.md) you've enabled — email/password, passwordless OTP, Google, GitHub, or custom providers. Your CLI inherits your entire login stack for free.
 
-**Can I use `@faable/auth-js` for this flow?**
+### Can I use `@faable/auth-js` for this flow?
 The device flow is plain HTTP by design (it targets environments where a browser SDK doesn't apply), so you implement the loop above directly. Use `@faable/auth-js` for your browser and mobile apps — same tenant, same users, same tokens.
 
-**Does this also work for Smart TVs and IoT?**
+### Does this also work for Smart TVs and IoT?
 Yes — the flow is identical. Render `verification_uri_complete` as a QR code instead of opening a browser, and the user approves from their phone.
 
 ---
