@@ -4,13 +4,30 @@ on:
         branches:
             - main
             - dev
+    pull_request:
 permissions:
     id-token: write
     contents: write
     pull-requests: write
     issues: write
 jobs:
+    check-links:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+            - run: npm ci
+            # `build` runs `postbuild` (pagefind + check:links) automatically;
+            # the explicit step keeps the broken-link check visible in the logs
+            # and green as its own gate.
+            - run: npm run build
+            - run: npm run check:links
     deploy:
+        needs: check-links
+        # Only deploy on pushes to main/dev; on pull requests we just gate on
+        # the link check above.
+        if: github.event_name == 'push'
         runs-on: ubuntu-latest
         timeout-minutes: 10
         steps:
