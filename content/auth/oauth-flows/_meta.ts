@@ -4,4 +4,5 @@ export default {
   "client-credentials": "Client Credentials (M2M)",
   "device-code": "Device Code (CLI & TV)",
   "refresh-token": "Refresh Token",
+  "token-exchange": "Token Exchange (CI/CD)",
 };

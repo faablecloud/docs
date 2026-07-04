@@ -16,6 +16,7 @@ Faable Auth implements the standard OAuth 2.0 / OpenID Connect grants. Which one
 | A backend service calls an API — no user involved                      | [Client Credentials](client-credentials.md)              |
 | A user logs into a CLI tool, Smart TV, or IoT device                   | [Device Code](device-code.md)                            |
 | You already have a session and want to renew it without re-login       | [Refresh Token](refresh-token.md)                        |
+| A CI job or workload has a JWT from a trusted issuer (GitHub Actions)  | [Token Exchange](token-exchange.md)                      |
 
 ## At a glance
 
@@ -25,6 +26,7 @@ Faable Auth implements the standard OAuth 2.0 / OpenID Connect grants. Which one
 | [Client Credentials](client-credentials.md)             | No           | **Yes**                | Access token                                 | Backend service, cron, CI           |
 | [Device Code](device-code.md)                           | Yes          | No                     | Access + ID + Refresh token                  | CLI, Smart TV, IoT                  |
 | [Refresh Token](refresh-token.md)                       | Already authenticated | No             | New access + ID + rotated refresh token      | Any client holding a refresh token  |
+| [Token Exchange](token-exchange.md)                     | No           | No                     | Access token (30 min)                        | CI job, federated workload          |
 
 All of them exchange credentials at the same endpoint — `POST /oauth/token` on your tenant domain — and return the same standard token response. In the browser, the [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) SDK picks and drives the right flow for you (PKCE + automatic refresh).
 
