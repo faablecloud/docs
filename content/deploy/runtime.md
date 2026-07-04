@@ -11,7 +11,7 @@ Your app run in our platform as Linux Containers. This document describes how ap
 
 Node versions adhere to Semver, the semantic versioning convention popularized by GitHub. Semver uses a version scheme in the form `MAJOR.MINOR.PATCH`.
 
-Faable supports the Current version of Node.js and all Active Long-Term-Support (LTS) versions. Faable supports new releases within 24 hours of the official release from the Node team. As the Node.js release schedule illustrates, Faable currently supports Node.js versions 18.x and 20.x.
+Faable supports the Current version of Node.js and all Active Long-Term-Support (LTS) versions. The version you request in `engines.node` is resolved to a concrete Node release at deploy time, so new releases are available as soon as the Node team publishes them.
 
 ## Specifying a Node.js Version
 
@@ -35,7 +35,7 @@ To specify the version of Node.js to use on Faable, use the engines section of t
 }
 ```
 
-> If a Node version isn’t specified in the engines section, Node.js 20.x is used automatically.
+> If a Node version isn't specified in the engines section, the builder uses the Node version of the machine running the deploy (your computer, or the CI runner). Pin `engines.node` so local and CI builds agree — see [What the Builder Expects in Your Repo](build-requirements.md).
 
 ## Environment variables
 

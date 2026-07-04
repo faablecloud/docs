@@ -1,0 +1,173 @@
+---
+schema: faq
+title: What the Builder Expects in Your Repo
+description: How the Faable CLI detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, Dockerfile as escape hatch — plus the $PORT contract and faable.json options.
+---
+
+# What the Builder Expects in Your Repo 📦
+
+When you run `faable deploy`, the CLI inspects your repository, detects the stack, builds a container image (on your machine or in CI), and pushes it to Faable. **Detection is file-based** — this page describes exactly which files the builder looks for and what it does with them, so you can shape your repo to deploy with zero configuration.
+
+## 🔍 How Detection Works
+
+The builder checks for these files at the project root, **in order** — the first match decides the runtime:
+
+| Priority | File found                                        | Runtime                                    |
+| :------- | :------------------------------------------------- | :------------------------------------------ |
+| 1        | `package.json`                                      | **Node.js** (see below)                      |
+| 2        | `requirements.txt`, `pyproject.toml`, or `Pipfile`  | **Python** (see below)                       |
+| 3        | `Dockerfile`                                        | **Docker** — your Dockerfile, built verbatim |
+| —        | None of the above                                   | ❌ Deploy fails: `Cannot detect project type` |
+
+> [!IMPORTANT]
+> The order matters: if your repo has both a `package.json` and a `Dockerfile`, it is built as a **Node.js** project and the Dockerfile is ignored. The Dockerfile path is the escape hatch for stacks the builder doesn't detect natively.
+
+---
+
+## 🟢 Node.js Projects
+
+A minimal repo the builder accepts:
+
+```
+my-app/
+├── package.json    ← triggers Node detection
+├── server.js
+└── node_modules/   ← must be installed before deploying (see below)
+```
+
+```json
+{
+  "name": "my-app",
+  "scripts": {
+    "build": "tsc",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
+```
+
+What each piece means to the builder:
+
+| Field            | Required | What the builder does with it                                                                                        |
+| :--------------- | :------- | :---------------------------------------------------------------------------------------------------------------------- |
+| `name`           | **Yes**  | Used as the app name. Deploy fails with `Missing name in package.json` without it.                                        |
+| `engines.node`   | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). If omitted, the builder uses **the Node version running the deploy** — your machine locally, or the CI runner. |
+| `scripts.build`  | No       | If present, runs locally (`npm run build`) before packaging, with your app's environment variables available.             |
+| `scripts.start`  | No       | The container runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead. |
+
+The image is `node:<version>-slim` and **copies your working directory as-is — it never runs `npm install`**. Your `node_modules` must be installed (and your build run) before `faable deploy`; the GitHub workflow scaffolded by `faable link` does `npm ci` first for exactly this reason.
+
+### Static Frontends
+
+If `package.json` has **no `start` script**, the builder looks at your dependencies to detect a static framework and serves its build output automatically:
+
+| Framework detected                    | Build output served |
+| :------------------------------------- | :------------------- |
+| Astro                                   | `dist/`              |
+| Gatsby                                  | `public/`            |
+| Create React App (`react-scripts`)      | `build/`             |
+| Vue CLI                                 | `dist/`              |
+| Angular                                 | read from `angular.json` |
+| Vite                                    | `dist/`              |
+
+Next.js is the exception: it always runs as a server (`next start`), with a persistent cache for `.next/cache` managed by the platform. And remember — defining a `start` script disables static serving entirely; the builder trusts your script.
+
+---
+
+## 🐍 Python Projects
+
+Detected by `requirements.txt`, `pyproject.toml`, or `Pipfile`. Unlike Node, **dependencies install inside the image build** (`pip install -r requirements.txt`, `pip install .`, or `pipenv install` respectively).
+
+**Python version**, first match wins:
+
+1. `runtime.txt` — e.g. `python-3.12.1`
+2. `.python-version`
+3. `requires-python` in `pyproject.toml`
+4. Default: `3.11.3`
+
+**Start command**, first match wins:
+
+1. `startCommand` in `faable.json`
+2. A `web:` line in a `Procfile`
+3. Framework auto-detection:
+   - **Django** (`manage.py` + a package with `wsgi.py`) → `gunicorn <pkg>.wsgi:application --bind 0.0.0.0:$PORT`
+   - **FastAPI / Starlette** → `uvicorn <module>:app --host 0.0.0.0 --port $PORT`
+   - **Flask** → `gunicorn <module>:app --bind 0.0.0.0:$PORT`
+
+For FastAPI and Flask the builder finds your app module by checking, in order: `main.py`, `app.py`, `asgi.py`, `wsgi.py`, `application.py`, `server.py`, `app/main.py`, `app/app.py`, `src/main.py` — preferring the file that actually defines `app = FastAPI(...)` / `app = Flask(...)`. `gunicorn`/`uvicorn` are added to the image automatically if the start command needs them and they're not in your dependencies.
+
+If no framework is recognized and there's no `Procfile` or `startCommand`, the deploy fails and asks you to provide one.
+
+---
+
+## 🐳 Dockerfile Projects
+
+No `package.json`, no Python manifests, but a `Dockerfile`? The builder runs `docker build .` on it **verbatim** — you control everything. Just honor the port contract below.
+
+---
+
+## 🔌 The Port Contract
+
+Whatever the stack, your app must listen on **`0.0.0.0`** at the port given by the **`$PORT`** environment variable (the platform sets it to `80`):
+
+```js
+app.listen(process.env.PORT, "0.0.0.0");
+```
+
+The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAABLE_HOST` are reserved — secrets you define with those names are ignored.
+
+---
+
+## ⚙️ `faable.json` Reference
+
+`faable link` creates this file at your project root to bind the repo to an app. All fields are optional:
+
+```json
+{
+  "app_id": "app_xxx",
+  "app_slug": "my-app",
+  "buildCommand": "npm run build:prod",
+  "startCommand": "node dist/main.js"
+}
+```
+
+| Field          | Purpose                                                                                          |
+| :------------- | :---------------------------------------------------------------------------------------------- |
+| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable link`).                          |
+| `buildCommand` | Build step to run when `package.json` has no `build` script (Node), or custom install command (Python). |
+| `startCommand` | Overrides everything — framework detection and `npm run start`.                                   |
+
+---
+
+## ❓ FAQ
+
+### My deployed app crashes with "module not found" — why?
+
+The Node image copies your working directory as-is and never runs `npm install`. Install dependencies before deploying: locally that's automatic (you already have `node_modules`); in CI, run `npm ci` before `faable deploy`.
+
+### I have a Dockerfile but Faable ignores it — why?
+
+Because there's also a `package.json` (or Python manifest) at the root, which takes precedence. Remove it from the root, or embrace the zero-config Node/Python pipeline.
+
+### Which Node version does my app run on?
+
+The version from `engines.node` in `package.json`, resolved to a concrete release. Without it, the builder uses the Node version of the machine running the deploy — pin `engines.node` so local and CI builds agree.
+
+### What port should my app listen on?
+
+Read `$PORT` and bind `0.0.0.0`. Hardcoding `localhost` or another port is the most common cause of an unresponsive app.
+
+### Does the build run on Faable's servers?
+
+No — `faable deploy` builds the image where it runs: your machine (Docker must be running) or your CI runner. Faable receives the finished image and runs it. `faable link` can scaffold a GitHub Actions workflow that deploys on every push to `main`.
+
+---
+
+## 🔗 Related
+
+- **[Get Started](get-started.md)** — link a repo and ship your first deploy.
+- **[Runtime](runtime.md)** — how your app runs: restarts, env vars, app manager.
+- **[GitHub Actions](github-actions.md)** — deploy from CI on every push.
+- **[Express Guide](guides/guide-express.md)** — a complete Node.js example.
