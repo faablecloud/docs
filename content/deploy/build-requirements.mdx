@@ -57,7 +57,7 @@ What each piece means to the builder:
 | `scripts.build`  | No       | If present, runs locally (`npm run build`) before packaging, with your app's environment variables available.             |
 | `scripts.start`  | No       | The container runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead. |
 
-The image is `node:<version>-slim` and **copies your working directory as-is — it never runs `npm install`**. Your `node_modules` must be installed (and your build run) before `faable deploy`; the GitHub workflow scaffolded by `faable link` does `npm ci` first for exactly this reason.
+The image is `node:<version>-slim` and **copies your working directory as-is — it never runs `npm install`**. Dependencies are installed on the host before packaging: if `node_modules` is missing, `faable deploy` installs it automatically (`npm ci` with a lockfile, `npm install` otherwise), so the workflow needs no separate install step.
 
 ### Static Frontends
 
@@ -145,7 +145,7 @@ The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAA
 
 ### My deployed app crashes with "module not found" — why?
 
-The Node image copies your working directory as-is and never runs `npm install`. Install dependencies before deploying: locally that's automatic (you already have `node_modules`); in CI, run `npm ci` before `faable deploy`.
+The Node image copies your working directory as-is and never runs `npm install`. `faable deploy` installs dependencies on the host automatically when `node_modules` is missing, so this usually means the install was skipped or partial — check the deploy logs for the install step, and make sure the missing module is listed in `dependencies` (not only `devDependencies` if your start command needs it at runtime).
 
 ### I have a Dockerfile but Faable ignores it — why?
 

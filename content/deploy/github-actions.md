@@ -32,9 +32,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
-      - run: npm ci
       - run: npx @faable/faable@latest deploy
 ```
+
+The same workflow works for every runtime — Node, Python, or Docker. `faable deploy` detects your project type and, for Node projects, installs dependencies automatically when `node_modules` is missing (`npm ci` with a lockfile, `npm install` otherwise; `yarn` and `pnpm` lockfiles are honored when the tool is available).
 
 ## Build script
 
