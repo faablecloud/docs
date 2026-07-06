@@ -10,17 +10,24 @@ When you run `faable deploy`, the CLI inspects your repository, detects the stac
 
 ## 🔍 How Detection Works
 
-The builder checks for these files at the project root, **in order** — the first match decides the runtime:
+Deploys are built by **buildpacks** (Heroku/CNB-style): each one checks for its trigger files at the project root, **in order** — the first match decides how your app is built:
 
-| Priority | File found                                        | Runtime                                    |
-| :------- | :------------------------------------------------- | :------------------------------------------ |
-| 1        | `package.json`                                      | **Node.js** (see below)                      |
-| 2        | `requirements.txt`, `pyproject.toml`, or `Pipfile`  | **Python** (see below)                       |
-| 3        | `Dockerfile`                                        | **Docker** — your Dockerfile, built verbatim |
-| —        | None of the above                                   | ❌ Deploy fails: `Cannot detect project type` |
+| Priority | File found                                                            | Buildpack                                    |
+| :------- | :--------------------------------------------------------------------- | :-------------------------------------------- |
+| 1        | `package.json`                                                          | **Node.js** (see below)                        |
+| 2        | `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml`    | **Python** (see below)                         |
+| 3        | `Dockerfile`                                                            | **Docker** — your Dockerfile, built verbatim   |
+| 4        | `main.py`, `app.py`, or `wsgi.py` (fallback, no manifest at all)        | **Python** without dependency install (see below) |
+| —        | None of the above                                                       | ❌ Deploy fails with a diagnostic listing what was looked for, what your repo contains, and any config from another platform it recognizes |
 
 > [!IMPORTANT]
-> The order matters: if your repo has both a `package.json` and a `Dockerfile`, it is built as a **Node.js** project and the Dockerfile is ignored. The Dockerfile path is the escape hatch for stacks the builder doesn't detect natively.
+> The order matters: if your repo has both a `package.json` and a `Dockerfile`, it is built as a **Node.js** project and the Dockerfile is ignored. The Dockerfile path is the escape hatch for stacks the buildpacks don't detect natively.
+
+You can skip detection entirely and **force a buildpack** — `node`, `python`, or `docker` — with the `buildpack` field in `faable.json` or the `--buildpack` (`-b`) CLI flag:
+
+```bash
+faable deploy --buildpack docker
+```
 
 ---
 
@@ -78,20 +85,22 @@ Next.js is the exception: it always runs as a server (`next start`), with a pers
 
 ## 🐍 Python Projects
 
-Detected by `requirements.txt`, `pyproject.toml`, or `Pipfile`. Unlike Node, **dependencies install inside the image build** (`pip install -r requirements.txt`, `pip install .`, or `pipenv install` respectively).
+Detected by `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml`. Unlike Node, **dependencies install inside the image build** (`pip install -r requirements.txt`, `pip install .`, `pipenv install`, or the pip table of `cerebrium.toml` respectively). With a `requirements.txt`, the manifest is copied into its own image layer before the install, so rebuilding after a source-only change reuses the cached dependency layer.
 
 **Python version**, first match wins:
 
 1. `runtime.txt` — e.g. `python-3.12.1`
 2. `.python-version`
-3. `requires-python` in `pyproject.toml`
-4. Default: `3.11.3`
+3. The manifest's own version (e.g. `python_version` in `cerebrium.toml`)
+4. `requires-python` in `pyproject.toml`
+5. Default: `3.11.3`
 
 **Start command**, first match wins:
 
 1. `startCommand` in `faable.json`
 2. A `web:` line in a `Procfile`
-3. Framework auto-detection:
+3. A start command declared by the manifest (e.g. the Cerebrium `entrypoint`)
+4. Framework auto-detection:
    - **Django** (`manage.py` + a package with `wsgi.py`) → `gunicorn <pkg>.wsgi:application --bind 0.0.0.0:$PORT`
    - **FastAPI / Starlette** → `uvicorn <module>:app --host 0.0.0.0 --port $PORT`
    - **Flask** → `gunicorn <module>:app --bind 0.0.0.0:$PORT`
@@ -100,11 +109,21 @@ For FastAPI and Flask the builder finds your app module by checking, in order: `
 
 If no framework is recognized and there's no `Procfile` or `startCommand`, the deploy fails and asks you to provide one.
 
+### Cerebrium Projects
+
+A repo shaped for [Cerebrium](https://www.cerebrium.ai) — a `cerebrium.toml` plus a Python entrypoint, no `requirements.txt` — deploys out of the box. Faable reads the `[cerebrium.dependencies.pip]` table (and `[cerebrium.dependencies.paths] pip` when present) to install dependencies, `python_version` from `[cerebrium.deployment]`, and the `[cerebrium.runtime.custom] entrypoint` as the start command when set. `apt` and `conda` tables are not installed. If your repo also has a classic manifest, the classic manifest wins.
+
+Because Faable runs **web services**, your project still needs a web entrypoint (a FastAPI/Flask app, a `Procfile`, or `startCommand` in `faable.json`) — a bare GPU function without one fails with an explanation.
+
+### Python Without a Manifest
+
+A lone `main.py` / `app.py` / `wsgi.py` with no dependency manifest at all is picked up by the Python fallback: the app builds **without installing any dependencies** (the deploy logs warn loudly). Framework detection still works by reading the entrypoint file itself, and `uvicorn`/`gunicorn` are added when the start command needs them. If your app imports anything beyond the standard library, add a `requirements.txt`. Note this fallback loses against a `Dockerfile` — an explicit Dockerfile always wins over a loose `.py` file.
+
 ---
 
 ## 🐳 Dockerfile Projects
 
-No `package.json`, no Python manifests, but a `Dockerfile`? The builder runs `docker build .` on it **verbatim** — you control everything. Just honor the port contract below.
+No `package.json`, no Python manifests, but a `Dockerfile`? The buildpack runs `docker build` on it **verbatim** (targeting `linux/amd64`, so images built on Apple Silicon run on the platform) — you control everything. Just honor the port contract below. If a `package.json` with a `next` dependency sits beside the Dockerfile (reachable by forcing `--buildpack docker`), the deploy is registered as a Next.js app so the platform provisions its build cache.
 
 ---
 
@@ -128,6 +147,7 @@ The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAA
 {
   "app_id": "app_xxx",
   "app_slug": "my-app",
+  "buildpack": "docker",
   "buildCommand": "npm run build:prod",
   "startCommand": "node dist/main.js"
 }
@@ -136,6 +156,7 @@ The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAA
 | Field          | Purpose                                                                                          |
 | :------------- | :---------------------------------------------------------------------------------------------- |
 | `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable link`).                          |
+| `buildpack`    | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection. The `--buildpack` CLI flag beats it. |
 | `buildCommand` | Build step to run when `package.json` has no `build` script (Node), or custom install command (Python). |
 | `startCommand` | Overrides everything — framework detection and `npm run start`.                                   |
 
@@ -149,7 +170,11 @@ The Node image copies your working directory as-is and never runs `npm install`.
 
 ### I have a Dockerfile but Faable ignores it — why?
 
-Because there's also a `package.json` (or Python manifest) at the root, which takes precedence. Remove it from the root, or embrace the zero-config Node/Python pipeline.
+Because there's also a `package.json` (or Python manifest) at the root, which takes precedence. Force it with `--buildpack docker` (or `"buildpack": "docker"` in `faable.json`), remove the manifest from the root, or embrace the zero-config Node/Python buildpacks.
+
+### My repo was made for another platform (Cerebrium, Replicate, Fly…) — will it deploy?
+
+Cerebrium projects deploy natively (see above). For other platforms, the detection error names the config file it recognized (`cog.yaml`, `fly.toml`, `render.yaml`…) — Faable can't consume those directly; add one of the supported manifests or a `Dockerfile`.
 
 ### Which Node version does my app run on?
 
