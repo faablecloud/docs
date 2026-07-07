@@ -16,6 +16,7 @@ export default {
   extensibility: "Extensibility",
   "change-email": "Change Email",
   "team-invitations": "Team Invitations",
+  "suspend-users": "Suspend Users",
   apis: "APIs",
   "validate-access-tokens": "Validate Access Tokens",
   logs: "Logs",
