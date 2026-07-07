@@ -1,0 +1,149 @@
+---
+schema: faq
+title: JavaScript Quickstart — OAuth PKCE Login for a Vanilla SPA
+description: Add OAuth 2.0 login with PKCE to a plain JavaScript / Vite single-page app using @faable/auth-js — no framework. Sign in, read the session, call your API, and sign out.
+---
+
+# JavaScript Quickstart 🟨
+
+Add a complete login experience to a **plain JavaScript** single-page app — no framework. `@faable/auth-js` drives the [Authorization Code flow with PKCE](../oauth-flows/authorization-code.md), stores the session, refreshes tokens, and syncs across tabs. You wire it to the DOM with one subscription.
+
+This is the framework-agnostic core pattern: **`createClient` + `onAuthStateChange` + `getSession`**. The [Vue](vue.md), [SvelteKit](sveltekit.md), and [Angular](angular.md) quickstarts are the same three calls wired into each framework's reactivity.
+
+You need one package: **[`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js)** — no framework helper required.
+
+---
+
+## ✅ Prerequisites
+
+In the [Faable Dashboard](https://dashboard.faable.com), create a **Client** for your SPA and configure:
+
+- **Allowed Callback URLs:** `http://localhost:5173/callback` (add your production URL later).
+- **Allowed Logout URLs:** `http://localhost:5173`.
+- **Allowed Web Origins:** `http://localhost:5173`.
+
+Note your **auth domain** (`your-domain.auth.faable.link`) and **Client ID**. SPAs are public clients — no client secret is involved.
+
+---
+
+## 🛠️ Step 1: Create the App and Install
+
+```bash
+npm create vite@latest my-app -- --template vanilla-ts
+cd my-app
+npm install @faable/auth-js
+```
+
+## Step 2: Create the Auth Client
+
+```ts
+// src/auth.ts
+import { createClient } from "@faable/auth-js";
+
+export const auth = createClient({
+  domain: "your-domain.auth.faable.link",
+  clientId: "YOUR_CLIENT_ID",
+  redirectUri: window.location.origin + "/callback",
+});
+```
+
+The client initializes itself on creation: it recovers an existing session from storage, or — on the callback URL — exchanges the PKCE `?code=` for tokens.
+
+## Step 3: Render on Auth State
+
+Subscribe once with `onAuthStateChange` and re-render whenever the session changes — login, logout, token refresh, or a change in another tab. `getSession()` returns the current session (and auto-refreshes it if expired).
+
+```ts
+// src/main.ts
+import { auth } from "./auth";
+
+const app = document.querySelector<HTMLDivElement>("#app")!;
+
+async function render() {
+  // On the callback route, finish the login and go home (Step 5)
+  if (location.pathname === "/callback") {
+    const { error, returnTo } = await auth.handleRedirectCallback();
+    if (error) return void (app.textContent = `Sign-in failed: ${error.message}`);
+    return void location.replace(returnTo ?? "/");
+  }
+
+  const { data } = await auth.getSession();
+
+  if (!data.session) {
+    app.innerHTML = `<button id="login">Sign in</button>`;
+    document.querySelector("#login")!.addEventListener("click", () =>
+      auth.signInWithOauthConnection({})
+    );
+    return;
+  }
+
+  app.innerHTML = `
+    <p>Hello ${data.session.user.email}</p>
+    <button id="logout">Sign out</button>`;
+  document.querySelector("#logout")!.addEventListener("click", () =>
+    auth.signOut({ returnTo: location.origin })
+  );
+}
+
+// Re-render on every auth change, then do the first render.
+auth.onAuthStateChange(() => render());
+render();
+```
+
+- `signInWithOauthConnection({})` sends the user to your tenant's Universal Login with every [connection](../connections.md) you've enabled. Target one directly with `{ connection_id: "connection_..." }`.
+- `signOut({ returnTo })` clears the local session **and** the SSO cookie on the auth server. `returnTo` must be in **Allowed Logout URLs**.
+- Both methods redirect the browser on success — the promise intentionally never resolves, so don't put code after the `await`.
+
+## Step 4: Add the Callback Route
+
+The `render()` above already handles `/callback` by calling `handleRedirectCallback()`. In a Vite SPA, make sure a request to `/callback` serves the same `index.html` (add a rewrite in `vite.config.ts`, or use hash routing). `handleRedirectCallback()` awaits the code-for-tokens exchange (it's idempotent — the client already started it) and returns `{ error, returnTo }`, so deep links survive the login round-trip if you passed `returnTo` to `signInWithOauthConnection({ returnTo })`.
+
+## Step 5: Call Your API
+
+The access token lives on the session. Read it fresh before each call — `getSession()` auto-refreshes an expired session:
+
+```ts
+// src/api.ts
+import { auth } from "./auth";
+
+export async function apiFetch(path: string) {
+  const { data, error } = await auth.getSession();
+  if (error || !data.session) throw new Error("Not signed in");
+
+  return fetch(`https://api.myapp.com${path}`, {
+    headers: { authorization: `Bearer ${data.session.access_token}` },
+  });
+}
+```
+
+If your backend validates the token's `audience`, pass your [API](../apis.md) identifier when creating the client (`createClient({ ..., audience: "https://api.myapp.com" })`) — and see [Validate Access Tokens](../validate-access-tokens.md) for the Express middleware on the other side.
+
+---
+
+## ❓ FAQ
+
+### How do I get the access token in plain JavaScript?
+
+From the session: `const { data } = await auth.getSession()`, then `data.session?.access_token`. There is no separate `getAccessToken()` — `getSession()` already refreshes expired tokens before returning.
+
+### Do I need a framework or a build step?
+
+No. `@faable/auth-js` is framework-agnostic and works with any bundler (Vite here) or plain ES modules. The [React](react.md), [Vue](vue.md), [SvelteKit](sveltekit.md), and [Angular](angular.md) quickstarts wire the same client into each framework.
+
+### How do I send users straight to one provider?
+
+Pass `connection_id` to `signInWithOauthConnection` — e.g. `{ connection_id: "connection_..." }`. Find the ID in **Dashboard → Auth → Connections**. Without it, users pick on the Universal Login screen.
+
+### Why doesn't the sign-in promise resolve?
+
+`signInWithOauthConnection` and `signOut` redirect the browser on success, so the page unloads before the promise settles. Put post-login logic in the `onAuthStateChange` handler, not after the `await`.
+
+---
+
+## 🔗 Related
+
+- **[Vue](vue.md)** · **[SvelteKit](sveltekit.md)** · **[Angular](angular.md)** — the same pattern in a framework.
+- **[React Quickstart](react.md)** · **[Next.js Quickstart](nextjs.md)** — with the React helper hooks.
+- **[Authorization Code Flow with PKCE](../oauth-flows/authorization-code.md)** — what the SDK does under the hood.
+- **[Validate Access Tokens](../validate-access-tokens.md)** — verify these tokens in your backend.
+- **[Connections](../connections.md)** — enable Google, GitHub, passwordless, and more.

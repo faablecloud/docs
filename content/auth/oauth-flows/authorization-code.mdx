@@ -18,6 +18,30 @@ For backend services calling APIs **without a user**, use the [Client Credential
 
 ---
 
+## 🔑 What is PKCE, and how does it work?
+
+**PKCE (Proof Key for Code Exchange, [RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636) — pronounced "pixy")** is an extension to the OAuth 2.0 Authorization Code flow that makes it safe for clients that **cannot keep a secret** — single-page apps, mobile, and native apps whose code ships to the user's device.
+
+It closes the **authorization-code interception attack**. Without PKCE, anything that captures the `code` on its way back to your app — a malicious app registered on the same mobile URL scheme, a leaky proxy, browser history — could exchange it for tokens. PKCE ties the code to the exact client that started the flow:
+
+1. Your app generates a random secret, the **`code_verifier`**, and keeps it locally.
+2. It sends only the **`code_challenge`** — `base64url(SHA-256(code_verifier))` — when it redirects to `/authorize`. The hash is one-way, so the challenge is useless to an attacker.
+3. When exchanging the `code` for tokens, your app sends the original `code_verifier`. Faable recomputes the hash and **rejects the exchange unless it matches** the challenge from step 2.
+
+A stolen `code` is worthless without the `code_verifier`, which never left your app. That is why PKCE is now the recommended practice for **every** client type — including confidential, server-side apps.
+
+### Authorization Code + PKCE vs other flows
+
+| Your app | Use |
+| :-- | :-- |
+| SPA, mobile, native, or server-side web app logging a **user** in | **Authorization Code + PKCE** (this page) |
+| Backend service / cron / CI calling an API with **no user** | [Client Credentials](client-credentials.md) |
+| Renewing an access token without re-login | [Refresh Token](refresh-token.md) |
+
+> The older **Implicit flow** (tokens returned in the URL fragment) is deprecated — never put tokens in URLs. Authorization Code + PKCE replaces it for public clients.
+
+---
+
 ## 📸 How It Works
 
 ```mermaid
@@ -80,6 +104,43 @@ That's it — the SDK also refreshes the access token transparently when it expi
 
 > [!IMPORTANT]
 > The `redirectTo` URL must be listed in the client's **Allowed Callback URLs** in the dashboard, or the request will be rejected.
+
+**Using a framework?** Follow a copy-paste quickstart instead: [React](../quickstart/react.md) · [Next.js](../quickstart/nextjs.md) · [Vue](../quickstart/vue.md) · [SvelteKit](../quickstart/sveltekit.md) · [Angular](../quickstart/angular.md) · [JavaScript (vanilla)](../quickstart/javascript.md) · [React Native](../quickstart/react-native.md).
+
+---
+
+## 🧩 How to Generate the `code_verifier` and `code_challenge`
+
+If you use `@faable/auth-js`, **skip this** — the SDK generates, stores, and sends these for you. Rolling your own? Here's the exact PKCE pair generation.
+
+The **`code_verifier`** is a high-entropy random string (43–128 chars from the unreserved set). The **`code_challenge`** is its SHA-256 hash, base64url-encoded — `code_challenge_method=S256`, the only method Faable supports.
+
+**Browser (Web Crypto API):**
+
+```ts
+function base64url(bytes: ArrayBuffer): string {
+  return btoa(String.fromCharCode(...new Uint8Array(bytes)))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+// code_verifier — 32 random bytes → base64url (~43 chars)
+const codeVerifier = base64url(crypto.getRandomValues(new Uint8Array(32)).buffer);
+
+// code_challenge = base64url(SHA-256(code_verifier))
+const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(codeVerifier));
+const codeChallenge = base64url(digest);
+```
+
+**Node.js:**
+
+```ts
+import { randomBytes, createHash } from "node:crypto";
+
+const codeVerifier = randomBytes(32).toString("base64url");
+const codeChallenge = createHash("sha256").update(codeVerifier).digest("base64url");
+```
+
+Keep the `code_verifier` until the callback — it must survive the redirect (e.g. `sessionStorage` in a SPA). Send the `code_challenge` on `/authorize`, then send the original `code_verifier` back on the token exchange.
 
 ---
 
@@ -234,6 +295,18 @@ With whatever [connections](../connections.md) you enable on the client: email/p
 
 ### When should I use Client Credentials instead?
 When there is no user — a backend service, cron job, or CI pipeline calling an API. See [Client Credentials](client-credentials.md).
+
+### How do I generate a `code_verifier` and `code_challenge`?
+The verifier is a random high-entropy string; the challenge is `base64url(SHA-256(verifier))`. See [How to Generate the code_verifier and code_challenge](#how-to-generate-the-code_verifier-and-code_challenge) for copy-paste browser and Node snippets — or let `@faable/auth-js` do it for you.
+
+### Is PKCE required?
+For public clients (SPA, mobile, native) it's mandatory in practice — the flow is unsafe without it. For confidential server-side clients it's strongly recommended and the current OAuth 2.0 best practice. Faable supports it for every client type.
+
+### What is `code_challenge_method=S256`?
+It tells the server the challenge is the SHA-256 hash of the verifier (not the plaintext). `S256` is the only method Faable accepts — plain challenges are rejected.
+
+### Does PKCE work with refresh tokens?
+Yes. The code exchange returns a `refresh_token` alongside the access token; renew silently with the [Refresh Token flow](refresh-token.md). `@faable/auth-js` refreshes for you automatically.
 
 ---
 

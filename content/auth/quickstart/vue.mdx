@@ -1,0 +1,194 @@
+---
+schema: faq
+title: Vue Authentication — OAuth PKCE Login for a Vue 3 SPA
+description: Add OAuth 2.0 login with PKCE to a Vue 3 (Vite) single-page app using @faable/auth-js. A reactive useAuth() composable for sign in, session, user, calling your API, and sign out — no framework helper required.
+---
+
+# Vue Quickstart 💚
+
+Add a complete login experience to a **Vue 3** single-page app. `@faable/auth-js` drives the [Authorization Code flow with PKCE](../oauth-flows/authorization-code.md), stores the session, refreshes tokens, and syncs across tabs. You wire it into Vue's reactivity with one small composable.
+
+This is the framework-agnostic core pattern — **`createClient` + `onAuthStateChange` + `getSession`** — wrapped in a `useAuth()` composable that exposes a reactive session `ref`. The [JavaScript](javascript.md), [SvelteKit](sveltekit.md), and [Angular](angular.md) quickstarts are the same three calls wired into each framework's reactivity.
+
+You need one package: **[`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js)** — Vue uses the core client directly, no framework helper required.
+
+---
+
+## ✅ Prerequisites
+
+In the [Faable Dashboard](https://dashboard.faable.com), create a **Client** for your SPA and configure:
+
+- **Allowed Callback URLs:** `http://localhost:5173/callback` (add your production URL later).
+- **Allowed Logout URLs:** `http://localhost:5173`.
+- **Allowed Web Origins:** `http://localhost:5173`.
+
+Note your **auth domain** (`your-domain.auth.faable.link`) and **Client ID**. SPAs are public clients — no client secret is involved.
+
+---
+
+## 🛠️ Step 1: Create the App and Install
+
+```bash
+npm create vite@latest my-app -- --template vue-ts
+cd my-app
+npm install @faable/auth-js
+```
+
+## Step 2: Create the Auth Client
+
+```ts
+// src/auth-client.ts
+import { createClient } from "@faable/auth-js";
+
+export const auth = createClient({
+  domain: "your-domain.auth.faable.link",
+  clientId: "YOUR_CLIENT_ID",
+  redirectUri: window.location.origin + "/callback",
+});
+```
+
+The client initializes itself on creation: it recovers an existing session from storage, or — on the callback URL — exchanges the PKCE `?code=` for tokens.
+
+## Step 3: Wire a Reactive Session Composable
+
+Wrap the client in a `useAuth()` composable. It holds one shared `ref`, seeds it once with `getSession()`, and keeps it updated with `onAuthStateChange` — on login, logout, token refresh, or a change in another tab. Because the `ref` and subscription live at module scope, every component shares the same reactive session.
+
+```ts
+// src/auth.ts
+import { ref, computed } from "vue";
+import type { Session } from "@faable/auth-js";
+import { auth } from "./auth-client";
+
+const session = ref<Session | null>(null);
+
+// Keep the ref in sync with every auth change (login, refresh, logout, other tabs).
+auth.onAuthStateChange((_event, next) => {
+  session.value = next;
+});
+
+// Seed the initial value once (also auto-refreshes an expired session).
+auth.getSession().then(({ data }) => {
+  session.value = data.session;
+});
+
+export function useAuth() {
+  return {
+    session,
+    user: computed(() => session.value?.user ?? null),
+    signIn: () => auth.signInWithOauthConnection({}),
+    signOut: () => auth.signOut({ returnTo: window.location.origin }),
+  };
+}
+```
+
+`onAuthStateChange` returns `{ data: { subscription } }`; call `subscription.unsubscribe()` if you ever need to tear the listener down. Here it lives for the app's lifetime, so we let it run.
+
+## Step 4: Login, User, and Logout
+
+`App.vue` reads the composable. No session → a **Sign in** button; otherwise the user's email and a **Sign out** button.
+
+```vue
+<!-- src/App.vue -->
+<script setup lang="ts">
+import { useAuth } from "./auth";
+import Callback from "./Callback.vue";
+
+const { session, user, signIn, signOut } = useAuth();
+
+// The /callback route completes the login (Step 5)
+const isCallback = window.location.pathname === "/callback";
+</script>
+
+<template>
+  <Callback v-if="isCallback" />
+  <button v-else-if="!session" @click="signIn">Sign in</button>
+  <div v-else>
+    <p>Hello {{ user?.email }}</p>
+    <button @click="signOut">Sign out</button>
+  </div>
+</template>
+```
+
+- `signInWithOauthConnection({})` sends the user to your tenant's Universal Login with every [connection](../connections.md) you've enabled. Target one directly with `{ connection_id: "connection_..." }`.
+- `signOut({ returnTo })` clears the local session **and** the SSO cookie on the auth server. `returnTo` must be in **Allowed Logout URLs**.
+- Both methods redirect the browser on success — the promise intentionally never resolves, so don't put code after the `await`. The UI updates through the composable's `ref`, not a return value.
+
+## Step 5: The Callback Route
+
+On `/callback`, call `handleRedirectCallback()` to finish the exchange, then go home. It's idempotent — the client already started the exchange on creation — and returns `{ error, returnTo }`, so deep links survive the login round-trip if you passed `returnTo` to `signInWithOauthConnection({ returnTo })`.
+
+```vue
+<!-- src/Callback.vue -->
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { auth } from "./auth-client";
+
+const message = ref("Signing you in…");
+
+onMounted(async () => {
+  const { error, returnTo } = await auth.handleRedirectCallback();
+  if (error) message.value = error.message;
+  else window.location.replace(returnTo ?? "/");
+});
+</script>
+
+<template>
+  <p>{{ message }}</p>
+</template>
+```
+
+In a Vite SPA, make sure a request to `/callback` serves the same `index.html` — Vite's dev server does this by default, and in production you add an SPA rewrite so any path falls back to `index.html`. The `window.location.pathname` check in Step 4 keeps this router-free; drop in [Vue Router](https://router.vuejs.org/) and register `Callback.vue` as a `/callback` route if you prefer.
+
+## Step 6: Call Your API
+
+The access token lives on the session. Read it fresh before each call — `getSession()` auto-refreshes an expired session:
+
+```ts
+// src/api.ts
+import { auth } from "./auth-client";
+
+export async function apiFetch(path: string) {
+  const { data, error } = await auth.getSession();
+  if (error || !data.session) throw new Error("Not signed in");
+
+  return fetch(`https://api.myapp.com${path}`, {
+    headers: { authorization: `Bearer ${data.session.access_token}` },
+  });
+}
+```
+
+If your backend validates the token's `audience`, pass your [API](../apis.md) identifier when creating the client (`createClient({ ..., audience: "https://api.myapp.com" })`) — and see [Validate Access Tokens](../validate-access-tokens.md) for the Express middleware on the other side.
+
+---
+
+## ❓ FAQ
+
+### How do I make the session reactive in Vue 3?
+
+Hold it in a module-scoped `ref<Session | null>(null)`, update it from `onAuthStateChange`, and seed it once with `getSession()`. Return that `ref` from a `useAuth()` composable — Step 3 above. Every component that calls `useAuth()` shares the same reactive session, and templates re-render automatically on login, logout, and token refresh.
+
+### Do I need a Vue-specific auth helper package?
+
+No. There is no `@faable/auth-helpers-vue` package — Vue uses **[`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js)** directly. The composable in Step 3 is all the wiring you need; it's a few lines around `createClient`, `onAuthStateChange`, and `getSession`.
+
+### How do I get the access token in Vue?
+
+From the session: `const { data } = await auth.getSession()`, then `data.session?.access_token`. There is no separate `getAccessToken()` — `getSession()` already refreshes expired tokens before returning. Read it fresh right before each API call, as in Step 6.
+
+### How do I send users straight to one provider?
+
+Pass `connection_id` to `signInWithOauthConnection` — e.g. `signIn: () => auth.signInWithOauthConnection({ connection_id: "connection_..." })`. Find the ID in **Dashboard → Auth → Connections**. Without it, users pick on the Universal Login screen.
+
+### Why doesn't the sign-in promise resolve?
+
+`signInWithOauthConnection` and `signOut` redirect the browser on success, so the page unloads before the promise settles. Let the composable's `ref` drive your UI through `onAuthStateChange` — don't put post-login logic after the `await`.
+
+---
+
+## 🔗 Related
+
+- **[JavaScript](javascript.md)** · **[SvelteKit](sveltekit.md)** · **[Angular](angular.md)** — the same core client wired into each framework's reactivity.
+- **[React Quickstart](react.md)** · **[Next.js Quickstart](nextjs.md)** — with the React helper hooks.
+- **[Authorization Code Flow with PKCE](../oauth-flows/authorization-code.md)** — what the SDK does under the hood.
+- **[Validate Access Tokens](../validate-access-tokens.md)** — verify these tokens in your backend.
+- **[Connections](../connections.md)** — enable Google, GitHub, passwordless, and more.

@@ -1,6 +1,7 @@
 ---
-title: Next.js Quickstart
-description: Integrate Faable Auth into your Next.js application in minutes. Learn how to set up authentication, protect routes, and manage user sessions.
+schema: faq
+title: Next.js Authentication — Add Login with Faable Auth (App & Pages Router)
+description: Add OAuth 2.0 login with PKCE to your Next.js app — App Router or Pages Router — using @faable/auth-js. Sessions, sign in, sign out, and user state.
 ---
 
 import { Tabs } from 'nextra/components'
@@ -232,7 +233,7 @@ export default function Home() {
 }
 ```
 
-> By default, `signInWithOauthConnection` opens your hosted login page and the user picks which connection to use. To skip that picker and force a specific provider (e.g. Google), pass `connection: "connection_xxxxxxxxxxxxxxxxxxxxxx"` — you'll find the ID in **Dashboard → Auth → Connections**.
+> By default, `signInWithOauthConnection` opens your hosted login page and the user picks which connection to use. To skip that picker and force a specific provider (e.g. Google), pass `connection_id: "connection_xxxxxxxxxxxxxxxxxxxxxx"` — you'll find the ID in **Dashboard → Auth → Connections**.
 
 When `handleLogin` runs, `@faable/auth-js` takes care of redirecting the user, generating the PKCE verifier, and exchanging the code for tokens when the user is sent back to your callback URL.
 
@@ -298,3 +299,29 @@ Parameters:
 | `state`        | No       | Opaque value round-tripped through the OAuth flow. Useful for CSRF protection or preserving navigation intent.         |
 
 On success the user lands on your callback URL with an authorization code that `@faable/auth-js` exchanges for a session — exactly like the hosted-login flow. On failure, the returned `error` carries the server message (wrong credentials, blocked user, etc.).
+
+## FAQ
+
+### Does this work with both the App Router and the Pages Router?
+
+Yes — the examples above cover both. The only difference is where the `SessionContextProvider` lives: a `"use client"` component wrapping the root layout in the App Router, or `pages/_app.tsx` in the Pages Router.
+
+### Where does the token exchange happen — server or client?
+
+Client-side. `@faable/auth-js` runs the [Authorization Code flow with PKCE](../oauth-flows/authorization-code.md) in the browser and stores the session; no secret ships to the server. To protect server routes, API handlers, or middleware, validate the access token — see [Validate Access Tokens](../validate-access-tokens.md).
+
+### How do I send users straight to one provider?
+
+Pass `connection_id` to `signInWithOauthConnection` (e.g. `{ connection_id: "connection_..." }`). Find the ID in **Dashboard → Auth → Connections**. Without it, users pick on the Universal Login screen.
+
+### Do I need to handle token refresh?
+
+No. The SDK refreshes the session automatically in the background using the [Refresh Token flow](../oauth-flows/refresh-token.md) and syncs the result across tabs.
+
+## Related
+
+- **[React Quickstart](react.md)** — the same login for a Vite SPA.
+- **[Vue](vue.md)** · **[Nuxt](nuxt.md)** · **[SvelteKit](sveltekit.md)** · **[Angular](angular.md)** · **[JavaScript (vanilla)](javascript.md)** — the same client in other frameworks.
+- **[Authorization Code Flow with PKCE](../oauth-flows/authorization-code.md)** — what the SDK does under the hood.
+- **[Validate Access Tokens](../validate-access-tokens.md)** — verify these tokens in your backend.
+- **[Connections](../connections.md)** — enable Google, GitHub, passwordless, and more.
