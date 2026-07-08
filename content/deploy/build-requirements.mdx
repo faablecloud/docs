@@ -141,7 +141,7 @@ The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAA
 
 ## ⚙️ `faable.json` Reference
 
-`faable link` creates this file at your project root to bind the repo to an app. All fields are optional:
+`faable deploy link` creates this file at your project root to bind the repo to an app. All fields are optional:
 
 ```json
 {
@@ -155,7 +155,7 @@ The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAA
 
 | Field          | Purpose                                                                                          |
 | :------------- | :---------------------------------------------------------------------------------------------- |
-| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable link`).                          |
+| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                          |
 | `buildpack`    | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection. The `--buildpack` CLI flag beats it. |
 | `buildCommand` | Build step to run when `package.json` has no `build` script (Node), or custom install command (Python). |
 | `startCommand` | Overrides everything — framework detection and `npm run start`.                                   |
@@ -186,7 +186,7 @@ Read `$PORT` and bind `0.0.0.0`. Hardcoding `localhost` or another port is the m
 
 ### Does the build run on Faable's servers?
 
-No — `faable deploy` builds the image where it runs: your machine (Docker must be running) or your CI runner. Faable receives the finished image and runs it. `faable link` can scaffold a GitHub Actions workflow that deploys on every push to `main`.
+No — `faable deploy` builds the image where it runs: your machine (Docker must be running) or your CI runner. Faable receives the finished image and runs it. `faable deploy link` can scaffold a GitHub Actions workflow that deploys on every push to `main`.
 
 ---
 

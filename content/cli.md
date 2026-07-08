@@ -57,25 +57,18 @@ faable logout
 
 ## Project Setup
 
-To link your local code with a Faable application, you can either initialize a new configuration or link an existing app.
-
-### Init
-
-Initialize a new Faable project in the current directory. This command can also help you set up GitHub Actions for automated deployment.
-
-```bash
-faable init
-```
-
 ### Link
 
 Link your current repository to one of your Faable apps. The CLI **auto-detects your Git remote origin** and prompts you to select the app from a list — you never need to look up an `app_id`.
 
 ```bash
-faable link
+faable deploy link
 ```
 
 This mirrors the dashboard's **Link repository** action. Linking requires the **Faable GitHub App** to be installed on the repository; if it isn't, the CLI tells you how to install it. Once linked, `faable deploy` and GitHub Actions resolve the app automatically.
+
+> [!NOTE]
+> The old top-level `faable link` still works as a deprecated alias and will be removed in a future release.
 
 ## Deployment
 
@@ -92,7 +85,7 @@ faable deploy
 The app is resolved automatically — no `app_id` required:
 
 - **In GitHub Actions**: from the repository linked to your app, via OIDC.
-- **Locally**: from the app saved by `faable link` (in `faable.json`).
+- **Locally**: from the app saved by `faable deploy link` (in `faable.json`), or — if the repo was connected in the dashboard — by matching your git origin remote against your apps' linked repositories.
 
 Pass an app explicitly only for **monorepos** with several apps linked to the same repository:
 
@@ -110,13 +103,53 @@ faable deploy <app_id>
 4. **Upload**: The built artifact or image is pushed to the Faable registry.
 5. **Release**: A new deployment is created and goes live at your application URL.
 
+## Secrets
+
+Manage your app's secrets (environment variables) without leaving the terminal. Inside a linked repository the app is detected automatically — the same resolution `faable deploy` uses. Outside of one (or to target another app) pass `--app <app_id>`.
+
+### Set
+
+Set one or more secrets as `KEY=VALUE` pairs. Values may contain `=` (only the first one splits the pair); quote values containing spaces.
+
+```bash
+faable deploy secrets set DATABASE_URL=postgres://user:pass@host/db STRIPE_KEY=sk_live_abc
+```
+
+```
+🔑 Added secret DATABASE_URL to app_a1b2c3
+🔑 Added secret STRIPE_KEY to app_a1b2c3
+✅ 2 secret(s) saved to app_a1b2c3.
+ℹ️ The app is restarting to apply the changes.
+```
+
+### List
+
+List the app's secrets. Values are **masked by default**; pass `--show` to reveal them. Secrets inherited from your team profile are marked as such.
+
+```bash
+faable deploy secrets list
+faable deploy secrets list --show
+```
+
+### Remove
+
+Remove a secret by name. The CLI asks for confirmation; pass `--yes` to skip it (for scripts and CI).
+
+```bash
+faable deploy secrets rm STRIPE_KEY
+```
+
+Changes apply immediately: the app restarts with the new environment.
+
 ## Command Reference
 
-| Command              | Description                    |
-| :------------------- | :----------------------------- |
-| `faable login`       | Authenticate with Faable       |
-| `faable apps`        | List all your applications     |
-| `faable link`        | Link directory to a Faable app |
-| `faable deploy`      | Deploy project to production   |
-| `faable whoami`      | Show current user              |
-| `faable auth status` | Check authentication status    |
+| Command                       | Description                              |
+| :---------------------------- | :--------------------------------------- |
+| `faable login`                | Authenticate with Faable                 |
+| `faable whoami`               | Show current user                        |
+| `faable logout`               | End the local session                    |
+| `faable deploy`               | Deploy project to production             |
+| `faable deploy link`          | Link directory to a Faable app           |
+| `faable deploy secrets list`  | List app secrets (masked, `--show`)      |
+| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs         |
+| `faable deploy secrets rm`    | Remove a secret by name                  |

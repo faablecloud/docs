@@ -8,7 +8,7 @@ description: Set up continuous deployment with GitHub Actions for your Faable pr
 To configure continuous deployment every time code is pushed into your github repo, create a Github Action.
 
 > [!IMPORTANT]
-> Before your first deploy, **link the repository to your app** — once, from the [dashboard](https://dashboard.faable.com) (**Link repository**) or by running `faable link` in your repo. The workflow authenticates via **OIDC** and resolves the app from the linked repository, so you **don't need an `app_id`, an API key, or any secret**. If the repo isn't linked, `deploy` fails with `Request failed with status code 404`.
+> Before your first deploy, **link the repository to your app** — once, from the [dashboard](https://dashboard.faable.com) (**Link repository**) or by running `faable deploy link` in your repo. The workflow authenticates via **OIDC** and resolves the app from the linked repository, so you **don't need an `app_id`, an API key, or any secret**. If the repo isn't linked, `deploy` fails with `Request failed with status code 404`.
 
 Following code creates an action that will be run each time you commit a change to `main` branch. You can change `main` branch and set it to any branch on your repo that you want to deploy.
 

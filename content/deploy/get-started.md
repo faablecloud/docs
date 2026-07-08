@@ -30,17 +30,16 @@ That's it — no `app_id`, API tokens, or YAML to write. Deploys authenticate vi
 
 ## Deploy from your laptop with the CLI
 
-For ad-hoc deploys (local testing, debugging) install the CLI and link the repo once:
+For ad-hoc deploys (local testing, debugging) install the CLI and log in. Your repository is already connected to the app — you did that in the first step of the app creation form — so the CLI resolves the app automatically:
 
 ```bash
 npm i -g @faable/faable
 faable login
-faable link      # once per repo — auto-detects the repo, pick the app
 faable deploy    # deploy current repository
 ```
 
 > [!TIP]
-> Got `Request failed with status code 404` on `faable deploy`? The repository isn't linked to any app yet. Link it from the dashboard (or run `faable link`) and deploy again.
+> Got `Request failed with status code 404` on `faable deploy`? The repository isn't linked to any app yet. Link it from the dashboard (**Link repository**) and deploy again.
 
 ## What's next
 
