@@ -31,7 +31,7 @@ Within the dashboard, you can define essential security boundaries for each Clie
 
 - **Allowed Callback URLs (Redirect URIs):** A strict whitelist of URLs (e.g., `https://myapp.com/callback`) where Faable Auth is permitted to redirect the user after a successful login. This is a critical security measure to prevent open redirect vulnerabilities.
 - **Allowed Logout URLs:** URLs where users can be redirected after they successfully log out of their session.
-- **Allowed Web Origins:** URLs representing the origins permitted to make cross-origin (CORS) requests to Faable Auth endpoints.
+- **Allowed Web Origins:** Origins (`scheme://host[:port]`, no path — e.g. `http://localhost:5173`) permitted to make cross-origin (CORS) requests to the token and passwordless endpoints for this client. **When the list is empty, any origin is allowed** — set it to lock browser calls down to your app's origins. The account's own auth domain (where the hosted login page lives) is always allowed implicitly, so you only need to list your application origins.
 - **Connections:** You have granular control over which authentication methods (e.g., Google login, Passwordless) are enabled for each specific client.
 
 ## Next Steps
