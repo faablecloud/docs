@@ -26,6 +26,25 @@ const navbar = (
     >
       Dashboard
     </a>
+    {/* Persistent conversion CTA — docs are the paid/organic landing for many
+        readers but previously offered no signup action beyond the Dashboard
+        link. Inline-styled so it renders regardless of Tailwind availability. */}
+    <a
+      href="https://dashboard.faable.com/account/register?utm_source=docs&utm_medium=referral&utm_content=docs_navbar_cta"
+      target="_blank"
+      rel="noopener"
+      style={{
+        background: "#2563eb",
+        color: "#fff",
+        padding: "6px 14px",
+        borderRadius: 6,
+        fontWeight: 600,
+        fontSize: 14,
+        whiteSpace: "nowrap",
+      }}
+    >
+      Start free
+    </a>
   </Navbar>
 );
 const footer = (
