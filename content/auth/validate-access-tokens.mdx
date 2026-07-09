@@ -23,6 +23,12 @@ A valid token must pass four checks:
 
 Then you authorize the request using the token's `scope` / `permissions` claims.
 
+> **Protecting Next.js routes instead of an API?** This guide is for verifying a
+> `Bearer` token your backend receives (typically machine-to-machine or a SPA
+> calling your API). To gate Next.js pages, Route Handlers, or middleware by the
+> user's **session cookie**, read it with `getSessionFromCookies` — see
+> [Next.js (Server-Side)](quickstart/nextjs-server-side.md).
+
 ---
 
 ## 🔍 What's Inside a Faable Access Token

@@ -308,7 +308,7 @@ Yes — the examples above cover both. The only difference is where the `Session
 
 ### Where does the token exchange happen — server or client?
 
-Client-side. `@faable/auth-js` runs the [Authorization Code flow with PKCE](../oauth-flows/authorization-code.md) in the browser and stores the session; no secret ships to the server. To protect server routes, API handlers, or middleware, validate the access token — see [Validate Access Tokens](../validate-access-tokens.md).
+Client-side. `@faable/auth-js` runs the [Authorization Code flow with PKCE](../oauth-flows/authorization-code.md) in the browser and stores the session; no secret ships to the server. To gate Next.js pages, Route Handlers, or middleware on the server — so protected content never reaches the browser without a session — read the session cookie with `getSessionFromCookies`; see [Next.js (Server-Side)](nextjs-server-side.md). To verify a `Bearer` access token your **API** receives, see [Validate Access Tokens](../validate-access-tokens.md).
 
 ### How do I send users straight to one provider?
 
@@ -322,6 +322,7 @@ No. The SDK refreshes the session automatically in the background using the [Ref
 
 - **[React Quickstart](react.md)** — the same login for a Vite SPA.
 - **[Vue](vue.md)** · **[Nuxt](nuxt.md)** · **[SvelteKit](sveltekit.md)** · **[Angular](angular.md)** · **[JavaScript (vanilla)](javascript.md)** — the same client in other frameworks.
+- **[Next.js (Server-Side)](nextjs-server-side.md)** — protect routes in middleware and Server Components with `getSessionFromCookies`.
 - **[Authorization Code Flow with PKCE](../oauth-flows/authorization-code.md)** — what the SDK does under the hood.
 - **[Validate Access Tokens](../validate-access-tokens.md)** — verify these tokens in your backend.
 - **[Connections](../connections.md)** — enable Google, GitHub, passwordless, and more.
