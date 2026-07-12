@@ -1,6 +1,6 @@
 ---
 title: Pricing
-description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Hobby, Pro, Business) plus separately-purchased support plans.
+description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Free, Hobby, Pro) plus separately-purchased support plans.
 ---
 
 # Pricing
@@ -9,13 +9,15 @@ Faable is sold as a **single subscription that covers every product** — both F
 
 The model is **hybrid**: a monthly **platform fee** that unlocks features and entitlements, plus **usage** for the resources you consume (compute instances, bandwidth overage, MAU above the included allowance). Each month you receive the bill for the **previous** month's usage.
 
+Plans apply **per project**: each project has its own plan, starting on Free.
+
 ## Plans
 
 | Plan | Monthly fee | What you get |
 |------|-------------|--------------|
-| **Hobby**    | 0 €            | Try Faable end-to-end. 1 account, basic limits, community support. Apps auto-delete after 7 days. |
-| **Pro**      | 15 € + usage   | Production-ready for a single product. Custom domains, MFA, 24/7 apps, email support. |
-| **Business** | 99 € + usage   | Multi-account, enterprise SSO, audit logs, 99.9 % uptime SLA. |
+| **Free**  | 0 €            | Try Faable end-to-end. 1 free instance, up to 3 deployments per day, Faable Auth included, community support. |
+| **Hobby** | 15 € + usage   | Production-ready for a single product. Full instance catalog, unlimited deployments, custom domains, email support. |
+| **Pro**   | 99 € + usage   | Multi-account, enterprise SSO, audit logs, 99.9 % uptime SLA. |
 
 The platform fee unlocks the tier; usage charges depend on what you actually deploy and how many users authenticate. The deep-dives below break down exactly what each plan includes per product.
 
@@ -23,12 +25,12 @@ The platform fee unlocks the tier; usage charges depend on what you actually dep
 
 The platform tier you choose maps to concrete entitlements in each product. See:
 
-- **[Faable Auth pricing](../auth/pricing.md)** — MAU allowances, auth accounts, passwordless caps, Actions limits, custom domain, MFA, SSO/SAML, audit logs.
-- **[Faable Deploy pricing](../deploy/pricing.md)** — compute instance catalog (`bi.xs` … `bi.2xlarge`), bandwidth allowance, egress overage rates.
+- **[Faable Auth pricing](../auth/pricing.md)** — MAU allowances, auth accounts, SSO/SAML, audit logs.
+- **[Faable Deploy pricing](../deploy/pricing.md)** — compute instance catalog (`bi.xs` … `bi.2xlarge`), deployments per day, bandwidth allowance, egress overage rates.
 
 ## Support plans
 
-Support plans are sold **separately** from the platform tiers — they are an independent purchase and are not included in Hobby, Pro, or Business.
+Support plans are sold **separately** from the platform tiers — they are an independent purchase and are not included in Free, Hobby, or Pro.
 
 | Plan       | Response time | Channel                                                      | Also includes                       | Price          |
 |------------|---------------|--------------------------------------------------------------|-------------------------------------|----------------|
@@ -40,4 +42,4 @@ Support plans are sold **separately** from the platform tiers — they are an in
 
 - Billing cycle is **monthly, in arrears** — at the start of each month you receive the invoice for the previous month's usage.
 - All prices are in **EUR** and shown **without taxes (VAT)** included.
-- Payment methods are managed from your account's **Billing** settings in the dashboard.
+- Payment methods are managed from your account's **Billing** settings in the dashboard; upgrades go through Stripe Checkout.

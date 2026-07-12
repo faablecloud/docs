@@ -17,7 +17,7 @@ Webhooks let your backend react to events in your Faable Auth tenant — without
 | `auth.login` | A user successfully authenticates. |
 
 > [!IMPORTANT]
-> **Plan requirement**: Webhooks are available on **Pro** and **Business**. Hobby accounts cannot create webhook subscriptions. See [Auth pricing](../pricing.md).
+> **Plan requirement**: Webhooks are available on **Hobby** and **Pro**. Free accounts cannot create webhook subscriptions. See [Auth pricing](../pricing.md).
 
 ## Managing subscriptions
 

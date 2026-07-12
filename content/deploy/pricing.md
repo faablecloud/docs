@@ -1,6 +1,6 @@
 ---
 title: Deploy pricing
-description: What each Faable plan includes for Faable Deploy — instance catalog, bandwidth allowance, egress overage rates, and per-tier behavior.
+description: What each Faable plan includes for Faable Deploy — instance catalog, deployments per day, bandwidth allowance, egress overage rates, and per-tier behavior.
 ---
 
 # Deploy pricing
@@ -9,19 +9,19 @@ Faable Deploy is part of the unified Faable subscription. The platform fee, supp
 
 ## What each plan includes for Deploy
 
-| Plan         | Deploy entitlements |
-|--------------|---------------------|
-| **Hobby**    | 1 free `bi.xs` instance per account · catalog limited to `bi.xs` · apps run for **7 days and are then deleted** · 10 GB bandwidth |
-| **Pro**      | Full instance catalog · apps run 24/7 (no auto-pause, no deletion) · custom domains per app · egress overage **0.24 €/GB** |
-| **Business** | Everything in Pro · egress overage **0.18 €/GB** · 99.9 % uptime SLA |
+| Plan      | Deploy entitlements |
+|-----------|---------------------|
+| **Free**  | 1 free `bi.xs` instance per project · catalog limited to `bi.xs` · **up to 3 deployments per day per project** (resets at 00:00 UTC) · 10 GB bandwidth |
+| **Hobby** | Full instance catalog · **unlimited deployments** · apps run 24/7 · custom domains per app · egress overage **0.24 €/GB** |
+| **Pro**   | Everything in Hobby · egress overage **0.18 €/GB** · 99.9 % uptime SLA |
 
 ## Compute catalog
 
-Each deployed app is billed per month based on the instance size it requests. The `bi.xs` row is **free on Hobby** (1 per account); all other sizes require Pro or Business.
+Each deployed app is billed per month based on the instance size it requests. The `bi.xs` row is **free on the Free plan** (1 per project); all other sizes require Hobby or Pro.
 
 | Name         | Size            | Bandwidth | Price          |
 |--------------|-----------------|-----------|----------------|
-| `bi.xs`      | 0.5 CPU · 1 GB  | 10 GB     | Free on Hobby  |
+| `bi.xs`      | 0.5 CPU · 1 GB  | 10 GB     | Free plan      |
 | `bi.small`   | 1 CPU · 1.5 GB  | 50 GB     | 25 €           |
 | `bi.base`    | 1 CPU · 3 GB    | 50 GB     | 40 €           |
 | `bi.medium`  | 2 CPU · 3 GB    | 100 GB    | 50 €           |
@@ -31,12 +31,16 @@ Each deployed app is billed per month based on the instance size it requests. Th
 
 Instances are billed **per month**.
 
+## Deployments per day (Free plan)
+
+On the Free plan each project can create up to **3 deployments per calendar day (UTC)**. The 4th deploy of the day is rejected with a clear error from the CLI and dashboard; the counter resets at 00:00 UTC. Hobby and Pro have no deployment limits.
+
 ## Bandwidth
 
-| Type    | Included                  | Overage                                          |
-|---------|---------------------------|--------------------------------------------------|
-| Ingress | Unlimited, free           | —                                                |
-| Egress  | Per-instance allowance    | **0.24 €/GB** on Pro · **0.18 €/GB** on Business |
+| Type    | Included                  | Overage                                        |
+|---------|---------------------------|------------------------------------------------|
+| Ingress | Unlimited, free           | —                                              |
+| Egress  | Per-instance allowance    | **0.24 €/GB** on Hobby · **0.18 €/GB** on Pro |
 
 Egress overage is metered monthly across all of your instances, after the included bandwidth from each instance's catalog row is consumed.
 

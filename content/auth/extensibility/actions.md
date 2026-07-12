@@ -19,7 +19,7 @@ Actions are stored per-account, run in execution order, and have a focused API f
 Multiple actions can be registered at the same trigger; they execute in ascending `order`. The first one to call `api.access.deny()` short-circuits the chain; the first one to call `api.redirect.sendUserTo()` pauses the flow.
 
 > [!IMPORTANT]
-> **Plan limits**: Hobby accounts can have **1 Action** per account. Pro and Business allow unlimited Actions. See [Auth pricing](../pricing.md).
+> **Plan limits**: Free accounts can have **1 Action** per account. Hobby and Pro allow unlimited Actions. See [Auth pricing](../pricing.md).
 
 ## CRUD endpoints
 
