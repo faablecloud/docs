@@ -1,0 +1,112 @@
+---
+title: Deploy SDK
+description: Manage Faable Deploy programmatically from Node.js with @faable/deploy-sdk — apps, deployments, domains, logs and traffic via an Octokit-style client authenticated with an API key or client credentials.
+---
+
+# Deploy SDK
+
+[`@faable/deploy-sdk`](https://www.npmjs.com/package/@faable/deploy-sdk) is the
+Node.js client for the **Faable Deploy API** (`https://api.faable.com`). It gives
+you programmatic access to everything you manage in the dashboard — apps,
+deployments, domains, secrets, and traffic metrics — so you can script
+provisioning, wire Deploy into your own tooling, or build on top of the platform.
+
+> [!NOTE]
+> You don't need the SDK for normal deploys. Pushing to your release branch (or
+> running the [CLI](../cli.md)) authenticates via **OIDC** and needs no
+> credentials — see [Get Started](get-started.md) and [GitHub Actions](github-actions.md).
+> Reach for the SDK when you want to **manage** apps from your own code.
+
+## Install
+
+```bash
+npm install @faable/deploy-sdk
+```
+
+## Authenticate
+
+The client is Octokit-style — you pass an **auth strategy** and its credentials,
+no environment magic. Two strategies are supported:
+
+**API key** (`authApikey`) — the simplest path for a backend or a script:
+
+```ts
+import { DeployApi, authApikey } from "@faable/deploy-sdk";
+
+const api = DeployApi.create({
+  authStrategy: authApikey,
+  auth: { apikey: process.env.FAABLE_APIKEY! },
+});
+```
+
+**Client credentials** (`authClientCredentials`) — for an OAuth client with the
+right scopes on the Deploy API:
+
+```ts
+import { DeployApi, authClientCredentials } from "@faable/deploy-sdk";
+
+const api = DeployApi.create({
+  authStrategy: authClientCredentials,
+  auth: {
+    client_id: process.env.FAABLE_CLIENT_ID!,
+    client_secret: process.env.FAABLE_CLIENT_SECRET!,
+  },
+});
+```
+
+The base URL defaults to `https://api.faable.com`; pass `baseURL` only to target
+another environment.
+
+## List apps and deployments
+
+List endpoints return a **paginator**. Call `.all()` to fetch every page flattened
+into an array, or `.first()` for just the first page (`{ results, next }`):
+
+```ts
+// Every app in your account
+const apps = await api.appList().all();
+
+// Filter with FaableQL, one page at a time
+const { results } = await api.appList({ query: "status:READY" }).first();
+
+// Deployments for review
+const deployments = await api.deploymentList().all();
+```
+
+## Work with a single app
+
+```ts
+const app = await api.appGet(appId);
+
+// Trigger a deployment
+const deployment = await api.deploymentCreate({ app_id: appId });
+const status = await api.deploymentGet(deployment.id);
+
+// Tail runtime logs
+const logs = await api.appLogs(appId, { limit: 200 });
+
+// HTTP traffic metrics (defaults to the last 24h, 1h buckets)
+const traffic = await api.getAppTraffic(appId, {
+  from: Math.floor(Date.now() / 1000) - 86_400,
+  interval: 3_600,
+});
+
+// Secrets (returns a paginator)
+const secrets = await api.listSecrets(appId).all();
+```
+
+## Domains and projects
+
+```ts
+const domains = await api.domainList().all();
+await api.domainCreate({ app_id: appId, fqdn: "www.example.com", tls: true });
+
+const projects = await api.projectList().all();
+```
+
+## Reference
+
+Every dashboard resource has a matching set of methods on `DeployApi`
+(`appCreate`, `appUpdate`, `appDelete`, `appLinkRepository`, `domainUpdate`,
+`projectInvite`, …). They mirror the [Deploy API](get-started.md) one-to-one, are
+fully typed, and autocomplete in your editor.
