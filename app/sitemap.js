@@ -1,5 +1,5 @@
 import { getPageMap } from 'nextra/page-map'
-import { lastModifiedForRoute } from './_lib/last-modified'
+import { lastModifiedForRoute, sourceFileFor } from './_lib/last-modified'
 
 const SITE_URL = 'https://faable.com/docs'
 
@@ -19,11 +19,13 @@ function collectRoutes(items, routes = new Set()) {
 
 export default async function sitemap() {
   const pageMap = await getPageMap()
-  const routes = collectRoutes(pageMap)
+  // Folders without an index page have a route in the page map but no actual
+  // page behind it — advertising them would send crawlers to 404s.
+  const routes = [...collectRoutes(pageMap)].filter((route) => sourceFileFor(route))
 
   const buildDate = new Date()
 
-  return [...routes].sort().map((route) => ({
+  return routes.sort().map((route) => ({
     // route already starts with "/", strip it to avoid a double slash
     url: `${SITE_URL}${route === '/' ? '' : route}`,
     lastModified: lastModifiedForRoute(route, buildDate),
