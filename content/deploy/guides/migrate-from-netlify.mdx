@@ -1,28 +1,28 @@
 ---
 title: Migrate from Netlify to Faable Deploy
-description: A step-by-step guide to migrating from Netlify to Faable Deploy. Move your Git-based builds, environment variables, redirects, and custom domains to a zero-config, 100% European platform with a built-in WAF and full-stack Linux containers.
+description: A step-by-step guide to migrating from Netlify to Faable Deploy. Move your Git-based builds, environment variables, redirects, and custom domains to a zero-config, 100% European platform with a built-in WAF and full-stack hosting.
 ---
 
 # Migrate from Netlify to Faable Deploy
 
-**Short answer:** Migrating from Netlify to Faable Deploy keeps the Git-driven workflow — connect a repo, push, get a live site with automatic SSL — while moving from Netlify's static-site-plus-functions model to **Linux containers** that run full-stack apps and backends as well as static frontends. You connect your GitHub repository, carry over environment variables and redirects, and re-point your domain. Teams move for **European data sovereignty (GDPR)**, a **built-in Web Application Firewall**, **predictable EUR pricing**, and bundling with [Faable Auth](../../auth/get-started.md).
+**Short answer:** Migrating from Netlify to Faable Deploy keeps the Git-driven workflow — connect a repo, push, get a live site with automatic SSL — while moving from Netlify's static-site-plus-functions model to a platform that runs **full-stack apps and backends** as well as static frontends. You connect your GitHub repository, carry over environment variables and redirects, and re-point your domain. Teams move for **European data sovereignty (GDPR)**, a **built-in Web Application Firewall**, **predictable EUR pricing**, and bundling with [Faable Auth](../../auth/get-started.md).
 
 ## Concept mapping
 
-| Netlify | Faable Deploy | Notes |
-|---|---|---|
-| Site | App | One repository → one app at `https://<app>.faable.link` |
-| Continuous Deployment | GitHub connection | Push to deploy |
-| Netlify Functions | Linux container | Run your backend as a continuous process on `$PORT` |
-| Environment Variables | Environment Variables | Set per app in the dashboard or with `faable deploy secrets set` |
-| Redirects / `_redirects` | App routing / framework config | Handle redirects in your framework or server |
-| Custom Domains + SSL | [Custom domains](../domains/custom-domain.md) + [SSL](../domains/ssl-certificates.md) | CNAME/ALIAS + automatic certificates |
-| — | [Built-in WAF](../security-waf.md) | OWASP CRS, included |
+| Netlify                  | Faable Deploy                                                                         | Notes                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Site                     | App                                                                                   | One repository → one app at `https://<app>.faable.link`              |
+| Continuous Deployment    | GitHub connection                                                                     | Push to deploy                                                       |
+| Netlify Functions        | Always-on service                                                                     | Run your backend as a continuous process on the port Faable provides |
+| Environment Variables    | Environment Variables                                                                 | Set per app in the dashboard or with `faable deploy secrets set`     |
+| Redirects / `_redirects` | App routing / framework config                                                        | Handle redirects in your framework or server                         |
+| Custom Domains + SSL     | [Custom domains](../domains/custom-domain.md) + [SSL](../domains/ssl-certificates.md) | CNAME/ALIAS + automatic certificates                                 |
+| —                        | [Built-in WAF](../security-waf.md)                                                    | OWASP CRS, included                                                  |
 
 ## Migration steps
 
 1. **Connect your repository** in the [Faable Dashboard](https://dashboard.faable.com/account/register).
-2. **Bind to `$PORT`.** For server-rendered or backend apps, listen on `0.0.0.0` and the `PORT` variable (see the [Express guide](guide-express.md)). Static sites build and serve with their standard build command.
+2. **Read the port Faable provides.** For server-rendered or backend apps, listen on the `PORT` environment variable rather than a hardcoded port (see the [Express guide](guide-express.md), and [What the Builder Expects](../build-requirements.mdx#the-port-contract) for details). Static sites build and serve with their standard build command — no change needed.
 3. **Copy environment variables** from Netlify's site settings — in the dashboard, or from the terminal with the [CLI](../../cli.md#secrets): `faable deploy secrets set KEY=VALUE KEY2=VALUE2`.
 4. **Re-create redirects.** Move any `_redirects` / `netlify.toml` rules into your framework's routing or your server, since Faable serves your app directly rather than through Netlify's edge rules.
 5. **Deploy** by pushing your branch or running `faable deploy` — Faable detects, builds, and serves with free SSL. See [Get Started](../get-started.md).
@@ -30,7 +30,7 @@ description: A step-by-step guide to migrating from Netlify to Faable Deploy. Mo
 
 ## What to plan for
 
-- **Functions → container process:** Netlify Functions become routes in your own backend running as a container. Most full-stack frameworks port directly.
+- **Functions → always-on process:** Netlify Functions become routes in your own backend running as a continuous process. Most full-stack frameworks port directly.
 - **Edge rules:** redirects, headers, and rewrites configured in Netlify move into your app or framework configuration.
 
 ## Related

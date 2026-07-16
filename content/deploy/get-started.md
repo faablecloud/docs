@@ -5,9 +5,9 @@ description: Deploy your first app on Faable Deploy in minutes — push to GitHu
 
 # Get Started with Faable Deploy
 
-Faable Deploy is a zero-config CI/CD platform for frontends and backends. Your code runs in Linux containers, gets a public URL with free automatic SSL, and a built-in Web Application Firewall — no infrastructure to manage.
+**Deploy your app straight from Git. No infrastructure to manage. Live in minutes.** Connect your repository, push your code, and Faable detects your framework, builds it, and ships it to a public URL with free automatic SSL.
 
-> New to the concept? Read [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx). Comparing platforms? See [Faable Deploy vs Vercel, Render & Railway](compare.mdx).
+> Curious what happens after you push? See [How deployment works](how-it-works.mdx). Comparing platforms? See [Faable Deploy vs Vercel, Render & Railway](compare.mdx).
 
 ## How Faable Deploy is structured
 
@@ -15,18 +15,18 @@ Three concepts model the whole product:
 
 - **Account** — your billing and team boundary on Faable.
 - **Apps** — one app per repo (or one per environment, e.g. `staging` / `production`). Each app gets `<app>.faable.link` plus optional [custom domains](domains/custom-domain.md).
-- **Instances** — the Linux containers your app runs on. Pick a size from the [catalog](pricing.md#compute-catalog) (`bi.xs` through `bi.2xlarge`).
+- **Instances** — how much compute your app runs on. Pick a size from the [catalog](pricing.md#compute-catalog) (`bi.xs` through `bi.2xlarge`) — start small and scale up whenever you need to.
 
 ## Deploy your first app
 
 1. In the **[Faable Dashboard](https://dashboard.faable.com)**, create a **Project** and an **App**.
-2. Open the app and click **Link repository**. Pick your GitHub org and repo (install the **Faable GitHub App** if prompted). Faable commits the GitHub Actions workflow to your repo for you.
-3. **Push to your release branch.** Your app builds and goes live at `https://<app>.faable.link`.
+2. Open the app and click **Link repository**. Pick your GitHub org and repo (install the **Faable GitHub App** if prompted). Faable connects your repo and sets up automatic deploys for you.
+3. **Push to your release branch.** Faable detects your framework, builds your app, and takes it live at `https://<app>.faable.link`.
 
-That's it — no `app_id`, API tokens, or YAML to write. Deploys authenticate via OIDC and resolve the app from the linked repository.
+That's it — nothing to configure, no tokens or YAML to write.
 
 > [!TIP]
-> If your `package.json` defines a `build` script, Faable runs it automatically before deployment. For multi-environment setups (staging/preview/production), custom build commands, or writing the workflow yourself, see [GitHub Actions](github-actions.md).
+> Faable detects your framework automatically and, if your project has a build step, runs it for you before every deploy. Need multi-environment setups (staging/preview/production) or custom build commands? See the [advanced deploy options](github-actions.md).
 
 ## Deploy from your laptop with the CLI
 

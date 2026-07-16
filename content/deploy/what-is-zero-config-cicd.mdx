@@ -17,18 +17,18 @@ description: Zero-config CI/CD is continuous integration and deployment that wor
 
 Traditional CI/CD is powerful but expensive to set up and own: pipeline YAML, build runners, container images, secrets, and deployment scripts all have to be written and kept working. Zero-config CI/CD removes that operational tax so small teams can ship production apps without a dedicated platform engineer.
 
-| Traditional CI/CD | Zero-config CI/CD |
-|---|---|
-| Write and maintain pipeline YAML | Push to a branch |
-| Build and manage container images | Stack auto-detected and built |
-| Provision and patch servers | No servers to manage |
-| Configure SSL and domains manually | Free automatic SSL |
+| Traditional CI/CD                  | Zero-config CI/CD             |
+| ---------------------------------- | ----------------------------- |
+| Write and maintain pipeline YAML   | Push to a branch              |
+| Build and manage container images  | Stack auto-detected and built |
+| Provision and patch servers        | No servers to manage          |
+| Configure SSL and domains manually | Free automatic SSL            |
 
 ## How Faable Deploy implements zero-config CI/CD
 
-With [Faable Deploy](get-started.md), you link a GitHub repository, and Faable commits the workflow to your repo for you. Every push to your release branch builds your app and serves it at `https://<app>.faable.link` with free SSL, a global edge network, autoscaling, and a built-in [Web Application Firewall](security-waf.md) — no `app_id`, API tokens, or YAML to write. Deploys authenticate via OIDC and resolve the app from the linked repository.
+With [Faable Deploy](get-started.md), you connect a GitHub repository and push your code. Faable detects your framework, builds it, and serves it at `https://<app>.faable.link` with free SSL, a global edge network, autoscaling, and a built-in [Web Application Firewall](security-waf.md) — nothing to configure, no tokens or YAML to write. From a Git push to a live website in minutes.
 
-If you outgrow the defaults, you can still customize the [GitHub Actions workflow](github-actions.md) for multi-environment deploys, custom build commands, and secrets.
+If you outgrow the defaults, you can still reach for [advanced deploy options](github-actions.md) — multi-environment deploys, custom build commands, and secrets.
 
 ## Related
 

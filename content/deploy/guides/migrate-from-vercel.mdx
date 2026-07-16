@@ -1,28 +1,28 @@
 ---
 title: Migrate from Vercel to Faable Deploy
-description: A step-by-step guide to migrating from Vercel to Faable Deploy. Move your Git-based deployments, environment variables, and custom domains to a zero-config, 100% European platform with a built-in WAF — running your app in Linux containers.
+description: A step-by-step guide to migrating from Vercel to Faable Deploy. Move your Git-based deployments, environment variables, and custom domains to a zero-config, 100% European platform with a built-in WAF.
 ---
 
 # Migrate from Vercel to Faable Deploy
 
-**Short answer:** Migrating from Vercel to Faable Deploy keeps the part you like — push to Git, get a live deploy with automatic SSL — while moving your app from Vercel's frontend-first serverless model to **standard Linux containers** that run any stack (frontend *and* backend). You connect your GitHub repository, move your environment variables, and re-point your custom domain. Teams move for **European data sovereignty (full GDPR)**, a **built-in Web Application Firewall**, **predictable EUR pricing without surprise egress tiers**, and bundling hosting with [Faable Auth](../../auth/get-started.md) in one subscription.
+**Short answer:** Migrating from Vercel to Faable Deploy keeps the part you like — push to Git, get a live deploy with automatic SSL — while moving your app from Vercel's frontend-first serverless model to a platform that runs **any stack as an always-on service** (frontend _and_ backend). You connect your GitHub repository, move your environment variables, and re-point your custom domain. Teams move for **European data sovereignty (full GDPR)**, a **built-in Web Application Firewall**, **predictable EUR pricing without surprise egress tiers**, and bundling hosting with [Faable Auth](../../auth/get-started.md) in one subscription.
 
 ## Concept mapping
 
-| Vercel | Faable Deploy | Notes |
-|---|---|---|
-| Project | App | One repository → one app at `https://<app>.faable.link` |
-| Git integration | GitHub connection | Push to deploy, same workflow |
-| Serverless / Edge Functions | Linux container | Your server process runs continuously, listening on `$PORT` |
-| Environment Variables | Environment Variables | Set per app in the dashboard or with `faable deploy secrets set` |
-| Custom Domains | [Custom domains](../domains/custom-domain.md) | CNAME/ALIAS + automatic SSL |
-| Vercel WAF / Firewall (add-on) | [Built-in WAF](../security-waf.md) | OWASP CRS, included |
-| Analytics / Observability | Logs & monitoring | Logs in the [dashboard](https://dashboard.faable.com) |
+| Vercel                         | Faable Deploy                                 | Notes                                                                        |
+| ------------------------------ | --------------------------------------------- | ---------------------------------------------------------------------------- |
+| Project                        | App                                           | One repository → one app at `https://<app>.faable.link`                      |
+| Git integration                | GitHub connection                             | Push to deploy, same workflow                                                |
+| Serverless / Edge Functions    | Always-on service                             | Your server process runs continuously, listening on the port Faable gives it |
+| Environment Variables          | Environment Variables                         | Set per app in the dashboard or with `faable deploy secrets set`             |
+| Custom Domains                 | [Custom domains](../domains/custom-domain.md) | CNAME/ALIAS + automatic SSL                                                  |
+| Vercel WAF / Firewall (add-on) | [Built-in WAF](../security-waf.md)            | OWASP CRS, included                                                          |
+| Analytics / Observability      | Logs & monitoring                             | Logs in the [dashboard](https://dashboard.faable.com)                        |
 
 ## Migration steps
 
 1. **Connect your repository.** Sign in to the [Faable Dashboard](https://dashboard.faable.com/account/register) and link the GitHub repo you deploy on Vercel today.
-2. **Make your app listen on `$PORT`.** Faable runs your app as a container, so ensure your server binds to `0.0.0.0` and the `PORT` environment variable (see the [Express guide](guide-express.md) for the pattern). Static frontends and most frameworks work with their standard `start` command.
+2. **Make sure your app reads the port Faable provides.** Your server should bind to the `PORT` environment variable rather than a hardcoded port (see the [Express guide](guide-express.md) for the one-line pattern, and [What the Builder Expects](../build-requirements.mdx#the-port-contract) for the details). Static frontends and most frameworks work with their standard `start` command — no change needed.
 3. **Copy environment variables** from your Vercel project settings into the Faable app — in the dashboard, or from the terminal with the [CLI](../../cli.md#secrets): `faable deploy secrets set KEY=VALUE KEY2=VALUE2`.
 4. **Deploy.** Push to your branch (or run `faable deploy`); Faable detects the stack, builds, and serves it with free SSL. See [Get Started](../get-started.md) and [What is zero-config CI/CD?](../what-is-zero-config-cicd.mdx).
 5. **Move your domain.** Add your [custom domain](../domains/custom-domain.md) in Faable, update the DNS record, and let [SSL](../domains/ssl-certificates.md) provision automatically. Keep the Vercel deployment live until DNS propagates.
@@ -30,7 +30,7 @@ description: A step-by-step guide to migrating from Vercel to Faable Deploy. Mov
 
 ## What to plan for
 
-- **Serverless → long-running process:** if you relied on per-request serverless functions, your backend now runs as a continuous container process. Most frameworks (Next.js, Express, Nuxt, SvelteKit) run unchanged; purely edge-runtime code may need adjusting.
+- **Serverless → long-running process:** if you relied on per-request serverless functions, your backend now runs as a continuous, always-on process. Most frameworks (Next.js, Express, Nuxt, SvelteKit) run unchanged; purely edge-runtime code may need adjusting.
 - **Build settings:** install/build/start commands carry over; set them on the app if your framework isn't auto-detected.
 
 ## Related

@@ -5,7 +5,7 @@ description: Understand the Faable Deploy runtime environment. Learn about suppo
 
 # Runtime
 
-Your app run in our platform as Linux Containers. This document describes how apps work in Faable Deploy.
+This page describes how your app runs on Faable Deploy — the Node.js versions we support, how to set environment variables, and how we keep your app running.
 
 ## Node.js
 
@@ -35,7 +35,7 @@ To specify the version of Node.js to use on Faable, use the engines section of t
 }
 ```
 
-> If a Node version isn't specified in the engines section, the builder uses the Node version of the machine running the deploy (your computer, or the CI runner). Pin `engines.node` so local and CI builds agree — see [What the Builder Expects in Your Repo](build-requirements.md).
+> If a Node version isn't specified in the engines section, Faable uses the Node version wherever the deploy runs. Pin `engines.node` so every deploy uses the same version — see [What the Builder Expects in Your Repo](build-requirements.md).
 
 ## Environment variables
 
