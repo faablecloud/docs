@@ -1,0 +1,12 @@
+# Build output & dependencies
+.next/
+node_modules/
+out/
+
+# Generated assets
+public/_pagefind/
+
+# Lockfiles
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

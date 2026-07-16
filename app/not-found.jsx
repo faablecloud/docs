@@ -1,31 +1,31 @@
-import Link from "next/link";
+import Link from 'next/link'
 
 export const metadata = {
-  title: "Page not found",
+  title: 'Page not found',
   description:
-    "We couldn't find the page you were looking for. Head over to Faable Auth or Faable Deploy to keep exploring.",
-};
+    "We couldn't find the page you were looking for. Head over to Faable Auth or Faable Deploy to keep exploring."
+}
 
 const products = [
   {
-    href: "/auth/get-started",
-    emoji: "🔐",
-    name: "Faable Auth",
-    tagline: "Scalable, multi-tenant identity",
+    href: '/auth/get-started',
+    emoji: '🔐',
+    name: 'Faable Auth',
+    tagline: 'Scalable, multi-tenant identity',
     description:
-      "OAuth 2.0, OpenID Connect, passwordless, social login, MFA and enterprise SSO — everything you need to authenticate users.",
-    cta: "Explore Auth",
+      'OAuth 2.0, OpenID Connect, passwordless, social login, MFA and enterprise SSO — everything you need to authenticate users.',
+    cta: 'Explore Auth'
   },
   {
-    href: "/deploy/get-started",
-    emoji: "🚀",
-    name: "Faable Deploy",
-    tagline: "Zero-config CI/CD",
+    href: '/deploy/get-started',
+    emoji: '🚀',
+    name: 'Faable Deploy',
+    tagline: 'Zero-config CI/CD',
     description:
-      "Link a Git repository and Faable builds, deploys, and serves it on a global edge — with custom domains and free SSL out of the box.",
-    cta: "Explore Deploy",
-  },
-];
+      'Link a Git repository and Faable builds, deploys, and serves it on a global edge — with custom domains and free SSL out of the box.',
+    cta: 'Explore Deploy'
+  }
+]
 
 export default function NotFound() {
   return (
@@ -34,11 +34,11 @@ export default function NotFound() {
         404
       </p>
       <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-        We couldn't find that page
+        We couldn&apos;t find that page
       </h1>
       <p className="mt-3 max-w-xl text-base text-gray-600 dark:text-gray-400">
-        The link you followed may be broken, or the page may have moved. Pick
-        a product below to keep exploring — or jump back to the{" "}
+        The link you followed may be broken, or the page may have moved. Pick a
+        product below to keep exploring — or jump back to the{' '}
         <Link href="/" className="font-medium underline underline-offset-4">
           docs home
         </Link>
@@ -46,7 +46,7 @@ export default function NotFound() {
       </p>
 
       <div className="mt-12 grid w-full grid-cols-1 gap-6 sm:grid-cols-2">
-        {products.map((product) => (
+        {products.map(product => (
           <Link
             key={product.href}
             href={product.href}
@@ -98,5 +98,5 @@ export default function NotFound() {
         </a>
       </div>
     </div>
-  );
+  )
 }
