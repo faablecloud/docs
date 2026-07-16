@@ -35,5 +35,8 @@
     "husky": "^9.1.5",
     "lint-staged": "^16.2.7",
     "prettier": "^3.6.2"
+  },
+  "overrides": {
+    "zod": "4.3.6"
   }
 }
