@@ -17,7 +17,7 @@ To enable the WAF on your app, contact the team at [sales@faable.com](mailto:sal
 
 A WAF policy can run in two modes:
 
-- **Monitor (detection only):** suspicious requests are **logged but still served**. Use this when first enabling the WAF to observe what *would* be blocked without affecting real users.
+- **Monitor (detection only):** suspicious requests are **logged but still served**. Use this when first enabling the WAF to observe what _would_ be blocked without affecting real users.
 - **Block (prevention):** matching requests are **logged and rejected** (typically `403 Forbidden`) before reaching your app.
 
 The recommended rollout is: enable in **monitor mode**, review the logs for a representative period (including peak traffic and any batch/integration jobs), tune any false positives, then switch to **block mode**.

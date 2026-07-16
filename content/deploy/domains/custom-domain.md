@@ -30,7 +30,7 @@ Check with your DNS provider that it supports `ALIAS` (sometimes called `ANAME` 
 ## Verification and propagation
 
 - After creating the record, Faable verifies the domain and provisions the certificate. This usually completes within minutes once DNS is correct.
-- **DNS propagation** can take anywhere from a few minutes up to the record's **TTL** (time to live). Lowering the TTL *before* you migrate makes later changes propagate faster.
+- **DNS propagation** can take anywhere from a few minutes up to the record's **TTL** (time to live). Lowering the TTL _before_ you migrate makes later changes propagate faster.
 - You can check the live record with `dig www.example.com CNAME +short` or `dig example.com ALIAS +short`.
 
 ## Troubleshooting

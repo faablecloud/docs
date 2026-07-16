@@ -5,7 +5,7 @@ description: How Faable Auth implements OpenID Connect Core 1.0 — discovery, I
 
 # OpenID Connect
 
-**OpenID Connect (OIDC)** is the identity layer on top of OAuth 2.0. Where OAuth alone answers *"can this client access this API?"*, OIDC also answers *"who is the user?"* — by returning a signed **ID token** alongside the access token and standardizing how to fetch profile claims.
+**OpenID Connect (OIDC)** is the identity layer on top of OAuth 2.0. Where OAuth alone answers _"can this client access this API?"_, OIDC also answers _"who is the user?"_ — by returning a signed **ID token** alongside the access token and standardizing how to fetch profile claims.
 
 Faable Auth implements [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html). Every tenant domain is a fully self-describing OIDC issuer, so any standard OIDC client library works out of the box.
 
@@ -31,17 +31,17 @@ Keys rotate automatically; each token's `kid` header identifies the key that sig
 
 ## What's supported
 
-| Capability | Notes |
-| :--- | :--- |
-| Authorization Code Flow + PKCE (S256) | The recommended login flow — see [OAuth 2.0 Flows](/auth/oauth-flows) |
-| Discovery | `/.well-known/openid-configuration` per tenant |
-| JWKS with key rotation | `/.well-known/jwks.json`, RS256 |
-| `nonce` | Replay protection for ID tokens |
-| `prompt` | `none`, `login`, `consent`, `select_account` |
-| `max_age` + `auth_time` | Force or measure re-authentication |
-| [UserInfo endpoint](/auth/oidc/userinfo) | Claims gated by scopes (§5.4) |
-| [RP-Initiated Logout](/auth/oidc/logout) | `id_token_hint`, `post_logout_redirect_uri` |
-| Dynamic Client Registration | [RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591), `POST /oidc/register` |
+| Capability                               | Notes                                                                            |
+| :--------------------------------------- | :------------------------------------------------------------------------------- |
+| Authorization Code Flow + PKCE (S256)    | The recommended login flow — see [OAuth 2.0 Flows](/auth/oauth-flows)            |
+| Discovery                                | `/.well-known/openid-configuration` per tenant                                   |
+| JWKS with key rotation                   | `/.well-known/jwks.json`, RS256                                                  |
+| `nonce`                                  | Replay protection for ID tokens                                                  |
+| `prompt`                                 | `none`, `login`, `consent`, `select_account`                                     |
+| `max_age` + `auth_time`                  | Force or measure re-authentication                                               |
+| [UserInfo endpoint](/auth/oidc/userinfo) | Claims gated by scopes (§5.4)                                                    |
+| [RP-Initiated Logout](/auth/oidc/logout) | `id_token_hint`, `post_logout_redirect_uri`                                      |
+| Dynamic Client Registration              | [RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591), `POST /oidc/register` |
 
 ## Standard claims
 

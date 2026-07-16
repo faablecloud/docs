@@ -37,7 +37,7 @@ import { createClient } from '@faable/auth-js'
 export const faableauth = createClient({
   domain: 'your-tenant.auth.faable.link',
   clientId: '<your_client_id>',
-  storage: 'cookie', // required for SSR — the server reads this cookie
+  storage: 'cookie' // required for SSR — the server reads this cookie
 })
 ```
 
@@ -50,7 +50,7 @@ The default `localStorage` storage is invisible to the server, so
 import { getSessionFromCookies } from '@faable/auth-js'
 
 const session = await getSessionFromCookies(cookieStore, {
-  clientId: '<client_id>',
+  clientId: '<client_id>'
   // storageKey: '<custom>' // only if you set a custom storageKey in createClient
 })
 ```
@@ -76,7 +76,7 @@ import { getSessionFromCookies } from '@faable/auth-js'
 
 export async function middleware(req: NextRequest) {
   const session = await getSessionFromCookies(req.cookies, {
-    clientId: '<client_id>',
+    clientId: '<client_id>'
   })
 
   if (!session) {
@@ -92,7 +92,7 @@ export async function middleware(req: NextRequest) {
 
 // Protect everything except the login page and Next.js internals.
 export const config = {
-  matcher: ['/((?!login|_next|favicon.ico).*)'],
+  matcher: ['/((?!login|_next|favicon.ico).*)']
 }
 ```
 
@@ -107,12 +107,12 @@ Use `cookies()` from `next/headers`. In **Next.js 15+ `cookies()` is async**, so
 ```tsx
 // app/dashboard/page.tsx
 import { cookies } from 'next/headers'
-import { getSessionFromCookies } from '@faable/auth-js'
 import { redirect } from 'next/navigation'
+import { getSessionFromCookies } from '@faable/auth-js'
 
 export default async function DashboardPage() {
   const session = await getSessionFromCookies(await cookies(), {
-    clientId: '<client_id>',
+    clientId: '<client_id>'
   })
   if (!session) redirect('/login')
 
@@ -126,13 +126,13 @@ export default async function DashboardPage() {
 ```tsx
 // app/dashboard/page.tsx
 import { cookies } from 'next/headers'
-import { getSessionFromCookies } from '@faable/auth-js'
 import { redirect } from 'next/navigation'
+import { getSessionFromCookies } from '@faable/auth-js'
 
 export default async function DashboardPage() {
   // Next.js 14: cookies() is synchronous — no inner await.
   const session = await getSessionFromCookies(cookies(), {
-    clientId: '<client_id>',
+    clientId: '<client_id>'
   })
   if (!session) redirect('/login')
 
@@ -148,14 +148,15 @@ A Route Handler is the same — read `cookies()` and branch on the result:
 ```ts
 // app/api/me/route.ts
 import { cookies } from 'next/headers'
-import { getSessionFromCookies } from '@faable/auth-js'
 import { NextResponse } from 'next/server'
+import { getSessionFromCookies } from '@faable/auth-js'
 
 export async function GET() {
   const session = await getSessionFromCookies(await cookies(), {
-    clientId: '<client_id>',
+    clientId: '<client_id>'
   })
-  if (!session) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   return NextResponse.json({ user: session.user })
 }
 ```

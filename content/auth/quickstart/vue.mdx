@@ -38,13 +38,13 @@ npm install @faable/auth-js
 
 ```ts
 // src/auth-client.ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 export const auth = createClient({
-  domain: "your-domain.auth.faable.link",
-  clientId: "YOUR_CLIENT_ID",
-  redirectUri: window.location.origin + "/callback",
-});
+  domain: 'your-domain.auth.faable.link',
+  clientId: 'YOUR_CLIENT_ID',
+  redirectUri: window.location.origin + '/callback'
+})
 ```
 
 The client initializes itself on creation: it recovers an existing session from storage, or — on the callback URL — exchanges the PKCE `?code=` for tokens.
@@ -55,29 +55,29 @@ Wrap the client in a `useAuth()` composable. It holds one shared `ref`, seeds it
 
 ```ts
 // src/auth.ts
-import { ref, computed } from "vue";
-import type { Session } from "@faable/auth-js";
-import { auth } from "./auth-client";
+import type { Session } from '@faable/auth-js'
+import { computed, ref } from 'vue'
+import { auth } from './auth-client'
 
-const session = ref<Session | null>(null);
+const session = ref<Session | null>(null)
 
 // Keep the ref in sync with every auth change (login, refresh, logout, other tabs).
 auth.onAuthStateChange((_event, next) => {
-  session.value = next;
-});
+  session.value = next
+})
 
 // Seed the initial value once (also auto-refreshes an expired session).
 auth.getSession().then(({ data }) => {
-  session.value = data.session;
-});
+  session.value = data.session
+})
 
 export function useAuth() {
   return {
     session,
     user: computed(() => session.value?.user ?? null),
     signIn: () => auth.signInWithOauthConnection({}),
-    signOut: () => auth.signOut({ returnTo: window.location.origin }),
-  };
+    signOut: () => auth.signOut({ returnTo: window.location.origin })
+  }
 }
 ```
 
@@ -145,15 +145,15 @@ The access token lives on the session. Read it fresh before each call — `getSe
 
 ```ts
 // src/api.ts
-import { auth } from "./auth-client";
+import { auth } from './auth-client'
 
 export async function apiFetch(path: string) {
-  const { data, error } = await auth.getSession();
-  if (error || !data.session) throw new Error("Not signed in");
+  const { data, error } = await auth.getSession()
+  if (error || !data.session) throw new Error('Not signed in')
 
   return fetch(`https://api.myapp.com${path}`, {
-    headers: { authorization: `Bearer ${data.session.access_token}` },
-  });
+    headers: { authorization: `Bearer ${data.session.access_token}` }
+  })
 }
 ```
 

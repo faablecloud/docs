@@ -5,20 +5,20 @@ description: A step-by-step guide to migrating from Auth0 to Faable Auth. Map Au
 
 # Migrate from Auth0 to Faable Auth
 
-**Short answer:** Migrating from Auth0 to Faable Auth is mostly a mapping exercise, because both are standards-based OAuth 2.0 / OpenID Connect identity servers. You recreate your Auth0 *tenant* as a Faable *Account*, your *Applications* as *Clients*, and your *Connections* (social, database, enterprise) one-to-one, then export your users from Auth0 and import them into Faable. Your app code changes only the issuer URL, client ID, and endpoints — the OAuth flows stay the same. The main reasons teams move are **European data sovereignty (full GDPR)**, **predictable MAU-based pricing**, and **bundling auth with [Faable Deploy](../../deploy/get-started.md) hosting** in one subscription.
+**Short answer:** Migrating from Auth0 to Faable Auth is mostly a mapping exercise, because both are standards-based OAuth 2.0 / OpenID Connect identity servers. You recreate your Auth0 _tenant_ as a Faable _Account_, your _Applications_ as _Clients_, and your _Connections_ (social, database, enterprise) one-to-one, then export your users from Auth0 and import them into Faable. Your app code changes only the issuer URL, client ID, and endpoints — the OAuth flows stay the same. The main reasons teams move are **European data sovereignty (full GDPR)**, **predictable MAU-based pricing**, and **bundling auth with [Faable Deploy](../../deploy/get-started.md) hosting** in one subscription.
 
 ## Concept mapping
 
-| Auth0 | Faable Auth | Notes |
-|---|---|---|
-| Tenant | [Account](../what-is-a-multi-tenant-identity-server.mdx) | Your isolated identity boundary, at `https://<account>.auth.faable.link` |
-| Application | [Client](../clients.md) | SPA, native, regular web, or M2M |
-| Connection (social/DB/enterprise) | [Connection](../connections.md) | `database`, `social`, `passwordless`, `oidc` categories |
-| Organizations | Teams within an account | Multi-tenant by design |
-| Actions / Rules / Hooks | [Actions](../extensibility/actions.md) + [Webhooks](../extensibility/webhooks.md) | Custom code in the login flow and async events |
-| Management API | [Management API](../apis.md) | Called from your backend with client credentials |
-| Universal Login | Universal Login | Hosted login screen, same concept |
-| M2M Application | M2M Client (Client Credentials) | Service-to-service tokens |
+| Auth0                             | Faable Auth                                                                       | Notes                                                                    |
+| --------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Tenant                            | [Account](../what-is-a-multi-tenant-identity-server.mdx)                          | Your isolated identity boundary, at `https://<account>.auth.faable.link` |
+| Application                       | [Client](../clients.md)                                                           | SPA, native, regular web, or M2M                                         |
+| Connection (social/DB/enterprise) | [Connection](../connections.md)                                                   | `database`, `social`, `passwordless`, `oidc` categories                  |
+| Organizations                     | Teams within an account                                                           | Multi-tenant by design                                                   |
+| Actions / Rules / Hooks           | [Actions](../extensibility/actions.md) + [Webhooks](../extensibility/webhooks.md) | Custom code in the login flow and async events                           |
+| Management API                    | [Management API](../apis.md)                                                      | Called from your backend with client credentials                         |
+| Universal Login                   | Universal Login                                                                   | Hosted login screen, same concept                                        |
+| M2M Application                   | M2M Client (Client Credentials)                                                   | Service-to-service tokens                                                |
 
 ## Migration steps
 

@@ -49,15 +49,15 @@ Access tokens are RS256-signed JWTs. Decoded, they look like this:
 }
 ```
 
-| Claim         | Description                                                                                                                       |
-| :------------ | :---------------------------------------------------------------------------------------------------------------------------------- |
-| `sub`         | Who the token represents: a user id (`user_…`) for login flows, or the `client_id` for [machine-to-machine](oauth-flows/client-credentials.md) tokens. |
-| `scope`       | Space-separated string of granted scopes.                                                                                            |
-| `permissions` | Space-separated **string** (not an array) of granted API permissions. Only present when your API uses the `access_token_authz` token dialect — see [APIs](apis.md). |
-| `aud`         | The `identifier` of the API the token was issued for.                                                                                 |
-| `iss`         | Your tenant URL — **no trailing slash**.                                                                                              |
-| `exp`         | Expiry (seconds since epoch). Lifetime comes from your API's `token_lifetime` (default 24 h).                                          |
-| `teams` / `roles` | Optional string arrays, included when your API enables `include_teams_in_access_token` / `include_roles_in_access_token`.          |
+| Claim             | Description                                                                                                                                                         |
+| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `sub`             | Who the token represents: a user id (`user_…`) for login flows, or the `client_id` for [machine-to-machine](oauth-flows/client-credentials.md) tokens.              |
+| `scope`           | Space-separated string of granted scopes.                                                                                                                           |
+| `permissions`     | Space-separated **string** (not an array) of granted API permissions. Only present when your API uses the `access_token_authz` token dialect — see [APIs](apis.md). |
+| `aud`             | The `identifier` of the API the token was issued for.                                                                                                               |
+| `iss`             | Your tenant URL — **no trailing slash**.                                                                                                                            |
+| `exp`             | Expiry (seconds since epoch). Lifetime comes from your API's `token_lifetime` (default 24 h).                                                                       |
+| `teams` / `roles` | Optional string arrays, included when your API enables `include_teams_in_access_token` / `include_roles_in_access_token`.                                           |
 
 Your tenant publishes its public keys at <TennantDomain url="/.well-known/jwks.json"/> and its OIDC metadata at <TennantDomain url="/.well-known/openid-configuration"/>. Keys rotate — always resolve them by the token header's `kid` via JWKS instead of pinning a fixed key (any JWKS library does this for you).
 
@@ -68,51 +68,49 @@ Your tenant publishes its public keys at <TennantDomain url="/.well-known/jwks.j
 The complete pattern using [`jose`](https://www.npmjs.com/package/jose), which caches the JWKS and re-fetches it on key rotation automatically:
 
 ```ts
-import express from "express";
-import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
+import express from 'express'
+import { type JWTPayload, createRemoteJWKSet, jwtVerify } from 'jose'
 
-const ISSUER = "https://your-domain.auth.faable.link"; // your tenant — NO trailing slash
-const AUDIENCE = "https://api.myapp.com"; // your API's identifier in the dashboard
+const ISSUER = 'https://your-domain.auth.faable.link' // your tenant — NO trailing slash
+const AUDIENCE = 'https://api.myapp.com' // your API's identifier in the dashboard
 
-const JWKS = createRemoteJWKSet(new URL(`${ISSUER}/.well-known/jwks.json`));
+const JWKS = createRemoteJWKSet(new URL(`${ISSUER}/.well-known/jwks.json`))
 
 async function checkJwt(req, res, next) {
-  const token = req.headers.authorization?.replace(/^Bearer /, "");
-  if (!token) return res.status(401).json({ error: "missing_token" });
+  const token = req.headers.authorization?.replace(/^Bearer /, '')
+  if (!token) return res.status(401).json({ error: 'missing_token' })
 
   try {
     const { payload } = await jwtVerify(token, JWKS, {
       issuer: ISSUER,
       audience: AUDIENCE, // also rejects OIDC-only tokens issued without an audience
-      algorithms: ["RS256"],
-    });
-    req.auth = payload; // exp/iat already validated by jwtVerify
-    next();
+      algorithms: ['RS256']
+    })
+    req.auth = payload // exp/iat already validated by jwtVerify
+    next()
   } catch {
-    res.status(401).json({ error: "invalid_token" });
+    res.status(401).json({ error: 'invalid_token' })
   }
 }
 
 // Authorize per-route: `scope` and `permissions` are space-separated strings
-const requireScope =
-  (required: string) =>
-  (req, res, next) => {
-    const granted = new Set(
-      `${req.auth.scope ?? ""} ${req.auth.permissions ?? ""}`.split(" ")
-    );
-    if (!granted.has(required)) {
-      return res.status(403).json({ error: "insufficient_scope" });
-    }
-    next();
-  };
+const requireScope = (required: string) => (req, res, next) => {
+  const granted = new Set(
+    `${req.auth.scope ?? ''} ${req.auth.permissions ?? ''}`.split(' ')
+  )
+  if (!granted.has(required)) {
+    return res.status(403).json({ error: 'insufficient_scope' })
+  }
+  next()
+}
 
-const app = express();
+const app = express()
 
-app.get("/orders", checkJwt, requireScope("read:orders"), (req, res) => {
-  res.json({ orders: [], for: req.auth.sub });
-});
+app.get('/orders', checkJwt, requireScope('read:orders'), (req, res) => {
+  res.json({ orders: [], for: req.auth.sub })
+})
 
-app.listen(3000);
+app.listen(3000)
 ```
 
 The same four checks apply in any language — Python, Go, Java, .NET all have JWKS-aware JWT libraries; point them at your tenant's discovery URL.

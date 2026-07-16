@@ -54,12 +54,12 @@ When the user runs `yourcli login`, ask Faable for a code pair:
 
 ### Request Parameters
 
-| Parameter     | Required | Description                                                                                                  |
-| :------------ | :------- | :------------------------------------------------------------------------------------------------------------ |
-| `client_id`   | Yes      | Your application's Client ID.                                                                                  |
+| Parameter     | Required | Description                                                                                                                         |
+| :------------ | :------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| `client_id`   | Yes      | Your application's Client ID.                                                                                                       |
 | `scope`       | No       | Space-separated. Use `openid profile email offline_access` to also receive a refresh token so the user stays logged in across runs. |
-| `audience`    | No       | Identifier of the [API](../apis.md) the access token should target.                                            |
-| `device_name` | No       | Human-friendly name (e.g. `marcs-mbp (macOS)`) shown on the approval page so the user recognizes which device is asking. |
+| `audience`    | No       | Identifier of the [API](../apis.md) the access token should target.                                                                 |
+| `device_name` | No       | Human-friendly name (e.g. `marcs-mbp (macOS)`) shown on the approval page so the user recognizes which device is asking.            |
 
 ```bash
 curl --request POST \
@@ -85,14 +85,14 @@ curl --request POST \
 }
 ```
 
-| Field                       | Description                                                                                      |
-| :-------------------------- | :-------------------------------------------------------------------------------------------------- |
-| `device_code`               | The CLI's private handle for polling. **Never display it.**                                          |
-| `user_code`                 | The short code to show the user in the terminal.                                                     |
-| `verification_uri`          | The URL (on your tenant domain) where the user enters the code.                                      |
+| Field                       | Description                                                                                            |
+| :-------------------------- | :----------------------------------------------------------------------------------------------------- |
+| `device_code`               | The CLI's private handle for polling. **Never display it.**                                            |
+| `user_code`                 | The short code to show the user in the terminal.                                                       |
+| `verification_uri`          | The URL (on your tenant domain) where the user enters the code.                                        |
 | `verification_uri_complete` | Same URL with the code pre-filled — open it in the default browser, or render it as a QR code on a TV. |
-| `expires_in`                | The codes expire in **300 seconds (5 minutes)**. Start over if the user takes longer.                |
-| `interval`                  | Minimum seconds between polls: **5**. Polling faster returns `slow_down`.                            |
+| `expires_in`                | The codes expire in **300 seconds (5 minutes)**. Start over if the user takes longer.                  |
+| `interval`                  | Minimum seconds between polls: **5**. Polling faster returns `slow_down`.                              |
 
 ### Step 2: Show the Code and Open the Browser
 
@@ -113,10 +113,10 @@ While the user approves, poll the token endpoint every `interval` seconds:
 - **Method:** `POST`
 
 | Parameter     | Required | Description                                             |
-| :------------ | :------- | :------------------------------------------------------- |
-| `grant_type`  | Yes      | Must be `urn:ietf:params:oauth:grant-type:device_code`.   |
-| `client_id`   | Yes      | The same Client ID used in Step 1.                        |
-| `device_code` | Yes      | The `device_code` from Step 1.                            |
+| :------------ | :------- | :------------------------------------------------------ |
+| `grant_type`  | Yes      | Must be `urn:ietf:params:oauth:grant-type:device_code`. |
+| `client_id`   | Yes      | The same Client ID used in Step 1.                      |
+| `device_code` | Yes      | The `device_code` from Step 1.                          |
 
 ```bash
 curl --request POST \
@@ -131,13 +131,13 @@ curl --request POST \
 
 ### Polling Responses
 
-| Scenario            | Status | `error`                 | What to do                                                        |
-| :------------------ | :----- | :----------------------- | :------------------------------------------------------------------ |
-| Waiting for user    | `400`  | `authorization_pending`  | Keep polling at the `interval`.                                      |
-| Polling too fast    | `400`  | `slow_down`              | You polled less than 5 s after the previous attempt. Back off.       |
-| Code expired        | `400`  | `expired_token`          | The 5-minute window passed. Request a new code pair (Step 1).        |
-| Wrong client        | `401`  | `invalid_client`         | The `client_id` doesn't match the one that requested the code.       |
-| **Approved** ✅     | `200`  | —                        | Token response — stop polling.                                       |
+| Scenario         | Status | `error`                 | What to do                                                     |
+| :--------------- | :----- | :---------------------- | :------------------------------------------------------------- |
+| Waiting for user | `400`  | `authorization_pending` | Keep polling at the `interval`.                                |
+| Polling too fast | `400`  | `slow_down`             | You polled less than 5 s after the previous attempt. Back off. |
+| Code expired     | `400`  | `expired_token`         | The 5-minute window passed. Request a new code pair (Step 1).  |
+| Wrong client     | `401`  | `invalid_client`        | The `client_id` doesn't match the one that requested the code. |
+| **Approved** ✅  | `200`  | —                       | Token response — stop polling.                                 |
 
 ### Success Response
 
@@ -163,54 +163,54 @@ Your CLI gets the full token set: an **access token** to call your API on behalf
 The full loop — request codes, open the browser, poll, and land on a session. This mirrors what `faable login` does in production:
 
 ```ts
-import os from "os";
+import os from 'os'
 
-const AUTH_DOMAIN = "https://your-domain.auth.faable.link";
-const CLIENT_ID = "YOUR_CLIENT_ID";
+const AUTH_DOMAIN = 'https://your-domain.auth.faable.link'
+const CLIENT_ID = 'YOUR_CLIENT_ID'
 
 async function loginCommand() {
   // Step 1: request the code pair
   const codeRes = await fetch(`${AUTH_DOMAIN}/oauth/device/code`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       client_id: CLIENT_ID,
-      scope: "openid profile email offline_access",
-      device_name: `${os.hostname()} (${process.platform})`,
-    }),
-  });
+      scope: 'openid profile email offline_access',
+      device_name: `${os.hostname()} (${process.platform})`
+    })
+  })
   const { device_code, user_code, verification_uri_complete, interval } =
-    await codeRes.json();
+    await codeRes.json()
 
   // Step 2: show the code and let the user approve in the browser
-  console.log(`Open ${verification_uri_complete}`);
-  console.log(`and confirm the code: ${user_code}`);
+  console.log(`Open ${verification_uri_complete}`)
+  console.log(`and confirm the code: ${user_code}`)
 
   // Step 3: poll until approved
   while (true) {
-    await new Promise((r) => setTimeout(r, interval * 1000));
+    await new Promise(r => setTimeout(r, interval * 1000))
 
     const tokenRes = await fetch(`${AUTH_DOMAIN}/oauth/token`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
-        grant_type: "urn:ietf:params:oauth:grant-type:device_code",
+        grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
         client_id: CLIENT_ID,
-        device_code,
-      }),
-    });
+        device_code
+      })
+    })
 
-    if (tokenRes.ok) return tokenRes.json(); // { access_token, id_token, refresh_token, ... }
+    if (tokenRes.ok) return tokenRes.json() // { access_token, id_token, refresh_token, ... }
 
-    const { error } = await tokenRes.json();
-    if (error === "authorization_pending") continue;
-    if (error === "slow_down") continue; // next loop already waits `interval`
-    throw new Error(`Login failed: ${error}`); // expired_token, invalid_client
+    const { error } = await tokenRes.json()
+    if (error === 'authorization_pending') continue
+    if (error === 'slow_down') continue // next loop already waits `interval`
+    throw new Error(`Login failed: ${error}`) // expired_token, invalid_client
   }
 }
 
-const { access_token, refresh_token } = await loginCommand();
-console.log("You are logged in!");
+const { access_token, refresh_token } = await loginCommand()
+console.log('You are logged in!')
 ```
 
 > [!TIP]
@@ -221,21 +221,27 @@ console.log("You are logged in!");
 ## ❓ FAQ
 
 ### Do I need a `client_secret` in my CLI?
+
 No. CLIs are public clients — the flow is designed to work with only the `client_id`, so there's nothing secret to embed (or leak) in your distributed binary.
 
 ### How do I keep the user logged in between CLI runs?
+
 Request the `offline_access` scope, store the returned `refresh_token` securely, and exchange it for a fresh access token on startup with the [Refresh Token flow](refresh-token.md).
 
 ### How long does the user have to approve?
+
 5 minutes (`expires_in: 300`). After that, request a new code pair and show a fresh `user_code`.
 
 ### How does the user log in on the approval page?
+
 With any [connection](../connections.md) you've enabled — email/password, passwordless OTP, Google, GitHub, or custom providers. Your CLI inherits your entire login stack for free.
 
 ### Can I use `@faable/auth-js` for this flow?
+
 The device flow is plain HTTP by design (it targets environments where a browser SDK doesn't apply), so you implement the loop above directly. Use `@faable/auth-js` for your browser and mobile apps — same tenant, same users, same tokens.
 
 ### Does this also work for Smart TVs and IoT?
+
 Yes — the flow is identical. Render `verification_uri_complete` as a QR code instead of opening a browser, and the user approves from their phone.
 
 ---

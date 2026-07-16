@@ -1,4 +1,4 @@
-import { collectPages, SITE_URL } from '../_lib/llms'
+import { SITE_URL, collectPages } from '../_lib/llms'
 
 export const dynamic = 'force-static'
 
@@ -14,7 +14,7 @@ export async function GET() {
   const sections = []
   for (const [section, pages] of grouped) {
     if (!pages.length) continue
-    const lines = pages.map((p) =>
+    const lines = pages.map(p =>
       p.description
         ? `- [${p.title}](${p.url}): ${p.description}`
         : `- [${p.title}](${p.url})`
@@ -25,6 +25,6 @@ export async function GET() {
   const body = `${INTRO}\n\n${sections.join('\n\n')}\n`
 
   return new Response(body, {
-    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' }
   })
 }

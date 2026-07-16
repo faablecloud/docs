@@ -36,12 +36,12 @@ Create a shared client instance you can import from anywhere in your app.
 
 ```ts
 // lib/faable.ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 export const faableauth = createClient({
-  domain: "your-tenant.auth.faable.link", // from Dashboard → Auth → Settings → Domain
-  clientId: "<your_client_id>",
-});
+  domain: 'your-tenant.auth.faable.link', // from Dashboard → Auth → Settings → Domain
+  clientId: '<your_client_id>'
+})
 ```
 
 ## Add the session provider
@@ -55,17 +55,17 @@ Create a small client component that owns the provider:
 
 ```tsx
 // app/providers/ClientSide.tsx
-"use client";
+'use client'
 
-import { SessionContextProvider } from "@faable/auth-helpers-react";
-import { faableauth } from "../../lib/faable";
+import { SessionContextProvider } from '@faable/auth-helpers-react'
+import { faableauth } from '../../lib/faable'
 
 export function ClientSide({ children }: { children: React.ReactNode }) {
   return (
     <SessionContextProvider faableauthClient={faableauth}>
       {children}
     </SessionContextProvider>
-  );
+  )
 }
 ```
 
@@ -73,12 +73,12 @@ Then wrap your root layout with it. The layout itself stays a server component �
 
 ```tsx
 // app/layout.tsx
-import { ClientSide } from "./providers/ClientSide";
+import { ClientSide } from './providers/ClientSide'
 
 export default function RootLayout({
-  children,
+  children
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
@@ -86,7 +86,7 @@ export default function RootLayout({
         <ClientSide>{children}</ClientSide>
       </body>
     </html>
-  );
+  )
 }
 ```
 
@@ -97,16 +97,16 @@ Wrap your app in `pages/_app.tsx`:
 
 ```tsx
 // pages/_app.tsx
-import type { AppProps } from "next/app";
-import { SessionContextProvider } from "@faable/auth-helpers-react";
-import { faableauth } from "../lib/faable";
+import type { AppProps } from 'next/app'
+import { SessionContextProvider } from '@faable/auth-helpers-react'
+import { faableauth } from '../lib/faable'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionContextProvider faableauthClient={faableauth}>
       <Component {...pageProps} />
     </SessionContextProvider>
-  );
+  )
 }
 ```
 
@@ -127,25 +127,25 @@ Call `handleRedirectCallback()` for exactly that. It returns `{ error, returnTo 
 
 ```tsx
 // app/callback/page.tsx
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { faableauth } from "../../lib/faable";
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { faableauth } from '../../lib/faable'
 
 export default function CallbackPage() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter()
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     faableauth.handleRedirectCallback().then(({ error, returnTo }) => {
-      if (error) setError(error.message);
-      else router.replace(returnTo ?? "/");
-    });
-  }, [router]);
+      if (error) setError(error.message)
+      else router.replace(returnTo ?? '/')
+    })
+  }, [router])
 
-  if (error) return <p>Sign-in failed: {error}</p>;
-  return <p>Signing you in…</p>;
+  if (error) return <p>Sign-in failed: {error}</p>
+  return <p>Signing you in…</p>
 }
 ```
 
@@ -154,23 +154,23 @@ export default function CallbackPage() {
 
 ```tsx
 // pages/callback.tsx
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { faableauth } from "../lib/faable";
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { faableauth } from '../lib/faable'
 
 export default function CallbackPage() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter()
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     faableauth.handleRedirectCallback().then(({ error, returnTo }) => {
-      if (error) setError(error.message);
-      else router.replace(returnTo ?? "/");
-    });
-  }, [router]);
+      if (error) setError(error.message)
+      else router.replace(returnTo ?? '/')
+    })
+  }, [router])
 
-  if (error) return <p>Sign-in failed: {error}</p>;
-  return <p>Signing you in…</p>;
+  if (error) return <p>Sign-in failed: {error}</p>
+  return <p>Signing you in…</p>
 }
 ```
 
@@ -184,9 +184,9 @@ export default function CallbackPage() {
 >
 > ```ts
 > await faableauth.signInWithOauthConnection({
->   redirectTo: window.location.origin + "/callback",
->   returnTo: "/dashboard",
-> });
+>   redirectTo: window.location.origin + '/callback',
+>   returnTo: '/dashboard'
+> })
 > ```
 
 ## Accessing user state
@@ -195,24 +195,24 @@ Anywhere inside the provider, use the `useSession` and `useUser` hooks to read t
 
 ```tsx
 // app/page.tsx  (or pages/index.tsx)
-"use client";
+'use client'
 
-import { useSession, useUser } from "@faable/auth-helpers-react";
-import { faableauth } from "../lib/faable";
+import { useSession, useUser } from '@faable/auth-helpers-react'
+import { faableauth } from '../lib/faable'
 
 export default function Home() {
-  const session = useSession();
-  const user = useUser();
+  const session = useSession()
+  const user = useUser()
 
   const handleLogin = async () => {
     await faableauth.signInWithOauthConnection({
-      redirectTo: window.location.origin + "/callback",
-    });
-  };
+      redirectTo: window.location.origin + '/callback'
+    })
+  }
 
   const handleLogout = async () => {
-    await faableauth.signOut();
-  };
+    await faableauth.signOut()
+  }
 
   if (!session) {
     return (
@@ -220,7 +220,7 @@ export default function Home() {
         <p>You are not logged in.</p>
         <button onClick={handleLogin}>Log In</button>
       </div>
-    );
+    )
   }
 
   return (
@@ -229,7 +229,7 @@ export default function Home() {
       <p>Your Access Token: {session.access_token}</p>
       <button onClick={handleLogout}>Log Out</button>
     </div>
-  );
+  )
 }
 ```
 
@@ -245,58 +245,58 @@ Make sure you have a database connection enabled on your Client (**Dashboard →
 
 ```tsx
 // app/login/page.tsx  (or pages/login.tsx)
-"use client";
+'use client'
 
-import { useState } from "react";
-import { faableauth } from "../../lib/faable";
+import { useState } from 'react'
+import { faableauth } from '../../lib/faable'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+    e.preventDefault()
+    setError(null)
     const { error } = await faableauth.signInWithUsernamePassword({
       username: email,
       password,
-      redirect_uri: window.location.origin + "/callback",
-    });
-    if (error) setError(error.message);
-  };
+      redirect_uri: window.location.origin + '/callback'
+    })
+    if (error) setError(error.message)
+  }
 
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
         placeholder="Email"
         required
       />
       <input
         type="password"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={e => setPassword(e.target.value)}
         placeholder="Password"
         required
       />
       <button type="submit">Log in</button>
       {error && <p>{error}</p>}
     </form>
-  );
+  )
 }
 ```
 
 Parameters:
 
-| Field          | Required | Description                                                                                                            |
-| -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `username`     | Yes      | The user's email (or username, depending on your Database Connection's identifier settings).                           |
-| `password`     | Yes      | The user's password. Submitted over TLS to Faable Auth — never store it client-side.                                   |
-| `redirect_uri` | No       | Overrides the `redirect_uri` configured on the client. Must be in your Client's **Allowed Callback URLs** whitelist.   |
-| `state`        | No       | Opaque value round-tripped through the OAuth flow. Useful for CSRF protection or preserving navigation intent.         |
+| Field          | Required | Description                                                                                                          |
+| -------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| `username`     | Yes      | The user's email (or username, depending on your Database Connection's identifier settings).                         |
+| `password`     | Yes      | The user's password. Submitted over TLS to Faable Auth — never store it client-side.                                 |
+| `redirect_uri` | No       | Overrides the `redirect_uri` configured on the client. Must be in your Client's **Allowed Callback URLs** whitelist. |
+| `state`        | No       | Opaque value round-tripped through the OAuth flow. Useful for CSRF protection or preserving navigation intent.       |
 
 On success the user lands on your callback URL with an authorization code that `@faable/auth-js` exchanges for a session — exactly like the hosted-login flow. On failure, the returned `error` carries the server message (wrong credentials, blocked user, etc.).
 

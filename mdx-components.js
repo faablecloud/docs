@@ -1,14 +1,15 @@
-import { useMDXComponents as getThemeComponents } from "nextra-theme-docs"; // nextra-theme-blog or your custom theme
-import { TennantDomain } from "./components/TennantDomain";
+import { useMDXComponents as getThemeComponents } from 'nextra-theme-docs'
+// nextra-theme-blog or your custom theme
+import { TennantDomain } from './components/TennantDomain'
 
 // Get the default MDX components
-const themeComponents = getThemeComponents();
+const themeComponents = getThemeComponents()
 
 // Merge components
 export function useMDXComponents(components) {
   return {
     ...themeComponents,
     ...components,
-    TennantDomain,
-  };
+    TennantDomain
+  }
 }

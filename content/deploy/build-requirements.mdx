@@ -12,13 +12,13 @@ When you run `faable deploy`, the CLI inspects your repository, detects the stac
 
 Deploys are built by **buildpacks** (Heroku/CNB-style): each one checks for its trigger files at the project root, **in order** — the first match decides how your app is built:
 
-| Priority | File found                                                            | Buildpack                                    |
-| :------- | :--------------------------------------------------------------------- | :-------------------------------------------- |
-| 1        | `package.json`                                                          | **Node.js** (see below)                        |
-| 2        | `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml`    | **Python** (see below)                         |
-| 3        | `Dockerfile`                                                            | **Docker** — your Dockerfile, built verbatim   |
-| 4        | `main.py`, `app.py`, or `wsgi.py` (fallback, no manifest at all)        | **Python** without dependency install (see below) |
-| —        | None of the above                                                       | ❌ Deploy fails with a diagnostic listing what was looked for, what your repo contains, and any config from another platform it recognizes |
+| Priority | File found                                                           | Buildpack                                                                                                                                  |
+| :------- | :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| 1        | `package.json`                                                       | **Node.js** (see below)                                                                                                                    |
+| 2        | `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml` | **Python** (see below)                                                                                                                     |
+| 3        | `Dockerfile`                                                         | **Docker** — your Dockerfile, built verbatim                                                                                               |
+| 4        | `main.py`, `app.py`, or `wsgi.py` (fallback, no manifest at all)     | **Python** without dependency install (see below)                                                                                          |
+| —        | None of the above                                                    | ❌ Deploy fails with a diagnostic listing what was looked for, what your repo contains, and any config from another platform it recognizes |
 
 > [!IMPORTANT]
 > The order matters: if your repo has both a `package.json` and a `Dockerfile`, it is built as a **Node.js** project and the Dockerfile is ignored. The Dockerfile path is the escape hatch for stacks the buildpacks don't detect natively.
@@ -57,12 +57,12 @@ my-app/
 
 What each piece means to the builder:
 
-| Field            | Required | What the builder does with it                                                                                        |
-| :--------------- | :------- | :---------------------------------------------------------------------------------------------------------------------- |
-| `name`           | **Yes**  | Used as the app name. Deploy fails with `Missing name in package.json` without it.                                        |
-| `engines.node`   | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). If omitted, the builder uses **the Node version running the deploy** — your machine locally, or the CI runner. |
-| `scripts.build`  | No       | If present, runs locally (`npm run build`) before packaging, with your app's environment variables available.             |
-| `scripts.start`  | No       | The container runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead. |
+| Field           | Required | What the builder does with it                                                                                                                                                 |
+| :-------------- | :------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`          | **Yes**  | Used as the app name. Deploy fails with `Missing name in package.json` without it.                                                                                            |
+| `engines.node`  | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). If omitted, the builder uses **the Node version running the deploy** — your machine locally, or the CI runner. |
+| `scripts.build` | No       | If present, runs locally (`npm run build`) before packaging, with your app's environment variables available.                                                                 |
+| `scripts.start` | No       | The container runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead.                                     |
 
 The image is `node:<version>-slim` and **copies your working directory as-is — it never runs `npm install`**. Dependencies are installed on the host before packaging: if `node_modules` is missing, `faable deploy` installs it automatically (`npm ci` with a lockfile, `npm install` otherwise), so the workflow needs no separate install step.
 
@@ -70,14 +70,14 @@ The image is `node:<version>-slim` and **copies your working directory as-is —
 
 If `package.json` has **no `start` script**, the builder looks at your dependencies to detect a static framework and serves its build output automatically:
 
-| Framework detected                    | Build output served |
-| :------------------------------------- | :------------------- |
-| Astro                                   | `dist/`              |
-| Gatsby                                  | `public/`            |
-| Create React App (`react-scripts`)      | `build/`             |
-| Vue CLI                                 | `dist/`              |
-| Angular                                 | read from `angular.json` |
-| Vite                                    | `dist/`              |
+| Framework detected                 | Build output served      |
+| :--------------------------------- | :----------------------- |
+| Astro                              | `dist/`                  |
+| Gatsby                             | `public/`                |
+| Create React App (`react-scripts`) | `build/`                 |
+| Vue CLI                            | `dist/`                  |
+| Angular                            | read from `angular.json` |
+| Vite                               | `dist/`                  |
 
 Next.js is the exception: it always runs as a server (`next start`), with a persistent cache for `.next/cache` managed by the platform. And remember — defining a `start` script disables static serving entirely; the builder trusts your script.
 
@@ -132,7 +132,7 @@ No `package.json`, no Python manifests, but a `Dockerfile`? The buildpack runs `
 Whatever the stack, your app must listen on **`0.0.0.0`** at the port given by the **`$PORT`** environment variable (the platform sets it to `80`):
 
 ```js
-app.listen(process.env.PORT, "0.0.0.0");
+app.listen(process.env.PORT, '0.0.0.0')
 ```
 
 The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAABLE_HOST` are reserved — secrets you define with those names are ignored.
@@ -153,12 +153,12 @@ The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAA
 }
 ```
 
-| Field          | Purpose                                                                                          |
-| :------------- | :---------------------------------------------------------------------------------------------- |
-| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                          |
-| `buildpack`    | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection. The `--buildpack` CLI flag beats it. |
-| `buildCommand` | Build step to run when `package.json` has no `build` script (Node), or custom install command (Python). |
-| `startCommand` | Overrides everything — framework detection and `npm run start`.                                   |
+| Field                 | Purpose                                                                                                        |
+| :-------------------- | :------------------------------------------------------------------------------------------------------------- |
+| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                       |
+| `buildpack`           | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection. The `--buildpack` CLI flag beats it. |
+| `buildCommand`        | Build step to run when `package.json` has no `build` script (Node), or custom install command (Python).        |
+| `startCommand`        | Overrides everything — framework detection and `npm run start`.                                                |
 
 ---
 

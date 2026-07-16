@@ -41,15 +41,15 @@ or the platform team grades the practical tasks against the rubric.
 
 ## Syllabus
 
-| Module | You'll learn |
-|---|---|
-| [1 · OAuth & OIDC Foundations](/auth/academy/01-oauth-foundations) | Why OAuth exists; `id_token` vs `access_token`; scopes; the actors in a flow. |
-| [2 · Tenant Building Blocks](/auth/academy/02-tenant-building-blocks) | Account, Connections, Clients, Users & Teams — and how multi-tenancy works by host. |
-| [3 · Login & Flows](/auth/academy/03-login-and-flows) | Authorization Code + PKCE, social, passwordless OTP, refresh tokens. |
-| [4 · Integrate Your App](/auth/academy/04-integrate-your-app) | Add login with `@faable/auth-js`, handle the callback, read the session. |
-| [5 · Server-side & Management API](/auth/academy/05-server-and-management-api) | `client_credentials`, audience + scopes, `@faable/auth-sdk`, Actions & webhooks. |
+| Module                                                                         | You'll learn                                                                        |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| [1 · OAuth & OIDC Foundations](/auth/academy/01-oauth-foundations)             | Why OAuth exists; `id_token` vs `access_token`; scopes; the actors in a flow.       |
+| [2 · Tenant Building Blocks](/auth/academy/02-tenant-building-blocks)          | Account, Connections, Clients, Users & Teams — and how multi-tenancy works by host. |
+| [3 · Login & Flows](/auth/academy/03-login-and-flows)                          | Authorization Code + PKCE, social, passwordless OTP, refresh tokens.                |
+| [4 · Integrate Your App](/auth/academy/04-integrate-your-app)                  | Add login with `@faable/auth-js`, handle the callback, read the session.            |
+| [5 · Server-side & Management API](/auth/academy/05-server-and-management-api) | `client_credentials`, audience + scopes, `@faable/auth-sdk`, Actions & webhooks.    |
 
-## What this course is *not*
+## What this course is _not_
 
 It does not cover operating the auth server (deployment, key rotation, the authz
 enforcement layer, Mongo/Valkey internals). That's the **Operator** track.

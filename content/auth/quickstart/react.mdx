@@ -39,13 +39,13 @@ npm install @faable/auth-js @faable/auth-helpers-react
 
 ```ts
 // src/auth.ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 export const auth = createClient({
-  domain: "your-domain.auth.faable.link",
-  clientId: "YOUR_CLIENT_ID",
-  redirectUri: window.location.origin + "/callback",
-});
+  domain: 'your-domain.auth.faable.link',
+  clientId: 'YOUR_CLIENT_ID',
+  redirectUri: window.location.origin + '/callback'
+})
 ```
 
 The client initializes itself on creation: it recovers an existing session from storage, or — on the callback URL — exchanges the PKCE `?code=` for tokens.
@@ -54,16 +54,16 @@ The client initializes itself on creation: it recovers an existing session from 
 
 ```tsx
 // src/main.tsx
-import { createRoot } from "react-dom/client";
-import { SessionContextProvider } from "@faable/auth-helpers-react";
-import { auth } from "./auth";
-import App from "./App";
+import { SessionContextProvider } from '@faable/auth-helpers-react'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+import { auth } from './auth'
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <SessionContextProvider faableauthClient={auth}>
     <App />
   </SessionContextProvider>
-);
+)
 ```
 
 The provider waits for initialization, exposes the session, and keeps it updated on login, token refresh, and logout — across browser tabs.
@@ -72,36 +72,38 @@ The provider waits for initialization, exposes the session, and keeps it updated
 
 ```tsx
 // src/App.tsx
-import { useSessionContext, useUser } from "@faable/auth-helpers-react";
-import { auth } from "./auth";
-import Callback from "./Callback";
+import { useSessionContext, useUser } from '@faable/auth-helpers-react'
+import Callback from './Callback'
+import { auth } from './auth'
 
 export default function App() {
-  const { isLoading, session, error } = useSessionContext();
-  const user = useUser();
+  const { isLoading, session, error } = useSessionContext()
+  const user = useUser()
 
   // The /callback route completes the login (Step 5)
-  if (window.location.pathname === "/callback") return <Callback />;
+  if (window.location.pathname === '/callback') return <Callback />
 
-  if (isLoading) return <p>Loading…</p>;
-  if (error) return <p>Auth error: {error.message}</p>;
+  if (isLoading) return <p>Loading…</p>
+  if (error) return <p>Auth error: {error.message}</p>
 
   if (!session) {
     return (
       <button onClick={() => auth.signInWithOauthConnection({})}>
         Sign in
       </button>
-    );
+    )
   }
 
   return (
     <div>
       <p>Hello {user?.email}</p>
-      <button onClick={() => auth.signOut({ returnTo: window.location.origin })}>
+      <button
+        onClick={() => auth.signOut({ returnTo: window.location.origin })}
+      >
         Sign out
       </button>
     </div>
-  );
+  )
 }
 ```
 
@@ -113,20 +115,20 @@ export default function App() {
 
 ```tsx
 // src/Callback.tsx
-import { useEffect, useState } from "react";
-import { auth } from "./auth";
+import { useEffect, useState } from 'react'
+import { auth } from './auth'
 
 export default function Callback() {
-  const [message, setMessage] = useState("Signing you in…");
+  const [message, setMessage] = useState('Signing you in…')
 
   useEffect(() => {
     auth.handleRedirectCallback().then(({ error, returnTo }) => {
-      if (error) setMessage(error.message);
-      else window.location.replace(returnTo ?? "/");
-    });
-  }, []);
+      if (error) setMessage(error.message)
+      else window.location.replace(returnTo ?? '/')
+    })
+  }, [])
 
-  return <p>{message}</p>;
+  return <p>{message}</p>
 }
 ```
 
@@ -137,15 +139,15 @@ export default function Callback() {
 The access token lives on the session. Read it fresh before each call — `getSession()` auto-refreshes an expired session:
 
 ```ts
-import { auth } from "./auth";
+import { auth } from './auth'
 
 export async function apiFetch(path: string) {
-  const { data, error } = await auth.getSession();
-  if (error || !data.session) throw new Error("Not signed in");
+  const { data, error } = await auth.getSession()
+  if (error || !data.session) throw new Error('Not signed in')
 
   return fetch(`https://api.myapp.com${path}`, {
-    headers: { authorization: `Bearer ${data.session.access_token}` },
-  });
+    headers: { authorization: `Bearer ${data.session.access_token}` }
+  })
 }
 ```
 

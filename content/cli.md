@@ -143,13 +143,13 @@ Changes apply immediately: the app restarts with the new environment.
 
 ## Command Reference
 
-| Command                       | Description                              |
-| :---------------------------- | :--------------------------------------- |
-| `faable login`                | Authenticate with Faable                 |
-| `faable whoami`               | Show current user                        |
-| `faable logout`               | End the local session                    |
-| `faable deploy`               | Deploy project to production             |
-| `faable deploy link`          | Link directory to a Faable app           |
-| `faable deploy secrets list`  | List app secrets (masked, `--show`)      |
-| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs         |
-| `faable deploy secrets rm`    | Remove a secret by name                  |
+| Command                      | Description                         |
+| :--------------------------- | :---------------------------------- |
+| `faable login`               | Authenticate with Faable            |
+| `faable whoami`              | Show current user                   |
+| `faable logout`              | End the local session               |
+| `faable deploy`              | Deploy project to production        |
+| `faable deploy link`         | Link directory to a Faable app      |
+| `faable deploy secrets list` | List app secrets (masked, `--show`) |
+| `faable deploy secrets set`  | Set secrets as `KEY=VALUE` pairs    |
+| `faable deploy secrets rm`   | Remove a secret by name             |

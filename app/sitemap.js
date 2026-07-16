@@ -21,15 +21,17 @@ export default async function sitemap() {
   const pageMap = await getPageMap()
   // Folders without an index page have a route in the page map but no actual
   // page behind it — advertising them would send crawlers to 404s.
-  const routes = [...collectRoutes(pageMap)].filter((route) => sourceFileFor(route))
+  const routes = [...collectRoutes(pageMap)].filter(route =>
+    sourceFileFor(route)
+  )
 
   const buildDate = new Date()
 
-  return routes.sort().map((route) => ({
+  return routes.sort().map(route => ({
     // route already starts with "/", strip it to avoid a double slash
     url: `${SITE_URL}${route === '/' ? '' : route}`,
     lastModified: lastModifiedForRoute(route, buildDate),
     changeFrequency: 'weekly',
-    priority: route === '/' ? 1 : 0.7,
+    priority: route === '/' ? 1 : 0.7
   }))
 }

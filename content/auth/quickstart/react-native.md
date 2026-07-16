@@ -86,8 +86,8 @@ export const LoginButton = () => {
     <TouchableOpacity onPress={() => null}>
       <Text>Login</Text>
     </TouchableOpacity>
-  );
-};
+  )
+}
 ```
 
 Modify the `App.tsx` file to add our `<LoginButton/>` component for the user to log in.
@@ -99,7 +99,7 @@ export default function App() {
       <LoginButton />
       <StatusBar style="dark" />
     </SafeAreaView>
-  );
+  )
 }
 ```
 
@@ -135,18 +135,18 @@ const redirectTo = makeRedirectUri(); // Redirection URI
 create an instance of the client that will be shared across the entire application and place the configuration credentials for Faable Auth.
 
 ```tsx
-import "react-native-url-polyfill/auto";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import 'react-native-url-polyfill/auto'
 
-const faableAuthUrl = "https://<account_id>.auth.faable.link";
-const clientId = "<xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx>";
+const faableAuthUrl = 'https://<account_id>.auth.faable.link'
+const clientId = '<xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx>'
 
 export const faableAuth = createClient({
   domain: faableAuthUrl,
   clientId,
-  storage: AsyncStorage,
-});
+  storage: AsyncStorage
+})
 ```
 
 > ✅ Use the credentials you'll find on the [Faable Dashboard](https://dashboard.faable.com). Faable Auth is in beta so you'll need to request access by joining our [Discord channel](https://discord.gg/98JtRzYp).
@@ -216,7 +216,7 @@ export default function App() {
         <StatusBar style="light" />
       </SafeAreaView>
     </SessionContextProvider>
-  );
+  )
 }
 ```
 
@@ -227,13 +227,13 @@ export default function App() {
 Return to the `LoginButton.tsx` file to place the needed logic that allows us to display the user's information when the user has completed the login flow. To do this, we will use the `useSession()` hook provided with our helper library `@faable/auth-helpers-react` that allows us to **access the session and user data**.
 
 ```tsx
-import { Image } from "expo-image";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { login, logout } from "../../lib/auth/faableauth";
-import { useSession } from "@faable/auth-helpers-react";
+import { useSession } from '@faable/auth-helpers-react'
+import { Image } from 'expo-image'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { login, logout } from '../../lib/auth/faableauth'
 
 export const LoginButton = () => {
-  const session = useSession();
+  const session = useSession()
 
   return (
     <>
@@ -261,8 +261,8 @@ export const LoginButton = () => {
         </View>
       )}
     </>
-  );
-};
+  )
+}
 ```
 
 **Links:**

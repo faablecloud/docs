@@ -42,19 +42,19 @@ The SDK touches `window` and PKCE storage, so it must never run on the server. A
 
 ```ts
 // plugins/faable.client.ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 export default defineNuxtPlugin(() => {
   const auth = createClient({
-    domain: "your-domain.auth.faable.link",
-    clientId: "YOUR_CLIENT_ID",
-    redirectUri: window.location.origin + "/callback",
-  });
+    domain: 'your-domain.auth.faable.link',
+    clientId: 'YOUR_CLIENT_ID',
+    redirectUri: window.location.origin + '/callback'
+  })
 
   return {
-    provide: { auth },
-  };
-});
+    provide: { auth }
+  }
+})
 ```
 
 `provide: { auth }` exposes the client as `useNuxtApp().$auth` everywhere in the app. On creation the client recovers an existing session from storage, or — on the callback URL — exchanges the PKCE `?code=` for tokens.
@@ -65,23 +65,23 @@ Wrap the client in a `useAuth()` composable. It holds the session in Nuxt's `use
 
 ```ts
 // composables/useAuth.ts
-import type { Session } from "@faable/auth-js";
+import type { Session } from '@faable/auth-js'
 
 export function useAuth() {
-  const { $auth } = useNuxtApp();
-  const session = useState<Session | null>("faable-session", () => null);
+  const { $auth } = useNuxtApp()
+  const session = useState<Session | null>('faable-session', () => null)
 
   // Only the browser has $auth (client plugin) and window.
   if (import.meta.client && $auth) {
     // Keep state in sync with every auth change (login, refresh, logout, other tabs).
     $auth.onAuthStateChange((_event, next) => {
-      session.value = next;
-    });
+      session.value = next
+    })
 
     // Seed the initial value once (also auto-refreshes an expired session).
     $auth.getSession().then(({ data }) => {
-      session.value = data.session;
-    });
+      session.value = data.session
+    })
   }
 
   return {
@@ -89,8 +89,8 @@ export function useAuth() {
     session,
     user: computed(() => session.value?.user ?? null),
     signIn: () => $auth?.signInWithOauthConnection({}),
-    signOut: () => $auth?.signOut({ returnTo: window.location.origin }),
-  };
+    signOut: () => $auth?.signOut({ returnTo: window.location.origin })
+  }
 }
 ```
 
@@ -155,13 +155,13 @@ The access token lives on the session. Read it fresh before each call — `getSe
 ```ts
 // composables/apiFetch.ts
 export async function apiFetch(path: string) {
-  const { $auth } = useNuxtApp();
-  const { data, error } = await $auth.getSession();
-  if (error || !data.session) throw new Error("Not signed in");
+  const { $auth } = useNuxtApp()
+  const { data, error } = await $auth.getSession()
+  if (error || !data.session) throw new Error('Not signed in')
 
   return fetch(`https://api.myapp.com${path}`, {
-    headers: { authorization: `Bearer ${data.session.access_token}` },
-  });
+    headers: { authorization: `Bearer ${data.session.access_token}` }
+  })
 }
 ```
 

@@ -1,7 +1,7 @@
-import { Footer, Layout, Navbar } from "nextra-theme-docs";
-import { Head } from "nextra/components";
-import { getPageMap } from "nextra/page-map";
-import "nextra-theme-docs/style.css";
+import { Footer, Layout, Navbar } from 'nextra-theme-docs'
+import 'nextra-theme-docs/style.css'
+import { Head } from 'nextra/components'
+import { getPageMap } from 'nextra/page-map'
 
 const navbar = (
   <Navbar
@@ -34,23 +34,23 @@ const navbar = (
       target="_blank"
       rel="noopener"
       style={{
-        background: "#2563eb",
-        color: "#fff",
-        padding: "6px 14px",
+        background: '#2563eb',
+        color: '#fff',
+        padding: '6px 14px',
         borderRadius: 6,
         fontWeight: 600,
         fontSize: 14,
-        whiteSpace: "nowrap",
+        whiteSpace: 'nowrap'
       }}
     >
       Start free
     </a>
   </Navbar>
-);
+)
 const footer = (
   <Footer>
     <span>
-      {new Date().getFullYear()} ©{" "}
+      {new Date().getFullYear()} ©{' '}
       <a
         href="https://faable.com?utm_source=docs&utm_medium=referral&utm_content=footer"
         rel="noopener"
@@ -61,7 +61,7 @@ const footer = (
       .
     </span>
   </Footer>
-);
+)
 
 // Documentation pages render inside the Nextra theme chrome (navbar, sidebar,
 // footer). This lives in a (site) route group so standalone pages outside the
@@ -79,5 +79,5 @@ export default async function SiteLayout({ children }) {
         {children}
       </Layout>
     </>
-  );
+  )
 }

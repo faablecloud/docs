@@ -28,11 +28,11 @@ With [`@faable/auth-sdk`](academy/05-server-and-management-api.md):
 // Suspend
 await api.updateUser(userId, {
   suspended: true,
-  suspended_reason: "abuse: crypto-mining workload",
-});
+  suspended_reason: 'abuse: crypto-mining workload'
+})
 
 // Reinstate
-await api.updateUser(userId, { suspended: false });
+await api.updateUser(userId, { suspended: false })
 ```
 
 Or over raw HTTP against your tenant (e.g. `https://acme.auth.faable.link`):
@@ -50,11 +50,11 @@ Content-Type: application/json
 
 ### User fields
 
-| Field | Type | Notes |
-|-------|------|-------|
-| `suspended` | boolean | `true` blocks the user everywhere. Defaults to `false`. |
-| `suspended_at` | string (ISO 8601) | Stamped automatically when `suspended` flips to `true`; cleared on reinstate. Read-only. |
-| `suspended_reason` | string | Free-form note stored for audit. Cleared on reinstate. |
+| Field              | Type              | Notes                                                                                    |
+| ------------------ | ----------------- | ---------------------------------------------------------------------------------------- |
+| `suspended`        | boolean           | `true` blocks the user everywhere. Defaults to `false`.                                  |
+| `suspended_at`     | string (ISO 8601) | Stamped automatically when `suspended` flips to `true`; cleared on reinstate. Read-only. |
+| `suspended_reason` | string            | Free-form note stored for audit. Cleared on reinstate.                                   |
 
 Setting `suspended: false` clears both `suspended_at` and `suspended_reason` for you. Users cannot be created suspended — the field is only writable on update.
 
@@ -62,18 +62,18 @@ Setting `suspended: false` clears both `suspended_at` and `suspended_reason` for
 
 The check runs everywhere a user authenticates or a token is minted:
 
-| Surface | Result while suspended |
-|---------|------------------------|
-| Email/password, social and passwordless login | Rejected — no session is created. |
-| Token endpoint (`authorization_code`, `refresh_token`, `device_code`, passwordless OTP) | `403` with OAuth error `invalid_grant` (`"user is suspended"`). |
-| `GET/POST /userinfo` | `401` with `WWW-Authenticate: Bearer error="invalid_token"`. |
-| Silent SSO (`prompt=none`) | Treated as no session → the OIDC `login_required` error is returned. |
-| Your tenant's Management API | `403` immediately, for any token whose subject is the suspended user. |
+| Surface                                                                                 | Result while suspended                                                |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Email/password, social and passwordless login                                           | Rejected — no session is created.                                     |
+| Token endpoint (`authorization_code`, `refresh_token`, `device_code`, passwordless OTP) | `403` with OAuth error `invalid_grant` (`"user is suspended"`).       |
+| `GET/POST /userinfo`                                                                    | `401` with `WWW-Authenticate: Bearer error="invalid_token"`.          |
+| Silent SSO (`prompt=none`)                                                              | Treated as no session → the OIDC `login_required` error is returned.  |
+| Your tenant's Management API                                                            | `403` immediately, for any token whose subject is the suspended user. |
 
 Because the `refresh_token` grant is blocked, a suspended user's refresh tokens stop working on their next refresh — even though refresh tokens are otherwise long-lived.
 
 > [!NOTE]
-> **Access tokens already issued remain valid until they expire.** Faable access tokens are stateless JWTs (default lifetime 24h, configurable per API), so a resource server that validates them offline against your JWKS will keep accepting a live token until it expires. Suspension stops all *new* tokens immediately and cuts off Faable's own endpoints (`/userinfo`, the Management API) right away; to bound the residual window, keep access-token lifetimes short for sensitive APIs.
+> **Access tokens already issued remain valid until they expire.** Faable access tokens are stateless JWTs (default lifetime 24h, configurable per API), so a resource server that validates them offline against your JWKS will keep accepting a live token until it expires. Suspension stops all _new_ tokens immediately and cuts off Faable's own endpoints (`/userinfo`, the Management API) right away; to bound the residual window, keep access-token lifetimes short for sensitive APIs.
 
 ## Listing suspended users
 
@@ -87,7 +87,7 @@ Authorization: Bearer <management_access_token>
 With the SDK:
 
 ```ts
-const { results } = await api.listUsers({ query: "suspended:true" }).first();
+const { results } = await api.listUsers({ query: 'suspended:true' }).first()
 ```
 
 ## Audit log
@@ -99,11 +99,11 @@ Every suspension decision is recorded in your tenant's [logs](logs.md):
 
 ## Errors
 
-| HTTP | Code | Meaning |
-|------|------|---------|
-| `403` | `invalid_grant` | Token-endpoint grant for a suspended user (`error_description: "user is suspended"`). |
-| `401` | `invalid_token` | `/userinfo` called with a token belonging to a suspended user. |
-| `403` | `user_suspended` | Interactive login, `/me`, or a Management API call by a suspended user. |
+| HTTP  | Code             | Meaning                                                                               |
+| ----- | ---------------- | ------------------------------------------------------------------------------------- |
+| `403` | `invalid_grant`  | Token-endpoint grant for a suspended user (`error_description: "user is suspended"`). |
+| `401` | `invalid_token`  | `/userinfo` called with a token belonging to a suspended user.                        |
+| `403` | `user_suspended` | Interactive login, `/me`, or a Management API call by a suspended user.               |
 
 ## Next steps
 

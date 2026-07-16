@@ -13,11 +13,11 @@ Plans apply **per project**: each project has its own plan, starting on Free.
 
 ## Plans
 
-| Plan | Monthly fee | What you get |
-|------|-------------|--------------|
-| **Free**  | 0 €            | Try Faable end-to-end. 1 free instance, up to 3 deployments per day, Faable Auth included, community support. |
-| **Hobby** | 15 € + usage   | Production-ready for a single product. Full instance catalog, unlimited deployments, custom domains, email support. |
-| **Pro**   | 99 € + usage   | Multi-account, enterprise SSO, audit logs, 99.9 % uptime SLA. |
+| Plan      | Monthly fee  | What you get                                                                                                        |
+| --------- | ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | 0 €          | Try Faable end-to-end. 1 free instance, up to 3 deployments per day, Faable Auth included, community support.       |
+| **Hobby** | 15 € + usage | Production-ready for a single product. Full instance catalog, unlimited deployments, custom domains, email support. |
+| **Pro**   | 99 € + usage | Multi-account, enterprise SSO, audit logs, 99.9 % uptime SLA.                                                       |
 
 The platform fee unlocks the tier; usage charges depend on what you actually deploy and how many users authenticate. The deep-dives below break down exactly what each plan includes per product.
 
@@ -32,11 +32,11 @@ The platform tier you choose maps to concrete entitlements in each product. See:
 
 Support plans are sold **separately** from the platform tiers — they are an independent purchase and are not included in Free, Hobby, or Pro.
 
-| Plan       | Response time | Channel                                                      | Also includes                       | Price          |
-|------------|---------------|--------------------------------------------------------------|-------------------------------------|----------------|
-| Default    | —             | [Community](https://github.com/orgs/faablecloud/discussions) | —                                   | Free           |
-| Starter    | < 6 hours     | Email                                                        | Customer Support                    | 350 €/month    |
-| Enterprise | < 2 hours     | Email + Dedicated Slack channel                              | Technical Advisor, Customer Support | 1,000 €/month  |
+| Plan       | Response time | Channel                                                      | Also includes                       | Price         |
+| ---------- | ------------- | ------------------------------------------------------------ | ----------------------------------- | ------------- |
+| Default    | —             | [Community](https://github.com/orgs/faablecloud/discussions) | —                                   | Free          |
+| Starter    | < 6 hours     | Email                                                        | Customer Support                    | 350 €/month   |
+| Enterprise | < 2 hours     | Email + Dedicated Slack channel                              | Technical Advisor, Customer Support | 1,000 €/month |
 
 ## Billing
 

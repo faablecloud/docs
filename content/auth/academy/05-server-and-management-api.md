@@ -1,11 +1,12 @@
 ---
-title: "Module 5 — Server-side & Management API"
+title: 'Module 5 — Server-side & Management API'
 description: Call the Faable Management API from backend code with client_credentials and @faable/auth-sdk, understand audience + scopes, and extend the flow with Actions and webhooks.
 ---
 
 # Module 5 — Server-side & Management API
 
 > **Learning objectives**
+>
 > - Use the **Client Credentials** grant for machine-to-machine (no user) calls.
 > - Configure `@faable/auth-sdk` to read/mutate users, clients, connections.
 > - Explain **audience** and **scopes** for management tokens.
@@ -14,7 +15,7 @@ description: Call the Faable Management API from backend code with client_creden
 ## When there's no user: Client Credentials
 
 A backend job — sync users, provision a tenant, react to an event — has **no logged-in
-user**. It authenticates *as itself* with a **confidential client** using the
+user**. It authenticates _as itself_ with a **confidential client** using the
 **Client Credentials** grant. Reference: [Client Credentials Flow](../oauth-flows/client-credentials.mdx).
 
 You get an **access token** (no ID token, no refresh token — there's no user to
@@ -27,19 +28,19 @@ connections, teams, etc. The server SDK handles auth for you, Octokit-style — 
 it a strategy and credentials, no environment magic:
 
 ```ts
-import { FaableAuthApi, authClientCredentials } from "@faable/auth-sdk";
+import { FaableAuthApi, authClientCredentials } from '@faable/auth-sdk'
 
 const api = FaableAuthApi.create({
   authStrategy: authClientCredentials,
   auth: {
     client_id: process.env.FAABLEAUTH_CLIENT_ID!,
-    client_secret: process.env.FAABLEAUTH_CLIENT_SECRET!,
+    client_secret: process.env.FAABLEAUTH_CLIENT_SECRET!
   },
-  domain: process.env.FAABLEAUTH_DOMAIN!, // your tenant, e.g. acme.auth.faable.link
-});
+  domain: process.env.FAABLEAUTH_DOMAIN! // your tenant, e.g. acme.auth.faable.link
+})
 
-const { results } = await api.listUsers().first();
-await api.updateUser(userId, { locale: "es" });
+const { results } = await api.listUsers().first()
+await api.updateUser(userId, { locale: 'es' })
 ```
 
 You only supply **domain + credentials**. The SDK discovers the right **management
@@ -51,10 +52,10 @@ audience** from the domain automatically (it reads the tenant's
 See [APIs](../apis.md) and the [Client Credentials Flow](../oauth-flows/client-credentials.mdx)
 for the full reference. The short version:
 
-- **Audience (`aud`)** — *which* API the token is for. The management audience is
+- **Audience (`aud`)** — _which_ API the token is for. The management audience is
   `faable:management:<account_id>`. A token for the wrong audience is rejected
   (`aud_mismatch`). The SDK sets this for you via discovery.
-- **Scopes / permissions** — *what* the token may do, as `verb:resource` strings:
+- **Scopes / permissions** — _what_ the token may do, as `verb:resource` strings:
   `read:users`, `update:users`, `read:clients`, … A call needs the matching scope.
 
 ### Do I have to list every scope?
@@ -63,7 +64,7 @@ for the full reference. The short version:
 scopes**, Faable grants the **full catalog** of the API (this matches Auth0 behavior).
 So the common case — "I made a client, put the id/secret in the SDK, and expect
 access" — just works without enumerating permissions. Request specific scopes only
-when you want to *narrow* what a particular integration can do (least privilege).
+when you want to _narrow_ what a particular integration can do (least privilege).
 
 > Tip: there are no per-client grant lists to configure. Migrating an integration is
 > just "point it at the right `domain` and give it credentials"; the SDK handles
@@ -82,7 +83,7 @@ own page, then resume at `/continue`. To guarantee the data is really there, the
 continue hook should `api.access.deny(reason)` if the field is still empty — otherwise
 a user could close the tab and replay to log in with an incomplete profile.
 
-You don't need to *write* Actions to pass this course, but you must know **what they're
+You don't need to _write_ Actions to pass this course, but you must know **what they're
 for** and the progressive-profiling pattern.
 
 ## Reacting to changes: Webhooks
@@ -111,6 +112,7 @@ payload.
    misconfigured `domain` or a hand-rolled token bypassing the SDK.
 4. An **Action** (`postLogin`) for **progressive profiling** — pause the flow, collect
    the email, resume, and `deny` if still missing.
+
 </details>
 
 ---

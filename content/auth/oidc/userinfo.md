@@ -43,12 +43,12 @@ The subject identifier is included regardless of the scopes granted — that's w
 
 ### Scope-to-claim mapping
 
-| Scope     | Claims unlocked |
-|-----------|-----------------|
+| Scope     | Claims unlocked                                                                                                                                                                  |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `profile` | `name`, `given_name`, `family_name`, `middle_name`, `nickname`, `preferred_username`, `profile`, `picture`, `website`, `gender`, `birthdate`, `zoneinfo`, `locale`, `updated_at` |
-| `email`   | `email`, `email_verified` |
-| `phone`   | `phone_number`, `phone_number_verified` |
-| `address` | `address` (composite, see [§5.1.1](https://openid.net/specs/openid-connect-core-1_0.html#AddressClaim)) |
+| `email`   | `email`, `email_verified`                                                                                                                                                        |
+| `phone`   | `phone_number`, `phone_number_verified`                                                                                                                                          |
+| `address` | `address` (composite, see [§5.1.1](https://openid.net/specs/openid-connect-core-1_0.html#AddressClaim))                                                                          |
 
 Request the scopes you need at `/authorize` time (e.g. `scope=openid profile email`).
 
@@ -82,16 +82,16 @@ If the access token was issued without any scopes (legacy clients), Faable retur
 ## Example
 
 ```ts
-const res = await fetch("https://your-tenant.faable.app/userinfo", {
-  headers: { Authorization: `Bearer ${accessToken}` },
-});
+const res = await fetch('https://your-tenant.faable.app/userinfo', {
+  headers: { Authorization: `Bearer ${accessToken}` }
+})
 
 if (!res.ok) {
-  throw new Error(`UserInfo ${res.status}`);
+  throw new Error(`UserInfo ${res.status}`)
 }
 
-const profile = await res.json();
-console.log(profile.sub, profile.email);
+const profile = await res.json()
+console.log(profile.sub, profile.email)
 ```
 
 ## Next steps

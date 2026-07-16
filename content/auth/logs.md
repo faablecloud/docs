@@ -11,10 +11,10 @@ Logs are **read-only**: entries are written by the system and cannot be deleted 
 
 ## Endpoints
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| `GET` | `/logs` | List logs (paginated). |
-| `GET` | `/logs/:log_id` | Fetch a single log entry. |
+| Method | Path            | Purpose                   |
+| ------ | --------------- | ------------------------- |
+| `GET`  | `/logs`         | List logs (paginated).    |
+| `GET`  | `/logs/:log_id` | Fetch a single log entry. |
 
 Both require an authenticated account session.
 
@@ -41,13 +41,13 @@ Both require an authenticated account session.
 }
 ```
 
-| Field | Description |
-|-------|-------------|
-| `type` | A dotted string identifying the event family. Examples: `email.user.welcome`, `email.team_invite`, `webhook.user.created`. |
-| `status` | One of `success`, `failed`, `skipped`, `info`. |
-| `message` | Short human-readable description (often the error message when `status=failed`). |
-| `data` | Type-specific structured payload — its shape depends on the log type. |
-| `expires_at` | When set, the row is deleted automatically by Mongo's TTL index at that time. |
+| Field        | Description                                                                                                                |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `type`       | A dotted string identifying the event family. Examples: `email.user.welcome`, `email.team_invite`, `webhook.user.created`. |
+| `status`     | One of `success`, `failed`, `skipped`, `info`.                                                                             |
+| `message`    | Short human-readable description (often the error message when `status=failed`).                                           |
+| `data`       | Type-specific structured payload — its shape depends on the log type.                                                      |
+| `expires_at` | When set, the row is deleted automatically by Mongo's TTL index at that time.                                              |
 
 ## Common log types
 

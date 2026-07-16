@@ -10,7 +10,7 @@ const SECTIONS = [
   { prefix: '/deploy', title: 'Faable Deploy' },
   { prefix: '/auth', title: 'Faable Auth' },
   { prefix: '/cli', title: 'CLI' },
-  { prefix: '/platform', title: 'Platform & Policies' },
+  { prefix: '/platform', title: 'Platform & Policies' }
 ]
 
 // Recursively collect every page route from Nextra's page map.
@@ -33,7 +33,7 @@ function sourceFileFor(route) {
     `${rel}.md`,
     `${rel}.mdx`,
     path.join(rel, 'index.md'),
-    path.join(rel, 'index.mdx'),
+    path.join(rel, 'index.mdx')
   ]
   for (const candidate of candidates) {
     const abs = path.join(CONTENT_DIR, candidate)
@@ -69,7 +69,7 @@ export async function collectPages() {
   const routes = [...collectRoutes(pageMap)]
 
   const pages = routes
-    .map((route) => {
+    .map(route => {
       const file = sourceFileFor(route)
       if (!file) return null
       const raw = fs.readFileSync(file, 'utf8')
@@ -79,7 +79,7 @@ export async function collectPages() {
         url: `${SITE_URL}${route === '/' ? '' : route}`,
         title: meta.title || firstHeading(body) || route,
         description: meta.description || '',
-        body: body.trim(),
+        body: body.trim()
       }
     })
     .filter(Boolean)
@@ -89,11 +89,12 @@ export async function collectPages() {
   for (const { title } of SECTIONS) grouped.set(title, [])
 
   for (const page of pages) {
-    const section = SECTIONS.find((s) => page.route.startsWith(s.prefix))
+    const section = SECTIONS.find(s => page.route.startsWith(s.prefix))
     grouped.get(section ? section.title : 'Overview').push(page)
   }
 
-  for (const list of grouped.values()) list.sort((a, b) => a.route.localeCompare(b.route))
+  for (const list of grouped.values())
+    list.sort((a, b) => a.route.localeCompare(b.route))
 
   return grouped
 }

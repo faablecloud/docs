@@ -164,24 +164,24 @@ Register the route and bootstrap the app:
 
 ```ts
 // src/app/app.routes.ts
-import { Routes } from "@angular/router";
-import { CallbackComponent } from "./callback.component";
+import { Routes } from '@angular/router'
+import { CallbackComponent } from './callback.component'
 
 export const routes: Routes = [
-  { path: "callback", component: CallbackComponent },
-];
+  { path: 'callback', component: CallbackComponent }
+]
 ```
 
 ```ts
 // src/main.ts
-import { bootstrapApplication } from "@angular/platform-browser";
-import { provideRouter } from "@angular/router";
-import { AppComponent } from "./app/app.component";
-import { routes } from "./app/app.routes";
+import { bootstrapApplication } from '@angular/platform-browser'
+import { provideRouter } from '@angular/router'
+import { AppComponent } from './app/app.component'
+import { routes } from './app/app.routes'
 
 bootstrapApplication(AppComponent, {
-  providers: [provideRouter(routes)],
-});
+  providers: [provideRouter(routes)]
+})
 ```
 
 ## Step 6: Call Your API

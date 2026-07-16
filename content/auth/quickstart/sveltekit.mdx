@@ -42,20 +42,20 @@ Choose the **SvelteKit minimal** template and **TypeScript** when the scaffolder
 
 ```ts
 // src/routes/+layout.ts
-export const ssr = false;
+export const ssr = false
 ```
 
 Now create the client. Keeping it in `src/lib` makes it importable everywhere via the `$lib` alias:
 
 ```ts
 // src/lib/auth.ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 export const auth = createClient({
-  domain: "your-domain.auth.faable.link",
-  clientId: "YOUR_CLIENT_ID",
-  redirectUri: window.location.origin + "/callback",
-});
+  domain: 'your-domain.auth.faable.link',
+  clientId: 'YOUR_CLIENT_ID',
+  redirectUri: window.location.origin + '/callback'
+})
 ```
 
 The client initializes itself on creation: it recovers an existing session from storage, or — on the callback URL — exchanges the PKCE `?code=` for tokens.
@@ -66,16 +66,16 @@ Wrap the SDK's session in a Svelte `writable` so any component can read it react
 
 ```ts
 // src/lib/auth.ts (continued)
-import { writable } from "svelte/store";
-import type { Session } from "@faable/auth-js";
+import type { Session } from '@faable/auth-js'
+import { writable } from 'svelte/store'
 
-export const session = writable<Session | null>(null);
+export const session = writable<Session | null>(null)
 
 // Update the store on every auth change…
-auth.onAuthStateChange((_event, current) => session.set(current));
+auth.onAuthStateChange((_event, current) => session.set(current))
 
 // …and seed it once with the current session.
-auth.getSession().then(({ data }) => session.set(data.session));
+auth.getSession().then(({ data }) => session.set(data.session))
 ```
 
 `getSession()` returns (and auto-refreshes) the current session; `onAuthStateChange` fires on every subsequent change.
@@ -135,15 +135,15 @@ The access token lives on the session. Read it fresh before each call — `getSe
 
 ```ts
 // src/lib/api.ts
-import { auth } from "$lib/auth";
+import { auth } from '$lib/auth'
 
 export async function apiFetch(path: string) {
-  const { data, error } = await auth.getSession();
-  if (error || !data.session) throw new Error("Not signed in");
+  const { data, error } = await auth.getSession()
+  if (error || !data.session) throw new Error('Not signed in')
 
   return fetch(`https://api.myapp.com${path}`, {
-    headers: { authorization: `Bearer ${data.session.access_token}` },
-  });
+    headers: { authorization: `Bearer ${data.session.access_token}` }
+  })
 }
 ```
 

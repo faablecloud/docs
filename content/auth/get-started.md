@@ -42,16 +42,16 @@ The fastest way to add login to an existing app.
 Build directly on `@faable/auth-js` for a custom integration:
 
 ```ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 const auth = createClient({
-  domain: "your-tenant.auth.faable.link",
-  clientId: "<your_client_id>",
-});
+  domain: 'your-tenant.auth.faable.link',
+  clientId: '<your_client_id>'
+})
 
 await auth.signInWithOauthConnection({
-  redirectTo: "https://app.example.com/callback",
-});
+  redirectTo: 'https://app.example.com/callback'
+})
 ```
 
 The SDK handles the PKCE handshake, the redirect, and the token exchange. See the [Authorization Code Flow](oauth-flows/authorization-code.mdx) for what happens under the hood.
@@ -60,18 +60,18 @@ The SDK handles the PKCE handshake, the redirect, and the token exchange. See th
 
 Once a user can sign in, Faable Auth gives you the building blocks for the rest of your identity experience:
 
-| Feature | What it gives you |
-|---|---|
-| **[Change Email](change-email.md)** | Self-service email update with ownership verification (and optional double-confirmation). |
+| Feature                                     | What it gives you                                                                                                        |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **[Change Email](change-email.md)**         | Self-service email update with ownership verification (and optional double-confirmation).                                |
 | **[Team Invitations](team-invitations.md)** | Invite users by email; existing users are added directly, unknowns get a magic link that creates their account on click. |
-| **[Passwordless](passwordless.md)** | Magic link or OTP login, no password to remember. |
-| **[Actions](extensibility/actions.md)** | Run JavaScript in the auth flow to enforce rules or redirect through custom UI. |
-| **[Webhooks](extensibility/webhooks.md)** | Signed HTTPS callbacks for `user.created`, `user.updated`, `user.deleted`, `auth.login`. |
-| **[APIs](apis.md)** | Register backend resource servers and define scoped permissions. |
-| **[Logs](logs.md)** | Audit email deliveries, webhook calls, and authentication events. |
-| **[Custom Domain](custom-domain.md)** | Serve the login UI under your own branded domain with auto-renewed SSL. |
-| **[OIDC Logout](oidc/logout.md)** | RP-Initiated + Front-Channel logout across every signed-in application. |
-| **[UserInfo](oidc/userinfo.md)** | Standard claims endpoint, scope-gated per OIDC §5.4. |
+| **[Passwordless](passwordless.md)**         | Magic link or OTP login, no password to remember.                                                                        |
+| **[Actions](extensibility/actions.md)**     | Run JavaScript in the auth flow to enforce rules or redirect through custom UI.                                          |
+| **[Webhooks](extensibility/webhooks.md)**   | Signed HTTPS callbacks for `user.created`, `user.updated`, `user.deleted`, `auth.login`.                                 |
+| **[APIs](apis.md)**                         | Register backend resource servers and define scoped permissions.                                                         |
+| **[Logs](logs.md)**                         | Audit email deliveries, webhook calls, and authentication events.                                                        |
+| **[Custom Domain](custom-domain.md)**       | Serve the login UI under your own branded domain with auto-renewed SSL.                                                  |
+| **[OIDC Logout](oidc/logout.md)**           | RP-Initiated + Front-Channel logout across every signed-in application.                                                  |
+| **[UserInfo](oidc/userinfo.md)**            | Standard claims endpoint, scope-gated per OIDC §5.4.                                                                     |
 
 ## SDKs and libraries
 

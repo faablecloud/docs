@@ -11,10 +11,10 @@ Actions are stored per-account, run in execution order, and have a focused API f
 
 ## Triggers
 
-| Trigger | When it runs | Typical use |
-|---------|--------------|-------------|
-| `post-login` | After the user is authenticated, **before** tokens are issued. | Enforce rules, redirect to custom UI (terms of service, MFA enrollment), enrich the session. |
-| `continue`   | When the user returns from a `post-login` redirect via the `/continue` endpoint. | Pick up state and decide what to do next. |
+| Trigger      | When it runs                                                                     | Typical use                                                                                  |
+| ------------ | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `post-login` | After the user is authenticated, **before** tokens are issued.                   | Enforce rules, redirect to custom UI (terms of service, MFA enrollment), enrich the session. |
+| `continue`   | When the user returns from a `post-login` redirect via the `/continue` endpoint. | Pick up state and decide what to do next.                                                    |
 
 Multiple actions can be registered at the same trigger; they execute in ascending `order`. The first one to call `api.access.deny()` short-circuits the chain; the first one to call `api.redirect.sendUserTo()` pauses the flow.
 
@@ -23,22 +23,22 @@ Multiple actions can be registered at the same trigger; they execute in ascendin
 
 ## CRUD endpoints
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| `POST` | `/actions` | Create an action. |
-| `GET`  | `/actions` | List actions (filterable by trigger). |
-| `POST` | `/actions/:action_id` | Update name, code, order, or enabled flag. |
-| `DELETE` | `/actions/:action_id` | Delete. |
+| Method   | Path                  | Purpose                                    |
+| -------- | --------------------- | ------------------------------------------ |
+| `POST`   | `/actions`            | Create an action.                          |
+| `GET`    | `/actions`            | List actions (filterable by trigger).      |
+| `POST`   | `/actions/:action_id` | Update name, code, order, or enabled flag. |
+| `DELETE` | `/actions/:action_id` | Delete.                                    |
 
 ### Fields
 
-| Field | Description |
-|-------|-------------|
-| `name` | Free-text label (max 200 chars). |
-| `trigger` | `post-login` or `continue`. |
-| `code` | The JavaScript source to execute. |
+| Field     | Description                          |
+| --------- | ------------------------------------ |
+| `name`    | Free-text label (max 200 chars).     |
+| `trigger` | `post-login` or `continue`.          |
+| `code`    | The JavaScript source to execute.    |
 | `enabled` | When `false`, the action is skipped. |
-| `order` | Integer; lower runs first. |
+| `order`   | Integer; lower runs first.           |
 
 ## Writing an Action
 
@@ -48,7 +48,7 @@ Your code must export an async function whose name matches the trigger. For `pos
 exports.onExecutePostLogin = async (event, api) => {
   // event holds context about the current login.
   // api is how you affect the outcome.
-};
+}
 ```
 
 ### The `event` object
@@ -96,15 +96,15 @@ api.redirect.sendUserTo(url: string)
 ```js
 exports.onExecutePostLogin = async (event, api) => {
   if (!event.user.email_verified) {
-    api.access.deny("Please verify your email before signing in.");
-    return;
+    api.access.deny('Please verify your email before signing in.')
+    return
   }
 
-  const tosAccepted = event.user.app_metadata?.tos_accepted_at;
+  const tosAccepted = event.user.app_metadata?.tos_accepted_at
   if (!tosAccepted) {
-    api.redirect.sendUserTo("https://app.example.com/accept-tos");
+    api.redirect.sendUserTo('https://app.example.com/accept-tos')
   }
-};
+}
 ```
 
 If the user clicks through your ToS page and you redirect them back to Faable's `/continue` endpoint, a corresponding `continue` Action picks up — typically to mark the metadata field and let the flow proceed.
@@ -121,9 +121,9 @@ Send brand-new accounts through a one-time onboarding step, while returning user
 exports.onExecutePostLogin = async (event, api) => {
   // Only divert the user's very first login (their signup).
   if (event.stats.is_new_user) {
-    api.redirect.sendUserTo("https://app.example.com/onboarding");
+    api.redirect.sendUserTo('https://app.example.com/onboarding')
   }
-};
+}
 ```
 
 ### Tracking signup conversions
@@ -132,9 +132,9 @@ For **signup analytics** (Google Ads conversions, PostHog events…), you don't 
 
 ```js
 // On your OAuth landing/callback page:
-const params = new URLSearchParams(window.location.search);
-if (params.get("signup") === "true") {
-  analytics.capture("user_signed_up"); // your one-time conversion event
+const params = new URLSearchParams(window.location.search)
+if (params.get('signup') === 'true') {
+  analytics.capture('user_signed_up') // your one-time conversion event
 }
 ```
 

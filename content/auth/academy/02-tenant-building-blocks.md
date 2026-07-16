@@ -1,13 +1,14 @@
 ---
-title: "Module 2 — Tenant Building Blocks"
+title: 'Module 2 — Tenant Building Blocks'
 description: Account, Connections, Clients, Users & Teams — the four concepts that model a Faable Auth tenant, plus how multi-tenancy works by host.
 ---
 
 # Module 2 — Tenant Building Blocks
 
 > **Learning objectives**
+>
 > - Name the four core resources of a tenant and how they relate.
-> - Explain how Faable resolves *which tenant* a request belongs to.
+> - Explain how Faable resolves _which tenant_ a request belongs to.
 > - Know where each resource lives in the dashboard.
 
 ## Four concepts model the whole product
@@ -17,9 +18,9 @@ From the [Get Started](../get-started.md) guide:
 - **Account** — your auth **tenant**. Hosted at `https://<account>.auth.faable.link`
   or under your own [custom domain](../custom-domain.md). Everything below hangs off
   the account.
-- **[Connections](../connections.md)** — *sources of users*: database (email +
+- **[Connections](../connections.md)** — _sources of users_: database (email +
   password), social (Google, GitHub, Apple…), passwordless, or generic OIDC/SAML.
-- **[Clients](../clients.md)** — the *applications* that drive an OAuth flow against
+- **[Clients](../clients.md)** — the _applications_ that drive an OAuth flow against
   your account. Each has a **Client ID**, optional **Client Secret**, and
   **Allowed Callback URLs**.
 - **[Users & Teams](../team-invitations.md)** — identities created through your
@@ -36,7 +37,7 @@ Account (tenant)
 ## How a tenant is resolved: by host
 
 Faable Auth is **multi-tenant**. The tenant is determined from the **host** of the
-incoming request: `acme.auth.faable.link` → the *acme* account; a custom domain like
+incoming request: `acme.auth.faable.link` → the _acme_ account; a custom domain like
 `login.acme.com` → whichever account claims it. Each account has its own keystore,
 clients, connections and users — they are fully isolated.
 
@@ -59,7 +60,7 @@ See [Clients](../clients.md) for the full field reference.
 
 ## Connections in a bit more depth
 
-A connection is a *way to authenticate*. You can enable several at once; the login
+A connection is a _way to authenticate_. You can enable several at once; the login
 screen shows the ones enabled for that client. Connections can be restricted to
 specific clients (`enabled_clients`). Types include:
 
@@ -74,7 +75,7 @@ specific clients (`enabled_clients`). Types include:
    How many clients do you create, and are they public or confidential?
 2. A teammate says "login redirects to a Faable error page after the user signs in."
    What's the first thing you check?
-3. Where does a *user* come from — you create them manually, or…?
+3. Where does a _user_ come from — you create them manually, or…?
 
 <details>
 <summary>Answers</summary>
@@ -84,7 +85,8 @@ specific clients (`enabled_clients`). Types include:
 2. The **Allowed Callback URLs** on that client — the post-login `redirect_uri` must
    be allow-listed exactly.
 3. Users are **created through a connection** when they authenticate (or via
-   invitations / admin APIs). The connection is the *source* of users.
+   invitations / admin APIs). The connection is the _source_ of users.
+
 </details>
 
 ---

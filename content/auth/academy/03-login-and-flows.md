@@ -1,11 +1,12 @@
 ---
-title: "Module 3 — Login & Flows"
+title: 'Module 3 — Login & Flows'
 description: The OAuth flows Faable supports — Authorization Code with PKCE, social, passwordless OTP, and refresh tokens — and when to use each.
 ---
 
 # Module 3 — Login & Flows
 
 > **Learning objectives**
+>
 > - Walk through the Authorization Code + PKCE flow step by step.
 > - Explain what PKCE protects against and why public clients need it.
 > - Know when to use passwordless, social, and refresh tokens.
@@ -37,7 +38,7 @@ User clicks "Log in"
 ### What PKCE protects against
 
 `code_verifier` / `code_challenge` (Proof Key for Code Exchange) ties the final token
-exchange to the same app that *started* the flow. Even if an attacker intercepts the
+exchange to the same app that _started_ the flow. Even if an attacker intercepts the
 `code` from the redirect, they can't exchange it without the original `code_verifier`,
 which never left the app. That's why **public clients (no secret) must use PKCE** —
 it replaces the client secret as the proof of "I'm the one who asked."
@@ -47,7 +48,7 @@ it replaces the client secret as the proof of "I'm the one who asked."
 - **`state`** — random value echoed back to defeat CSRF on the redirect. The SDK
   generates and checks it for you.
 - **`nonce`** — random value placed in the request and returned **inside the ID
-  token**, so your app can confirm the token belongs to *this* login.
+  token**, so your app can confirm the token belongs to _this_ login.
 
 > Good news: with `@faable/auth-js` (Module 4) **all of step 1, the redirect, `state`,
 > `nonce`, and the token exchange are handled for you.** You should still understand
@@ -55,8 +56,8 @@ it replaces the client secret as the proof of "I'm the one who asked."
 
 ## Social login
 
-A social connection (Google, GitHub, Apple…) is the *same* Authorization Code flow —
-Faable just federates the actual authentication to the provider, then issues *your*
+A social connection (Google, GitHub, Apple…) is the _same_ Authorization Code flow —
+Faable just federates the actual authentication to the provider, then issues _your_
 tenant's tokens. To the app, nothing changes. See [Social](../social/).
 
 > Gotcha worth remembering: some providers don't return everything. GitHub may hide a
@@ -79,13 +80,13 @@ login. Reference: [Refresh Token Flow](../oauth-flows/refresh-token.mdx).
 
 ## Which flow do I use?
 
-| Situation | Flow |
-|---|---|
-| Web SPA / mobile app login | **Authorization Code + PKCE** |
-| "Log in with Google/GitHub" | Social (same flow, federated) |
-| No-password consumer login | **Passwordless OTP** |
-| Keep the user logged in | **Refresh token** (`offline_access`) |
-| Backend calling an API with **no user** | **Client Credentials** → Module 5 |
+| Situation                               | Flow                                 |
+| --------------------------------------- | ------------------------------------ |
+| Web SPA / mobile app login              | **Authorization Code + PKCE**        |
+| "Log in with Google/GitHub"             | Social (same flow, federated)        |
+| No-password consumer login              | **Passwordless OTP**                 |
+| Keep the user logged in                 | **Refresh token** (`offline_access`) |
+| Backend calling an API with **no user** | **Client Credentials** → Module 5    |
 
 ## Check yourself
 
@@ -102,6 +103,7 @@ login. Reference: [Refresh Token Flow](../oauth-flows/refresh-token.mdx).
 2. **PKCE** — the `code_verifier`/`code_challenge` pair proves the same client that
    started the flow is finishing it.
 3. The SDK uses the **refresh token** to silently obtain a new access token.
+
 </details>
 
 ---

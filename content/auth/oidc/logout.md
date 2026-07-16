@@ -17,15 +17,15 @@ Faable Auth implements both [OpenID Connect RP-Initiated Logout 1.0](https://ope
 GET /logout?id_token_hint=<id_token>&post_logout_redirect_uri=<url>&state=<opaque>
 ```
 
-| Parameter | Description |
-|-----------|-------------|
-| `id_token_hint` | The ID Token previously issued to the user. RECOMMENDED (per spec §3): it lets Faable identify the client and session being ended. Decoded without signature verification — it's a hint, not an authorizer. |
-| `client_id` | OAuth client identifier. Inferred from `id_token_hint.aud` when omitted. |
-| `post_logout_redirect_uri` | Where to send the user after logout. **Must be pre-registered** in the client's `logout_urls` (exact match). This is what prevents open-redirect abuse. |
-| `state` | Opaque value echoed back as `?state=…` on the post-logout redirect. Use it for CSRF protection. |
-| `logout_hint` | Optional hint about the user being logged out (session id, email). Provider-specific. |
-| `ui_locales` | Space-separated preferred languages for any UI shown during logout. |
-| `returnTo` | Deprecated alias for `post_logout_redirect_uri`. Kept for backwards compatibility. |
+| Parameter                  | Description                                                                                                                                                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id_token_hint`            | The ID Token previously issued to the user. RECOMMENDED (per spec §3): it lets Faable identify the client and session being ended. Decoded without signature verification — it's a hint, not an authorizer. |
+| `client_id`                | OAuth client identifier. Inferred from `id_token_hint.aud` when omitted.                                                                                                                                    |
+| `post_logout_redirect_uri` | Where to send the user after logout. **Must be pre-registered** in the client's `logout_urls` (exact match). This is what prevents open-redirect abuse.                                                     |
+| `state`                    | Opaque value echoed back as `?state=…` on the post-logout redirect. Use it for CSRF protection.                                                                                                             |
+| `logout_hint`              | Optional hint about the user being logged out (session id, email). Provider-specific.                                                                                                                       |
+| `ui_locales`               | Space-separated preferred languages for any UI shown during logout.                                                                                                                                         |
+| `returnTo`                 | Deprecated alias for `post_logout_redirect_uri`. Kept for backwards compatibility.                                                                                                                          |
 
 ## What happens
 
@@ -58,10 +58,10 @@ Content-Security-Policy: frame-ancestors 'none'
 
 To opt an RP in, register two fields on the client (via [Clients](../clients.md) or `POST /clients`):
 
-| Field | Description |
-|-------|-------------|
-| `frontchannel_logout_uri` | The URL Faable loads inside an iframe to tell your app the user has logged out. Your handler should clear local cookies/storage and return a tiny 200 response. |
-| `frontchannel_logout_session_required` | When `true`, Faable appends `iss` and `sid` query parameters to the iframe URL so your app can correlate the logout with the specific session. |
+| Field                                  | Description                                                                                                                                                     |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `frontchannel_logout_uri`              | The URL Faable loads inside an iframe to tell your app the user has logged out. Your handler should clear local cookies/storage and return a tiny 200 response. |
+| `frontchannel_logout_session_required` | When `true`, Faable appends `iss` and `sid` query parameters to the iframe URL so your app can correlate the logout with the specific session.                  |
 
 A minimal handler:
 
@@ -70,14 +70,14 @@ A minimal handler:
 export async function GET(req: Request) {
   // Optionally read ?iss and ?sid if you set frontchannel_logout_session_required.
   const headers = new Headers({
-    "Cache-Control": "no-store",
-    "Content-Type": "text/plain",
-  });
+    'Cache-Control': 'no-store',
+    'Content-Type': 'text/plain'
+  })
 
   // Clear your session cookie(s) here.
-  headers.append("Set-Cookie", "session=; Max-Age=0; Path=/; HttpOnly");
+  headers.append('Set-Cookie', 'session=; Max-Age=0; Path=/; HttpOnly')
 
-  return new Response("", { status: 200, headers });
+  return new Response('', { status: 200, headers })
 }
 ```
 
@@ -89,16 +89,16 @@ Internally, Faable maintains one session record per (browser session, client) pa
 
 ```ts
 // In your application's "Sign out" handler:
-const logoutUrl = new URL("https://your-tenant.faable.app/logout");
-logoutUrl.searchParams.set("id_token_hint", session.id_token);
+const logoutUrl = new URL('https://your-tenant.faable.app/logout')
+logoutUrl.searchParams.set('id_token_hint', session.id_token)
 logoutUrl.searchParams.set(
-  "post_logout_redirect_uri",
-  "https://app.example.com/logged-out",
-);
-logoutUrl.searchParams.set("state", crypto.randomUUID());
+  'post_logout_redirect_uri',
+  'https://app.example.com/logged-out'
+)
+logoutUrl.searchParams.set('state', crypto.randomUUID())
 
 // Clear your own session, then redirect the browser:
-return Response.redirect(logoutUrl.toString());
+return Response.redirect(logoutUrl.toString())
 ```
 
 Make sure `https://app.example.com/logged-out` is in the client's `logout_urls`, or the redirect will be rejected.

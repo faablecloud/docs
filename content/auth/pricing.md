@@ -9,10 +9,10 @@ Faable Auth is part of the unified Faable subscription — and it is **included 
 
 ## What each plan includes for Auth
 
-| Plan      | Auth entitlements |
-|-----------|-------------------|
-| **Free**  | Faable Auth included · 1 auth account · fair-use MAU allowance · passwordless, social login, RBAC · 1 Action |
-| **Hobby** | 1 auth account · **250 MAU** · unlimited passwordless within MAU · unlimited Actions · Webhooks · Custom Domain · MFA |
+| Plan      | Auth entitlements                                                                                                                      |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | Faable Auth included · 1 auth account · fair-use MAU allowance · passwordless, social login, RBAC · 1 Action                           |
+| **Hobby** | 1 auth account · **250 MAU** · unlimited passwordless within MAU · unlimited Actions · Webhooks · Custom Domain · MFA                  |
 | **Pro**   | Everything in Hobby · **unlimited auth accounts** · **10,000 MAU pooled** across accounts · Enterprise **SSO / SAML** · **Audit logs** |
 
 ## Monthly Active Users (MAU)
@@ -27,19 +27,19 @@ If you expect to exceed your plan's MAU allowance, [contact us](https://github.c
 
 ## Feature gating
 
-| Feature                                  | Free | Hobby        | Pro          |
-|------------------------------------------|:----:|:------------:|:------------:|
-| Social Login                             | ✅   | ✅           | ✅           |
-| Database (username/password) connection  | ✅   | ✅           | ✅           |
-| Passwordless (OTP / Magic Link)          | ✅   | ✅           | ✅           |
-| RBAC, Teams                              | ✅   | ✅           | ✅           |
-| Actions (PostLogin)                      | ✅ (1 Action max) | ✅ unlimited | ✅ unlimited |
-| Webhooks                                 | —    | ✅           | ✅           |
-| Custom Domain                            | —    | ✅           | ✅           |
-| MFA                                      | —    | ✅           | ✅           |
-| Enterprise SSO / SAML                    | —    | —            | ✅           |
-| Audit logs                               | —    | —            | ✅           |
-| Multiple auth accounts                   | —    | —            | ✅           |
+| Feature                                 |       Free        |    Hobby     |     Pro      |
+| --------------------------------------- | :---------------: | :----------: | :----------: |
+| Social Login                            |        ✅         |      ✅      |      ✅      |
+| Database (username/password) connection |        ✅         |      ✅      |      ✅      |
+| Passwordless (OTP / Magic Link)         |        ✅         |      ✅      |      ✅      |
+| RBAC, Teams                             |        ✅         |      ✅      |      ✅      |
+| Actions (PostLogin)                     | ✅ (1 Action max) | ✅ unlimited | ✅ unlimited |
+| Webhooks                                |         —         |      ✅      |      ✅      |
+| Custom Domain                           |         —         |      ✅      |      ✅      |
+| MFA                                     |         —         |      ✅      |      ✅      |
+| Enterprise SSO / SAML                   |         —         |      —       |      ✅      |
+| Audit logs                              |         —         |      —       |      ✅      |
+| Multiple auth accounts                  |         —         |      —       |      ✅      |
 
 ## Related
 

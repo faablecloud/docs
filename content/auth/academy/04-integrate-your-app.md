@@ -1,11 +1,12 @@
 ---
-title: "Module 4 — Integrate Your App"
+title: 'Module 4 — Integrate Your App'
 description: Add login to a web app with @faable/auth-js — initialize the client, start the flow, handle the callback, and read the session and user.
 ---
 
 # Module 4 — Integrate Your App
 
 > **Learning objectives**
+>
 > - Initialize `@faable/auth-js` and start a login.
 > - Handle the callback and read the session + user.
 > - Know which SDK to reach for in browser vs server vs React.
@@ -16,20 +17,20 @@ For browsers and React Native. It runs the Authorization Code + PKCE flow, manag
 the session, and refreshes tokens. You only need your tenant **domain** and **Client ID**.
 
 ```ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 export const auth = createClient({
-  domain: "your-tenant.auth.faable.link",
-  clientId: "<your_client_id>",
-});
+  domain: 'your-tenant.auth.faable.link',
+  clientId: '<your_client_id>'
+})
 ```
 
 ### Start a login
 
 ```ts
 await auth.signInWithOauthConnection({
-  redirectTo: "https://app.example.com/callback", // must be in Allowed Callback URLs
-});
+  redirectTo: 'https://app.example.com/callback' // must be in Allowed Callback URLs
+})
 ```
 
 This redirects the browser to Faable's `/authorize` with PKCE, `state`, and `nonce`
@@ -41,26 +42,26 @@ On your callback route, let the SDK finish the exchange:
 
 ```ts
 // at https://app.example.com/callback
-const { session } = await auth.handleRedirectCallback();
+const { session } = await auth.handleRedirectCallback()
 // session has the tokens; the user is now signed in
 ```
 
 ### Read session & user
 
 ```ts
-const session = await auth.getSession();        // null if not signed in
-const accessToken = session?.access_token;       // forward this to YOUR APIs
-const user = session?.user;                       // identity from the ID token
+const session = await auth.getSession() // null if not signed in
+const accessToken = session?.access_token // forward this to YOUR APIs
+const user = session?.user // identity from the ID token
 ```
 
 > **Apply Module 1 here:** `session.user` comes from the **ID token** (who the user
 > is). `session.access_token` is what you put in `Authorization: Bearer …` when
-> calling *your own* backend. Don't mix them up.
+> calling _your own_ backend. Don't mix them up.
 
 ### Log out
 
 ```ts
-await auth.signOut(); // clears the local session; see OIDC Logout for RP-initiated
+await auth.signOut() // clears the local session; see OIDC Logout for RP-initiated
 ```
 
 For logging out across every app the user signed into, see
@@ -68,11 +69,11 @@ For logging out across every app the user signed into, see
 
 ## The Faable SDK family — pick the right one
 
-| Package | Where it runs | Use it for |
-|---|---|---|
-| [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) | Browser / React Native | Login flow, session, token refresh (this module). |
-| [`@faable/auth-helpers-react`](https://www.npmjs.com/package/@faable/auth-helpers-react) | React | Hooks for session/user state (`SessionContext`). |
-| [`@faable/auth-sdk`](https://www.npmjs.com/package/@faable/auth-sdk) | Node.js server | Verify tokens; **admin / Management API** ops (Module 5). |
+| Package                                                                                  | Where it runs          | Use it for                                                |
+| ---------------------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------- |
+| [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js)                       | Browser / React Native | Login flow, session, token refresh (this module).         |
+| [`@faable/auth-helpers-react`](https://www.npmjs.com/package/@faable/auth-helpers-react) | React                  | Hooks for session/user state (`SessionContext`).          |
+| [`@faable/auth-sdk`](https://www.npmjs.com/package/@faable/auth-sdk)                     | Node.js server         | Verify tokens; **admin / Management API** ops (Module 5). |
 
 A quick win: the [Next.js Quickstart](../quickstart/nextjs.mdx) wires all of this in
 an App Router project.
@@ -100,8 +101,9 @@ an App Router project.
    `Authorization: Bearer …`.
 2. The production **callback URL isn't allow-listed** on the client.
 3. **`@faable/auth-sdk`** (server-side). `@faable/auth-js` is a browser/mobile client
-   SDK built around a *user* login + PKCE; a cron job has no user and needs the
+   SDK built around a _user_ login + PKCE; a cron job has no user and needs the
    server-side **client_credentials** path (Module 5).
+
 </details>
 
 ---

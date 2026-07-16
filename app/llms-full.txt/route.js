@@ -22,6 +22,6 @@ export async function GET() {
   }
 
   return new Response(parts.join('\n'), {
-    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' }
   })
 }

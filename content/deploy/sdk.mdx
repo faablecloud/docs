@@ -31,27 +31,27 @@ no environment magic. Two strategies are supported:
 **API key** (`authApikey`) — the simplest path for a backend or a script:
 
 ```ts
-import { DeployApi, authApikey } from "@faable/deploy-sdk";
+import { DeployApi, authApikey } from '@faable/deploy-sdk'
 
 const api = DeployApi.create({
   authStrategy: authApikey,
-  auth: { apikey: process.env.FAABLE_APIKEY! },
-});
+  auth: { apikey: process.env.FAABLE_APIKEY! }
+})
 ```
 
 **Client credentials** (`authClientCredentials`) — for an OAuth client with the
 right scopes on the Deploy API:
 
 ```ts
-import { DeployApi, authClientCredentials } from "@faable/deploy-sdk";
+import { DeployApi, authClientCredentials } from '@faable/deploy-sdk'
 
 const api = DeployApi.create({
   authStrategy: authClientCredentials,
   auth: {
     client_id: process.env.FAABLE_CLIENT_ID!,
-    client_secret: process.env.FAABLE_CLIENT_SECRET!,
-  },
-});
+    client_secret: process.env.FAABLE_CLIENT_SECRET!
+  }
+})
 ```
 
 The base URL defaults to `https://api.faable.com`; pass `baseURL` only to target
@@ -64,44 +64,44 @@ into an array, or `.first()` for just the first page (`{ results, next }`):
 
 ```ts
 // Every app in your account
-const apps = await api.appList().all();
+const apps = await api.appList().all()
 
 // Filter with FaableQL, one page at a time
-const { results } = await api.appList({ query: "status:READY" }).first();
+const { results } = await api.appList({ query: 'status:READY' }).first()
 
 // Deployments for review
-const deployments = await api.deploymentList().all();
+const deployments = await api.deploymentList().all()
 ```
 
 ## Work with a single app
 
 ```ts
-const app = await api.appGet(appId);
+const app = await api.appGet(appId)
 
 // Trigger a deployment
-const deployment = await api.deploymentCreate({ app_id: appId });
-const status = await api.deploymentGet(deployment.id);
+const deployment = await api.deploymentCreate({ app_id: appId })
+const status = await api.deploymentGet(deployment.id)
 
 // Tail runtime logs
-const logs = await api.appLogs(appId, { limit: 200 });
+const logs = await api.appLogs(appId, { limit: 200 })
 
 // HTTP traffic metrics (defaults to the last 24h, 1h buckets)
 const traffic = await api.getAppTraffic(appId, {
   from: Math.floor(Date.now() / 1000) - 86_400,
-  interval: 3_600,
-});
+  interval: 3_600
+})
 
 // Secrets (returns a paginator)
-const secrets = await api.listSecrets(appId).all();
+const secrets = await api.listSecrets(appId).all()
 ```
 
 ## Domains and projects
 
 ```ts
-const domains = await api.domainList().all();
-await api.domainCreate({ app_id: appId, fqdn: "www.example.com", tls: true });
+const domains = await api.domainList().all()
+await api.domainCreate({ app_id: appId, fqdn: 'www.example.com', tls: true })
 
-const projects = await api.projectList().all();
+const projects = await api.projectList().all()
 ```
 
 ## Reference

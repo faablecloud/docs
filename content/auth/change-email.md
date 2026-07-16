@@ -15,10 +15,10 @@ From a signed-in browser session, [`@faable/auth-js`](quickstart/nextjs.mdx) exp
 
 ```ts
 const { data, error } = await auth.changeEmail({
-  new_email: "new@example.com",
-  verification_mode: "old_and_new", // optional; raises the tenant default
-  redirect_uri: "https://app.example.com/settings/email-changed",
-});
+  new_email: 'new@example.com',
+  verification_mode: 'old_and_new', // optional; raises the tenant default
+  redirect_uri: 'https://app.example.com/settings/email-changed'
+})
 // data: { status: 'verification_sent', ticket_id, verification_mode }
 ```
 
@@ -26,10 +26,10 @@ This calls the endpoints below for you. The rest of this page documents the unde
 
 ## Endpoints
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| `POST` | `/user/:user_id/change-email` | Start the flow. Sends the verification email to the new address. |
-| `GET`  | `/change-email-verify?ticket=…` | Public entry point for the link in the verification email. |
+| Method | Path                            | Purpose                                                          |
+| ------ | ------------------------------- | ---------------------------------------------------------------- |
+| `POST` | `/user/:user_id/change-email`   | Start the flow. Sends the verification email to the new address. |
+| `GET`  | `/change-email-verify?ticket=…` | Public entry point for the link in the verification email.       |
 
 Both endpoints are exposed by your auth tenant (e.g. `https://your-tenant.faable.app` or your custom domain).
 
@@ -54,11 +54,11 @@ Content-Type: application/json
 }
 ```
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `new_email` | yes | The address the user wants to switch to. |
-| `verification_mode` | no | `new_only` or `old_and_new`. Overrides the tenant default — see [Verification modes](#verification-modes). |
-| `redirect_uri` | no | Where to send the user after they click the link. The status of the operation is appended as `?status=applied|pending_old`. |
+| Field               | Required | Description                                                                                                   |
+| ------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `new_email`         | yes      | The address the user wants to switch to.                                                                      |
+| `verification_mode` | no       | `new_only` or `old_and_new`. Overrides the tenant default — see [Verification modes](#verification-modes).    |
+| `redirect_uri`      | no       | Where to send the user after they click the link. The status of the operation is appended as `?status=applied | pending_old`. |
 
 Response:
 
@@ -107,21 +107,21 @@ The `verification_mode` field in the request body can only **raise** the bar, ne
 
 After verification completes (or after step 1 of `old_and_new`), the user is sent back to your `redirect_uri` with a status query parameter:
 
-| `?status=` | When |
-|-----------|------|
-| `applied` | The email change is final. `user.email` is updated and verified. |
+| `?status=`    | When                                                                       |
+| ------------- | -------------------------------------------------------------------------- |
+| `applied`     | The email change is final. `user.email` is updated and verified.           |
 | `pending_old` | First step of `old_and_new` done; waiting on the click in the old mailbox. |
 
 If you omit `redirect_uri`, the user lands on a built-in fallback page at `/flow/email-change-done` on the auth host.
 
 ## Errors
 
-| HTTP | Code | Meaning |
-|------|------|---------|
-| 400 | `same_as_current_email` | The `new_email` matches the current one (case-insensitive). |
-| 409 | `email_already_exists` | Another user in the same tenant already uses that address. The error is generic on purpose, to avoid email enumeration. |
-| 401 | — | Missing/invalid bearer or no session cookie. |
-| 403 | — | The authenticated user doesn't match `:user_id`. |
+| HTTP | Code                    | Meaning                                                                                                                 |
+| ---- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 400  | `same_as_current_email` | The `new_email` matches the current one (case-insensitive).                                                             |
+| 409  | `email_already_exists`  | Another user in the same tenant already uses that address. The error is generic on purpose, to avoid email enumeration. |
+| 401  | —                       | Missing/invalid bearer or no session cookie.                                                                            |
+| 403  | —                       | The authenticated user doesn't match `:user_id`.                                                                        |
 
 ## Side effects
 

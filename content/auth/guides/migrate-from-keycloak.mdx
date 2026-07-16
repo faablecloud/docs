@@ -5,19 +5,19 @@ description: A step-by-step guide to migrating from self-hosted Keycloak to mana
 
 # Migrate from Keycloak to Faable Auth
 
-**Short answer:** Migrating from self-hosted Keycloak to Faable Auth removes the servers, upgrades, and database you currently operate, while keeping the same OAuth 2.0 / OpenID Connect standards. You map each Keycloak *realm* to a Faable *Account*, your Keycloak *clients* to Faable *Clients*, and your *identity providers* to Faable *Connections*, then export your users and import them into Faable. The motivation is almost always the same: **stop operating identity infrastructure** while staying **100% in Europe under GDPR** — Faable Auth is fully managed, so there is nothing to patch, scale, or back up.
+**Short answer:** Migrating from self-hosted Keycloak to Faable Auth removes the servers, upgrades, and database you currently operate, while keeping the same OAuth 2.0 / OpenID Connect standards. You map each Keycloak _realm_ to a Faable _Account_, your Keycloak _clients_ to Faable _Clients_, and your _identity providers_ to Faable _Connections_, then export your users and import them into Faable. The motivation is almost always the same: **stop operating identity infrastructure** while staying **100% in Europe under GDPR** — Faable Auth is fully managed, so there is nothing to patch, scale, or back up.
 
 ## Concept mapping
 
-| Keycloak | Faable Auth | Notes |
-|---|---|---|
-| Realm | [Account](../what-is-a-multi-tenant-identity-server.mdx) | Your isolated identity boundary |
-| Client | [Client](../clients.md) | SPA, native, regular web, or M2M |
-| Identity Provider (social/OIDC/SAML) | [Connection](../connections.md) | `social`, `oidc` categories |
-| User federation (LDAP/AD) | OIDC/enterprise [Connection](../connections.md) | Connect via standard protocols |
-| Authentication SPI (Java) | [Actions](../extensibility/actions.md) | Custom in-flow logic, no Java/SPI to maintain |
-| Admin REST API | [Management API](../apis.md) | Called with client credentials |
-| Self-hosted servers + DB | Fully managed | No infrastructure for you to run |
+| Keycloak                             | Faable Auth                                              | Notes                                         |
+| ------------------------------------ | -------------------------------------------------------- | --------------------------------------------- |
+| Realm                                | [Account](../what-is-a-multi-tenant-identity-server.mdx) | Your isolated identity boundary               |
+| Client                               | [Client](../clients.md)                                  | SPA, native, regular web, or M2M              |
+| Identity Provider (social/OIDC/SAML) | [Connection](../connections.md)                          | `social`, `oidc` categories                   |
+| User federation (LDAP/AD)            | OIDC/enterprise [Connection](../connections.md)          | Connect via standard protocols                |
+| Authentication SPI (Java)            | [Actions](../extensibility/actions.md)                   | Custom in-flow logic, no Java/SPI to maintain |
+| Admin REST API                       | [Management API](../apis.md)                             | Called with client credentials                |
+| Self-hosted servers + DB             | Fully managed                                            | No infrastructure for you to run              |
 
 ## Migration steps
 

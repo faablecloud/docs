@@ -9,12 +9,12 @@ Webhooks let your backend react to events in your Faable Auth tenant — without
 
 ## Supported events
 
-| Event | When |
-|-------|------|
-| `user.created` | A user record is added to the tenant. |
+| Event          | When                                                                     |
+| -------------- | ------------------------------------------------------------------------ |
+| `user.created` | A user record is added to the tenant.                                    |
 | `user.updated` | A user record is updated (email change, profile edit, metadata change…). |
-| `user.deleted` | A user record is removed. |
-| `auth.login` | A user successfully authenticates. |
+| `user.deleted` | A user record is removed.                                                |
+| `auth.login`   | A user successfully authenticates.                                       |
 
 > [!IMPORTANT]
 > **Plan requirement**: Webhooks are available on **Hobby** and **Pro**. Free accounts cannot create webhook subscriptions. See [Auth pricing](../pricing.md).
@@ -23,12 +23,12 @@ Webhooks let your backend react to events in your Faable Auth tenant — without
 
 Webhook subscriptions live on the `notification_subscriptions` resource. Filter by `?channel=webhook` to see only webhook subscriptions (the resource is shared with email subscriptions).
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| `POST` | `/notification_subscriptions` | Create a webhook. |
-| `GET`  | `/notification_subscriptions?channel=webhook` | List webhooks. |
-| `POST` | `/notification_subscriptions/:notification_subscription_id` | Update. |
-| `DELETE` | `/notification_subscriptions/:notification_subscription_id` | Delete. |
+| Method   | Path                                                        | Purpose           |
+| -------- | ----------------------------------------------------------- | ----------------- |
+| `POST`   | `/notification_subscriptions`                               | Create a webhook. |
+| `GET`    | `/notification_subscriptions?channel=webhook`               | List webhooks.    |
+| `POST`   | `/notification_subscriptions/:notification_subscription_id` | Update.           |
+| `DELETE` | `/notification_subscriptions/:notification_subscription_id` | Delete.           |
 
 ### Create example
 
@@ -69,11 +69,11 @@ X-Faable-Signature: sha256=4f3c8e…
 
 ### Headers
 
-| Header | Meaning |
-|--------|---------|
-| `X-Faable-Event` | Event type (matches the `type` field in the body). |
-| `X-Faable-Delivery` | Unique event ID for idempotency on your side. |
-| `X-Faable-Timestamp` | Unix milliseconds when Faable computed the signature. |
+| Header               | Meaning                                                                      |
+| -------------------- | ---------------------------------------------------------------------------- |
+| `X-Faable-Event`     | Event type (matches the `type` field in the body).                           |
+| `X-Faable-Delivery`  | Unique event ID for idempotency on your side.                                |
+| `X-Faable-Timestamp` | Unix milliseconds when Faable computed the signature.                        |
 | `X-Faable-Signature` | `sha256=<hex>` HMAC-SHA256 of `${timestamp}.${rawBody}` using your `secret`. |
 
 ### Delivery semantics
@@ -89,55 +89,58 @@ Verify every request. The signed string is `${timestamp}.${rawBody}` — make su
 ### Node / TypeScript
 
 ```ts
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from 'node:crypto'
 
 export function verifyFaableSignature(
   rawBody: string,
   headers: Record<string, string>,
-  secret: string,
+  secret: string
 ): boolean {
-  const timestamp = headers["x-faable-timestamp"];
-  const signatureHeader = headers["x-faable-signature"] ?? "";
-  const [, hex] = signatureHeader.split("=");
-  if (!timestamp || !hex) return false;
+  const timestamp = headers['x-faable-timestamp']
+  const signatureHeader = headers['x-faable-signature'] ?? ''
+  const [, hex] = signatureHeader.split('=')
+  if (!timestamp || !hex) return false
 
   // Reject replays older than 5 minutes.
-  const ageMs = Math.abs(Date.now() - Number(timestamp));
-  if (ageMs > 5 * 60 * 1000) return false;
+  const ageMs = Math.abs(Date.now() - Number(timestamp))
+  if (ageMs > 5 * 60 * 1000) return false
 
-  const expected = createHmac("sha256", secret)
+  const expected = createHmac('sha256', secret)
     .update(`${timestamp}.${rawBody}`)
-    .digest();
-  const provided = Buffer.from(hex, "hex");
+    .digest()
+  const provided = Buffer.from(hex, 'hex')
 
   return (
-    provided.length === expected.length &&
-    timingSafeEqual(provided, expected)
-  );
+    provided.length === expected.length && timingSafeEqual(provided, expected)
+  )
 }
 ```
 
 ### Using it in an Express route
 
 ```ts
-import express from "express";
+import express from 'express'
 
-const app = express();
+const app = express()
 
 // Capture the raw body — Faable signs the bytes, not a re-serialized JSON.
 app.post(
-  "/hooks/faable",
-  express.raw({ type: "application/json" }),
+  '/hooks/faable',
+  express.raw({ type: 'application/json' }),
   (req, res) => {
-    const raw = req.body.toString("utf8");
-    const ok = verifyFaableSignature(raw, req.headers as any, process.env.FAABLE_WEBHOOK_SECRET!);
-    if (!ok) return res.status(401).send("invalid signature");
+    const raw = req.body.toString('utf8')
+    const ok = verifyFaableSignature(
+      raw,
+      req.headers as any,
+      process.env.FAABLE_WEBHOOK_SECRET!
+    )
+    if (!ok) return res.status(401).send('invalid signature')
 
-    const event = JSON.parse(raw);
+    const event = JSON.parse(raw)
     // …process event.id idempotently…
-    res.status(200).send("ok");
-  },
-);
+    res.status(200).send('ok')
+  }
+)
 ```
 
 > [!IMPORTANT]

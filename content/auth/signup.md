@@ -12,23 +12,23 @@ Faable Auth lets you build a **self-service signup** for database (email + passw
 Use [`@faable/auth-js`](quickstart/nextjs.mdx) `signUp()` from a plain client-side form. It creates the user and its password against your tenant's database connection, then signs them in:
 
 ```ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 const auth = createClient({
-  domain: "https://your-tenant.faable.app",
-  clientId: "<your_client_id>",
-});
+  domain: 'https://your-tenant.faable.app',
+  clientId: '<your_client_id>'
+})
 
 const { error } = await auth.signUp({
-  email: "user@example.com",
-  password: "••••••••",
-  name: "Ada Lovelace",
-  redirectTo: "https://app.example.com/callback",
-});
+  email: 'user@example.com',
+  password: '••••••••',
+  name: 'Ada Lovelace',
+  redirectTo: 'https://app.example.com/callback'
+})
 
 if (error) {
   // e.g. error.code === 'signup_disabled' | 'email_exists'
-  showError(error.message);
+  showError(error.message)
 }
 // On success the browser is already navigating to complete the login.
 ```
@@ -40,14 +40,14 @@ The new user is created with `email_verified: false`. Whether a verification or 
 
 ### Parameters
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `email` | yes | The login identifier for the new account. |
-| `password` | yes | Validated against the connection's password policy, hashed server-side. |
-| `name`, `given_name`, `family_name` | no | Optional profile fields stored on the user. |
-| `user_metadata` | no | Arbitrary key/value metadata stored on the user. |
-| `connection` | no | Connection name, when the tenant has more than one database connection. Defaults to the tenant's database connection. |
-| `redirectTo` | no | Where the auto-login lands after the redirect. Defaults to `config.redirectUri` / the current origin. |
+| Field                               | Required | Description                                                                                                           |
+| ----------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `email`                             | yes      | The login identifier for the new account.                                                                             |
+| `password`                          | yes      | Validated against the connection's password policy, hashed server-side.                                               |
+| `name`, `given_name`, `family_name` | no       | Optional profile fields stored on the user.                                                                           |
+| `user_metadata`                     | no       | Arbitrary key/value metadata stored on the user.                                                                      |
+| `connection`                        | no       | Connection name, when the tenant has more than one database connection. Defaults to the tenant's database connection. |
+| `redirectTo`                        | no       | Where the auto-login lands after the redirect. Defaults to `config.redirectUri` / the current origin.                 |
 
 ## The signup endpoint
 
@@ -84,11 +84,11 @@ It creates the user and the database credential in one step. It does **not** est
 
 ### Errors
 
-| HTTP | `message` | Meaning |
-|------|-----------|---------|
-| 400 | password policy text | The password fails the connection's [password policy](connections.md). |
-| 403 | `signup_disabled` | Public signup is turned off for this connection (see below). |
-| 409 | `email_taken` | A credential with that email already exists in the connection. |
+| HTTP | `message`            | Meaning                                                                |
+| ---- | -------------------- | ---------------------------------------------------------------------- |
+| 400  | password policy text | The password fails the connection's [password policy](connections.md). |
+| 403  | `signup_disabled`    | Public signup is turned off for this connection (see below).           |
+| 409  | `email_taken`        | A credential with that email already exists in the connection.         |
 
 In `@faable/auth-js` these surface as an `AuthApiError` with a stable `code` (`signup_disabled`, `email_exists`).
 
@@ -119,10 +119,10 @@ https://app.example.com/callback?code=…&state=…&signup=true
 `@faable/auth-js` lifts this into the result of `initialize()` / `handleRedirectCallback()` as `is_new_user`, and strips the marker from the URL:
 
 ```ts
-const result = await auth.handleRedirectCallback();
+const result = await auth.handleRedirectCallback()
 if (result.is_new_user) {
   // brand-new account — send them to onboarding, fire a signup analytics event…
-  router.push("/welcome");
+  router.push('/welcome')
 }
 ```
 

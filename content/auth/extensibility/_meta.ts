@@ -1,4 +1,4 @@
 export default {
-  actions: "Actions",
-  webhooks: "Webhooks",
-};
+  actions: 'Actions',
+  webhooks: 'Webhooks'
+}

@@ -23,13 +23,13 @@ client ──► /oauth/token { audience: "https://api.example.com", scope: "rea
 
 ## Endpoints
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| `POST` | `/apis` | Create an API. |
-| `GET`  | `/apis` | List APIs (paginated, FaableQL-filterable). |
-| `GET`  | `/apis/:apis_id` | Read one. |
-| `POST` | `/apis/:apis_id` | Update. The `identifier` field is **immutable** and must be omitted. |
-| `DELETE` | `/apis/:apis_id` | Delete. |
+| Method   | Path             | Purpose                                                              |
+| -------- | ---------------- | -------------------------------------------------------------------- |
+| `POST`   | `/apis`          | Create an API.                                                       |
+| `GET`    | `/apis`          | List APIs (paginated, FaableQL-filterable).                          |
+| `GET`    | `/apis/:apis_id` | Read one.                                                            |
+| `POST`   | `/apis/:apis_id` | Update. The `identifier` field is **immutable** and must be omitted. |
+| `DELETE` | `/apis/:apis_id` | Delete.                                                              |
 
 All endpoints are scoped to the calling account.
 
@@ -57,19 +57,19 @@ Content-Type: application/json
 
 ### Fields
 
-| Field | Description |
-|-------|-------------|
-| `name` | Human-readable label shown in the dashboard and on consent screens. |
-| `slug` | URL-safe identifier, derived from `name` if omitted. Unique per account. |
-| `identifier` | The audience URL or URN used by clients (`audience=…`) and emitted as the `aud` claim. **Immutable** after creation. Must be unique per account. |
-| `description` | Optional free-text description. |
-| `permissions` | Array of `{ value, description? }`. The `value` is the scope string clients request (convention: `verb:resource`, e.g. `read:users`). The `description` is shown to users on the consent screen. |
-| `signing_alg` | JWT signing algorithm. Only `RS256` is supported today. |
-| `token_dialect` | `access_token` (standard) or `access_token_authz` (adds a `permissions` claim listing the granted scopes). |
-| `token_lifetime` | Access token TTL in seconds. Range: 60 (1 min) to 2_592_000 (30 days). Default: 86_400 (24 h). |
-| `enforce_policies` | When `true`, requested scopes are intersected with the API's `permissions` list — anything outside is dropped. When `false`, requested scopes are echoed verbatim. |
-| `allow_offline_access` | When `true`, clients can request `offline_access` and receive a `refresh_token` along with the access token. |
-| `skip_consent` | When `true`, first-party clients skip the consent prompt for this API. |
+| Field                  | Description                                                                                                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`                 | Human-readable label shown in the dashboard and on consent screens.                                                                                                                              |
+| `slug`                 | URL-safe identifier, derived from `name` if omitted. Unique per account.                                                                                                                         |
+| `identifier`           | The audience URL or URN used by clients (`audience=…`) and emitted as the `aud` claim. **Immutable** after creation. Must be unique per account.                                                 |
+| `description`          | Optional free-text description.                                                                                                                                                                  |
+| `permissions`          | Array of `{ value, description? }`. The `value` is the scope string clients request (convention: `verb:resource`, e.g. `read:users`). The `description` is shown to users on the consent screen. |
+| `signing_alg`          | JWT signing algorithm. Only `RS256` is supported today.                                                                                                                                          |
+| `token_dialect`        | `access_token` (standard) or `access_token_authz` (adds a `permissions` claim listing the granted scopes).                                                                                       |
+| `token_lifetime`       | Access token TTL in seconds. Range: 60 (1 min) to 2_592_000 (30 days). Default: 86_400 (24 h).                                                                                                   |
+| `enforce_policies`     | When `true`, requested scopes are intersected with the API's `permissions` list — anything outside is dropped. When `false`, requested scopes are echoed verbatim.                               |
+| `allow_offline_access` | When `true`, clients can request `offline_access` and receive a `refresh_token` along with the access token.                                                                                     |
+| `skip_consent`         | When `true`, first-party clients skip the consent prompt for this API.                                                                                                                           |
 
 ## Defining permissions
 
@@ -100,16 +100,16 @@ This is what your backend authorization middleware should check.
 Once registered, request tokens for it via any standard OAuth flow:
 
 ```ts
-import { auth } from "@faable/auth-js";
+import { auth } from '@faable/auth-js'
 
 const token = await auth.getAccessToken({
-  audience: "https://api.example.com",
-  scope: "read:projects",
-});
+  audience: 'https://api.example.com',
+  scope: 'read:projects'
+})
 
-await fetch("https://api.example.com/projects", {
-  headers: { Authorization: `Bearer ${token}` },
-});
+await fetch('https://api.example.com/projects', {
+  headers: { Authorization: `Bearer ${token}` }
+})
 ```
 
 For server-to-server calls (no end user), see [Client Credentials](oauth-flows/client-credentials.mdx).

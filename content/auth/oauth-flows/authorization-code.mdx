@@ -32,11 +32,11 @@ A stolen `code` is worthless without the `code_verifier`, which never left your 
 
 ### Authorization Code + PKCE vs other flows
 
-| Your app | Use |
-| :-- | :-- |
-| SPA, mobile, native, or server-side web app logging a **user** in | **Authorization Code + PKCE** (this page) |
-| Backend service / cron / CI calling an API with **no user** | [Client Credentials](client-credentials.md) |
-| Renewing an access token without re-login | [Refresh Token](refresh-token.md) |
+| Your app                                                          | Use                                         |
+| :---------------------------------------------------------------- | :------------------------------------------ |
+| SPA, mobile, native, or server-side web app logging a **user** in | **Authorization Code + PKCE** (this page)   |
+| Backend service / cron / CI calling an API with **no user**       | [Client Credentials](client-credentials.md) |
+| Renewing an access token without re-login                         | [Refresh Token](refresh-token.md)           |
 
 > The older **Implicit flow** (tokens returned in the URL fragment) is deprecated — never put tokens in URLs. Authorization Code + PKCE replaces it for public clients.
 
@@ -76,28 +76,28 @@ From the [Faable Dashboard](https://dashboard.faable.com):
 The fastest path: our SDK generates the PKCE verifier, handles the redirect, exchanges the code, stores the session, and auto-refreshes tokens.
 
 ```ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 const auth = createClient({
-  domain: "your-domain.auth.faable.link",
-  clientId: "YOUR_CLIENT_ID",
-});
+  domain: 'your-domain.auth.faable.link',
+  clientId: 'YOUR_CLIENT_ID'
+})
 
 // 1. Start the login — generates PKCE values and redirects to Faable
 await auth.signInWithOauthConnection({
-  redirectTo: "https://your-app.com/callback",
-});
+  redirectTo: 'https://your-app.com/callback'
+})
 ```
 
 On your callback page, complete the exchange and read the session:
 
 ```ts
 // 2. On /callback — exchanges the code for tokens and stores the session
-await auth.initialize();
+await auth.initialize()
 
 // 3. Anywhere in your app
-const { data } = await auth.getSession();
-console.log(data.session?.user);
+const { data } = await auth.getSession()
+console.log(data.session?.user)
 ```
 
 That's it — the SDK also refreshes the access token transparently when it expires, using the [Refresh Token flow](refresh-token.md).
@@ -120,24 +120,33 @@ The **`code_verifier`** is a high-entropy random string (43–128 chars from the
 ```ts
 function base64url(bytes: ArrayBuffer): string {
   return btoa(String.fromCharCode(...new Uint8Array(bytes)))
-    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
 }
 
 // code_verifier — 32 random bytes → base64url (~43 chars)
-const codeVerifier = base64url(crypto.getRandomValues(new Uint8Array(32)).buffer);
+const codeVerifier = base64url(
+  crypto.getRandomValues(new Uint8Array(32)).buffer
+)
 
 // code_challenge = base64url(SHA-256(code_verifier))
-const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(codeVerifier));
-const codeChallenge = base64url(digest);
+const digest = await crypto.subtle.digest(
+  'SHA-256',
+  new TextEncoder().encode(codeVerifier)
+)
+const codeChallenge = base64url(digest)
 ```
 
 **Node.js:**
 
 ```ts
-import { randomBytes, createHash } from "node:crypto";
+import { createHash, randomBytes } from 'node:crypto'
 
-const codeVerifier = randomBytes(32).toString("base64url");
-const codeChallenge = createHash("sha256").update(codeVerifier).digest("base64url");
+const codeVerifier = randomBytes(32).toString('base64url')
+const codeChallenge = createHash('sha256')
+  .update(codeVerifier)
+  .digest('base64url')
 ```
 
 Keep the `code_verifier` until the callback — it must survive the redirect (e.g. `sessionStorage` in a SPA). Send the `code_challenge` on `/authorize`, then send the original `code_verifier` back on the token exchange.
@@ -166,19 +175,19 @@ https://your-domain.auth.faable.link/authorize
   &code_challenge_method=S256
 ```
 
-| Parameter               | Required    | Description                                                                                                 |
-| :---------------------- | :---------- | :----------------------------------------------------------------------------------------------------------- |
-| `response_type`         | Yes         | Must be `code`.                                                                                               |
-| `client_id`             | Yes         | Your application's Client ID.                                                                                 |
-| `redirect_uri`          | Yes         | Where to send the user after login. Must be in the client's **Allowed Callback URLs**.                        |
-| `scope`                 | Recommended | Space-separated. Use `openid profile email` to get an ID token with the user's profile.                       |
-| `state`                 | Recommended | Opaque random value echoed back on the callback. **Verify it matches** to prevent CSRF.                       |
-| `code_challenge`        | Recommended | `base64url(sha256(code_verifier))`. Enables PKCE.                                                             |
-| `code_challenge_method` | Recommended | Only `S256` is supported.                                                                                     |
-| `audience`              | No          | Identifier of the [API](../apis.md) the access token should target (sets its `aud` claim).                    |
+| Parameter               | Required    | Description                                                                                                                  |
+| :---------------------- | :---------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `response_type`         | Yes         | Must be `code`.                                                                                                              |
+| `client_id`             | Yes         | Your application's Client ID.                                                                                                |
+| `redirect_uri`          | Yes         | Where to send the user after login. Must be in the client's **Allowed Callback URLs**.                                       |
+| `scope`                 | Recommended | Space-separated. Use `openid profile email` to get an ID token with the user's profile.                                      |
+| `state`                 | Recommended | Opaque random value echoed back on the callback. **Verify it matches** to prevent CSRF.                                      |
+| `code_challenge`        | Recommended | `base64url(sha256(code_verifier))`. Enables PKCE.                                                                            |
+| `code_challenge_method` | Recommended | Only `S256` is supported.                                                                                                    |
+| `audience`              | No          | Identifier of the [API](../apis.md) the access token should target (sets its `aud` claim).                                   |
 | `connection_id`         | No          | Which [connection](../connections.md) to use (e.g. a specific social provider). Defaults to the tenant's default connection. |
-| `nonce`                 | No          | OIDC replay protection — echoed in the issued `id_token`.                                                     |
-| `prompt`                | No          | Controls the login UI — see [Controlling the prompt](#controlling-the-prompt).                                |
+| `nonce`                 | No          | OIDC replay protection — echoed in the issued `id_token`.                                                                    |
+| `prompt`                | No          | Controls the login UI — see [Controlling the prompt](#controlling-the-prompt).                                               |
 
 ### Step 2: The User Logs In
 
@@ -228,8 +237,8 @@ curl --request POST \
 }
 ```
 
-| Field           | Description                                                                                                   |
-| :-------------- | :------------------------------------------------------------------------------------------------------------ |
+| Field           | Description                                                                                                    |
+| :-------------- | :------------------------------------------------------------------------------------------------------------- |
 | `access_token`  | Signed JWT (RS256) for calling your APIs. Send it as `Authorization: Bearer <token>`.                          |
 | `id_token`      | OIDC JWT with the user's identity claims (`sub`, `email`, `name`, ...).                                        |
 | `refresh_token` | Use it to obtain new access tokens without re-authenticating — see [Refresh Token flow](refresh-token.md).     |
@@ -244,12 +253,12 @@ curl --request POST \
 
 The optional `prompt` parameter on `/authorize` controls whether the user sees the login UI. It accepts a space-separated list:
 
-| Value            | Behavior                                                                                                                                    |
-| :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| Value            | Behavior                                                                                                                                                           |
+| :--------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `none`           | **SSO probe.** No UI is ever displayed; the request errors if interaction would be needed. Must be the only value. Useful for silent re-authentication from a SPA. |
-| `login`          | Forces the user to re-authenticate, even with an active session.                                                                             |
-| `consent`        | Forces the consent step before issuing tokens. Currently behaves like `login` (a dedicated consent screen is on the roadmap).                |
-| `select_account` | Accepted for compatibility but currently ignored.                                                                                            |
+| `login`          | Forces the user to re-authenticate, even with an active session.                                                                                                   |
+| `consent`        | Forces the consent step before issuing tokens. Currently behaves like `login` (a dedicated consent screen is on the roadmap).                                      |
+| `select_account` | Accepted for compatibility but currently ignored.                                                                                                                  |
 
 Unknown prompt values are accepted silently. Most applications can leave `prompt` unset.
 
@@ -259,13 +268,13 @@ Unknown prompt values are accepted silently. Most applications can leave `prompt
 
 Errors on `/authorize` are returned to your `redirect_uri` as `?error=...&error_description=...` query parameters. Errors on the token exchange return an OAuth 2.0 error body (`{ "error": "...", "error_description": "..." }`):
 
-| Where       | Error                                | Cause / Fix                                                                                      |
-| :---------- | :------------------------------------ | :------------------------------------------------------------------------------------------------ |
-| `/authorize`| Callback URL rejected                 | The `redirect_uri` is not in the client's **Allowed Callback URLs**. Add it in the dashboard.      |
-| `/authorize`| `login_required` with `prompt=none`   | No active session and interaction was forbidden. Fall back to an interactive login.               |
-| Token `400` | Missing or already-used `code`        | Codes are single-use and short-lived. Restart the flow to get a fresh one.                        |
-| Token `400` | `Code Verifier is not valid`          | The `code_verifier` doesn't match the `code_challenge` sent at `/authorize`. Use the exact original value. |
-| Token `401` | Bad `client_id`                       | The code was issued to a different client. Use the same `client_id` in both steps.                |
+| Where        | Error                               | Cause / Fix                                                                                                |
+| :----------- | :---------------------------------- | :--------------------------------------------------------------------------------------------------------- |
+| `/authorize` | Callback URL rejected               | The `redirect_uri` is not in the client's **Allowed Callback URLs**. Add it in the dashboard.              |
+| `/authorize` | `login_required` with `prompt=none` | No active session and interaction was forbidden. Fall back to an interactive login.                        |
+| Token `400`  | Missing or already-used `code`      | Codes are single-use and short-lived. Restart the flow to get a fresh one.                                 |
+| Token `400`  | `Code Verifier is not valid`        | The `code_verifier` doesn't match the `code_challenge` sent at `/authorize`. Use the exact original value. |
+| Token `401`  | Bad `client_id`                     | The code was issued to a different client. Use the same `client_id` in both steps.                         |
 
 ---
 
@@ -282,30 +291,39 @@ Errors on `/authorize` are returned to your `redirect_uri` as `?error=...&error_
 ## ❓ FAQ
 
 ### Do I need a `client_secret` for this flow?
+
 No. PKCE replaces the secret for public clients (SPAs, mobile). That's the point: the flow is secure without shipping any secret to the browser.
 
 ### What is PKCE, in one sentence?
+
 Your app invents a random secret (`code_verifier`), sends only its hash when the flow starts, and reveals the secret when exchanging the code — proving both requests came from the same app.
 
 ### Does this flow return a refresh token?
+
 Yes. Use it with the [Refresh Token flow](refresh-token.md) to renew access tokens silently. The `@faable/auth-js` SDK does this automatically.
 
 ### How do users actually log in?
+
 With whatever [connections](../connections.md) you enable on the client: email/password, passwordless OTP, Google, GitHub, or custom OIDC providers. The flow is identical for all of them.
 
 ### When should I use Client Credentials instead?
+
 When there is no user — a backend service, cron job, or CI pipeline calling an API. See [Client Credentials](client-credentials.md).
 
 ### How do I generate a `code_verifier` and `code_challenge`?
+
 The verifier is a random high-entropy string; the challenge is `base64url(SHA-256(verifier))`. See [How to Generate the code_verifier and code_challenge](#how-to-generate-the-code_verifier-and-code_challenge) for copy-paste browser and Node snippets — or let `@faable/auth-js` do it for you.
 
 ### Is PKCE required?
+
 For public clients (SPA, mobile, native) it's mandatory in practice — the flow is unsafe without it. For confidential server-side clients it's strongly recommended and the current OAuth 2.0 best practice. Faable supports it for every client type.
 
 ### What is `code_challenge_method=S256`?
+
 It tells the server the challenge is the SHA-256 hash of the verifier (not the plaintext). `S256` is the only method Faable accepts — plain challenges are rejected.
 
 ### Does PKCE work with refresh tokens?
+
 Yes. The code exchange returns a `refresh_token` alongside the access token; renew silently with the [Refresh Token flow](refresh-token.md). `@faable/auth-js` refreshes for you automatically.
 
 ---

@@ -11,16 +11,16 @@ const AI_CRAWLERS = [
   'Google-Extended',
   'Applebot-Extended',
   'CCBot',
-  'Bingbot',
+  'Bingbot'
 ]
 
 export default function robots() {
   return {
     rules: [
       { userAgent: '*', allow: '/' },
-      ...AI_CRAWLERS.map((userAgent) => ({ userAgent, allow: '/' })),
+      ...AI_CRAWLERS.map(userAgent => ({ userAgent, allow: '/' }))
     ],
     sitemap: 'https://faable.com/docs/sitemap.xml',
-    host: 'https://faable.com/docs',
+    host: 'https://faable.com/docs'
   }
 }

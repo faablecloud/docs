@@ -1,11 +1,12 @@
 ---
-title: "Module 1 — OAuth & OIDC Foundations"
+title: 'Module 1 — OAuth & OIDC Foundations'
 description: The minimum OAuth 2.0 and OpenID Connect you need before integrating Faable Auth — actors, tokens, and scopes.
 ---
 
 # Module 1 — OAuth & OIDC Foundations
 
 > **Learning objectives**
+>
 > - Explain why OAuth 2.0 exists and name the actors in a flow.
 > - Distinguish an **access token** from an **ID token** and say what each is for.
 > - Explain what a **scope** is and how it limits a token.
@@ -17,31 +18,31 @@ every app becomes a place your password can leak, and you can't revoke one app
 without changing your password everywhere.
 
 OAuth 2.0 replaces "give the app your password" with "the app gets a **token**, issued
-by a trusted authorization server, that grants *limited* access for a *limited* time."
+by a trusted authorization server, that grants _limited_ access for a _limited_ time."
 Faable Auth **is** that authorization server, for your tenant.
 
-**OpenID Connect (OIDC)** is a thin layer on top of OAuth that adds *authentication*
+**OpenID Connect (OIDC)** is a thin layer on top of OAuth that adds _authentication_
 — a standard way to answer "**who** is this user?" — via the **ID token**.
 
 ## The actors
 
-| Actor | In Faable terms |
-|---|---|
-| **Resource Owner** | The end user signing in. |
-| **Client** | Your application (a [Client](../clients.md) you register in the dashboard). |
-| **Authorization Server** | Faable Auth — at `https://<tenant>.auth.faable.link`. |
-| **Resource Server** | A backend API that accepts access tokens (an [API](../apis.md) / audience). |
+| Actor                    | In Faable terms                                                             |
+| ------------------------ | --------------------------------------------------------------------------- |
+| **Resource Owner**       | The end user signing in.                                                    |
+| **Client**               | Your application (a [Client](../clients.md) you register in the dashboard). |
+| **Authorization Server** | Faable Auth — at `https://<tenant>.auth.faable.link`.                       |
+| **Resource Server**      | A backend API that accepts access tokens (an [API](../apis.md) / audience). |
 
 ## The two tokens (do not confuse them)
 
 This is the single most common source of integration bugs.
 
-- **ID token** — *"who the user is."* A JWT with identity claims (`sub`, `email`,
+- **ID token** — _"who the user is."_ A JWT with identity claims (`sub`, `email`,
   `name`, `nonce`, `auth_time`). It is **for your app to read**. Never send it to an
   API as authorization. Defined by OIDC.
-- **Access token** — *"what the bearer may do."* Sent to a resource server in the
-  `Authorization: Bearer …` header. Its `aud` (audience) says *which* API it's for,
-  and its `scope` / `permissions` say *what* it may do there. Your app should treat
+- **Access token** — _"what the bearer may do."_ Sent to a resource server in the
+  `Authorization: Bearer …` header. Its `aud` (audience) says _which_ API it's for,
+  and its `scope` / `permissions` say _what_ it may do there. Your app should treat
   it as opaque and just forward it.
 
 There's also the **refresh token** — a long-lived credential used to get new access
@@ -54,7 +55,7 @@ tokens without making the user log in again (covered in Module 3).
 ## Scopes
 
 A **scope** is a string that narrows what a token can do, e.g. `openid`, `profile`,
-`email`, or an API permission like `read:users`. The client *requests* scopes; the
+`email`, or an API permission like `read:users`. The client _requests_ scopes; the
 server issues a token containing only the scopes it's willing to grant.
 
 - `openid` is what turns an OAuth request into an **OIDC** request (you get an ID token).
@@ -65,8 +66,8 @@ server issues a token containing only the scopes it's willing to grant.
 ## Why JWTs
 
 Faable signs tokens as **JWTs** (RS256). A JWT has three parts —
-`header.payload.signature` — base64url-encoded and dot-separated. Anyone can *read*
-the payload (it's not encrypted), but only Faable can *sign* it. Resource servers
+`header.payload.signature` — base64url-encoded and dot-separated. Anyone can _read_
+the payload (it's not encrypted), but only Faable can _sign_ it. Resource servers
 verify the signature against Faable's public keys, published at the
 [JWKS endpoint](/auth/validate-access-tokens) (`/.well-known/jwks.json`), and discovered via
 `/.well-known/openid-configuration`.
@@ -89,6 +90,7 @@ verify the signature against Faable's public keys, published at the
    just an OAuth authorization.
 3. **False.** It verifies the JWT **signature** locally using Faable's published
    **JWKS** public keys; no per-request call to Faable is needed.
+
 </details>
 
 ---

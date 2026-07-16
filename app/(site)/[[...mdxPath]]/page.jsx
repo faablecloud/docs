@@ -1,7 +1,11 @@
 import { generateStaticParamsFor, importPage } from 'nextra/pages'
 import { useMDXComponents as getMDXComponents } from '../../../mdx-components'
 import { datesForMdxPath } from '../../_lib/last-modified'
-import { buildBreadcrumb, buildArticle, buildFaqPage } from '../../_lib/page-schema'
+import {
+  buildArticle,
+  buildBreadcrumb,
+  buildFaqPage
+} from '../../_lib/page-schema'
 
 export const generateStaticParams = generateStaticParamsFor('mdxPath')
 
@@ -15,20 +19,20 @@ export async function generateMetadata(props, parent) {
   return {
     ...metadata,
     alternates: {
-      canonical: `https://faable.com/docs/${path}`,
+      canonical: `https://faable.com/docs/${path}`
     },
     openGraph: {
       ...previousMetadata.openGraph,
       ...metadata.openGraph,
       title: metadata.title,
       description: metadata.description,
-      url: `https://faable.com/docs/${path}`,
+      url: `https://faable.com/docs/${path}`
     },
     twitter: {
       ...previousMetadata.twitter,
       ...metadata.twitter,
       title: metadata.title,
-      description: metadata.description,
+      description: metadata.description
     }
   }
 }
@@ -57,7 +61,7 @@ export default async function Page(props) {
     title: metadata?.title,
     description: metadata?.description,
     published,
-    modified,
+    modified
   })
   const faqPage = metadata?.schema === 'faq' ? buildFaqPage(route) : null
   const schemas = [breadcrumb, article, faqPage].filter(Boolean)
@@ -65,7 +69,7 @@ export default async function Page(props) {
   const lastUpdated = modified.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric',
+    day: 'numeric'
   })
 
   return (
@@ -81,7 +85,8 @@ export default async function Page(props) {
         <MDXContent {...props} params={params} />
         {mdxPath.length > 0 && (
           <p style={{ fontSize: '0.85rem', opacity: 0.55, marginTop: '3rem' }}>
-            Last updated on <time dateTime={modified.toISOString()}>{lastUpdated}</time>
+            Last updated on{' '}
+            <time dateTime={modified.toISOString()}>{lastUpdated}</time>
           </p>
         )}
       </Wrapper>

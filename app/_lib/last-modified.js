@@ -12,7 +12,7 @@ export function sourceFileFor(route) {
     `${rel}.md`,
     `${rel}.mdx`,
     path.join(rel, 'index.md'),
-    path.join(rel, 'index.mdx'),
+    path.join(rel, 'index.mdx')
   ]
   for (const candidate of candidates) {
     const abs = path.join(CONTENT_DIR, candidate)
@@ -31,7 +31,7 @@ function gitDates(file) {
   try {
     const out = execFileSync('git', ['log', '--format=%cI', '--', file], {
       cwd: process.cwd(),
-      stdio: ['ignore', 'pipe', 'ignore'],
+      stdio: ['ignore', 'pipe', 'ignore']
     })
       .toString()
       .trim()
@@ -39,7 +39,7 @@ function gitDates(file) {
       const lines = out.split('\n')
       return {
         modified: new Date(lines[0]),
-        published: new Date(lines[lines.length - 1]),
+        published: new Date(lines[lines.length - 1])
       }
     }
   } catch {

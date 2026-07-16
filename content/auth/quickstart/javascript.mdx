@@ -38,13 +38,13 @@ npm install @faable/auth-js
 
 ```ts
 // src/auth.ts
-import { createClient } from "@faable/auth-js";
+import { createClient } from '@faable/auth-js'
 
 export const auth = createClient({
-  domain: "your-domain.auth.faable.link",
-  clientId: "YOUR_CLIENT_ID",
-  redirectUri: window.location.origin + "/callback",
-});
+  domain: 'your-domain.auth.faable.link',
+  clientId: 'YOUR_CLIENT_ID',
+  redirectUri: window.location.origin + '/callback'
+})
 ```
 
 The client initializes itself on creation: it recovers an existing session from storage, or — on the callback URL — exchanges the PKCE `?code=` for tokens.
@@ -55,39 +55,42 @@ Subscribe once with `onAuthStateChange` and re-render whenever the session chang
 
 ```ts
 // src/main.ts
-import { auth } from "./auth";
+import { auth } from './auth'
 
-const app = document.querySelector<HTMLDivElement>("#app")!;
+const app = document.querySelector<HTMLDivElement>('#app')!
 
 async function render() {
   // On the callback route, finish the login and go home (Step 5)
-  if (location.pathname === "/callback") {
-    const { error, returnTo } = await auth.handleRedirectCallback();
-    if (error) return void (app.textContent = `Sign-in failed: ${error.message}`);
-    return void location.replace(returnTo ?? "/");
+  if (location.pathname === '/callback') {
+    const { error, returnTo } = await auth.handleRedirectCallback()
+    if (error)
+      return void (app.textContent = `Sign-in failed: ${error.message}`)
+    return void location.replace(returnTo ?? '/')
   }
 
-  const { data } = await auth.getSession();
+  const { data } = await auth.getSession()
 
   if (!data.session) {
-    app.innerHTML = `<button id="login">Sign in</button>`;
-    document.querySelector("#login")!.addEventListener("click", () =>
-      auth.signInWithOauthConnection({})
-    );
-    return;
+    app.innerHTML = `<button id="login">Sign in</button>`
+    document
+      .querySelector('#login')!
+      .addEventListener('click', () => auth.signInWithOauthConnection({}))
+    return
   }
 
   app.innerHTML = `
     <p>Hello ${data.session.user.email}</p>
-    <button id="logout">Sign out</button>`;
-  document.querySelector("#logout")!.addEventListener("click", () =>
-    auth.signOut({ returnTo: location.origin })
-  );
+    <button id="logout">Sign out</button>`
+  document
+    .querySelector('#logout')!
+    .addEventListener('click', () =>
+      auth.signOut({ returnTo: location.origin })
+    )
 }
 
 // Re-render on every auth change, then do the first render.
-auth.onAuthStateChange(() => render());
-render();
+auth.onAuthStateChange(() => render())
+render()
 ```
 
 - `signInWithOauthConnection({})` sends the user to your tenant's Universal Login with every [connection](../connections.md) you've enabled. Target one directly with `{ connection_id: "connection_..." }`.
@@ -104,15 +107,15 @@ The access token lives on the session. Read it fresh before each call — `getSe
 
 ```ts
 // src/api.ts
-import { auth } from "./auth";
+import { auth } from './auth'
 
 export async function apiFetch(path: string) {
-  const { data, error } = await auth.getSession();
-  if (error || !data.session) throw new Error("Not signed in");
+  const { data, error } = await auth.getSession()
+  if (error || !data.session) throw new Error('Not signed in')
 
   return fetch(`https://api.myapp.com${path}`, {
-    headers: { authorization: `Bearer ${data.session.access_token}` },
-  });
+    headers: { authorization: `Bearer ${data.session.access_token}` }
+  })
 }
 ```
 

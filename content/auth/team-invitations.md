@@ -15,12 +15,12 @@ The flow handles three cases out of the box:
 
 ## Endpoints
 
-| Method | Path | Purpose |
-|--------|------|---------|
-| `POST` | `/team/:team_id/invite` | Create an invitation (or add directly). |
-| `GET`  | `/team/:team_id/invite` | List pending invitations for a team. |
-| `DELETE` | `/team/:team_id/invite/:ticket_id` | Revoke a pending invitation. |
-| `GET`  | `/invite-verify?ticket=…` | Public entry point for the link in the invitation email. |
+| Method   | Path                               | Purpose                                                  |
+| -------- | ---------------------------------- | -------------------------------------------------------- |
+| `POST`   | `/team/:team_id/invite`            | Create an invitation (or add directly).                  |
+| `GET`    | `/team/:team_id/invite`            | List pending invitations for a team.                     |
+| `DELETE` | `/team/:team_id/invite/:ticket_id` | Revoke a pending invitation.                             |
+| `GET`    | `/invite-verify?ticket=…`          | Public entry point for the link in the invitation email. |
 
 The first three require an account session (Bearer or cookie). `/invite-verify` is public — the ticket is proof of ownership. It's rate-limited to **5 requests per 10 seconds** per IP.
 
@@ -39,12 +39,12 @@ Content-Type: application/json
 }
 ```
 
-| Field | Required | Default | Description |
-|-------|----------|---------|-------------|
-| `email` | yes | — | The address to invite. |
-| `roles` | no | `[]` | Role IDs to attach to the new team membership. |
-| `mode` | no | `"auto"` | `auto` adds existing users directly and emails unknown ones; `invite` always emails. |
-| `redirect_uri` | no | — | Where to send the invitee after they accept. `?status=accepted` is appended. |
+| Field          | Required | Default  | Description                                                                          |
+| -------------- | -------- | -------- | ------------------------------------------------------------------------------------ |
+| `email`        | yes      | —        | The address to invite.                                                               |
+| `roles`        | no       | `[]`     | Role IDs to attach to the new team membership.                                       |
+| `mode`         | no       | `"auto"` | `auto` adds existing users directly and emails unknown ones; `invite` always emails. |
+| `redirect_uri` | no       | —        | Where to send the invitee after they accept. `?status=accepted` is appended.         |
 
 ### Response — user existed and was added (mode `auto`)
 

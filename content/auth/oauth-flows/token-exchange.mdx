@@ -10,7 +10,7 @@ The **OAuth 2.0 Token Exchange grant** (RFC 8693) lets a workload that already h
 
 Use it for:
 
-- ✅ **Keyless CI/CD** — a GitHub Actions workflow authenticates as *itself* (`repo:org/repo:ref:refs/heads/main`) to call your API
+- ✅ **Keyless CI/CD** — a GitHub Actions workflow authenticates as _itself_ (`repo:org/repo:ref:refs/heads/main`) to call your API
 - ✅ Workload identity federation — services holding a JWT from their own OIDC issuer
 - ✅ Replacing long-lived machine secrets with short-lived, verifiable identity
 
@@ -46,12 +46,12 @@ From the [Faable Dashboard](https://dashboard.faable.com):
 1. **A Client** — its `client_id` identifies the exchanging application.
 2. **An OIDC Connection acting as the trust anchor**, configured with:
 
-| Connection field | Purpose                                                                                                            |
-| :--------------- | :------------------------------------------------------------------------------------------------------------------ |
-| `issuer`         | The external issuer to trust — must equal the subject token's `iss` (e.g. `https://token.actions.githubusercontent.com`). |
+| Connection field | Purpose                                                                                                                                                               |
+| :--------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `issuer`         | The external issuer to trust — must equal the subject token's `iss` (e.g. `https://token.actions.githubusercontent.com`).                                             |
 | `jwks_url`       | Where to fetch the issuer's public keys. If omitted, Faable tries `<issuer>/.well-known/jwks` — set it explicitly unless your issuer serves keys there (GitHub does). |
-| `client_id`      | The expected `aud` of the subject token. The workload must request its OIDC token with this audience.                |
-| `claims_mapping` | Optional — which external claims to copy into the issued Faable token (see below).                                   |
+| `client_id`      | The expected `aud` of the subject token. The workload must request its OIDC token with this audience.                                                                 |
+| `claims_mapping` | Optional — which external claims to copy into the issued Faable token (see below).                                                                                    |
 
 ---
 
@@ -61,12 +61,12 @@ From the [Faable Dashboard](https://dashboard.faable.com):
 - **Method:** `POST`
 - **Content-Type:** `application/x-www-form-urlencoded` or `application/json`
 
-| Parameter            | Required | Description                                                                                  |
-| :------------------- | :------- | :---------------------------------------------------------------------------------------------- |
-| `grant_type`         | Yes      | Must be `urn:ietf:params:oauth:grant-type:token-exchange`.                                       |
-| `subject_token`      | Yes      | The external JWT to exchange (e.g. the GitHub Actions OIDC token).                               |
-| `subject_token_type` | Yes      | Must be `urn:ietf:params:oauth:token-type:jwt` — the only type accepted.                         |
-| `client_id`          | Yes      | Your application's Client ID.                                                                    |
+| Parameter            | Required | Description                                                              |
+| :------------------- | :------- | :----------------------------------------------------------------------- |
+| `grant_type`         | Yes      | Must be `urn:ietf:params:oauth:grant-type:token-exchange`.               |
+| `subject_token`      | Yes      | The external JWT to exchange (e.g. the GitHub Actions OIDC token).       |
+| `subject_token_type` | Yes      | Must be `urn:ietf:params:oauth:token-type:jwt` — the only type accepted. |
+| `client_id`          | Yes      | Your application's Client ID.                                            |
 
 Extra body fields are allowed and can be lifted into the issued token via `claims_mapping` (as `request.<field>` — see below).
 
@@ -153,13 +153,13 @@ jobs:
 
 Errors use the standard OAuth 2.0 format: `{ "error": "..." }`.
 
-| Status | Error                                                        | Fix                                                                             |
-| :----- | :------------------------------------------------------------ | :-------------------------------------------------------------------------------- |
-| `400`  | `Missing subject_token` / invalid JWT format / missing `iss` or `sub` claim | Send a complete, well-formed JWT as `subject_token`.                   |
-| `400`  | `subject_token_type must be 'urn:ietf:params:oauth:token-type:jwt'` | Only JWT subject tokens are supported.                                     |
-| `403`  | `The OIDC issuer '<iss>' is not trusted by this account.`      | Create a Connection whose `issuer` exactly matches the subject token's `iss`.     |
-| `401`  | `Invalid subject_token signature or audience`                  | Check the Connection's `jwks_url`, and request the subject token with `audience` = the Connection's `client_id`. |
-| `404`  | `Client not found`                                             | The `client_id` doesn't exist in this tenant.                                     |
+| Status | Error                                                                       | Fix                                                                                                              |
+| :----- | :-------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| `400`  | `Missing subject_token` / invalid JWT format / missing `iss` or `sub` claim | Send a complete, well-formed JWT as `subject_token`.                                                             |
+| `400`  | `subject_token_type must be 'urn:ietf:params:oauth:token-type:jwt'`         | Only JWT subject tokens are supported.                                                                           |
+| `403`  | `The OIDC issuer '<iss>' is not trusted by this account.`                   | Create a Connection whose `issuer` exactly matches the subject token's `iss`.                                    |
+| `401`  | `Invalid subject_token signature or audience`                               | Check the Connection's `jwks_url`, and request the subject token with `audience` = the Connection's `client_id`. |
+| `404`  | `Client not found`                                                          | The `client_id` doesn't exist in this tenant.                                                                    |
 
 ---
 

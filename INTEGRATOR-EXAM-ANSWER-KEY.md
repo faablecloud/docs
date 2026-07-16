@@ -16,25 +16,25 @@ all **3 practical tasks** accepted.
 
 ## Section 1 — Multiple choice key
 
-| Q | Answer | Note |
-|---|---|---|
-| Q1 | **B** | Access token in `Authorization`. ID token is for the app to read. |
-| Q2 | **B** | `openid` makes it an OIDC request → ID token returned. |
-| Q3 | **C** | PKCE replaces the secret for public clients. |
-| Q4 | **B** | Tenant resolved by request **host**. |
-| Q5 | **B** | No `code_verifier` → can't complete the exchange. |
-| Q6 | **C** | Client Credentials + `@faable/auth-sdk` (no user). |
-| Q7 | **C** | M2M with empty scope → full catalog (Auth0 parity). |
-| Q8 | **B** | Audience isn't `faable:management:<account_id>`. |
-| Q9 | **C** | Payload readable; signature verified locally via JWKS. |
-| Q10 | **B** | Prod callback URL not allow-listed. |
-| Q11 | **C** | Audience is not one of the four building blocks (Account, Connections, Clients, Users/Teams). |
-| Q12 | **B** | `nonce` binds the ID token to this login (`state` is the CSRF one). |
+| Q   | Answer | Note                                                                                          |
+| --- | ------ | --------------------------------------------------------------------------------------------- |
+| Q1  | **B**  | Access token in `Authorization`. ID token is for the app to read.                             |
+| Q2  | **B**  | `openid` makes it an OIDC request → ID token returned.                                        |
+| Q3  | **C**  | PKCE replaces the secret for public clients.                                                  |
+| Q4  | **B**  | Tenant resolved by request **host**.                                                          |
+| Q5  | **B**  | No `code_verifier` → can't complete the exchange.                                             |
+| Q6  | **C**  | Client Credentials + `@faable/auth-sdk` (no user).                                            |
+| Q7  | **C**  | M2M with empty scope → full catalog (Auth0 parity).                                           |
+| Q8  | **B**  | Audience isn't `faable:management:<account_id>`.                                              |
+| Q9  | **C**  | Payload readable; signature verified locally via JWKS.                                        |
+| Q10 | **B**  | Prod callback URL not allow-listed.                                                           |
+| Q11 | **C**  | Audience is not one of the four building blocks (Account, Connections, Clients, Users/Teams). |
+| Q12 | **B**  | `nonce` binds the ID token to this login (`state` is the CSRF one).                           |
 
 ## Section 2 — Short answer rubric (2 pts each)
 
-**Q13 (ID vs access token).** Full marks if they state: ID token = *who the user is*,
-read by the app (identity claims, OIDC); access token = *what the bearer may do*, sent
+**Q13 (ID vs access token).** Full marks if they state: ID token = _who the user is_,
+read by the app (identity claims, OIDC); access token = _what the bearer may do_, sent
 to a resource server in `Authorization: Bearer`, scoped by `aud`/`scope`. 1 pt if they
 get the distinction but misassign the use (e.g. "send the ID token to APIs").
 

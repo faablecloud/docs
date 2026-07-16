@@ -8,13 +8,13 @@ const publisher = {
   '@type': 'Organization',
   name: 'Faable',
   url: 'https://faable.com',
-  logo: 'https://faable.com/assets/logo/Emblem.png',
+  logo: 'https://faable.com/assets/logo/Emblem.png'
 }
 
-const urlForRoute = (route) => `${SITE_URL}${route === '/' ? '' : route}`
+const urlForRoute = route => `${SITE_URL}${route === '/' ? '' : route}`
 
 function humanize(slug) {
-  return slug.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  return slug.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 }
 
 // schema.org BreadcrumbList from the page path. The leaf uses the real page
@@ -30,7 +30,7 @@ export function buildBreadcrumb(mdxPath, leafTitle) {
     const isLast = i === segments.length - 1
     items.push({
       name: isLast && leafTitle ? leafTitle : humanize(segment),
-      url: `${SITE_URL}${acc}`,
+      url: `${SITE_URL}${acc}`
     })
   })
 
@@ -41,17 +41,23 @@ export function buildBreadcrumb(mdxPath, leafTitle) {
       '@type': 'ListItem',
       position: i + 1,
       name: item.name,
-      item: item.url,
-    })),
+      item: item.url
+    }))
   }
 }
 
 // TechArticle for a docs page — gives AI engines and search a verifiable,
 // dated, attributed unit they can cite. dates are ISO strings.
-export function buildArticle({ route, title, description, published, modified }) {
+export function buildArticle({
+  route,
+  title,
+  description,
+  published,
+  modified
+}) {
   if (!title) return null
   const url = urlForRoute(route)
-  const iso = (d) => (d instanceof Date ? d.toISOString() : d)
+  const iso = d => (d instanceof Date ? d.toISOString() : d)
   return {
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
@@ -64,7 +70,7 @@ export function buildArticle({ route, title, description, published, modified })
     datePublished: iso(published),
     dateModified: iso(modified),
     author: publisher,
-    publisher,
+    publisher
   }
 }
 
@@ -119,7 +125,7 @@ export function buildFaqPage(route) {
     mainEntity: faqs.map(({ question, answer }) => ({
       '@type': 'Question',
       name: question,
-      acceptedAnswer: { '@type': 'Answer', text: answer },
-    })),
+      acceptedAnswer: { '@type': 'Answer', text: answer }
+    }))
   }
 }
