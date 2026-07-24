@@ -135,7 +135,7 @@ Whatever the stack, your app must listen on **`0.0.0.0`** at the port given by t
 app.listen(process.env.PORT, '0.0.0.0')
 ```
 
-The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAABLE_HOST` are reserved — secrets you define with those names are ignored.
+The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAABLE_HOST` are reserved — secrets you define with those names are ignored. See [Environment & Releases](environment.mdx) for the full list of injected variables (`FAABLE_APP_ID`, `FAABLE_DEPLOY_ID`, `FAABLE_RELEASE`, …) and how the release version is resolved.
 
 ---
 

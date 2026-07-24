@@ -103,6 +103,13 @@ faable deploy <app_id>
 4. **Upload**: The built artifact or image is pushed to the Faable registry.
 5. **Release**: A new deployment is created and goes live at your application URL.
 
+> [!NOTE]
+> `faable deploy` records a **release version** on the deployment and injects it
+> as `FAABLE_RELEASE`. It's resolved from `--release`, else the `FAABLE_RELEASE`
+> env var, else your latest git tag — run `git fetch --tags` locally so the tag
+> is visible. Pass it explicitly with `faable deploy --release 1.4.2`. See
+> [Environment & Releases](deploy/environment.mdx).
+
 ## Secrets
 
 Manage your app's secrets (environment variables) without leaving the terminal. Inside a linked repository the app is detected automatically — the same resolution `faable deploy` uses. Outside of one (or to target another app) pass `--app <app_id>`.

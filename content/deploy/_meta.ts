@@ -7,6 +7,7 @@ export default {
   pricing: 'Pricing',
   advancedSeparator: { type: 'separator', title: 'Advanced' },
   'build-requirements': 'What the Builder Expects',
+  environment: 'Environment & Releases',
   'github-actions': 'GitHub Actions',
   sdk: 'Deploy SDK',
   'security-waf': 'Web Application Firewall',

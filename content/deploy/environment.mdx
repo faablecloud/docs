@@ -1,0 +1,103 @@
+---
+title: Environment & Releases
+description: The environment variables Faable injects into every deployment (PORT, FAABLE_HOST, FAABLE_APP_ID, FAABLE_DEPLOY_ID, FAABLE_RELEASE, FAABLE_GIT_COMMIT, FAABLE_GIT_REF), reserved names, and how the release version is resolved from your git tag or the --release flag.
+---
+
+# Environment & Releases 🏷️
+
+Every deployment runs with a set of **platform-injected environment variables**
+on top of the [secrets you define](runtime.md). They identify the app, the
+deployment, and the release you shipped, and they're available at **both build
+time and runtime** — so a framework can read them while it compiles _and_ your
+process can read them while it serves.
+
+## Platform-injected variables
+
+| Variable            | Example            | When          | What it is                                                           |
+| :------------------ | :----------------- | :------------ | :------------------------------------------------------------------- |
+| `PORT`              | `80`               | Always        | The port your app **must** listen on (bind `0.0.0.0`).               |
+| `FAABLE_HOST`       | `myapp.faable.app` | Always        | Your app's public URL (host).                                        |
+| `FAABLE_APP_ID`     | `app_a1b2c3…`      | Always        | The app this deployment belongs to.                                  |
+| `FAABLE_DEPLOY_ID`  | `deployment_9f8e…` | Always        | This deployment's unique id. Also used as the Next.js `buildId`.     |
+| `FAABLE_RELEASE`    | `1.4.2`            | When resolved | The release version (see below). Absent when none could be resolved. |
+| `FAABLE_GIT_COMMIT` | `575bfa8…` (full)  | When known    | The full commit SHA the deployment was built from.                   |
+| `FAABLE_GIT_REF`    | `refs/heads/main`  | When known    | The git ref (branch) of the deployment.                              |
+
+> [!NOTE]
+> `PORT` and `FAABLE_HOST` are the two you'll actually build against — the rest
+> are metadata for logging, self-reporting, and release tracking. `FAABLE_RELEASE`
+> and the `FAABLE_GIT_*` variables are only set when Faable could determine them
+> (see [Release versioning](#release-versioning)); code defensively and fall back
+> when they're missing.
+
+### Reserved names
+
+All of the names above are **reserved**. If you define a [secret](runtime.md)
+with one of those names it is ignored — the platform value always wins — so your
+app can rely on them meaning what this page says.
+
+## Release versioning
+
+A deployment is always identified by its **deployment id** and the **commit** it
+was built from. The **release** is an _extra, optional label_ your app can
+self-report (in a footer, a Sentry release, an analytics property, a request
+header). Faable never uses it to identify or order deployments — it just records
+it and injects it as `FAABLE_RELEASE`.
+
+When you deploy, the release is resolved in this order (first match wins):
+
+1. The **`--release`** flag: `faable deploy --release 1.4.2`
+2. The **`FAABLE_RELEASE`** environment variable at deploy time
+3. The **latest git tag** reachable from `HEAD` (`git describe --tags`), with a
+   leading `v` stripped — e.g. a `v1.4.2` tag becomes `1.4.2`
+4. Otherwise it's **omitted**, and `FAABLE_RELEASE` is simply not injected
+
+Only tags that look like a version (`1.4.2`, `v1.4.2`) are used — a tag like
+`nightly` is ignored. The commit always travels separately as `FAABLE_GIT_COMMIT`,
+so no commit SHA is ever forced into `FAABLE_RELEASE`.
+
+> [!NOTE]
+> **Deploying locally?** `git describe` reads your **local** tags, so run
+> `git fetch --tags` first if you're not sure they're current. It picks the
+> latest tag _reachable from `HEAD`_ — locally there's no version bump, so if
+> `HEAD` is ahead of your last tag you'll get that last tag (the exact commit
+> still ships in `FAABLE_GIT_COMMIT`). In CI, a tool like `semantic-release` cuts
+> a fresh tag before the deploy, so each build gets its own version. Pass
+> `--release` any time you want to set it explicitly.
+
+## Reading it at build time
+
+Runtime frameworks just read `process.env.FAABLE_RELEASE`. But some frameworks
+**inline** environment variables at **build time** — Next.js bakes `NEXT_PUBLIC_*`
+into the client bundle when it compiles. For those, read the platform variable in
+your build config and re-expose it:
+
+```js
+// next.config.js
+module.exports = {
+  env: {
+    NEXT_PUBLIC_APP_VERSION: process.env.FAABLE_RELEASE || '0.0.0-dev',
+    NEXT_PUBLIC_APP_COMMIT: process.env.FAABLE_GIT_COMMIT || ''
+  }
+}
+```
+
+> [!IMPORTANT]
+> The platform injects these variables into the **build** and the **runtime**.
+> If your framework inlines env vars at build time (Next.js, Vite, and friends),
+> make sure you read `FAABLE_RELEASE` in your build config — reading it only at
+> runtime won't help a value that was already baked into the bundle.
+
+Now your app can show the release wherever it's useful:
+
+```jsx
+<footer>v{process.env.NEXT_PUBLIC_APP_VERSION}</footer>
+```
+
+```js
+// Sentry — tag every event with the release you shipped
+Sentry.init({ release: process.env.NEXT_PUBLIC_APP_COMMIT })
+```
+
+See [What the Builder Expects](build-requirements.md) for the port contract and
+[the CLI reference](../cli.md) for `faable deploy --release`.
