@@ -11,6 +11,7 @@ export default {
   academy: '🎓 Academy (Integrator)',
   signup: 'Signup',
   social: 'Social Login',
+  integrations: 'Integrations',
   'oauth-flows': 'OAuth 2.0 Flows',
   oidc: 'OpenID Connect',
   extensibility: 'Extensibility',
