@@ -1,4 +1,5 @@
 export default {
+  index: 'Overview',
   react: 'React (SPA)',
   nextjs: 'Next.js',
   'nextjs-server-side': 'Next.js (Server-Side)',

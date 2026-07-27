@@ -1,0 +1,46 @@
+---
+title: Quickstarts
+description: Add Faable Auth to your stack — copy-paste quickstarts for React, Next.js, Vue, Nuxt, SvelteKit, Angular, vanilla JavaScript, React Native, and FastAPI on the backend.
+---
+
+# Quickstarts
+
+Pick your stack and wire up login, sessions and protected routes. Every frontend quickstart drives the same [Authorization Code flow with PKCE](/auth/oauth-flows/authorization-code) through [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) — the differences are only in how each framework handles reactivity and routing.
+
+## Frontend
+
+| Framework                                                    | Use it when                                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| [React (SPA)](/auth/quickstart/react)                        | A client-side React app (Vite, CRA) with no server of its own.           |
+| [Next.js](/auth/quickstart/nextjs)                           | App Router with client components driving the session.                   |
+| [Next.js (Server-Side)](/auth/quickstart/nextjs-server-side) | You need the session in Server Components, Route Handlers or middleware. |
+| [Vue](/auth/quickstart/vue)                                  | A Vue 3 SPA.                                                             |
+| [Nuxt](/auth/quickstart/nuxt)                                | Nuxt 3, with the session available on the server side too.               |
+| [SvelteKit](/auth/quickstart/sveltekit)                      | SvelteKit, load functions included.                                      |
+| [Angular](/auth/quickstart/angular)                          | Angular with a route guard and an HTTP interceptor.                      |
+| [JavaScript (Vanilla)](/auth/quickstart/javascript)          | No framework — the framework-agnostic core pattern the others build on.  |
+| [React Native](/auth/quickstart/react-native)                | Mobile, using the system browser and a deep-link callback.               |
+
+## Backend
+
+| Stack                                        | Use it when                                                                                     |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [FastAPI (Python)](/auth/quickstart/fastapi) | Your API receives a `Bearer` token and must verify it — signature, issuer, audience and scopes. |
+
+For Node.js the equivalent walkthrough lives in [Validate Access Tokens](/auth/validate-access-tokens), with an Express middleware. Any language works: the four checks are the same, and every stack has a JWKS-aware JWT library.
+
+## Before you start
+
+Whichever you pick, you need a [Client](/auth/clients) registered in the [Faable Dashboard](https://dashboard.faable.com) with:
+
+- **Allowed Callback URLs** — where Faable redirects after login (e.g. `http://localhost:5173/callback`).
+- **Allowed Logout URLs** — where users land after signing out.
+- **Allowed Web Origins** — the origins allowed to call the token endpoint from a browser.
+
+Plus your **auth domain** (<TennantDomain domainOnly />, or your [custom domain](/auth/custom-domain)) and the **Client ID**. Frontend clients are public — no client secret is involved.
+
+## Related
+
+- **[Get Started](/auth/get-started)** — the concepts behind the code: accounts, connections, clients, users.
+- **[Authorization Code Flow](/auth/oauth-flows/authorization-code)** — what these SDKs do under the hood.
+- **[Social Login](/auth/social)** — let users sign in with Google, GitHub or Microsoft.
