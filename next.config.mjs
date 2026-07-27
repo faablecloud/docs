@@ -32,11 +32,8 @@ export default withNextra({
         destination: '/auth/guides/migrate-from-auth0',
         permanent: false
       },
-      {
-        source: '/auth/quickstart',
-        destination: '/auth/quickstart/react',
-        permanent: false
-      },
+      // NOTE: /auth/quickstart is NOT here — it has a real index page now, and
+      // a redirect would shadow it. This is why these are 302s.
       {
         source: '/auth/extensibility',
         destination: '/auth/extensibility/actions',
