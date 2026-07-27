@@ -5,7 +5,7 @@ description: Set up Faable Auth in minutes — create a tenant, register a clien
 
 # Get Started with Faable Auth
 
-Faable Auth is a multi-tenant identity platform built around the OAuth 2.0 and OpenID Connect standards. You get social login, passwordless, enterprise SSO/SAML, RBAC, MFA, custom domains and audit logs out of the box — without writing or maintaining any of the protocol plumbing yourself.
+Faable Auth is a multi-tenant identity platform built around the OAuth 2.0 and OpenID Connect standards. You get social login, passwordless, RBAC, teams, custom domains and audit logs out of the box — without writing or maintaining any of the protocol plumbing yourself.
 
 > New to the concept? Read [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx). Comparing platforms? See [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx).
 
@@ -14,7 +14,7 @@ Faable Auth is a multi-tenant identity platform built around the OAuth 2.0 and O
 Four concepts are enough to model the whole product:
 
 - **Account** — your auth tenant. Hosted at `https://<account>.auth.faable.link` or under your [custom domain](custom-domain.md).
-- **Connections** — sources of users: database (email + password), social (Google, GitHub, Apple, Facebook…), passwordless, generic OIDC.
+- **Connections** — sources of users: database (email + password), social (Google, GitHub, Microsoft, or any OAuth 2.0 provider), passwordless.
 - **Clients** — the applications that drive an OAuth flow against your account.
 - **Users & Teams** — identities created via your connections, grouped into teams with RBAC.
 

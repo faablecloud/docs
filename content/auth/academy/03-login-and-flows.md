@@ -56,7 +56,7 @@ it replaces the client secret as the proof of "I'm the one who asked."
 
 ## Social login
 
-A social connection (Google, GitHub, Apple…) is the _same_ Authorization Code flow —
+A social connection (Google, GitHub, Microsoft…) is the _same_ Authorization Code flow —
 Faable just federates the actual authentication to the provider, then issues _your_
 tenant's tokens. To the app, nothing changes. See [Social](../social/).
 

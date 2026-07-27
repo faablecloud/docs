@@ -1,6 +1,6 @@
 ---
 title: Faable Auth vs Auth0, Clerk & Keycloak
-description: How Faable Auth compares to Auth0, Clerk, and Keycloak. Faable Auth is a managed, multi-tenant identity server with OAuth 2.0/OIDC, social login, SSO, MFA, and M2M — hosted 100% in Europe with full GDPR compliance.
+description: How Faable Auth compares to Auth0, Clerk, and Keycloak. Faable Auth is a managed, multi-tenant identity server with OAuth 2.0/OIDC, social login, passwordless, and M2M tokens — hosted 100% in Europe with full GDPR compliance.
 ---
 
 # Faable Auth vs Auth0, Clerk & Keycloak
@@ -11,21 +11,28 @@ Each option below is a strong identity solution; this page helps you pick by pri
 
 ## Quick comparison
 
-| Capability                                     | Faable Auth                         | Auth0                            | Clerk             | Keycloak              |
-| ---------------------------------------------- | ----------------------------------- | -------------------------------- | ----------------- | --------------------- |
-| OAuth 2.0 / OIDC standards                     | ✅                                  | ✅                               | ✅                | ✅                    |
-| Social login (Google, Apple, GitHub, Facebook) | ✅                                  | ✅                               | ✅                | ✅                    |
-| Passwordless (magic link / OTP)                | ✅                                  | ✅                               | ✅                | Via extensions        |
-| Enterprise SSO / SAML                          | ✅                                  | ✅                               | ✅ (higher tiers) | ✅                    |
-| MFA / 2FA                                      | ✅                                  | ✅                               | ✅                | ✅                    |
-| Machine-to-machine (M2M) tokens                | ✅                                  | ✅                               | Limited           | ✅                    |
-| Multi-tenant by design                         | ✅                                  | Add-on / Organizations           | Organizations     | Realms (you model it) |
-| Extensibility (custom code in the flow)        | ✅ Actions + Webhooks               | ✅ Actions                       | Webhooks          | SPIs (Java)           |
-| Fully managed (no servers to run)              | ✅                                  | ✅                               | ✅                | ❌ self-hosted        |
-| 100% European hosting + GDPR sovereignty       | ✅                                  | EU region available (US company) | US-based          | Wherever you host it  |
-| Bundled with app hosting                       | ✅ Faable Deploy, same subscription | ❌                               | ❌                | ❌                    |
+| Capability                               | Faable Auth                         | Auth0                            | Clerk         | Keycloak              |
+| ---------------------------------------- | ----------------------------------- | -------------------------------- | ------------- | --------------------- |
+| OAuth 2.0 / OIDC standards               | ✅                                  | ✅                               | ✅            | ✅                    |
+| Social login (Google, GitHub, Microsoft) | ✅                                  | ✅                               | ✅            | ✅                    |
+| Passwordless (magic link / OTP)          | ✅                                  | ✅                               | ✅            | Via extensions        |
+| Machine-to-machine (M2M) tokens          | ✅                                  | ✅                               | Limited       | ✅                    |
+| Multi-tenant by design                   | ✅                                  | Add-on / Organizations           | Organizations | Realms (you model it) |
+| Extensibility (custom code in the flow)  | ✅ Actions + Webhooks               | ✅ Actions                       | Webhooks      | SPIs (Java)           |
+| Fully managed (no servers to run)        | ✅                                  | ✅                               | ✅            | ❌ self-hosted        |
+| 100% European hosting + GDPR sovereignty | ✅                                  | EU region available (US company) | US-based      | Wherever you host it  |
+| Bundled with app hosting                 | ✅ Faable Deploy, same subscription | ❌                               | ❌            | ❌                    |
 
 > Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+
+## Other alternatives at a glance
+
+| Alternative                                          | What it really is                                                 | Pick it when                                                         |
+| ---------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [Supabase Auth](compare-supabase-auth.mdx)           | Auth built into the Supabase backend (Postgres + RLS)             | You're already all-in on Supabase                                    |
+| [AWS Cognito](compare-aws-cognito.mdx)               | AWS-native identity, wired into IAM and API Gateway               | You're all-in on AWS                                                 |
+| [Firebase Authentication](compare-firebase-auth.mdx) | B2C-oriented identity inside Google's mobile stack                | You're shipping a consumer app on Firebase                           |
+| [Authelia](compare-authelia.mdx)                     | Self-hosted SSO portal that gates services behind a reverse proxy | You're protecting self-hosted infrastructure, not building a product |
 
 ## When Faable Auth is the better fit
 
@@ -40,6 +47,7 @@ Each option below is a strong identity solution; this page helps you pick by pri
 - **Auth0** has the deepest feature surface and ecosystem (now part of Okta); a fit for large enterprises already standardized on it, if EU sovereignty isn't a hard requirement.
 - **Clerk** offers excellent prebuilt React UI components and developer experience for B2C/B2B apps that are happy on US hosting.
 - **Keycloak** is the go-to when you specifically want open-source, self-hosted identity and have the team to operate it.
+- **You need SAML or built-in MFA today.** Faable Auth doesn't implement either yet — enterprise connections speak OAuth 2.0 / OIDC only, and second factors have to be enforced in your own application (an [Action](extensibility/actions.md) can gate the login on it). All three alternatives ship both.
 
 ## How Faable Auth works
 

@@ -19,7 +19,7 @@ From the [Get Started](../get-started.md) guide:
   or under your own [custom domain](../custom-domain.md). Everything below hangs off
   the account.
 - **[Connections](../connections.md)** — _sources of users_: database (email +
-  password), social (Google, GitHub, Apple…), passwordless, or generic OIDC/SAML.
+  password), social (Google, GitHub, Microsoft…), passwordless, or generic OIDC.
 - **[Clients](../clients.md)** — the _applications_ that drive an OAuth flow against
   your account. Each has a **Client ID**, optional **Client Secret**, and
   **Allowed Callback URLs**.
@@ -65,7 +65,8 @@ screen shows the ones enabled for that client. Connections can be restricted to
 specific clients (`enabled_clients`). Types include:
 
 - **Database** — email + password, with a configurable password policy.
-- **Social** — Google, GitHub, Apple, Facebook, etc. (see [Social](../social/)).
+- **Social** — Google, GitHub, Microsoft, Figma, or any OAuth 2.0 provider via a
+  Custom OAuth2 connection (see [Social](../social/)).
 - **Passwordless** — magic link / OTP ([Passwordless](../passwordless.md)).
 - **OIDC / Enterprise** — federate to another identity provider.
 

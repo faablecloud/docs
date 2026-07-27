@@ -1,0 +1,59 @@
+---
+title: Faable Auth vs Authelia
+description: How Faable Auth compares to Authelia. Authelia is a self-hosted SSO portal that protects services behind a reverse proxy; Faable Auth is a managed, multi-tenant OAuth 2.0 / OIDC identity server for the applications you build — hosted 100% in Europe under GDPR.
+---
+
+# Faable Auth vs Authelia
+
+**Short answer:** they solve different problems. [Authelia](https://www.authelia.com/) is a **self-hosted single sign-on portal** that sits next to a reverse proxy and puts a login gate in front of services that have no authentication of their own — the classic homelab and internal-tooling use case. Faable Auth is a **managed, multi-tenant OAuth 2.0 / OpenID Connect identity server** that your own application integrates with, so _your users_ sign up and log in to _your product_.
+
+If you're protecting Grafana, Sonarr or an internal dashboard behind Traefik, Authelia is likely the better tool. If you're shipping a SaaS with its own user base, Authelia isn't designed for that.
+
+## Quick comparison
+
+| Capability                               | Faable Auth                                                                    | Authelia                                    |
+| ---------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------- |
+| Deployment                               | Fully managed                                                                  | Self-hosted (you run it, plus Redis/DB)     |
+| Primary job                              | Identity for apps you build                                                    | Gate in front of apps you deploy            |
+| OAuth 2.0 / OIDC provider                | ✅                                                                             | ✅ (OpenID Certified™)                      |
+| Forward auth for a reverse proxy         | ❌                                                                             | ✅ (its core feature)                       |
+| User store                               | Managed, with a user API                                                       | LDAP, or a YAML file                        |
+| Self-service signup                      | ✅                                                                             | ❌ (users are provisioned by an admin)      |
+| Social login (Google, GitHub, Microsoft) | ✅                                                                             | ❌                                          |
+| Passwordless (magic link / OTP)          | ✅                                                                             | ❌ as a first factor                        |
+| MFA / 2FA                                | ❌ not yet                                                                     | ✅ TOTP, WebAuthn/passkeys, Duo push        |
+| SAML                                     | ❌ not yet                                                                     | ❌ (on their roadmap)                       |
+| Machine-to-machine (M2M) tokens          | ✅                                                                             | Limited                                     |
+| Multi-tenant by design                   | ✅                                                                             | ❌ single instance, single directory        |
+| RBAC / Teams                             | ✅                                                                             | Access-control rules per resource           |
+| Extensibility in the login flow          | ✅ [Actions](extensibility/actions.md) + [Webhooks](extensibility/webhooks.md) | Configuration-driven rules                  |
+| Cost                                     | [Included from the Free plan](pricing.md)                                      | Free & open source — you pay in infra + ops |
+| 100% European hosting + GDPR sovereignty | ✅                                                                             | Wherever you host it                        |
+
+> Competitor capabilities change frequently — confirm current details in [Authelia's own docs](https://www.authelia.com/) and roadmap.
+
+## When Faable Auth is the better fit
+
+- **You're building a product with its own users.** Sign-up, email verification, password reset, social login and a user API come with it; Authelia expects users to already exist in LDAP or a config file.
+- **You're multi-tenant.** Each Faable [account](what-is-a-multi-tenant-identity-server.mdx) is an isolated tenant with its own clients, users and signing keys. Authelia is one instance, one directory.
+- **You don't want to run identity infrastructure.** No container, no Redis, no session store, no upgrade window, no PostgreSQL to back up.
+- **You need machine-to-machine tokens** for service-to-service calls — [Client Credentials](oauth-flows/client-credentials.md) against a registered [API](apis.md).
+- **You need European data sovereignty** without operating the servers yourself.
+
+## When Authelia might fit better
+
+- **You're protecting self-hosted services behind a reverse proxy.** Forward auth with Traefik, nginx or Caddy is exactly what Authelia is for, and Faable Auth does not do it.
+- **You want MFA today.** TOTP, WebAuthn/passkeys and Duo push are built in — Faable Auth has no second factor yet.
+- **Everything must stay on your own hardware**, with no third party involved at any point.
+- **Your user directory is already LDAP** and you want to keep it as the source of truth.
+
+## Can they coexist?
+
+Yes, and it's a reasonable setup: Authelia in front of your internal infrastructure, Faable Auth for the product your customers log into. They don't compete for the same requests.
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx) — the closest comparison if you're weighing self-hosted Keycloak too.
+- [Faable Auth vs Supabase Auth](compare-supabase-auth.mdx) · [vs AWS Cognito](compare-aws-cognito.mdx) · [vs Firebase Authentication](compare-firebase-auth.mdx)
+- [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx)
+- [Get Started with Faable Auth](get-started.md)

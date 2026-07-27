@@ -1,6 +1,6 @@
 ---
 title: Auth pricing
-description: What each Faable plan includes for Faable Auth — MAU allowances, auth accounts, enterprise SSO, and per-feature gating.
+description: What each Faable plan includes for Faable Auth — MAU allowances, auth accounts, custom domains, audit logs, and per-feature gating.
 ---
 
 # Auth pricing
@@ -9,11 +9,11 @@ Faable Auth is part of the unified Faable subscription — and it is **included 
 
 ## What each plan includes for Auth
 
-| Plan      | Auth entitlements                                                                                                                      |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | Faable Auth included · 1 auth account · fair-use MAU allowance · passwordless, social login, RBAC · 1 Action                           |
-| **Hobby** | 1 auth account · **250 MAU** · unlimited passwordless within MAU · unlimited Actions · Webhooks · Custom Domain · MFA                  |
-| **Pro**   | Everything in Hobby · **unlimited auth accounts** · **10,000 MAU pooled** across accounts · Enterprise **SSO / SAML** · **Audit logs** |
+| Plan      | Auth entitlements                                                                                               |
+| --------- | --------------------------------------------------------------------------------------------------------------- |
+| **Free**  | Faable Auth included · 1 auth account · fair-use MAU allowance · passwordless, social login, RBAC · 1 Action    |
+| **Hobby** | 1 auth account · **250 MAU** · unlimited passwordless within MAU · unlimited Actions · Webhooks · Custom Domain |
+| **Pro**   | Everything in Hobby · **unlimited auth accounts** · **10,000 MAU pooled** across accounts · **Audit logs**      |
 
 ## Monthly Active Users (MAU)
 
@@ -36,8 +36,6 @@ If you expect to exceed your plan's MAU allowance, [contact us](https://github.c
 | Actions (PostLogin)                     | ✅ (1 Action max) | ✅ unlimited | ✅ unlimited |
 | Webhooks                                |         —         |      ✅      |      ✅      |
 | Custom Domain                           |         —         |      ✅      |      ✅      |
-| MFA                                     |         —         |      ✅      |      ✅      |
-| Enterprise SSO / SAML                   |         —         |      —       |      ✅      |
 | Audit logs                              |         —         |      —       |      ✅      |
 | Multiple auth accounts                  |         —         |      —       |      ✅      |
 

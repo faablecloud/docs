@@ -7,5 +7,7 @@ export default {
   sveltekit: 'SvelteKit',
   angular: 'Angular',
   javascript: 'JavaScript (Vanilla)',
-  'react-native': 'React Native'
+  'react-native': 'React Native',
+  backendSeparator: { type: 'separator', title: 'Backend' },
+  fastapi: 'FastAPI (Python)'
 }

@@ -11,14 +11,22 @@ You can configure and manage all your connections directly from the **Faable Das
 
 ## Types of Connections
 
-Faable Auth supports various connection types to accommodate different authentication needs:
+Every connection has a `connection_type`. These are all of them:
 
-- **Database Connections (Username & Password):** The traditional way of authenticating users. Faable Auth securely stores and manages credentials on your behalf.
-- **Social Connections:** Allow users to log in using their existing accounts from popular providers like Google, GitHub, Apple, Facebook, and more. This reduces friction during the signup process.
-- **Passwordless Connections:** Enable users to log in without a password, using methods like Magic Links sent via email or OTPs (One-Time Passwords) sent via SMS or email.
-- **Enterprise Connections:** Integrate with corporate identity providers like Azure Active Directory, Okta, or any other SAML / OpenID Connect compliant server.
+| `connection_type`    | Category       | What it is                                                                                                                                                                                  |
+| -------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `database`           | `database`     | Email + password. Faable Auth stores and manages the credentials on your behalf.                                                                                                            |
+| `google_oauth2`      | `social`       | [Google](social/google.md) sign-in. Endpoints preconfigured.                                                                                                                                |
+| `github`             | `social`       | [GitHub](social/github.md) sign-in. Endpoints preconfigured.                                                                                                                                |
+| `microsoft`          | `social`       | [Microsoft / Entra ID](social/microsoft.md) — work, school and personal Microsoft accounts. Endpoints preconfigured.                                                                        |
+| `figma`              | `social`       | Figma sign-in. Endpoints preconfigured; bring your own OAuth app.                                                                                                                           |
+| `custom`             | `social`       | Any other OAuth 2.0 provider — you supply the authorize, token and userinfo URLs. See [Facebook](social/facebook.md) for a worked example.                                                  |
+| `passwordless_email` | `passwordless` | [Magic link or one-time code](passwordless.md) by email. The address itself is the identity.                                                                                                |
+| `oidc`               | `oidc`         | An external OIDC **issuer** whose JWTs are trusted in a [Token Exchange](oauth-flows/token-exchange.md) — GitHub Actions being the canonical case. Machine-to-machine, not a browser login. |
 
-Internally, these types are grouped into four **categories** — `database`, `social`, `passwordless`, and `oidc` — that the dashboard and SDK use to filter listings (e.g. `GET /connections?category=social`).
+Those four **categories** (`database`, `social`, `passwordless`, `oidc`) are what the dashboard sidebar and the API filter on: `GET /connections?category=social`.
+
+> **Not available yet:** SMS one-time codes, SAML, and any pre-built enterprise SSO connector (Okta, Entra ID as an _enterprise_ connection rather than a social one). For an OIDC-compliant corporate IdP, a `custom` connection covers browser login today, as long as its userinfo endpoint returns `id`, `name` and `email`.
 
 ## Using Connections for OAuth Login
 
@@ -37,7 +45,7 @@ Now that you understand what Connections are, you can learn how to integrate the
 - **[Clients](clients.md):** Learn how to register your front-end application or backend API to use these connections.
 - **[OAuth 2.0 Flows](oauth-flows):** Choose the right flow for your application type.
 - **[Authorization Code Flow](oauth-flows/authorization-code.md):** Understand the standard OAuth2 flow used to redirect users to Faable Auth and handle the login callback.
-- **[Social Login](social):** Set up Google, GitHub, Apple, or Facebook sign-in from one place.
+- **[Social Login](social):** Set up Google, GitHub or Microsoft sign-in from one place.
 - **[Passwordless](passwordless.md):** Magic links and one-time codes, no password to remember.
 - **[Quickstart Next.js](quickstart/nextjs.md):** Jump straight into the code and see a full authentication implementation in action.
 - **[Quickstart React Native](quickstart/react-native.md):** Jump straight into the code and see a full authentication implementation in action.

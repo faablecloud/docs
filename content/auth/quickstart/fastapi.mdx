@@ -1,0 +1,260 @@
+---
+schema: faq
+title: FastAPI Quickstart — Protect a Python API with Faable Auth
+description: Secure a FastAPI backend with Faable Auth access tokens. Verify the RS256 JWT against your tenant's JWKS with PyJWT, validate issuer and audience, and enforce scopes and permissions with FastAPI dependencies.
+---
+
+# FastAPI Quickstart 🐍
+
+Turn a **FastAPI** app into an OAuth 2.0 **resource server**: every request arrives with a `Bearer` access token, and your API verifies it locally before running any handler.
+
+```
+Authorization: Bearer eyJhbGciOiJSUzI1NiIs...
+```
+
+Verification is **fully local**. Your API checks the RS256 signature against your tenant's public keys (JWKS), which PyJWT caches — Faable is only contacted when the cache is cold or a key rotates. No network call per request, no shared secret to distribute.
+
+> **This guide protects an API, it does not log users in.** Faable has no Python login SDK. The browser side of the flow belongs in your frontend ([React](react.md), [Next.js](nextjs.md), [Vue](vue.md)…) or in a machine client using [Client Credentials](../oauth-flows/client-credentials.md). FastAPI's job is to validate whatever token they send.
+
+---
+
+## ✅ Prerequisites
+
+In the [Faable Dashboard](https://dashboard.faable.com):
+
+1. **Register your API** under **Auth → APIs**. Its **identifier** (e.g. `https://api.myapp.com`) is what lands in the token's `aud` claim — it's an opaque identifier, not a URL that has to resolve. See [APIs](../apis.md).
+2. Optionally declare a **permission catalog** (`read:orders`, `write:orders`…) and set the token dialect to `access_token_authz` so tokens carry a `permissions` claim.
+3. Note your **auth domain** — <TennantDomain domainOnly />, or your [custom domain](../custom-domain.md).
+
+Install the dependencies:
+
+```bash
+pip install "fastapi[standard]" "pyjwt[crypto]"
+```
+
+`pyjwt[crypto]` pulls in `cryptography`, which PyJWT needs to verify RS256 signatures. Without the extra, every verification fails with `InvalidAlgorithmError`.
+
+---
+
+## 🔐 Step 1: The Token Verifier
+
+A valid token must pass four checks — signature, issuer, audience, expiry. `PyJWKClient` resolves the right public key from the token header's `kid`, so key rotation is handled for you:
+
+```python
+# auth.py
+import jwt
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from typing import Annotated
+
+ISSUER = "https://your-domain.auth.faable.link"  # NO trailing slash
+AUDIENCE = "https://api.myapp.com"               # your API identifier
+
+# Caches the JWKS and re-fetches when an unknown `kid` shows up.
+jwks_client = jwt.PyJWKClient(f"{ISSUER}/.well-known/jwks.json")
+
+bearer = HTTPBearer(auto_error=False)
+
+
+def verify_token(
+    creds: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
+) -> dict:
+    if creds is None:
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            detail="missing_token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    try:
+        signing_key = jwks_client.get_signing_key_from_jwt(creds.credentials)
+        return jwt.decode(
+            creds.credentials,
+            signing_key.key,
+            algorithms=["RS256"],
+            audience=AUDIENCE,
+            issuer=ISSUER,
+        )
+    except jwt.PyJWTError as exc:
+        raise HTTPException(
+            status.HTTP_401_UNAUTHORIZED,
+            detail="invalid_token",
+            headers={"WWW-Authenticate": 'Bearer error="invalid_token"'},
+        ) from exc
+
+
+Claims = Annotated[dict, Depends(verify_token)]
+```
+
+> **Why `def` and not `async def`?** `PyJWKClient` fetches the JWKS with a **blocking** HTTP call. Declared as a plain `def`, FastAPI runs the dependency in a threadpool and the event loop keeps serving other requests during that fetch. An `async def` would stall every concurrent request whenever the key cache expires. This is the single most common way a correct-looking FastAPI verifier degrades under load.
+
+---
+
+## 🛡️ Step 2: Enforce Scopes
+
+`scope` and `permissions` are **space-separated strings**, not arrays. A dependency factory turns each into a per-route guard:
+
+```python
+# auth.py (continued)
+def require_scope(required: str):
+    def guard(claims: Claims) -> dict:
+        granted = set(
+            f"{claims.get('scope', '')} {claims.get('permissions', '')}".split()
+        )
+        if required not in granted:
+            raise HTTPException(
+                status.HTTP_403_FORBIDDEN,
+                detail="insufficient_scope",
+                headers={
+                    "WWW-Authenticate": (
+                        f'Bearer error="insufficient_scope", scope="{required}"'
+                    )
+                },
+            )
+        return claims
+
+    return guard
+```
+
+Trust `permissions` over `scope` when your API runs the `access_token_authz` dialect with `enforce_policies` on: that claim is the requested scopes **filtered against your API's permission catalog**, so a client cannot grant itself something you never declared. Merging both, as above, works with either dialect.
+
+---
+
+## 🚀 Step 3: Wire It Into Routes
+
+```python
+# main.py
+from fastapi import Depends, FastAPI
+from auth import Claims, require_scope
+
+app = FastAPI()
+
+
+@app.get("/public")
+def public():
+    return {"ok": True}
+
+
+@app.get("/me")
+def me(claims: Claims):
+    return {"sub": claims["sub"], "scope": claims.get("scope")}
+
+
+@app.get("/orders", dependencies=[Depends(require_scope("read:orders"))])
+def list_orders():
+    return {"orders": []}
+
+
+@app.post("/orders", dependencies=[Depends(require_scope("write:orders"))])
+def create_order():
+    return {"created": True}
+```
+
+Run it with `fastapi dev main.py`.
+
+To protect an entire router instead of route by route, hang the dependency on the router itself — it then applies to every path it contains:
+
+```python
+from fastapi import APIRouter, Depends
+
+admin = APIRouter(
+    prefix="/admin",
+    dependencies=[Depends(require_scope("admin:all"))],
+)
+```
+
+---
+
+## 🧪 Step 4: Test It
+
+Mint a real token with the [Client Credentials flow](../oauth-flows/client-credentials.md) — create a **Machine to Machine** [client](../clients.md) in the dashboard first:
+
+```bash
+TOKEN=$(curl -s -X POST 'https://your-domain.auth.faable.link/oauth/token' \
+  -H 'content-type: application/json' \
+  -d '{
+    "grant_type": "client_credentials",
+    "client_id": "...",
+    "client_secret": "...",
+    "audience": "https://api.myapp.com"
+  }' | jq -r .access_token)
+
+curl http://localhost:8000/orders -H "authorization: Bearer $TOKEN"
+```
+
+Expected: `200` with the token, `401 missing_token` without it, `403 insufficient_scope` when the token lacks `read:orders`.
+
+---
+
+## 📘 Step 5: Add the Authorize Button to `/docs`
+
+FastAPI's interactive docs can drive the real login flow, so you can exercise protected endpoints from the browser with a **user** token instead of pasting one by hand:
+
+```python
+from fastapi.security import OAuth2AuthorizationCodeBearer
+
+oauth2 = OAuth2AuthorizationCodeBearer(
+    authorizationUrl=f"{ISSUER}/authorize",
+    tokenUrl=f"{ISSUER}/oauth/token",
+    scopes={"read:orders": "Read orders", "write:orders": "Create orders"},
+)
+
+app = FastAPI(
+    swagger_ui_init_oauth={
+        "clientId": "YOUR_SPA_CLIENT_ID",
+        "usePkceWithAuthorizationCodeGrant": True,
+        # Faable only issues an API-scoped access token when an audience is asked for.
+        "additionalQueryStringParams": {"audience": AUDIENCE},
+    }
+)
+```
+
+Use `oauth2` in place of `HTTPBearer` in `verify_token` if you want the padlock wired to this scheme. Two things must line up in the dashboard, or the browser round-trip fails:
+
+- **Allowed Callback URLs** must include `http://localhost:8000/docs/oauth2-redirect`.
+- **Allowed Web Origins** must include `http://localhost:8000`, since Swagger UI performs the PKCE token exchange with a cross-origin `fetch`.
+
+Faable enforces **PKCE with S256** and advertises no other `code_challenge_method`, so leave `usePkceWithAuthorizationCodeGrant` on and use a public SPA client — never put a client secret in Swagger UI.
+
+---
+
+## ⚠️ Pitfalls
+
+- **Trailing slash on the issuer.** Faable's `iss` is `https://your-domain.auth.faable.link` with **no** trailing slash. Auth0-style config ported over with a trailing `/` rejects every token.
+- **Skipping `audience=`.** `jwt.decode` only validates `aud` when you pass `audience`. Without it, a token minted for a different API — or an OIDC-only token whose `aud` fell back to `<issuer>/userinfo` — sails through.
+- **Treating `permissions` as a list.** It's a string. `"read:orders" in claims["permissions"]` is a substring match: it would accept `read:orders_archive`. Always `.split()` first.
+- **Validating against the `client_id`.** The **ID token's** `aud` is the client id; the **access token's** `aud` is the API identifier. Your API validates access tokens.
+- **Creating `PyJWKClient` inside the handler.** Build it once at module scope. A per-request client re-downloads the JWKS on every call and hands Faable a self-inflicted DDoS.
+- **`jwt.decode(..., options={"verify_signature": False})`.** Fine in a REPL to inspect a token; catastrophic in a dependency. There is no safe production use.
+
+---
+
+## ❓ FAQ
+
+### Does my API call Faable on every request?
+
+No. The signature is verified locally against the cached JWKS. `PyJWKClient` refetches only when its cache expires or a token presents an unseen `kid` (key rotation).
+
+### How do I know if the caller is a user or a machine?
+
+Look at `sub`: user tokens carry a `user_…` id, [machine-to-machine](../oauth-flows/client-credentials.md) tokens carry the client's `client_id`.
+
+### Can I use python-jose or Authlib instead of PyJWT?
+
+Yes. Any JWT library with JWKS support works. Configure the same four checks: RS256, your tenant issuer without a trailing slash, your API identifier as audience, and expiry. `python-jose` is largely unmaintained — prefer PyJWT or Authlib for new code.
+
+### How do I get the full user profile in my API?
+
+Access tokens carry identity claims, not a profile. Either enrich the token from an [Action](../extensibility/actions.md), or call [`/userinfo`](../oidc/userinfo.md) with the same token — that one **is** a network call, so cache it per `sub`.
+
+### Does this work with Django, Flask or Litestar?
+
+Yes — the verifier is plain PyJWT. Only the dependency-injection wrapper is FastAPI-specific; swap it for a decorator or middleware in your framework.
+
+---
+
+## 🔗 Related
+
+- **[Validate Access Tokens](../validate-access-tokens.md)** — the same four checks in Node.js/Express, plus the anatomy of a Faable access token.
+- **[APIs](../apis.md)** — register your API, its identifier and its permission catalog.
+- **[Client Credentials Flow](../oauth-flows/client-credentials.md)** — how machine clients obtain these tokens.
+- **[Authorization Code Flow](../oauth-flows/authorization-code.md)** — how your frontend obtains a user token to send here.

@@ -9,15 +9,15 @@ description: A step-by-step guide to migrating from self-hosted Keycloak to mana
 
 ## Concept mapping
 
-| Keycloak                             | Faable Auth                                              | Notes                                         |
-| ------------------------------------ | -------------------------------------------------------- | --------------------------------------------- |
-| Realm                                | [Account](../what-is-a-multi-tenant-identity-server.mdx) | Your isolated identity boundary               |
-| Client                               | [Client](../clients.md)                                  | SPA, native, regular web, or M2M              |
-| Identity Provider (social/OIDC/SAML) | [Connection](../connections.md)                          | `social`, `oidc` categories                   |
-| User federation (LDAP/AD)            | OIDC/enterprise [Connection](../connections.md)          | Connect via standard protocols                |
-| Authentication SPI (Java)            | [Actions](../extensibility/actions.md)                   | Custom in-flow logic, no Java/SPI to maintain |
-| Admin REST API                       | [Management API](../apis.md)                             | Called with client credentials                |
-| Self-hosted servers + DB             | Fully managed                                            | No infrastructure for you to run              |
+| Keycloak                        | Faable Auth                                              | Notes                                         |
+| ------------------------------- | -------------------------------------------------------- | --------------------------------------------- |
+| Realm                           | [Account](../what-is-a-multi-tenant-identity-server.mdx) | Your isolated identity boundary               |
+| Client                          | [Client](../clients.md)                                  | SPA, native, regular web, or M2M              |
+| Identity Provider (social/OIDC) | [Connection](../connections.md)                          | OAuth 2.0 / OIDC only — no SAML yet           |
+| User federation (LDAP/AD)       | [Connection](../connections.md) over OIDC                | No direct LDAP bind — federate via OAuth/OIDC |
+| Authentication SPI (Java)       | [Actions](../extensibility/actions.md)                   | Custom in-flow logic, no Java/SPI to maintain |
+| Admin REST API                  | [Management API](../apis.md)                             | Called with client credentials                |
+| Self-hosted servers + DB        | Fully managed                                            | No infrastructure for you to run              |
 
 ## Migration steps
 

@@ -1,27 +1,41 @@
 ---
 title: Social Login
-description: Add social login (Google, GitHub, Apple, Facebook) to your app with Faable Auth. A social connection lets users sign in with an existing provider account; set up each provider from one place.
+description: Add social login (Google, GitHub, Microsoft Entra ID, Figma) to your app with Faable Auth. A social connection lets users sign in with an existing provider account; any other OAuth 2.0 provider works through a Custom OAuth2 connection.
 ---
 
 # Social Login
 
-**Social login lets your users sign in with an account they already have — Google, GitHub, Apple, or Facebook — instead of creating a new password.** In Faable Auth, each provider is a [social connection](/auth/connections): you register an app with the provider, paste its client ID and secret into the [Faable Dashboard](https://dashboard.faable.com), and enable the connection on your [client](/auth/clients). Faable handles the OAuth handshake and returns standard OIDC tokens, so your app code is identical regardless of which provider the user chose.
+**Social login lets your users sign in with an account they already have — Google, GitHub, Microsoft — instead of creating a new password.** In Faable Auth, each provider is a [social connection](/auth/connections): you register an app with the provider, paste its client ID and secret into the [Faable Dashboard](https://dashboard.faable.com), and enable the connection on your [client](/auth/clients). Faable handles the OAuth handshake and returns standard OIDC tokens, so your app code is identical regardless of which provider the user chose.
 
-## Supported providers
+## Built-in providers
 
-| Provider | Setup guide                                 |
-| -------- | ------------------------------------------- |
-| Google   | [Configure Google](/auth/social/google)     |
-| GitHub   | [Configure GitHub](/auth/social/github)     |
-| Apple    | [Configure Apple](/auth/social/apple)       |
-| Facebook | [Configure Facebook](/auth/social/facebook) |
+These have their upstream endpoints preconfigured — you only supply credentials.
+
+| Provider             | Connection type | Shared Faable app | Setup guide                                   |
+| -------------------- | --------------- | ----------------- | --------------------------------------------- |
+| Google               | `google_oauth2` | ✅                | [Configure Google](/auth/social/google)       |
+| GitHub               | `github`        | ✅                | [Configure GitHub](/auth/social/github)       |
+| Microsoft (Entra ID) | `microsoft`     | ✅                | [Configure Microsoft](/auth/social/microsoft) |
+| Figma                | `figma`         | —                 | Bring your own OAuth app                      |
+
+**Shared Faable app** means you can switch the connection on without registering anything with the provider — useful to get moving, though the consent screen then shows Faable rather than your company. Fill in your own Client ID and Secret to take it over.
+
+## Any other provider
+
+For anything not in the table above, create a **Custom OAuth2** connection (`custom`) and supply the upstream values yourself: **Authorize URL**, **Token URL**, **User Info URL** and your credentials. Faable runs the same Authorization Code flow against them.
+
+The one constraint: the provider's userinfo response must expose the profile under the keys `id`, `name`, `email` and `picture`, as **strings**. Custom connections use the generic mapper — there is no per-provider normalization — so a provider that returns `user_id`, or nests the avatar in an object, lands with those fields empty. `id` is the one that must be present; without it the login fails outright.
+
+Worked examples: [Facebook](/auth/social/facebook). Providers that require a non-standard client authentication scheme — notably [Sign in with Apple](/auth/social/apple), which needs the client secret to be a signed ES256 JWT — are **not** supported through this path yet.
+
+Don't confuse this with the `oidc` connection type, which is a different thing entirely: it registers an external OIDC **issuer** whose JWTs Faable will trust in a [Token Exchange](/auth/oauth-flows/token-exchange) — GitHub Actions being the canonical case. It drives no browser login, which is why the dashboard files it under **Machine to Machine** rather than Social Login.
 
 ## How it works
 
 1. **Register an app** with the provider (e.g. a Google OAuth client) and copy its client ID and secret.
 2. **Create a social [connection](/auth/connections)** in the Faable Dashboard and paste those credentials.
 3. **Enable the connection** on the [client](/auth/clients) that runs your login flow.
-4. **Log in.** Send users to the `/authorize` endpoint — they pick a provider on the Universal Login screen, or you can target one directly with `connection=google-oauth2`. Faable normalizes the result into standard OAuth 2.0 / OIDC tokens.
+4. **Log in.** Send users to the `/authorize` endpoint — they pick a provider on the Universal Login screen, or you can target one directly with `connection_id=connection_abc123`. Faable normalizes the result into standard OAuth 2.0 / OIDC tokens.
 
 ## Related
 

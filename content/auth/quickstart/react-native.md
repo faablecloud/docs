@@ -5,7 +5,7 @@ description: Add secure authentication to your React Native app with Faable Auth
 
 # React Native
 
-In this guide we are going to implement the Faable Auth authentication service in React Native. The Identity Provider enables us to log in using Google, Facebook/Meta, Github, Shopify, Slack, among others, with a single configuration.
+In this guide we are going to implement the Faable Auth authentication service in React Native. The Identity Provider enables us to log in using Google, GitHub, Microsoft or any other OAuth 2.0 provider, with a single configuration.
 
 > ⚠️ Before starting:
 >

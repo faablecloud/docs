@@ -113,7 +113,7 @@ app.get('/orders', checkJwt, requireScope('read:orders'), (req, res) => {
 app.listen(3000)
 ```
 
-The same four checks apply in any language — Python, Go, Java, .NET all have JWKS-aware JWT libraries; point them at your tenant's discovery URL.
+The same four checks apply in any language — Go, Java and .NET all have JWKS-aware JWT libraries; point them at your tenant's discovery URL. For Python there's a full walkthrough: **[FastAPI Quickstart](quickstart/fastapi.md)** (PyJWT + dependencies).
 
 ---
 
@@ -162,10 +162,15 @@ Look at `sub`: user tokens carry a `user_…` id; [machine-to-machine](oauth-flo
 
 Yes — any JWT library with JWKS support works (`express-oauth2-jwt-bearer`, `jwks-rsa` + `jsonwebtoken`, or your stack's equivalent). Configure it with your tenant issuer (no trailing slash), your API identifier as audience, and RS256.
 
+### How do I do this in Python?
+
+Same four checks with [PyJWT](https://pyjwt.readthedocs.io/) — `PyJWKClient` handles the JWKS cache and key rotation. See the [FastAPI Quickstart](quickstart/fastapi.md) for the complete dependency-based version, including scope enforcement.
+
 ---
 
 ## 🔗 Related
 
+- **[FastAPI Quickstart](quickstart/fastapi.md)** — the Python version of this guide, with PyJWT and FastAPI dependencies.
 - **[APIs](apis.md)** — register your API, define its `identifier` (audience) and permission catalog.
 - **[Client Credentials Flow](oauth-flows/client-credentials.md)** — how machine clients obtain the tokens your API validates.
 - **[Authorization Code Flow](oauth-flows/authorization-code.md)** — how user tokens are issued, with [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js).
