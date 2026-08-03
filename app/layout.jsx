@@ -1,5 +1,5 @@
 import '../globals.css'
-import { ProdGoogleAnalytics } from './components/ProdGoogleAnalytics'
+import { ProdGoogleTagManager } from './components/ProdGoogleTagManager'
 
 export const metadata = {
   metadataBase: new URL('https://faable.com'),
@@ -87,7 +87,10 @@ export default function RootLayout({ children }) {
     >
       <body>
         {children}
-        <ProdGoogleAnalytics gaId="G-S8X2QYX44Z" />
+        {/* Same container as the landing: cookie banner + GA4 G-LF4NC4LKWN
+            (Consent Mode) + Google Ads tag, so /docs campaign traffic gets
+            consent and conversion tracking. */}
+        <ProdGoogleTagManager gtmId="GTM-WW7L89N" />
       </body>
     </html>
   )

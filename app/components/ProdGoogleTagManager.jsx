@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleTagManager } from '@next/third-parties/google'
 
-// Loads Google Analytics only on the production host, so localhost and the
-// *.faable.link preview/origin deploys don't pollute production analytics.
-export function ProdGoogleAnalytics({ gaId }) {
+// Loads the same GTM container as the landing (cookie banner, GA4
+// G-LF4NC4LKWN with Consent Mode, and the Google Ads tag) only on the
+// production host, so localhost and the *.faable.link preview/origin
+// deploys don't pollute production analytics.
+export function ProdGoogleTagManager({ gtmId }) {
   const [enabled, setEnabled] = useState(false)
 
   useEffect(() => {
@@ -19,5 +21,5 @@ export function ProdGoogleAnalytics({ gaId }) {
     }
   }, [])
 
-  return enabled ? <GoogleAnalytics gaId={gaId} /> : null
+  return enabled ? <GoogleTagManager gtmId={gtmId} /> : null
 }
