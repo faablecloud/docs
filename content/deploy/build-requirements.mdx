@@ -6,7 +6,7 @@ description: How the Faable CLI detects and builds your project — package.json
 
 # What the Builder Expects in Your Repo 📦
 
-When you run `faable deploy`, the CLI inspects your repository, detects the stack, builds a container image (on your machine or in CI), and pushes it to Faable. **Detection is file-based** — this page describes exactly which files the builder looks for and what it does with them, so you can shape your repo to deploy with zero configuration.
+When you run `faable deploy`, the CLI uploads your project sources and Faable's remote builder inspects them, detects the stack and builds your app. **Detection is file-based** — this page describes exactly which files the builder looks for and what it does with them, so you can shape your repo to deploy with zero configuration.
 
 ## 🔍 How Detection Works
 
@@ -57,14 +57,14 @@ my-app/
 
 What each piece means to the builder:
 
-| Field           | Required | What the builder does with it                                                                                                                                                 |
-| :-------------- | :------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`          | **Yes**  | Used as the app name. Deploy fails with `Missing name in package.json` without it.                                                                                            |
-| `engines.node`  | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). If omitted, the builder uses **the Node version running the deploy** — your machine locally, or the CI runner. |
-| `scripts.build` | No       | If present, runs locally (`npm run build`) before packaging, with your app's environment variables available.                                                                 |
-| `scripts.start` | No       | The container runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead.                                     |
+| Field           | Required | What the builder does with it                                                                                                                                                                                |
+| :-------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`          | **Yes**  | Used as the app name. Deploy fails with `Missing name in package.json` without it.                                                                                                                           |
+| `engines.node`  | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). Supported majors: **20, 22, 24**. If omitted, the builder uses its own current Node version, which changes as the platform upgrades — pin it. |
+| `scripts.build` | No       | If present, runs locally (`npm run build`) before packaging, with your app's environment variables available.                                                                                                |
+| `scripts.start` | No       | The container runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead.                                                                    |
 
-The image is `node:<version>-slim` and **copies your working directory as-is — it never runs `npm install`**. Dependencies are installed on the host before packaging: if `node_modules` is missing, `faable deploy` installs it automatically (`npm ci` with a lockfile, `npm install` otherwise), so the workflow needs no separate install step.
+Your app runs on Faable's shared Node runtime image for the resolved major. If `node_modules` is missing from the uploaded sources, the builder installs dependencies automatically (`npm ci` with a lockfile, `npm install` otherwise), so the workflow needs no separate install step.
 
 ### Static Frontends
 
@@ -178,7 +178,7 @@ Cerebrium projects deploy natively (see above). For other platforms, the detecti
 
 ### Which Node version does my app run on?
 
-The version from `engines.node` in `package.json`, resolved to a concrete release. Without it, the builder uses the Node version of the machine running the deploy — pin `engines.node` so local and CI builds agree.
+The version from `engines.node` in `package.json`, resolved to the latest release of that major (supported majors: 20, 22, 24). Without it, the builder uses its own current Node version, which changes as the platform upgrades — pin `engines.node` so your app's runtime is deterministic.
 
 ### What port should my app listen on?
 
@@ -186,7 +186,7 @@ Read `$PORT` and bind `0.0.0.0`. Hardcoding `localhost` or another port is the m
 
 ### Does the build run on Faable's servers?
 
-No — `faable deploy` builds the image where it runs: your machine (Docker must be running) or your CI runner. Faable receives the finished image and runs it. `faable deploy link` can scaffold a GitHub Actions workflow that deploys on every push to `main`.
+Yes — `faable deploy` uploads your project sources and the build runs on Faable's build infrastructure; no Docker is needed on your machine. `faable deploy link` can scaffold a GitHub Actions workflow that deploys on every push to `main`.
 
 ---
 
