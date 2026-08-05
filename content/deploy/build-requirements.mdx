@@ -1,12 +1,12 @@
 ---
 schema: faq
 title: What the Builder Expects in Your Repo
-description: How the Faable CLI detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, Dockerfile as escape hatch — plus the $PORT contract and faable.json options.
+description: How Faable's remote builder detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, Dockerfile as escape hatch — plus monorepo Root Directory, the $PORT contract and faable.json options.
 ---
 
 # What the Builder Expects in Your Repo 📦
 
-When you run `faable deploy`, the CLI uploads your project sources and Faable's remote builder inspects them, detects the stack and builds your app. **Detection is file-based** — this page describes exactly which files the builder looks for and what it does with them, so you can shape your repo to deploy with zero configuration.
+When you run `faable deploy` (or push to a linked repo), your project sources are uploaded and Faable's remote builder inspects them, detects the stack and builds your app — no Docker on your machine, no CI build step. **Detection is file-based** — this page describes exactly which files the builder looks for and what it does with them, so you can shape your repo to deploy with zero configuration.
 
 ## 🔍 How Detection Works
 
@@ -23,11 +23,13 @@ Deploys are built by **buildpacks** (Heroku/CNB-style): each one checks for its 
 > [!IMPORTANT]
 > The order matters: if your repo has both a `package.json` and a `Dockerfile`, it is built as a **Node.js** project and the Dockerfile is ignored. The Dockerfile path is the escape hatch for stacks the buildpacks don't detect natively.
 
-You can skip detection entirely and **force a buildpack** — `node`, `python`, or `docker` — with the `buildpack` field in `faable.json` or the `--buildpack` (`-b`) CLI flag:
+You can skip detection entirely and **force a buildpack** — `node`, `python`, or `docker` — with the `buildpack` field in `faable.json`:
 
-```bash
-faable deploy --buildpack docker
+```json
+{ "buildpack": "docker" }
 ```
+
+A forced buildpack still runs its own detection, so the plan is computed from your real project files — forcing `docker` without a `Dockerfile` fails with a clear error.
 
 ---
 
@@ -38,8 +40,7 @@ A minimal repo the builder accepts:
 ```
 my-app/
 ├── package.json    ← triggers Node detection
-├── server.js
-└── node_modules/   ← must be installed before deploying (see below)
+└── server.js
 ```
 
 ```json
@@ -59,41 +60,66 @@ What each piece means to the builder:
 
 | Field           | Required | What the builder does with it                                                                                                                                                                                |
 | :-------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`          | **Yes**  | Used as the app name. Deploy fails with `Missing name in package.json` without it.                                                                                                                           |
+| `name`          | **Yes**  | Deploy fails at detection with `Missing name in package.json` without it.                                                                                                                                    |
 | `engines.node`  | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). Supported majors: **20, 22, 24**. If omitted, the builder uses its own current Node version, which changes as the platform upgrades — pin it. |
-| `scripts.build` | No       | If present, runs locally (`npm run build`) before packaging, with your app's environment variables available.                                                                                                |
-| `scripts.start` | No       | The container runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead.                                                                    |
+| `scripts.build` | No       | If present, the builder runs `npm run build` before packaging, with your app's environment variables available to the build.                                                                                 |
+| `scripts.start` | No       | The app runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead.                                                                          |
 
-Your app runs on Faable's shared Node runtime image for the resolved major. If `node_modules` is missing from the uploaded sources, the builder installs dependencies automatically (`npm ci` with a lockfile, `npm install` otherwise), so the workflow needs no separate install step.
+**Dependencies** are installed by the builder when no `node_modules` is present in the uploaded sources (for a monorepo, a `node_modules` at the workspace root counts). The lockfile picks the tool: `package-lock.json`/`npm-shrinkwrap.json` → `npm ci`, `yarn.lock` → `yarn install --frozen-lockfile`, `pnpm-lock.yaml` → `pnpm install --frozen-lockfile`, no lockfile → `npm install`. Dev dependencies are always included (build tools live there). If a frozen install fails — e.g. a stale lockfile — the builder retries with a plain `npm install` rather than failing the deploy.
+
+**Start command precedence**: `startCommand` in `faable.json` → framework-detected static serve → `npm run start`.
 
 ### Static Frontends
 
-If `package.json` has **no `start` script**, the builder looks at your dependencies to detect a static framework and serves its build output automatically:
+If `package.json` has **no `start` script**, the builder looks at your dependencies (including `devDependencies`, and hoisted monorepo dependencies) to detect a static framework and serves its build output automatically:
 
-| Framework detected                 | Build output served      |
-| :--------------------------------- | :----------------------- |
-| Astro                              | `dist/`                  |
-| Gatsby                             | `public/`                |
-| Create React App (`react-scripts`) | `build/`                 |
-| Vue CLI                            | `dist/`                  |
-| Angular                            | read from `angular.json` |
-| Vite                               | `dist/`                  |
+| Framework detected                 | Build output             | Served with                  |
+| :--------------------------------- | :----------------------- | :--------------------------- |
+| Astro                              | `dist/`                  | `astro preview`              |
+| Gatsby                             | `public/`                | `gatsby serve`               |
+| Create React App (`react-scripts`) | `build/`                 | static server, SPA fallback  |
+| Vue CLI (`@vue/cli-service`)       | `dist/`                  | static server, SPA fallback  |
+| Angular                            | read from `angular.json` | static server, SPA fallback  |
+| Vite                               | `dist/`                  | `vite preview`, SPA fallback |
 
-Next.js is the exception: it always runs as a server (`next start`), with a persistent cache for `.next/cache` managed by the platform. And remember — defining a `start` script disables static serving entirely; the builder trusts your script.
+For Angular, the output path comes from `angular.json` (`architect.build.options.outputPath`), with the `browser/` subfolder handled automatically for Angular 17+ builders. SPA fallback means unknown routes rewrite to `index.html` — Astro and Gatsby build real per-page files, so they 404 instead.
+
+Next.js is the exception: it always runs as a server (never static), with a persistent cache for `.next/cache` managed by the platform. When your start script is the stock `next start`, the builder ships Next's compact standalone output automatically; a custom start command (or `"next": { "standalone": false }` in `faable.json`) opts out and ships the full workspace. And remember — defining a `start` script disables static serving entirely; the builder trusts your script.
+
+### Monorepos (Root Directory)
+
+To deploy one app from a monorepo (Turborepo, npm/yarn/pnpm workspaces), set the app's **Root Directory** in the dashboard — or `rootDir` in `faable.json` (the dashboard setting wins). The builder then:
+
+- installs dependencies at the **workspace root** (hoisted packages resolve normally),
+- detects, builds and packages the app **inside the Root Directory**,
+- for Next.js, points the standalone output tracing at the workspace root so shared packages are included.
+
+No extra config file is needed in the repo.
 
 ---
 
 ## 🐍 Python Projects
 
-Detected by `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml`. Unlike Node, **dependencies install inside the image build** (`pip install -r requirements.txt`, `pip install .`, `pipenv install`, or the pip table of `cerebrium.toml` respectively). With a `requirements.txt`, the manifest is copied into its own image layer before the install, so rebuilding after a source-only change reuses the cached dependency layer.
+Detected by `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml` (first match wins when several exist). The builder creates a virtual environment and installs dependencies into it according to the manifest:
+
+| Manifest           | Install                                  |
+| :----------------- | :--------------------------------------- |
+| `requirements.txt` | `pip install -r requirements.txt`        |
+| `pyproject.toml`   | `pip install .`                          |
+| `Pipfile`          | `pipenv install --system --deploy`       |
+| `cerebrium.toml`   | the `[cerebrium.dependencies.pip]` table |
+
+A `buildCommand` in `faable.json` replaces the manifest install entirely — use it when you need a custom install step.
 
 **Python version**, first match wins:
 
-1. `runtime.txt` — e.g. `python-3.12.1`
+1. `runtime.txt` — must be in the form `python-<version>` (e.g. `python-3.12.1`)
 2. `.python-version`
 3. The manifest's own version (e.g. `python_version` in `cerebrium.toml`)
 4. `requires-python` in `pyproject.toml`
-5. Default: `3.11.3`
+5. Default: `3.11`
+
+Supported Python minors: **3.11 and 3.12** — the app runs on Faable's shared runtime image for the resolved minor.
 
 **Start command**, first match wins:
 
@@ -105,7 +131,7 @@ Detected by `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml`
    - **FastAPI / Starlette** → `uvicorn <module>:app --host 0.0.0.0 --port $PORT`
    - **Flask** → `gunicorn <module>:app --bind 0.0.0.0:$PORT`
 
-For FastAPI and Flask the builder finds your app module by checking, in order: `main.py`, `app.py`, `asgi.py`, `wsgi.py`, `application.py`, `server.py`, `app/main.py`, `app/app.py`, `src/main.py` — preferring the file that actually defines `app = FastAPI(...)` / `app = Flask(...)`. `gunicorn`/`uvicorn` are added to the image automatically if the start command needs them and they're not in your dependencies.
+For FastAPI and Flask the builder finds your app module by checking, in order: `main.py`, `app.py`, `asgi.py`, `wsgi.py`, `application.py`, `server.py`, `app/main.py`, `app/app.py`, `src/main.py` — preferring the file that actually defines `app = FastAPI(...)` / `app = Flask(...)`. `gunicorn`/`uvicorn` are installed automatically if the start command needs them and they're not in your dependencies.
 
 If no framework is recognized and there's no `Procfile` or `startCommand`, the deploy fails and asks you to provide one.
 
@@ -117,13 +143,13 @@ Because Faable runs **web services**, your project still needs a web entrypoint 
 
 ### Python Without a Manifest
 
-A lone `main.py` / `app.py` / `wsgi.py` with no dependency manifest at all is picked up by the Python fallback: the app builds **without installing any dependencies** (the deploy logs warn loudly). Framework detection still works by reading the entrypoint file itself, and `uvicorn`/`gunicorn` are added when the start command needs them. If your app imports anything beyond the standard library, add a `requirements.txt`. Note this fallback loses against a `Dockerfile` — an explicit Dockerfile always wins over a loose `.py` file.
+A lone `main.py` / `app.py` / `wsgi.py` with no dependency manifest at all is picked up by the Python fallback: the app builds **without installing your dependencies** (the deploy logs warn loudly; the web server itself — `uvicorn`/`gunicorn` — is still installed when the detected start command needs it). Framework detection still works by reading the entrypoint file itself. If your app imports anything beyond the standard library, add a `requirements.txt`. Note this fallback loses against a `Dockerfile` — an explicit Dockerfile always wins over a loose `.py` file.
 
 ---
 
 ## 🐳 Dockerfile Projects
 
-No `package.json`, no Python manifests, but a `Dockerfile`? The buildpack runs `docker build` on it **verbatim** (targeting `linux/amd64`, so images built on Apple Silicon run on the platform) — you control everything. Just honor the port contract below. If a `package.json` with a `next` dependency sits beside the Dockerfile (reachable by forcing `--buildpack docker`), the deploy is registered as a Next.js app so the platform provisions its build cache.
+No `package.json`, no Python manifests, but a `Dockerfile`? The builder runs it **verbatim** with BuildKit on Faable's build infrastructure (targeting `linux/amd64`), pushes the image and pins the deploy to its digest — you control everything. Just honor the port contract below. If a `package.json` with a `next` dependency sits beside the Dockerfile (reachable by forcing `"buildpack": "docker"`), the deploy is registered as a Next.js app so the platform provisions its build cache.
 
 ---
 
@@ -135,7 +161,7 @@ Whatever the stack, your app must listen on **`0.0.0.0`** at the port given by t
 app.listen(process.env.PORT, '0.0.0.0')
 ```
 
-The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAABLE_HOST` are reserved — secrets you define with those names are ignored. See [Environment & Releases](environment.mdx) for the full list of injected variables (`FAABLE_APP_ID`, `FAABLE_DEPLOY_ID`, `FAABLE_RELEASE`, …) and how the release version is resolved.
+The platform also injects `FAABLE_HOST` (your app's public URL). Platform-managed names — `PORT`, `FAABLE_HOST`, `FAABLE_APP_ID`, `FAABLE_DEPLOY_ID`, `FAABLE_RELEASE`, `FAABLE_GIT_COMMIT`, `FAABLE_GIT_REF` — are reserved; secrets you define with those names are ignored. See [Environment & Releases](environment.mdx) for the full list of injected variables and how the release version is resolved.
 
 ---
 
@@ -148,17 +174,21 @@ The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAA
   "app_id": "app_xxx",
   "app_slug": "my-app",
   "buildpack": "docker",
+  "rootDir": "apps/web",
   "buildCommand": "npm run build:prod",
-  "startCommand": "node dist/main.js"
+  "startCommand": "node dist/main.js",
+  "next": { "standalone": false }
 }
 ```
 
-| Field                 | Purpose                                                                                                        |
-| :-------------------- | :------------------------------------------------------------------------------------------------------------- |
-| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                       |
-| `buildpack`           | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection. The `--buildpack` CLI flag beats it. |
-| `buildCommand`        | Build step to run when `package.json` has no `build` script (Node), or custom install command (Python).        |
-| `startCommand`        | Overrides everything — framework detection and `npm run start`.                                                |
+| Field                 | Purpose                                                                                                                                     |
+| :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                                                    |
+| `buildpack`           | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection.                                                                   |
+| `rootDir`             | Monorepo Root Directory — the subdirectory the app builds from. The app's Root Directory in the dashboard takes precedence when set.        |
+| `buildCommand`        | Node: build step used when `package.json` has no `build` script (the `build` script wins otherwise). Python: replaces the manifest install. |
+| `startCommand`        | Overrides everything — framework detection and `npm run start`. On a Next.js app it also opts out of the standalone output.                 |
+| `next.standalone`     | Set `false` to ship the full workspace instead of Next's compact standalone output.                                                         |
 
 ---
 
@@ -166,19 +196,23 @@ The platform also injects `FAABLE_HOST` (your app's public URL). `PORT` and `FAA
 
 ### My deployed app crashes with "module not found" — why?
 
-The Node image copies your working directory as-is and never runs `npm install`. `faable deploy` installs dependencies on the host automatically when `node_modules` is missing, so this usually means the install was skipped or partial — check the deploy logs for the install step, and make sure the missing module is listed in `dependencies` (not only `devDependencies` if your start command needs it at runtime).
+Usually the module isn't installed where the app runs: check that it's listed in `dependencies` (not only `devDependencies` if your start command needs it at runtime), and check the deploy logs for the install step. In a monorepo, make sure the app's Root Directory is set so workspace packages resolve.
 
 ### I have a Dockerfile but Faable ignores it — why?
 
-Because there's also a `package.json` (or Python manifest) at the root, which takes precedence. Force it with `--buildpack docker` (or `"buildpack": "docker"` in `faable.json`), remove the manifest from the root, or embrace the zero-config Node/Python buildpacks.
+Because there's also a `package.json` (or Python manifest) at the root, which takes precedence. Force it with `"buildpack": "docker"` in `faable.json`, remove the manifest from the root, or embrace the zero-config Node/Python buildpacks.
 
 ### My repo was made for another platform (Cerebrium, Replicate, Fly…) — will it deploy?
 
-Cerebrium projects deploy natively (see above). For other platforms, the detection error names the config file it recognized (`cog.yaml`, `fly.toml`, `render.yaml`…) — Faable can't consume those directly; add one of the supported manifests or a `Dockerfile`.
+Cerebrium projects deploy natively (see above). For other platforms, the detection error names the config file it recognized (`cog.yaml`, `fly.toml`, `render.yaml`, `vercel.json`, `netlify.toml`, `railway.json`, `heroku.yml`…) — Faable can't consume those directly; add one of the supported manifests or a `Dockerfile`.
 
 ### Which Node version does my app run on?
 
 The version from `engines.node` in `package.json`, resolved to the latest release of that major (supported majors: 20, 22, 24). Without it, the builder uses its own current Node version, which changes as the platform upgrades — pin `engines.node` so your app's runtime is deterministic.
+
+### How do I deploy a single app from a monorepo?
+
+Set the app's **Root Directory** in the dashboard (or `rootDir` in `faable.json`). Dependencies install at the workspace root, and the app builds from the subdirectory — hoisted packages and shared workspace libraries resolve normally. One Faable app per deployable package.
 
 ### What port should my app listen on?
 
