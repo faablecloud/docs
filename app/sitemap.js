@@ -1,4 +1,6 @@
 import { getPageMap } from 'nextra/page-map'
+import { readdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { lastModifiedForRoute, sourceFileFor } from './_lib/last-modified'
 
 const SITE_URL = 'https://faable.com/docs'
@@ -27,11 +29,26 @@ export default async function sitemap() {
 
   const buildDate = new Date()
 
-  return routes.sort().map(route => ({
-    // route already starts with "/", strip it to avoid a double slash
-    url: `${SITE_URL}${route === '/' ? '' : route}`,
-    lastModified: lastModifiedForRoute(route, buildDate),
-    changeFrequency: 'weekly',
-    priority: route === '/' ? 1 : 0.7
-  }))
+  // Credential pages (app/badge/[id]) are prerendered from public/certs and
+  // publicly verifiable — advertise them so the sitemap stays exactly the set
+  // of prerendered pages (check-sitemap enforces both directions).
+  const badges = readdirSync(join(process.cwd(), 'public', 'certs'))
+    .filter(f => f.endsWith('.json'))
+    .sort()
+    .map(f => ({
+      url: `${SITE_URL}/badge/${f.replace(/\.json$/, '')}`,
+      lastModified: buildDate,
+      changeFrequency: 'yearly',
+      priority: 0.3
+    }))
+
+  return badges.concat(
+    routes.sort().map(route => ({
+      // route already starts with "/", strip it to avoid a double slash
+      url: `${SITE_URL}${route === '/' ? '' : route}`,
+      lastModified: lastModifiedForRoute(route, buildDate),
+      changeFrequency: 'weekly',
+      priority: route === '/' ? 1 : 0.7
+    }))
+  )
 }

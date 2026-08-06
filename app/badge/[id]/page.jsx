@@ -1,6 +1,18 @@
 import { notFound } from 'next/navigation'
-import { readFile } from 'fs/promises'
+import { readFile, readdir } from 'fs/promises'
 import path from 'path'
+
+// Credentials ship in public/certs, so adding one already requires a deploy —
+// prerender every badge at build and keep the route fully static (no
+// per-request fs reads on origin). Unknown ids 404, same as notFound() did.
+export const dynamicParams = false
+
+export async function generateStaticParams() {
+  const files = await readdir(path.join(process.cwd(), 'public', 'certs'))
+  return files
+    .filter(f => f.endsWith('.json'))
+    .map(f => ({ id: f.replace(/\.json$/, '') }))
+}
 
 // Achievement catalog. Phase 1 only ships the Integrator credential; new tracks
 // add an entry here. `image` paths include the /docs basePath so they resolve in
