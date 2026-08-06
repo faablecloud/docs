@@ -9,6 +9,35 @@ const withNextra = nextra({
 export default withNextra({
   // ... Add regular Next.js options here
   basePath: '/docs',
+  async headers() {
+    // Fastly purges by Surrogate-Key (this app's id) on every deployment
+    // promote, so a long s-maxage never serves a stale release. Browsers get
+    // max-age=0 + ETag: they revalidate at the edge and pick up new deploys
+    // immediately, since the purge only clears Fastly. Sources are relative to
+    // basePath; /_next/static keeps Next's own immutable header.
+    return [
+      {
+        source: '/:path((?!_next/|_pagefind/|badges/|certs/).*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value:
+              'public, max-age=0, must-revalidate, s-maxage=86400, stale-while-revalidate=604800, stale-if-error=604800'
+          }
+        ]
+      },
+      {
+        source: '/:path(_pagefind/.*|badges/.*|certs/.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value:
+              'public, max-age=3600, s-maxage=604800, stale-while-revalidate=604800'
+          }
+        ]
+      }
+    ]
+  },
   async redirects() {
     // Paths with real inbound traffic (GA/Search Console) that 404 otherwise.
     // Sources/destinations are relative to basePath (/docs). TEMPORARY (302) on
