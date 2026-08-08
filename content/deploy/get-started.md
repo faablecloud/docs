@@ -45,7 +45,7 @@ faable deploy    # deploy current repository
 
 | Topic                                          | What you'll learn                                                       |
 | ---------------------------------------------- | ----------------------------------------------------------------------- |
-| **[GitHub Actions](github-actions.md)**        | Multi-environment deploys, custom build scripts, secrets.               |
+| **[Your own CI](github-actions.md)**           | Deploying from GitHub Actions: multi-environment, custom steps.         |
 | **[Runtime](runtime.md)**                      | Supported Node versions, environment variables, the app restart policy. |
 | **[Custom Domains](domains/custom-domain.md)** | Map `app.example.com` to your app with auto-renewed SSL.                |
 | **[Security & WAF](security-waf.md)**          | The built-in Web Application Firewall that ships with every app.        |

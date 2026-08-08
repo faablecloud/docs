@@ -8,7 +8,7 @@ export default {
   advancedSeparator: { type: 'separator', title: 'Advanced' },
   'build-requirements': 'What the Builder Expects',
   environment: 'Environment & Releases',
-  'github-actions': 'GitHub Actions',
+  'github-actions': 'Deploy from your own CI',
   sdk: 'Deploy SDK',
   'security-waf': 'Web Application Firewall',
   learnSeparator: { type: 'separator', title: 'Learn & Compare' },
