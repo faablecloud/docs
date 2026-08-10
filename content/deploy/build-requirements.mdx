@@ -88,13 +88,22 @@ Next.js is the exception: it always runs as a server (never static), with a pers
 
 ### Monorepos (Root Directory)
 
-To deploy one app from a monorepo (Turborepo, npm/yarn/pnpm workspaces), set the app's **Root Directory** in the dashboard — or `rootDir` in `faable.json` (the dashboard setting wins). The builder then:
+To deploy one app from a monorepo (Turborepo, npm/yarn/pnpm workspaces), declare its **Root Directory** with `rootDir` in a `faable.json` at the repository root:
+
+```json
+{ "rootDir": "apps/api" }
+```
+
+The builder then:
 
 - installs dependencies at the **workspace root** (hoisted packages resolve normally),
 - detects, builds and packages the app **inside the Root Directory**,
 - for Next.js, points the standalone output tracing at the workspace root so shared packages are included.
 
-No extra config file is needed in the repo.
+The path is relative to the repository root — absolute paths and `..` segments are rejected, and the build fails with a clear error if the directory doesn't exist.
+
+> [!NOTE]
+> For monorepos that deploy **several Faable apps from the same repository**, a single `rootDir` can't distinguish them — a platform-managed Root Directory is set per app instead (it takes precedence over `faable.json`). Contact support to set it up.
 
 ---
 
