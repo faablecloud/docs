@@ -49,8 +49,18 @@ faable deploy    # deploy current repository
 | **[Runtime](runtime.md)**                      | Supported Node versions, environment variables, the app restart policy. |
 | **[Custom Domains](domains/custom-domain.md)** | Map `app.example.com` to your app with auto-renewed SSL.                |
 | **[Security & WAF](security-waf.md)**          | The built-in Web Application Firewall that ships with every app.        |
-| **[Express guide](guides/guide-express.md)**   | Deploy an Express backend end-to-end.                                   |
 | **[CLI reference](../cli.md)**                 | Every flag and command the CLI supports.                                |
+
+### Framework guides
+
+End-to-end walkthroughs for the stacks Faable detects automatically:
+
+| Guide                                                 | Stack                                       |
+| ----------------------------------------------------- | ------------------------------------------- |
+| **[Deploy Node.js Express](guides/guide-express.md)** | Node.js 20 / 22 / 24                        |
+| **[Deploy Django](guides/guide-django.md)**           | Python + gunicorn, static files, migrations |
+| **[Deploy FastAPI](guides/guide-fastapi.md)**         | Python + uvicorn, async workers             |
+| **[Deploy Flask](guides/guide-flask.md)**             | Python + gunicorn, application factory      |
 
 ## Pricing & limits
 

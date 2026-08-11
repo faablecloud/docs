@@ -9,11 +9,11 @@ Faable Deploy is part of the unified Faable subscription. The platform fee, supp
 
 ## What each plan includes for Deploy
 
-| Plan      | Deploy entitlements                                                                                                                                    |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Free**  | 1 free `bi.xs` instance per project · catalog limited to `bi.xs` · **up to 3 deployments per day per project** (resets at 00:00 UTC) · 10 GB bandwidth |
-| **Hobby** | Full instance catalog · **unlimited deployments** · apps run 24/7 · custom domains per app · egress overage **0.24 €/GB**                              |
-| **Pro**   | Everything in Hobby · egress overage **0.18 €/GB** · 99.9 % uptime SLA                                                                                 |
+| Plan      | Deploy entitlements                                                                                                                                                |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Free**  | 1 free `bi.xs` instance per project · catalog limited to `bi.xs` · **up to 10 successful deployments per day per project** (resets at 00:00 UTC) · 10 GB bandwidth |
+| **Hobby** | Full instance catalog · **unlimited deployments** · apps run 24/7 · custom domains per app · egress overage **0.24 €/GB**                                          |
+| **Pro**   | Everything in Hobby · egress overage **0.18 €/GB** · 99.9 % uptime SLA                                                                                             |
 
 ## Compute catalog
 
@@ -33,7 +33,10 @@ Instances are billed **per month**.
 
 ## Deployments per day (Free plan)
 
-On the Free plan each project can create up to **3 deployments per calendar day (UTC)**. The 4th deploy of the day is rejected with a clear error from the CLI and dashboard; the counter resets at 00:00 UTC. Hobby and Pro have no deployment limits.
+On the Free plan each project can promote up to **10 successful deployments per calendar day (UTC)**. Once the quota is spent, further deploys are rejected with a clear error from the CLI and dashboard; the counter resets at 00:00 UTC. Hobby and Pro have no deployment limits.
+
+> [!TIP]
+> **Only successful deployments count.** A build that fails never touches the quota, so iterating on a broken build can't lock you out for the rest of the day.
 
 ## Bandwidth
 

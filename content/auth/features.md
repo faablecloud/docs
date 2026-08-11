@@ -12,7 +12,7 @@ See how Faable Auth stands against industry leaders.
 | Feature                         |     **Faable Auth**     |      Auth0      | Firebase Auth | AWS Cognito |
 | :------------------------------ | :---------------------: | :-------------: | :-----------: | :---------: |
 | **Pricing (Free Tier)**         | **Free — full product** | Up to 7,000 MAU |     PAYG      |    PAYG     |
-| **Passwordless (OTP/Link)**     | ✅ (Ltd. to 100 emails) |       ✅        |      ❌       |     ❌      |
+| **Passwordless (OTP/Link)**     |           ✅            |       ✅        |      ❌       |     ❌      |
 | **Social Login (Google, etc.)** |           ✅            |       ✅        |      ✅       |     ✅      |
 | **Role-Based Access Control**   |           ✅            |       ✅        |      ❌       |     ❌      |
 | **Custom Actions / Hooks**      |           ✅            |       ✅        |      ❌       |     ✅      |

@@ -11,7 +11,7 @@ description: Protect your applications with Faable's built-in Web Application Fi
 
 Faable's WAF analyzes each HTTP request (method, headers, query string, body) against a **policy** — a collection of rules — and decides whether to allow, log, or block it. The default policy is the **OWASP Core Rule Set**, which protects against the OWASP Top 10: injection, XSS, path traversal, remote file inclusion, protocol violations, and more. Faable reviews and updates the rule set as new vulnerabilities and CRS releases appear, so your protection stays current without action from you.
 
-To enable the WAF on your app, contact the team at [sales@faable.com](mailto:sales@faable.com); the policy is deployed alongside your Faable App in our European datacenters.
+The WAF is **included with Faable Deploy on every plan** — there is nothing to buy and nothing to install. The policy is deployed alongside your Faable App in our European datacenters and starts inspecting traffic as soon as your app is live.
 
 ## Monitor mode vs block mode
 
@@ -36,7 +36,7 @@ The OWASP CRS is intentionally strict, so some legitimate traffic can match a ru
 
 1. **Run in monitor mode first** and collect a baseline of flagged requests.
 2. **Identify the offending rule ID** from the WAF log for each false positive.
-3. **Scope an exclusion narrowly** — for a specific path, parameter, or rule — rather than disabling whole rule categories. Contact the team with the rule IDs and endpoints to adjust the policy.
+3. **Scope an exclusion narrowly** — for a specific path, parameter, or rule — rather than disabling whole rule categories. Request the exclusion with the rule IDs and endpoints it applies to.
 4. **Re-test** the affected flows, then promote the policy to block mode.
 
 Prefer the **most specific exclusion possible**: disabling a broad category to fix one endpoint removes protection everywhere.

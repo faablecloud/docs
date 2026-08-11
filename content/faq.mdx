@@ -18,11 +18,11 @@ Direct answers to the most common questions about Faable. For details, follow th
 
 ## How much does Faable cost?
 
-**Faable uses one subscription covering both Deploy and Auth, with three platform tiers: Hobby (0 €), Pro (15 €/month + usage), and Business (99 €/month + usage).** Pricing is hybrid — a monthly platform fee plus usage for compute, bandwidth overage, and monthly active users (MAU) above the included allowance. See the [pricing page](platform/pricing.md) for full details.
+**Faable uses one subscription covering both Deploy and Auth, with three platform tiers: Free (0 €), Hobby (15 €/month + usage), and Pro (99 €/month + usage).** Pricing is hybrid — a monthly platform fee plus usage for compute, bandwidth overage, and monthly active users (MAU) above the included allowance. Plans apply per project. See the [pricing page](platform/pricing.md) for full details.
 
 ## Is there a free tier?
 
-**Yes. The Hobby plan is free (0 €)** and lets you try Faable end-to-end with one account and basic limits. Apps on the Hobby plan auto-delete after 7 days; upgrade to [Pro](platform/pricing.md) for 24/7 production apps and custom domains.
+**Yes. The Free plan costs 0 € and lets you run a real app end-to-end**: one `bi.xs` instance per project, up to 10 successful deployments per day, 10 GB of bandwidth, and Faable Auth included. Upgrade to [Hobby](platform/pricing.md) for the full instance catalog, unlimited deployments, and custom domains.
 
 ## Can I deploy directly from GitHub?
 
@@ -30,11 +30,13 @@ Direct answers to the most common questions about Faable. For details, follow th
 
 ## What frameworks and stacks does Faable Deploy support?
 
-**Faable Deploy runs any stack that listens on the `$PORT` environment variable in a Linux container — including Node.js, Next.js, Express, and other web frameworks, plus static frontends.** Your server binds to `0.0.0.0` on `$PORT` and Faable handles the rest (see the [Express guide](deploy/guides/guide-express.md)).
+**Faable Deploy runs any stack that listens on the `$PORT` environment variable in a Linux container.** It auto-detects **Node.js** (20, 22, 24) — including Next.js and Express — and **Python** (3.11, 3.12) — including Django, FastAPI, and Flask — plus static frontends (Astro, Vite, Angular, Gatsby, CRA, Vue). Anything else deploys from your own `Dockerfile`. Your server binds to `0.0.0.0` on `$PORT` and Faable handles the rest. See the guides for [Express](deploy/guides/guide-express.md), [Django](deploy/guides/guide-django.md), [FastAPI](deploy/guides/guide-fastapi.md) and [Flask](deploy/guides/guide-flask.md), or the full [build requirements](deploy/build-requirements.mdx).
 
 ## Does Faable Auth replace Auth0, Clerk, or Keycloak?
 
-**Yes. Faable Auth is a standards-based OAuth 2.0 / OpenID Connect identity server that covers the same use cases as Auth0, Clerk, Cognito, Firebase, Supabase Auth, and Keycloak** — social login, passwordless, enterprise SSO/SAML, MFA, and machine-to-machine tokens. See the [comparison](auth/compare.mdx) and the [migration guides](auth/guides/migrate-from-auth0.mdx).
+**For most use cases, yes. Faable Auth is a standards-based OAuth 2.0 / OpenID Connect identity server** covering social login, passwordless (magic link and email OTP), RBAC and teams, custom domains, actions and webhooks, and first-class machine-to-machine tokens — with migration guides from [Auth0](auth/guides/migrate-from-auth0.mdx), [Clerk](auth/guides/migrate-from-clerk.mdx) and [Keycloak](auth/guides/migrate-from-keycloak.mdx).
+
+**Two things are not available yet: SAML / pre-built enterprise SSO connectors, and built-in MFA.** If your project needs either today, Faable Auth is not the right fit yet. See the [comparison](auth/compare.mdx) for the full feature-by-feature table.
 
 ## How is Faable Auth priced — what is MAU?
 
