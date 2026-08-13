@@ -135,7 +135,7 @@ When you use Faable Auth to authenticate your own users, or deploy an applicatio
 
 ## 11. Security
 
-We encrypt data at rest with AES-256 and in transit with TLS 1.3, take hourly backups retained for 30 days, run third-party penetration testing, and apply least-privilege access controls internally. The full description is in [Security & Compliance](security-compliance.md).
+We run European infrastructure under our own control, keep customer workloads on a separate cluster from the platform control plane, encrypt data in transit and at rest, take hourly database backups retained for 30 days in encrypted European storage, filter hostile traffic at the edge, and apply least-privilege access controls internally. The full description — including the certifications we do **not** hold — is in [Security & Compliance](security-compliance.md).
 
 No system is perfectly secure. If you discover a vulnerability, report it to [support@faable.com](mailto:support@faable.com) and we will work with you on it.
 

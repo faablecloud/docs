@@ -5,7 +5,7 @@ description: What each Faable plan includes for Faable Auth — MAU allowances, 
 
 # Auth pricing
 
-Faable Auth is part of the unified Faable subscription — and it is **included in every plan, starting on Free**. The platform fee, support plans, and billing model are documented on the [Pricing](../platform/pricing.md) page; this page focuses on **what each tier includes for Auth specifically**.
+Faable Auth is part of the unified Faable subscription — and it is **included in every plan, starting on Free**. The platform fee and billing model are documented on the [Pricing](../platform/pricing.md) page; this page focuses on **what each tier includes for Auth specifically**.
 
 ## What each plan includes for Auth
 
@@ -41,6 +41,6 @@ If you expect to exceed your plan's MAU allowance, [contact us](https://github.c
 
 ## Related
 
-- [Platform pricing](../platform/pricing.md) — tiers, platform fee, support plans, billing model.
+- [Platform pricing](../platform/pricing.md) — tiers, platform fee, billing model.
 - [Deploy pricing](../deploy/pricing.md) — compute catalog, deployments per day, and bandwidth.
 - [Features overview](features.md) — what Faable Auth does, end-to-end.

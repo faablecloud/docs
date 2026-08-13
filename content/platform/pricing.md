@@ -1,11 +1,11 @@
 ---
 title: Pricing
-description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Free, Hobby, Pro) plus separately-purchased support plans.
+description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Free, Hobby, Pro) with a monthly platform fee plus usage.
 ---
 
 # Pricing
 
-Faable is sold as a **single subscription that covers every product** — both Faable Deploy (compute) and Faable Auth (identity). Pick the platform tier that matches the stage you're at, add a support plan if you need a guaranteed response time, and you're done.
+Faable is sold as a **single subscription that covers every product** — both Faable Deploy (compute) and Faable Auth (identity). Pick the platform tier that matches the stage you're at, and you're done.
 
 The model is **hybrid**: a monthly **platform fee** that unlocks features and entitlements, plus **usage** for the resources you consume (compute instances, bandwidth overage, MAU above the included allowance). Each month you receive the bill for the **previous** month's usage.
 
@@ -28,15 +28,14 @@ The platform tier you choose maps to concrete entitlements in each product. See:
 - **[Faable Auth pricing](../auth/pricing.md)** — MAU allowances, auth accounts, audit logs.
 - **[Faable Deploy pricing](../deploy/pricing.md)** — compute instance catalog (`bi.xs` … `bi.2xlarge`), deployments per day, bandwidth allowance, egress overage rates.
 
-## Support plans
+## Support
 
-Support plans are sold **separately** from the platform tiers — they are an independent purchase and are not included in Free, Hobby, or Pro.
+Support is included in your plan — there is nothing extra to buy.
 
-| Plan       | Response time | Channel                                                      | Also includes                       | Price         |
-| ---------- | ------------- | ------------------------------------------------------------ | ----------------------------------- | ------------- |
-| Default    | —             | [Community](https://github.com/orgs/faablecloud/discussions) | —                                   | Free          |
-| Starter    | < 6 hours     | Email                                                        | Customer Support                    | 350 €/month   |
-| Enterprise | < 2 hours     | Email + Dedicated Slack channel                              | Technical Advisor, Customer Support | 1,000 €/month |
+- **Free** — [community support](https://github.com/orgs/faablecloud/discussions).
+- **Hobby and Pro** — email support at [support@faable.com](mailto:support@faable.com).
+
+Pro additionally carries a 99.9 % uptime SLA. Response times are not contractually guaranteed on any tier; if you need one, [talk to us](mailto:support@faable.com).
 
 ## Billing
 

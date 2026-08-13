@@ -1,84 +1,124 @@
 ---
 title: Security and Compliance
-description: Learn about Faable Cloud infrastructure security. Explore our data encryption, backup strategies, and penetration testing protocols to keep your data safe.
+description: How Faable Cloud protects your applications and data — European infrastructure, tenant isolation, edge filtering, encryption, backups, and our honest compliance posture.
 ---
 
 # Security and Compliance
 
-This page covers the protection and compliance measures Faable takes to ensure the security of your data, including DDoS protection, SOC2 Type 2 compliance, Data encryption, and more.
+**Last updated:** 13 August 2026
 
-## Security
+This page describes the security controls that are actually in place on the Faable platform, and states plainly which certifications we do and do not hold. If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
 
-## DDoS protection
+## Where your data runs
 
-A Distributed Denial of Service attack (DDoS) happens when multiple connected devices are used to simultaneously overwhelm a website with targeted, fake traffic. The end goal of this attack is to bring down the servers hosting the website.
+Faable runs on **our own hardware in a European datacenter (Poland)**. This is not a US platform with an optional EU region: there is no non-EU region to fall back to, and your workloads and user identities do not leave Europe.
 
-DDoS attacks often target the layer 3 (network), layer 4 (transport), and layer 7 (application) layers of the OSI model. Faable's DDoS protection mitigates L3, L4, and L7 DDoS attacks, and protects the entire platform and all customers from attacks that would otherwise affect reliability.
+| Component                                    | Location                                   |
+| -------------------------------------------- | ------------------------------------------ |
+| Your applications (compute, runtime)         | Our European datacenter                    |
+| Faable Auth identities and user data         | Our European datacenter                    |
+| Platform databases                           | European region, managed database provider |
+| Container registry, build artifacts, backups | AWS `eu-west-3` (Paris)                    |
+| Product analytics                            | PostHog EU Cloud                           |
 
-**Layer 3 DDoS**
+Third-party services that handle limited operational data — transactional email, error monitoring, payments — are listed in the [Privacy Policy](privacy-policy.md#7-sub-processors), together with the transfer mechanism that applies to each.
 
-The goal of a Layer 3 (L3) DDoS attack is to crash and slow down networks, servers, and programs. They target the network layer, as opposed to the transport or application layer. Layer 3 DDoS attacks are often used to target specific IP addresses, but can also target entire networks.
+## Tenant isolation
 
-**Layer 4 DDoS**
+**Customer workloads and the Faable control plane run on separate Kubernetes clusters.** The cluster that serves your applications does not host the platform's own APIs, databases, or credentials — so a compromised workload does not sit next to the control plane.
 
-The goal of a Layer 4 (L4) DDoS attack is to crash and slow down applications. They target the 3-way-handshake performed on TCP connections. This is often called a SYN flood. Layer 4 DDoS attacks are used to target specific ports, but can also target entire protocols.
+Within the workload cluster:
 
-**Layer 7 DDoS**
+- Each application runs in its **own pod with its own identity, network configuration, and domains**.
+- Environment variables and secrets are **scoped to the app that owns them**; access through the API is bound to the same authorization as access to the app itself.
+- Production and staging environments run in **separate namespaces** with separate credentials.
 
-The goal of a Layer 7 (L7) DDoS attack is to crash and slow down software at the application layer by targeting protocols such as HTTP GET and POST requests. They are often silent and look to leverage vulnerabilities by sending many innocuous requests to a single page.
+## Traffic protection
 
-## Access control
+**TLS everywhere.** Every custom domain and every `*.faable.link` deployment gets a certificate automatically, issued and renewed by the platform. Traffic is served over HTTPS with modern cipher suites; plain HTTP is redirected.
 
-Apps can be protected with Password protection and SSO protection. Password protection is available for Teams on Pro and Enterprise plans, while SSO protection is only available for Teams on the Enterprise plan. Both methods can be used to protect production deployments.
+**Managed request filtering at the edge.** Faable operates a managed [Web Application Firewall](../deploy/security-waf.md) in front of every application, on every plan. Rules are maintained by us as a set of **profiles** applied fleet-wide, so protection improves for all apps without you changing anything:
 
-### Password protection
+| Profile         | Applies to        | Blocks                                                                                                                                                                     |
+| --------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sensitive paths | Every app         | `.git/`, `.env`, `.aws/`, `.ssh/`, `.npmrc`, `.netrc`, Terraform state, source maps, `/actuator`, `/phpmyadmin`, installer leftovers, and similar credential-hunting paths |
+| Scanner traffic | Node applications | `*.php`, `/wp-*`, `/xmlrpc`, WordPress and IIS bait probes                                                                                                                 |
 
-Password protection applies to production deployments. This feature can be enabled via the Teams Project dashboard. Read more about in the documentation here.
+Matching requests are rejected with `403` **at the edge, before they reach your application** — so they do not consume your compute, do not keep a scaled-to-zero app awake, and do not appear as load in your app. Per-app rules can be added or relaxed on request; see the [WAF documentation](../deploy/security-waf.md) for how to read WAF events and tune false positives.
 
-### Faable Authentication
+**Traffic visibility.** Every HTTP request to your apps is recorded with its host, status, and timing, which is what drives usage metering and lets us spot abusive traffic patterns per app.
 
-Faable Authentication protection applies to production deployments. When enabled, a person with a Personal Account that is a member of a Team, can use their login credentials to access the deployment. This feature can be enabled via the Teams Project dashboard.
+## Encryption
 
-Both Password protection, and Faable Authentication can be enabled at the same time. When this is the case, the person trying to access the deployment will be presented with an option to use either method to access the deployment.
+- **In transit:** HTTPS/TLS between clients and the platform, and for connections between the platform and its databases and object storage.
+- **At rest:** platform databases and object storage are encrypted at rest by the underlying storage providers. Backup buckets use server-side encryption.
 
-Read more about in the documentation here.
+## Backups and recovery
+
+| What               | Frequency           | Retention | Where                                 |
+| ------------------ | ------------------- | --------- | ------------------------------------- |
+| Platform databases | Hourly              | 30 days   | Encrypted object storage, `eu-west-3` |
+| Persistent volumes | Scheduled snapshots | Rolling   | Encrypted object storage, `eu-west-3` |
+
+Backups are compressed, encrypted in transit, and stored in a separate account from the running cluster, so losing the cluster does not lose the backups.
+
+**Backups protect the platform, not your archival strategy.** They exist so we can restore Faable after an infrastructure failure. If your application holds data you cannot afford to lose, keep your own exports — this is also what the [Terms of Service](terms-of-service.md#9-warranties-and-disclaimers) say.
+
+## Change management and internal access
+
+- **All infrastructure is GitOps-managed.** Cluster state is declared in Git and reconciled automatically. Every infrastructure change is a reviewable, revertible commit with an author and a timestamp — there is no untracked manual change in production.
+- **Internal platform configuration is admin-only.** Security-relevant resources such as WAF profiles are restricted to platform administrators and service accounts; tenant tokens receive `403` on both read and write.
+- **Least privilege internally.** Staff access is limited to what a role requires, and access to customer data happens only to provide support you requested, to investigate a security incident, or where the law requires it.
+- **Automated tests gate deployments.** Changes to the platform go through automated test suites in CI before release.
+
+## Product security features
+
+| Feature                                                     | Where                                                | Available on |
+| ----------------------------------------------------------- | ---------------------------------------------------- | ------------ |
+| OAuth 2.0 / OIDC standard flows, RS256-signed tokens        | [Faable Auth](../auth/get-started.md)                | All plans    |
+| Email verification, password policies, passwordless sign-in | Faable Auth                                          | All plans    |
+| Authentication and delivery event logs                      | [Auth logs](../auth/logs.md)                         | All plans    |
+| Audit logs                                                  | Faable Auth                                          | Pro          |
+| Managed WAF                                                 | [Faable Deploy](../deploy/security-waf.md)           | All plans    |
+| Automatic TLS certificates on custom domains                | [Custom domains](../deploy/domains/custom-domain.md) | All plans    |
+| Per-app secrets, injected at runtime                        | Faable Deploy                                        | All plans    |
 
 ## Compliance
 
-### SOC2
-
-System and Organization Control type 2 (SOC2) is a form of auditing that ensures a cloud service provider manages customer data, and protects privacy. Faable is SOC2 Type 2 compliant.
-
 ### GDPR
 
-General Data Protection Regulation (GDPR), is a comprehensive EU-wide data protection law that governs the use, sharing, transfer, and processing of EU resident personal data.
+Faable is built for GDPR compliance rather than retrofitted to it: European company, European infrastructure, European supervisory authority. Concretely, we:
 
-Faable is GDPR compliant, which means that we commit to the following:
+- process customer data as a **processor** on your documented instructions, under the DPA in [section 10 of the Privacy Policy](privacy-policy.md#10-data-you-process-through-faable-our-processor-role);
+- publish a [sub-processor list](privacy-policy.md#7-sub-processors) and the safeguards for any transfer outside the EEA;
+- notify you **without undue delay** of a personal data breach affecting your data;
+- assist you with access, erasure, and portability requests from your own users;
+- apply the technical and organisational measures described on this page.
 
-Maintaining appropriate technical and organizational security measures surrounding customer data
-Notify our customers without undue delay of any data breaches
-Hold our sub-processors to the same level of data protection that we are committed to
-Honor our EU customer's right to access and erasure, among others
-For more information on how Faable protects your personal data, and the data of your customers, please refer to our Privacy Policy.
+### Payment card data
 
-### PCI
+**We never see or store your card details.** Payments run through the hosted checkout of a PCI DSS Level 1 certified payment provider; card data goes directly to them.
 
-Payment Card Industry Data Security Standard (PCI) is a standard that defines the security and privacy requirements for payment card processing.
+### Certifications we do _not_ hold
 
-Faable does not store personal credit card information for any of our customers. We use Stripe to securely process transactions and trust their commitment to best-in-class security. Stripe is a certified PCI Service Provider Level 1, which is the highest level of certification in the payments industry.
+We would rather lose a deal than claim an audit we have not passed.
 
-## Faable Cloud Infrastructure
+**Faable is not currently SOC 2 or ISO 27001 certified**, and we have not completed a third-party penetration test. What we have is described on this page: European infrastructure under our control, tenant isolation, GitOps-audited change management, managed edge filtering, encrypted backups, and a GDPR posture we can document.
 
-### Data encryption
+If your procurement requires a formal certification, tell us at [support@faable.com](mailto:support@faable.com) — knowing which customers are blocked by it is how it gets prioritised. In the meantime we are happy to complete a security questionnaire, sign a DPA, and answer architecture questions directly.
 
-Faable encrypts data at rest (when on disk) with 256 bit Advanced Encryption Standard (AES-256). While data is in transit (on route between source and destination), Faable uses HTTPS/TLS 1.3.
+## Reporting a vulnerability
 
-### Data backup
+If you find a security issue in the platform, report it to [support@faable.com](mailto:support@faable.com) with enough detail to reproduce it. We will acknowledge it, keep you informed while we fix it, and credit you if you want. Please do not run intrusive tests against production or against other customers' applications — ask us first and we will find a way to test safely.
 
-Faable backs-up customer data at an interval of every hour, each backup is persisted for 30 days, and is globally replicated for resiliency against regional disasters. Automatic backups are taken without affecting the performance or availability of the database operations.
+We do not currently run a paid bug bounty programme.
 
-All backups are stored separately in a storage service. If a database instance is deleted, all associated backups are also automatically deleted. Backups are periodically tested by the Faable engineering team.
+## Incident response
 
-### Penetration testing and Audit scans
+If an incident affects the confidentiality, integrity, or availability of your data, we investigate, contain, and notify affected customers without undue delay, with what we know, what we are doing, and what you need to do. Personal data breaches are reported to the supervisory authority within the deadlines set by the GDPR.
 
-Faable conducts regular penetration testing through third-party penetration testers, and has daily code reviews and static analysis checks.
+## Related
+
+- [Privacy Policy](privacy-policy.md) — what we collect, why, and for how long
+- [Terms of Service](terms-of-service.md) — acceptable use, liability, termination
+- [Web Application Firewall](../deploy/security-waf.md) — how edge filtering works and how to tune it

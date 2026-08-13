@@ -5,7 +5,7 @@ description: What each Faable plan includes for Faable Deploy — instance catal
 
 # Deploy pricing
 
-Faable Deploy is part of the unified Faable subscription. The platform fee, support plans, and billing model are documented on the [Pricing](../platform/pricing.md) page — this page focuses on **what each tier includes for Deploy specifically**, plus the compute catalog and bandwidth pricing.
+Faable Deploy is part of the unified Faable subscription. The platform fee and billing model are documented on the [Pricing](../platform/pricing.md) page — this page focuses on **what each tier includes for Deploy specifically**, plus the compute catalog and bandwidth pricing.
 
 ## What each plan includes for Deploy
 
@@ -49,5 +49,5 @@ Egress overage is metered monthly across all of your instances, after the includ
 
 ## Related
 
-- [Platform pricing](../platform/pricing.md) — tiers, platform fee, support plans, billing model.
+- [Platform pricing](../platform/pricing.md) — tiers, platform fee, billing model.
 - [Auth pricing](../auth/pricing.md) — MAU allowances and identity-feature gating.
