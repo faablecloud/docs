@@ -184,6 +184,6 @@ Faable Deploy runs **web services** — a process that serves HTTP on `$PORT`. A
 ## Related
 
 - [What the Builder Expects](../build-requirements.mdx) — full detection and start-command rules
-- [Deploy FastAPI](guide-fastapi.md) · [Deploy Flask](guide-flask.md) · [Deploy Node.js Express](guide-express.md)
+- [Deploy Next.js](guide-next.md) · [Deploy FastAPI](guide-fastapi.md) · [Deploy Flask](guide-flask.md) · [Deploy Node.js Express](guide-express.md)
 - [Environment & Releases](../environment.mdx) · [Custom domains](../domains/custom-domain.md) · [WAF](../security-waf.md)
 - [Add authentication to your app](../../auth/get-started.md) — Faable Auth is included in the same subscription

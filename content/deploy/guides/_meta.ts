@@ -1,4 +1,5 @@
 export default {
+  'guide-next': 'Deploy Next.js',
   'guide-express': 'Deploy Node.js Express',
   'guide-django': 'Deploy Django',
   'guide-fastapi': 'Deploy FastAPI',

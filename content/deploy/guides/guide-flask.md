@@ -192,6 +192,6 @@ One by default. Increase it with `startCommand` only if your workload is CPU-bou
 ## Related
 
 - [What the Builder Expects](../build-requirements.mdx) — full detection and start-command rules
-- [Deploy Django](guide-django.md) · [Deploy FastAPI](guide-fastapi.md) · [Deploy Node.js Express](guide-express.md)
+- [Deploy Next.js](guide-next.md) · [Deploy Django](guide-django.md) · [Deploy FastAPI](guide-fastapi.md) · [Deploy Node.js Express](guide-express.md)
 - [Environment & Releases](../environment.mdx) · [Custom domains](../domains/custom-domain.md) · [WAF](../security-waf.md)
 - [Add authentication to your app](../../auth/get-started.md) — Faable Auth is included in the same subscription
