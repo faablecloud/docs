@@ -1,6 +1,6 @@
 ---
 title: Faable CLI
-description: Master the Faable CLI to manage and deploy your applications from the terminal. Learn about installation, authentication, and deployment workflows.
+description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, status, logs, deployments, secrets, and custom domains (with the exact CNAME to configure) — for Node.js, Python, and Dockerfile apps.
 ---
 
 # Faable CLI
