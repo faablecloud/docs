@@ -44,8 +44,11 @@ export default async function sitemap() {
 
   return badges.concat(
     routes.sort().map(route => ({
-      // route already starts with "/", strip it to avoid a double slash
-      url: `${SITE_URL}${route === '/' ? '' : route}`,
+      // route already starts with "/", strip it to avoid a double slash.
+      // The root advertises the trailing-slash form: /docs and /docs/ both
+      // resolve, and Google picked /docs/ as the canonical — advertising
+      // /docs made GSC report the sitemap URL as a non-indexed duplicate.
+      url: `${SITE_URL}${route === '/' ? '/' : route}`,
       lastModified: lastModifiedForRoute(route, buildDate),
       changeFrequency: 'weekly',
       priority: route === '/' ? 1 : 0.7
