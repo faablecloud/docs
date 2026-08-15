@@ -152,6 +152,7 @@ Or with `.python-version`, or `requires-python` in `pyproject.toml`. First match
 
 ## Troubleshooting
 
+- **Build fails resolving Django with a `Requires-Python` error** — Django 6.x requires Python ≥3.12, and the default on Faable is 3.11. Pin the version: add a `.python-version` file containing `3.12` (or `runtime.txt` with `python-3.12`) and push again.
 - **`DisallowedHost` in the logs** — `ALLOWED_HOSTS` doesn't include the domain you're visiting. Add `<app>.faable.link` and your custom domain.
 - **CSS and images 404** — static files weren't collected or WhiteNoise isn't in the middleware. Check both steps above.
 - **Build fails with "no start command"** — the builder found your dependencies but not `manage.py` + a `wsgi.py` package. Either fix the layout or declare `startCommand` in `faable.json`.
@@ -170,7 +171,7 @@ Set it as the `buildCommand` in `faable.json` so it runs at build time: `{"build
 
 ### Which Python versions does Faable support for Django?
 
-3.11 and 3.12. The default is 3.11; pin the one you want with `runtime.txt` (`python-3.12`), `.python-version`, or `requires-python` in `pyproject.toml`.
+3.11 and 3.12. The default is 3.11; pin the one you want with `runtime.txt` (`python-3.12`), `.python-version`, or `requires-python` in `pyproject.toml`. Note that Django 6.x requires Python ≥3.12, so on the latest Django you must pin `3.12` explicitly.
 
 ### Does Faable run my Django migrations automatically?
 
