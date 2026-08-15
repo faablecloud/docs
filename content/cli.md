@@ -72,7 +72,7 @@ This mirrors the dashboard's **Link repository** action. Linking requires the **
 
 ## Deployment
 
-Deploying your application is the core feature of the Faable CLI. It handles runtime detection (Node.js or Docker) and manages the build and upload process.
+Deploying your application is the core feature of the Faable CLI. It uploads your source and the platform builds it in the cloud — framework detection included.
 
 ### Deploy
 
