@@ -106,6 +106,85 @@ faable deploy <app_id>
 > is visible. Pass it explicitly with `faable deploy --release 1.4.2`. See
 > [Environment & Releases](deploy/environment.mdx).
 
+### Trigger — deploy the repo HEAD server-side
+
+For an app with push-to-deploy, build the current head of the deploy branch **without uploading anything from your machine** — the exact same path a `git push` takes, same-commit dedupe included:
+
+```bash
+faable deploy trigger
+```
+
+### Redeploy — retry a failed deployment
+
+Rebuild a failed deployment from the source it recorded (your uploaded files, or the git commit for push deploys). Without arguments it picks the latest failed one:
+
+```bash
+faable deploy redeploy
+faable deploy redeploy deployment_a1b2c3   # a specific one
+```
+
+The platform refuses to rebuild code older than what production is serving — push a new deploy in that case.
+
+## Inspecting
+
+### Status
+
+What is live right now — phase, URL, detected stack, and the latest deployment (with the failure reason when it went red):
+
+```bash
+faable deploy status
+```
+
+```
+🟢 READY  shop-api (app_a1b2c3)
+  URL:        https://shop-api-x1y2z.faable.link
+  Stack:      python 3.12.1 (django)
+  Repository: acme/shop-api (main, push-to-deploy)
+  Live:       deployment_d4e5f6
+```
+
+### Logs
+
+Runtime logs of the app (last 24 hours), or the **build output** of the latest deployment — the first thing to check after a failed deploy:
+
+```bash
+faable deploy logs             # runtime logs
+faable deploy logs --build     # build output of the latest deployment
+faable deploy logs -d deployment_a1b2c3   # scope to one deployment
+```
+
+### Deployments
+
+Recent deployments with phase, commit, and which one is serving traffic:
+
+```bash
+faable deploy deployments
+```
+
+```
+🚀 Last 3 deployment(s) of shop-api:
+  🟢 READY  deployment_d4e5f6  4ae34bf  (push, 16m ago)  ← live
+  🔴 BUILD_ERROR  deployment_c3d4e5  dbd9afa  (push, 41m ago)
+  ⚪ SUPERSEDED  deployment_b2c3d4  e31edcd  (push, 2h ago)
+```
+
+### List
+
+All your apps at a glance:
+
+```bash
+faable deploy list
+```
+
+### Open
+
+Jump to the live app (or its dashboard page) in the browser:
+
+```bash
+faable deploy open
+faable deploy open --dashboard
+```
+
 ## Secrets
 
 Manage your app's secrets (environment variables) without leaving the terminal. Inside a linked repository the app is detected automatically — the same resolution `faable deploy` uses. Outside of one (or to target another app) pass `--app <app_id>`.
@@ -196,17 +275,24 @@ Asks for confirmation (skip with `--yes`). The app stays live on its `faable.lin
 
 ## Command Reference
 
-| Command                       | Description                              |
-| :---------------------------- | :--------------------------------------- |
-| `faable login`                | Authenticate with Faable                 |
-| `faable whoami`               | Show current user                        |
-| `faable logout`               | End the local session                    |
-| `faable deploy`               | Deploy project to production             |
-| `faable deploy link`          | Link directory to a Faable app           |
-| `faable deploy secrets list`  | List app secrets (masked, `--show`)      |
-| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs         |
-| `faable deploy secrets rm`    | Remove a secret by name                  |
-| `faable deploy domains list`  | List custom domains and their DNS state  |
-| `faable deploy domains add`   | Add a domain (prints the CNAME to set)   |
-| `faable deploy domains check` | DNS verification diagnostic for a domain |
-| `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)  |
+| Command                       | Description                                       |
+| :---------------------------- | :------------------------------------------------ |
+| `faable login`                | Authenticate with Faable                          |
+| `faable whoami`               | Show current user                                 |
+| `faable logout`               | End the local session                             |
+| `faable deploy`               | Deploy project to production                      |
+| `faable deploy trigger`       | Build the repo HEAD server-side (no upload)       |
+| `faable deploy redeploy`      | Retry a failed deployment from its source         |
+| `faable deploy status`        | What is live: phase, URL, stack, latest deploy    |
+| `faable deploy logs`          | Runtime logs (`--build` for build output)         |
+| `faable deploy deployments`   | Recent deployments with phases and commits        |
+| `faable deploy list`          | List your apps                                    |
+| `faable deploy open`          | Open the live app (`--dashboard` for the console) |
+| `faable deploy link`          | Link directory to a Faable app                    |
+| `faable deploy secrets list`  | List app secrets (masked, `--show`)               |
+| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs                  |
+| `faable deploy secrets rm`    | Remove a secret by name                           |
+| `faable deploy domains list`  | List custom domains and their DNS state           |
+| `faable deploy domains add`   | Add a domain (prints the CNAME to set)            |
+| `faable deploy domains check` | DNS verification diagnostic for a domain          |
+| `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)           |
