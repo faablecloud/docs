@@ -5,7 +5,7 @@ description: Master the Faable CLI to manage and deploy your applications from t
 
 # Faable CLI
 
-The Faable CLI (`@faable/faable`) is your command-line interface for managing and deploying applications on the Faable platform. Whether you are building with Node.js or Docker, the CLI streamlines your development workflow from initialization to production.
+The Faable CLI (`@faable/faable`) is your command-line interface for managing and deploying applications on the Faable platform — Node.js (Next.js, Express, …), Python (Django, FastAPI, Flask), or your own Dockerfile. Deploy, manage secrets, and attach custom domains without leaving the terminal.
 
 > [!NOTE]
 > While the Faable CLI is designed to support both **Faable Auth** and **Faable Deploy**, current functionality is primarily focused on deployment features.
@@ -95,13 +95,9 @@ faable deploy <app_id>
 
 **What happens during deploy:**
 
-1. **Runtime Detection**: The CLI checks for a `package.json` (Node.js) or `Dockerfile`.
-2. **Environment Check**: Ensures your environment is ready for the build process.
-3. **Build**:
-   - For **Node.js**: The CLI prepares the production build.
-   - For **Docker**: The CLI builds the image using your local Docker engine.
-4. **Upload**: The built artifact or image is pushed to the Faable registry.
-5. **Release**: A new deployment is created and goes live at your application URL.
+1. **Upload**: The CLI snapshots your working directory and uploads only the files the platform hasn't seen before (content-addressed — repeat deploys upload just the diff).
+2. **Remote build**: Faable's builders detect your framework server-side — Node.js (Next.js, Express, Astro, Vite, …), Python (Django, FastAPI, Flask), or your Dockerfile — and build in the cloud. Nothing builds on your machine: no local Docker, no local toolchain requirements.
+3. **Release**: The deployment is promoted and goes live at your application URL. The CLI streams the build output and waits for promotion, failing red with the actual error if the build or startup fails.
 
 > [!NOTE]
 > `faable deploy` records a **release version** on the deployment and injects it
@@ -148,15 +144,69 @@ faable deploy secrets rm STRIPE_KEY
 
 Changes apply immediately: the app restarts with the new environment.
 
+## Domains
+
+Attach custom domains to your app from the terminal. Like secrets, the app is detected automatically inside a linked repository; pass `--app <app_id>` otherwise.
+
+### Add
+
+Add a domain and get the exact DNS record to configure:
+
+```bash
+faable deploy domains add www.example.com
+```
+
+```
+🌐 Domain www.example.com added to shop-api (app_a1b2c3).
+
+Now create a CNAME record at your DNS provider:
+  www.example.com → domain_d4e5f6.faable.link
+
+Faable verifies the record automatically once DNS propagates and then provisions the TLS certificate.
+Track it with: faable deploy domains check www.example.com
+```
+
+TLS is provisioned automatically once the domain verifies (pass `--no-tls` to opt out).
+
+### List
+
+```bash
+faable deploy domains list
+```
+
+Shows every domain of the app with its verification state, and repeats the pending CNAME records so you never have to hunt for them.
+
+### Check
+
+Diagnose a domain that hasn't verified yet — expected CNAME vs. what DNS actually resolves, plus the verifier's message:
+
+```bash
+faable deploy domains check www.example.com
+```
+
+Verification re-runs automatically; there is nothing to trigger manually.
+
+### Remove
+
+```bash
+faable deploy domains rm www.example.com
+```
+
+Asks for confirmation (skip with `--yes`). The app stays live on its `faable.link` URL.
+
 ## Command Reference
 
-| Command                      | Description                         |
-| :--------------------------- | :---------------------------------- |
-| `faable login`               | Authenticate with Faable            |
-| `faable whoami`              | Show current user                   |
-| `faable logout`              | End the local session               |
-| `faable deploy`              | Deploy project to production        |
-| `faable deploy link`         | Link directory to a Faable app      |
-| `faable deploy secrets list` | List app secrets (masked, `--show`) |
-| `faable deploy secrets set`  | Set secrets as `KEY=VALUE` pairs    |
-| `faable deploy secrets rm`   | Remove a secret by name             |
+| Command                       | Description                              |
+| :---------------------------- | :--------------------------------------- |
+| `faable login`                | Authenticate with Faable                 |
+| `faable whoami`               | Show current user                        |
+| `faable logout`               | End the local session                    |
+| `faable deploy`               | Deploy project to production             |
+| `faable deploy link`          | Link directory to a Faable app           |
+| `faable deploy secrets list`  | List app secrets (masked, `--show`)      |
+| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs         |
+| `faable deploy secrets rm`    | Remove a secret by name                  |
+| `faable deploy domains list`  | List custom domains and their DNS state  |
+| `faable deploy domains add`   | Add a domain (prints the CNAME to set)   |
+| `faable deploy domains check` | DNS verification diagnostic for a domain |
+| `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)  |

@@ -28,9 +28,13 @@ Direct answers to the most common questions about Faable. For details, follow th
 
 **Yes. Connect your GitHub repository, push your code, and Faable detects your stack, builds it, and serves it at `https://<app>.faable.link` with free automatic SSL** — no Dockerfiles, YAML, or servers to provision. See [What is zero-config CI/CD?](deploy/what-is-zero-config-cicd.mdx) and [Get Started](deploy/get-started.md).
 
+## Is Faable Deploy a PaaS?
+
+**Yes — Faable Deploy is a Platform-as-a-Service (PaaS) for full backend applications.** It runs long-lived server processes — Django, FastAPI, Flask, Express, Next.js with SSR — in managed Linux containers, not just static sites or short-lived serverless functions. Builds, releases, autoscaling, SSL, the WAF, logs and custom domains are all handled by the platform; you only push code. Think of the Heroku/Render category of platform, hosted 100% in Europe with authentication included in the same subscription.
+
 ## What frameworks and stacks does Faable Deploy support?
 
-**Faable Deploy runs any stack that listens on the `$PORT` environment variable in a Linux container.** It auto-detects **Node.js** (20, 22, 24) — including Next.js and Express — and **Python** (3.11, 3.12) — including Django, FastAPI, and Flask — plus static frontends (Astro, Vite, Angular, Gatsby, CRA, Vue). Anything else deploys from your own `Dockerfile`. Your server binds to `0.0.0.0` on `$PORT` and Faable handles the rest. See the guides for [Express](deploy/guides/guide-express.md), [Django](deploy/guides/guide-django.md), [FastAPI](deploy/guides/guide-fastapi.md) and [Flask](deploy/guides/guide-flask.md), or the full [build requirements](deploy/build-requirements.mdx).
+**Faable Deploy runs any stack that listens on the `$PORT` environment variable in a Linux container.** It auto-detects **Node.js** (20, 22, 24) — including Next.js and Express — and **Python** (3.11, 3.12) — including Django, FastAPI, and Flask — plus static frontends (Astro, Vite, Angular, Gatsby, CRA, Vue). Anything else deploys from your own `Dockerfile`. Your server binds to `0.0.0.0` on `$PORT` and Faable handles the rest. See the guides for [Next.js](deploy/guides/guide-next.md), [Express](deploy/guides/guide-express.md), [Django](deploy/guides/guide-django.md), [FastAPI](deploy/guides/guide-fastapi.md) and [Flask](deploy/guides/guide-flask.md), or the full [build requirements](deploy/build-requirements.mdx).
 
 ## Does Faable Auth replace Auth0, Clerk, or Keycloak?
 

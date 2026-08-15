@@ -7,6 +7,8 @@ description: Deploy your first app on Faable Deploy in minutes — push to GitHu
 
 **Deploy your app straight from Git. No infrastructure to manage. Live in minutes.** Connect your repository, push your code, and Faable detects your framework, builds it, and ships it to a public URL with free automatic SSL.
 
+Faable Deploy is a **Platform-as-a-Service (PaaS) for full backend applications**: it runs long-lived server processes — Django, FastAPI, Flask, Express, Next.js with SSR — in managed containers, not just static sites or edge functions. Databases aside, everything your backend needs to serve production traffic (builds, releases, scaling, SSL, WAF, logs, custom domains) is part of the platform.
+
 > Curious what happens after you push? See [How deployment works](how-it-works.mdx). Comparing platforms? See [Faable Deploy vs Vercel, Render & Railway](compare.mdx).
 
 ## How Faable Deploy is structured
