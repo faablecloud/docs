@@ -48,16 +48,42 @@ function gitDates(file) {
   return null
 }
 
+// Committed dates manifest (scripts/content-dates.mjs, kept fresh by
+// lint-staged). The remote builder works from a GitHub tarball — no .git —
+// so without this every date degraded to checkout mtime ≈ build date,
+// advertising fake freshness for all pages on every deploy.
+let manifestCache
+function manifestDates(file) {
+  if (manifestCache === undefined) {
+    try {
+      manifestCache = JSON.parse(
+        fs.readFileSync(path.join(process.cwd(), 'content-dates.json'), 'utf8')
+      )
+    } catch {
+      manifestCache = null
+    }
+  }
+  const entry = manifestCache?.[path.relative(process.cwd(), file)]
+  if (!entry) return null
+  return {
+    published: new Date(entry.published),
+    modified: new Date(entry.modified)
+  }
+}
+
 // Publish + last-modified dates for a route, most accurate source first:
 //   1. git commit history of the source file
-//   2. filesystem mtime (fallback when git history/binary isn't available)
-//   3. the provided fallback (build date)
+//   2. the committed content-dates.json manifest (tarball builds — no .git)
+//   3. filesystem mtime
+//   4. the provided fallback (build date)
 // All failures degrade silently so the build never breaks.
 export function datesForRoute(route, fallback = new Date()) {
   const file = sourceFileFor(route)
   if (!file) return { published: fallback, modified: fallback }
   const git = gitDates(file)
   if (git) return git
+  const manifest = manifestDates(file)
+  if (manifest) return manifest
   try {
     const { mtime } = fs.statSync(file)
     return { published: mtime, modified: mtime }

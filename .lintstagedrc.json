@@ -1,5 +1,6 @@
 {
   "*.{ts,tsx,js,jsx,mjs}": ["prettier --write", "eslint --fix"],
   "*.{md,mdx,css}": ["prettier --write"],
-  "!(package-lock).json": ["prettier --write"]
+  "!(package-lock).json": ["prettier --write"],
+  "content/**/*.{md,mdx}": ["node scripts/content-dates.mjs"]
 }

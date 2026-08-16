@@ -1,0 +1,358 @@
+{
+  "content/auth/academy/01-oauth-foundations.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-23T23:48:20+02:00"
+  },
+  "content/auth/academy/02-tenant-building-blocks.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-23T23:48:20+02:00"
+  },
+  "content/auth/academy/03-login-and-flows.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-23T23:48:20+02:00"
+  },
+  "content/auth/academy/04-integrate-your-app.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-23T23:48:20+02:00"
+  },
+  "content/auth/academy/05-server-and-management-api.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-23T23:48:20+02:00"
+  },
+  "content/auth/academy/exam.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-23T23:48:20+02:00"
+  },
+  "content/auth/academy/index.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-23T23:48:20+02:00"
+  },
+  "content/auth/academy/lab.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-23T23:48:20+02:00"
+  },
+  "content/auth/apis.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/change-email.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/clients.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/compare-authelia.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-07-27T13:52:25+02:00"
+  },
+  "content/auth/compare-aws-cognito.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/auth/compare-firebase-auth.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/auth/compare-supabase-auth.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/auth/compare.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-26T11:51:20+02:00"
+  },
+  "content/auth/connections.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/custom-domain.md": {
+    "modified": "2026-05-08T13:04:43+02:00",
+    "published": "2026-05-08T13:04:43+02:00"
+  },
+  "content/auth/extensibility/actions.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/extensibility/webhooks.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/features.md": {
+    "modified": "2026-08-11T12:09:26+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/get-started.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/guides/migrate-from-auth0.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/auth/guides/migrate-from-clerk.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/auth/guides/migrate-from-keycloak.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/auth/integrations/shopify.md": {
+    "modified": "2026-07-26T19:48:06+02:00",
+    "published": "2026-07-26T19:48:06+02:00"
+  },
+  "content/auth/logs.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/oauth-flows/authorization-code.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-04-08T20:16:59+02:00"
+  },
+  "content/auth/oauth-flows/client-credentials.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-04-08T20:16:59+02:00"
+  },
+  "content/auth/oauth-flows/device-code.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-04-08T20:16:59+02:00"
+  },
+  "content/auth/oauth-flows/index.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-04T11:30:21+02:00"
+  },
+  "content/auth/oauth-flows/refresh-token.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-04-08T20:16:59+02:00"
+  },
+  "content/auth/oauth-flows/token-exchange.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-04T11:34:33+02:00"
+  },
+  "content/auth/oidc/index.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-15T13:30:12+02:00"
+  },
+  "content/auth/oidc/logout.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/oidc/userinfo.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/passwordless.mdx": {
+    "modified": "2026-08-11T12:09:26+02:00",
+    "published": "2026-04-08T20:16:59+02:00"
+  },
+  "content/auth/pricing.md": {
+    "modified": "2026-08-13T18:25:17+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/quickstart/angular.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-07T12:06:31+02:00"
+  },
+  "content/auth/quickstart/fastapi.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-07-27T13:52:25+02:00"
+  },
+  "content/auth/quickstart/index.mdx": {
+    "modified": "2026-07-27T14:41:26+02:00",
+    "published": "2026-07-27T14:41:26+02:00"
+  },
+  "content/auth/quickstart/javascript.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-07T12:06:31+02:00"
+  },
+  "content/auth/quickstart/nextjs-server-side.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-09T11:50:57+02:00"
+  },
+  "content/auth/quickstart/nextjs.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-19T18:22:48+02:00"
+  },
+  "content/auth/quickstart/nuxt.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-07T12:06:31+02:00"
+  },
+  "content/auth/quickstart/react-native.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/quickstart/react.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-04T11:36:09+02:00"
+  },
+  "content/auth/quickstart/sveltekit.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-07T12:06:31+02:00"
+  },
+  "content/auth/quickstart/vue.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-07T12:06:31+02:00"
+  },
+  "content/auth/signup.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-01T12:22:28+02:00"
+  },
+  "content/auth/social/apple.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/social/facebook.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/social/github.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-17T11:15:34+02:00"
+  },
+  "content/auth/social/google.md": {
+    "modified": "2026-05-22T12:02:25+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/auth/social/index.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-27T14:01:58+02:00"
+  },
+  "content/auth/social/microsoft.md": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-07-27T13:52:25+02:00"
+  },
+  "content/auth/suspend-users.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-07T11:04:18+02:00"
+  },
+  "content/auth/team-invitations.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/validate-access-tokens.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-07-04T11:32:47+02:00"
+  },
+  "content/auth/what-is-a-multi-tenant-identity-server.mdx": {
+    "modified": "2026-07-27T13:52:25+02:00",
+    "published": "2026-06-26T11:51:20+02:00"
+  },
+  "content/cli.md": {
+    "modified": "2026-08-15T23:31:35+02:00",
+    "published": "2026-04-08T11:37:58+02:00"
+  },
+  "content/deploy/build-requirements.mdx": {
+    "modified": "2026-08-11T12:09:26+02:00",
+    "published": "2026-07-04T11:38:43+02:00"
+  },
+  "content/deploy/compare-fly-io.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/deploy/compare-heroku.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/deploy/compare.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-06-26T11:51:20+02:00"
+  },
+  "content/deploy/domains/custom-domain.md": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/deploy/domains/ssl-certificates.md": {
+    "modified": "2026-06-27T13:49:17+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/deploy/environment.mdx": {
+    "modified": "2026-07-24T19:27:43+02:00",
+    "published": "2026-07-24T19:27:43+02:00"
+  },
+  "content/deploy/get-started.md": {
+    "modified": "2026-08-15T22:44:00+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/deploy/github-actions.md": {
+    "modified": "2026-08-08T11:28:59+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/deploy/guides/guide-django.md": {
+    "modified": "2026-08-15T19:11:40+02:00",
+    "published": "2026-08-11T12:09:26+02:00"
+  },
+  "content/deploy/guides/guide-express.md": {
+    "modified": "2026-08-15T19:11:40+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/deploy/guides/guide-fastapi.md": {
+    "modified": "2026-08-15T19:11:40+02:00",
+    "published": "2026-08-11T12:09:26+02:00"
+  },
+  "content/deploy/guides/guide-flask.md": {
+    "modified": "2026-08-15T19:11:40+02:00",
+    "published": "2026-08-11T12:09:26+02:00"
+  },
+  "content/deploy/guides/guide-next.md": {
+    "modified": "2026-08-15T19:11:40+02:00",
+    "published": "2026-08-15T19:11:40+02:00"
+  },
+  "content/deploy/guides/migrate-from-netlify.mdx": {
+    "modified": "2026-07-16T12:45:25+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/deploy/guides/migrate-from-vercel.mdx": {
+    "modified": "2026-07-16T12:45:25+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/deploy/how-it-works.mdx": {
+    "modified": "2026-08-15T22:44:00+02:00",
+    "published": "2026-07-16T12:45:25+02:00"
+  },
+  "content/deploy/pricing.md": {
+    "modified": "2026-08-13T18:25:17+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/deploy/runtime.md": {
+    "modified": "2026-08-05T13:04:09+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/deploy/sdk.mdx": {
+    "modified": "2026-07-16T12:45:45+02:00",
+    "published": "2026-07-14T11:29:13+02:00"
+  },
+  "content/deploy/security-waf.md": {
+    "modified": "2026-08-11T12:09:26+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/deploy/what-is-zero-config-cicd.mdx": {
+    "modified": "2026-07-16T12:45:25+02:00",
+    "published": "2026-06-26T11:51:20+02:00"
+  },
+  "content/faq.mdx": {
+    "modified": "2026-08-15T22:44:00+02:00",
+    "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/index.md": {
+    "modified": "2026-04-14T17:28:31+02:00",
+    "published": "2026-04-09T19:12:39+02:00"
+  },
+  "content/platform/pricing.md": {
+    "modified": "2026-08-13T18:25:17+02:00",
+    "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/platform/privacy-policy.md": {
+    "modified": "2026-08-13T18:25:17+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/platform/security-compliance.md": {
+    "modified": "2026-08-13T18:25:17+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  },
+  "content/platform/terms-of-service.md": {
+    "modified": "2026-08-13T18:25:17+02:00",
+    "published": "2026-03-31T11:42:44+02:00"
+  }
+}
