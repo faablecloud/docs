@@ -150,8 +150,11 @@ Runtime logs of the app (last 24 hours), or the **build output** of the latest d
 ```bash
 faable deploy logs             # runtime logs
 faable deploy logs --build     # build output of the latest deployment
+faable deploy logs --build --follow       # tail the build that is running right now
 faable deploy logs -d deployment_a1b2c3   # scope to one deployment
 ```
+
+`--follow` (or `-f`) tails a build that is still running — the same live output the dashboard's build logs modal shows — and exits red if the build fails. On a finished deployment it prints the recorded output instead.
 
 ### Deployments
 
@@ -275,24 +278,24 @@ Asks for confirmation (skip with `--yes`). The app stays live on its `faable.lin
 
 ## Command Reference
 
-| Command                       | Description                                       |
-| :---------------------------- | :------------------------------------------------ |
-| `faable login`                | Authenticate with Faable                          |
-| `faable whoami`               | Show current user                                 |
-| `faable logout`               | End the local session                             |
-| `faable deploy`               | Deploy project to production                      |
-| `faable deploy trigger`       | Build the repo HEAD server-side (no upload)       |
-| `faable deploy redeploy`      | Retry a failed deployment from its source         |
-| `faable deploy status`        | What is live: phase, URL, stack, latest deploy    |
-| `faable deploy logs`          | Runtime logs (`--build` for build output)         |
-| `faable deploy deployments`   | Recent deployments with phases and commits        |
-| `faable deploy list`          | List your apps                                    |
-| `faable deploy open`          | Open the live app (`--dashboard` for the console) |
-| `faable deploy link`          | Link directory to a Faable app                    |
-| `faable deploy secrets list`  | List app secrets (masked, `--show`)               |
-| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs                  |
-| `faable deploy secrets rm`    | Remove a secret by name                           |
-| `faable deploy domains list`  | List custom domains and their DNS state           |
-| `faable deploy domains add`   | Add a domain (prints the CNAME to set)            |
-| `faable deploy domains check` | DNS verification diagnostic for a domain          |
-| `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)           |
+| Command                       | Description                                                                           |
+| :---------------------------- | :------------------------------------------------------------------------------------ |
+| `faable login`                | Authenticate with Faable                                                              |
+| `faable whoami`               | Show current user                                                                     |
+| `faable logout`               | End the local session                                                                 |
+| `faable deploy`               | Deploy project to production                                                          |
+| `faable deploy trigger`       | Build the repo HEAD server-side (no upload)                                           |
+| `faable deploy redeploy`      | Retry a failed deployment from its source                                             |
+| `faable deploy status`        | What is live: phase, URL, stack, latest deploy                                        |
+| `faable deploy logs`          | Runtime logs (`--build` for build output, `--build --follow` to tail a running build) |
+| `faable deploy deployments`   | Recent deployments with phases and commits                                            |
+| `faable deploy list`          | List your apps                                                                        |
+| `faable deploy open`          | Open the live app (`--dashboard` for the console)                                     |
+| `faable deploy link`          | Link directory to a Faable app                                                        |
+| `faable deploy secrets list`  | List app secrets (masked, `--show`)                                                   |
+| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs                                                      |
+| `faable deploy secrets rm`    | Remove a secret by name                                                               |
+| `faable deploy domains list`  | List custom domains and their DNS state                                               |
+| `faable deploy domains add`   | Add a domain (prints the CNAME to set)                                                |
+| `faable deploy domains check` | DNS verification diagnostic for a domain                                              |
+| `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)                                               |
