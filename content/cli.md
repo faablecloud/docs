@@ -85,7 +85,7 @@ faable deploy
 The app is resolved automatically — no `app_id` required:
 
 - **In GitHub Actions**: from the repository linked to your app, via OIDC.
-- **Locally**: from the app saved by `faable deploy link` (in `faable.json`), or — if the repo was connected in the dashboard — by matching your git origin remote against your apps' linked repositories.
+- **Locally**: by matching your git origin remote against your apps' linked repositories (connected in the dashboard or via `faable deploy link`).
 
 Pass an app explicitly only for **monorepos** with several apps linked to the same repository:
 
