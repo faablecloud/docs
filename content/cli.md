@@ -1,14 +1,13 @@
 ---
 title: Faable CLI
-description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, status, logs, deployments, secrets, and custom domains (with the exact CNAME to configure) — for Node.js, Python, and Dockerfile apps.
+description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, status, logs, deployments, secrets, and custom domains — plus Faable Auth management (users, suspensions, actions, OAuth clients, audit logs) for Node.js, Python, and Dockerfile apps.
 ---
 
 # Faable CLI
 
 The Faable CLI (`@faable/faable`) is your command-line interface for managing and deploying applications on the Faable platform — Node.js (Next.js, Express, …), Python (Django, FastAPI, Flask), or your own Dockerfile. Deploy, manage secrets, and attach custom domains without leaving the terminal.
 
-> [!NOTE]
-> While the Faable CLI is designed to support both **Faable Auth** and **Faable Deploy**, current functionality is primarily focused on deployment features.
+The CLI covers both **Faable Deploy** (everything below up to Domains) and **Faable Auth** ([`faable auth`](#faable-auth): users, actions, OAuth clients, and the audit log).
 
 ## Installation
 
@@ -276,6 +275,75 @@ faable deploy domains rm www.example.com
 
 Asks for confirmation (skip with `--yes`). The app stays live on its `faable.link` URL.
 
+## Faable Auth
+
+Manage a Faable Auth tenant from the terminal: `faable auth <users|actions|clients|logs>`. Commands reuse your `faable login` session. Every subcommand accepts `--auth-url https://<account>.auth.faable.link` (env `FAABLE_AUTH_URL`) to target your tenant, and read commands accept `--json` for a machine-clean output you can pipe to `jq`.
+
+### Users
+
+```bash
+faable auth users list                             # list users
+faable auth users list --suspended                 # only suspended users
+faable auth users list --query email_verified:false --limit 50
+faable auth users list -q alice                    # full-text over name/email/phone
+faable auth users get user_abc123
+```
+
+`--query` takes a FaableQL filter — space-separated `field:value` terms over `email`, `name`, `phone`, `suspended`, `email_verified`, `country_iso`, `locale`, and `last_ip`. Listings fetch one page (`--limit`, up to 200); add `--all` to walk every page.
+
+#### Suspend users
+
+Suspending blocks every login, token refresh, and session for the user:
+
+```bash
+faable auth users suspend user_abc123 --reason "abuse: crypto miner"
+faable auth users suspend user_a user_b user_c -y -r "abuse wave"
+
+# Bulk: pipe ids from a filtered listing
+faable auth users list --query email_verified:false --json \
+  | jq -r '.[].id' \
+  | faable auth users suspend -y -r "unverified batch"
+```
+
+Asks for confirmation (skip with `--yes`). Access tokens already issued to external APIs stay valid until they expire (up to 24h).
+
+### Actions
+
+Actions are JavaScript hooks that run inside the login flow (`post-login` or `continue` trigger):
+
+```bash
+faable auth actions list
+faable auth actions get action_xyz --code          # print the source
+faable auth actions create -n add-claims -t post-login -f ./claims.js
+faable auth actions create -n gate -t post-login -f ./gate.js --disabled
+faable auth actions rm action_xyz
+```
+
+### OAuth clients
+
+```bash
+faable auth clients list
+faable auth clients get <client_id> --secret       # accepts the OAuth client_id or the resource id
+faable auth clients create -n my-app --callback https://app.example.com/callback
+faable auth clients rm <client_id>
+```
+
+`create` prints the generated client id and secret — store the secret right away and treat it like a password.
+
+### Audit logs
+
+Read-only trail of everything that happens in the tenant (logins, token grants, admin changes):
+
+```bash
+faable auth logs list --limit 20
+faable auth logs list --user user_abc123 --since 2026-08-01
+faable auth logs list --origin oauth --status failed
+faable auth logs list --type admin.user.updated
+faable auth logs get log_xyz                       # full entry, including its data payload
+```
+
+`--since`/`--until` take unix-millis or `YYYY-MM-DD` dates. `--origin` matches a subsystem prefix (`oauth` matches every `oauth.*` event), `-q` searches the log message text.
+
 ## Command Reference
 
 | Command                       | Description                                                                           |
@@ -299,3 +367,16 @@ Asks for confirmation (skip with `--yes`). The app stays live on its `faable.lin
 | `faable deploy domains add`   | Add a domain (prints the CNAME to set)                                                |
 | `faable deploy domains check` | DNS verification diagnostic for a domain                                              |
 | `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)                                               |
+| `faable auth users list`      | List and filter users (`--query`, `-q`, `--suspended`)                                |
+| `faable auth users get`       | Show a user, including suspension state                                               |
+| `faable auth users suspend`   | Suspend users by id — bulk via args or stdin                                          |
+| `faable auth actions list`    | List login-flow actions                                                               |
+| `faable auth actions get`     | Show an action (`--code` prints the source)                                           |
+| `faable auth actions create`  | Create an action from a JS file                                                       |
+| `faable auth actions rm`      | Delete an action (confirmation, `--yes`)                                              |
+| `faable auth clients list`    | List OAuth clients                                                                    |
+| `faable auth clients get`     | Show a client (`--secret` reveals the secret)                                         |
+| `faable auth clients create`  | Create a client (prints id + secret once)                                             |
+| `faable auth clients rm`      | Delete a client (confirmation, `--yes`)                                               |
+| `faable auth logs list`       | Filter the audit log (type, status, origin, user, dates)                              |
+| `faable auth logs get`        | Show one audit entry with its data payload                                            |
