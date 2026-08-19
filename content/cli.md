@@ -307,6 +307,22 @@ faable auth users list --query email_verified:false --json \
 
 Asks for confirmation (skip with `--yes`). Access tokens already issued to external APIs stay valid until they expire (up to 24h).
 
+#### Reinstate users
+
+Reinstating re-enables logins and token issuance and clears the suspension reason:
+
+```bash
+faable auth users reinstate user_abc123
+faable auth users reinstate user_a user_b -y
+
+# Bulk: pipe ids from a filtered listing
+faable auth users list --suspended --json \
+  | jq -r '.[].id' \
+  | faable auth users reinstate -y
+```
+
+Asks for confirmation (skip with `--yes`).
+
 ### Actions
 
 Actions are JavaScript hooks that run inside the login flow (`post-login` or `continue` trigger):
@@ -372,6 +388,7 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable auth users list`      | List and filter users (`--query`, `-q`, `--suspended`)                                |
 | `faable auth users get`       | Show a user, including suspension state                                               |
 | `faable auth users suspend`   | Suspend users by id — bulk via args or stdin                                          |
+| `faable auth users reinstate` | Reinstate suspended users by id — bulk via args or stdin                              |
 | `faable auth actions list`    | List login-flow actions                                                               |
 | `faable auth actions get`     | Show an action (`--code` prints the source)                                           |
 | `faable auth actions create`  | Create an action from a JS file                                                       |
