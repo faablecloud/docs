@@ -316,6 +316,8 @@ faable auth actions list
 faable auth actions get action_xyz --code          # print the source
 faable auth actions create -n add-claims -t post-login -f ./claims.js
 faable auth actions create -n gate -t post-login -f ./gate.js --disabled
+faable auth actions update action_xyz -f ./gate.js  # replace the code in place
+faable auth actions update action_xyz --no-enabled  # disable without a deploy
 faable auth actions rm action_xyz
 ```
 
@@ -373,6 +375,7 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable auth actions list`    | List login-flow actions                                                               |
 | `faable auth actions get`     | Show an action (`--code` prints the source)                                           |
 | `faable auth actions create`  | Create an action from a JS file                                                       |
+| `faable auth actions update`  | Update an action in place (`-f` code, `--name`, `--order`, `--enabled`)               |
 | `faable auth actions rm`      | Delete an action (confirmation, `--yes`)                                              |
 | `faable auth clients list`    | List OAuth clients                                                                    |
 | `faable auth clients get`     | Show a client (`--secret` reveals the secret)                                         |
