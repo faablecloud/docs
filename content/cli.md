@@ -191,6 +191,8 @@ faable deploy open --dashboard
 
 Manage your app's secrets (environment variables) without leaving the terminal. Inside a linked repository the app is detected automatically — the same resolution `faable deploy` uses. Outside of one (or to target another app) pass `--app <app_id>`.
 
+`set` and `list` warn when a name is one the platform manages — `PORT`, the `FAABLE_*` variables and `START_COMMAND` are [reserved](deploy/environment.mdx#reserved-names) and your value is ignored at deploy time.
+
 ### Set
 
 Set one or more secrets as `KEY=VALUE` pairs. Values may contain `=` (only the first one splits the pair); quote values containing spaces.
@@ -205,6 +207,48 @@ faable deploy secrets set DATABASE_URL=postgres://user:pass@host/db STRIPE_KEY=s
 ✅ 2 secret(s) saved to app_a1b2c3.
 ℹ️ The app is restarting to apply the changes.
 ```
+
+### Set from a .env file
+
+`--env-file` (`-f`) uploads a whole `.env` in one go — the fastest way to move a working local environment to your app. With no path it reads `./.env`:
+
+```bash
+faable deploy secrets set --env-file
+faable deploy secrets set -f .env.production
+```
+
+```
+📄 Read 24 variable(s) from .env
+🔑 18 added, 6 updated
+✅ 24 secret(s) saved to app_a1b2c3.
+ℹ️ The app is restarting to apply the changes.
+```
+
+The file format is the usual one:
+
+```bash
+# Comments and blank lines are ignored
+DATABASE_URL=postgres://user:pass@host/db
+export NODE_ENV=production          # a leading "export" is fine
+GREETING="hello world"              # quotes are stripped
+LITERAL='no \n escapes here'        # single quotes are literal
+PRIVATE_KEY="-----BEGIN KEY-----
+multi-line values work when quoted
+-----END KEY-----"
+```
+
+Double-quoted values expand `\n`, `\r`, `\t`, `\\` and `\"`; single-quoted values are taken literally. In an unquoted value, a `#` preceded by a space starts a comment — quote the value if you need one inside it.
+
+Nothing is written until the whole file parses, and errors point at the line: `.env:12: expected KEY=VALUE, got "OOPS".`
+
+The file **adds and overwrites**; it never deletes. Names already on the app but missing from the file are left alone — remove those with [`secrets rm`](#remove). You can combine both forms, and an explicit pair wins over the file:
+
+```bash
+faable deploy secrets set -f .env NODE_ENV=production
+```
+
+> [!NOTE]
+> A `.env` usually holds your **local** values. Check it before uploading — or keep a separate `.env.production` for the app.
 
 ### List
 
@@ -379,7 +423,7 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable deploy open`          | Open the live app (`--dashboard` for the console)                                     |
 | `faable deploy link`          | Link directory to a Faable app                                                        |
 | `faable deploy secrets list`  | List app secrets (masked, `--show`)                                                   |
-| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs                                                      |
+| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs, or a whole file with `--env-file`                   |
 | `faable deploy secrets rm`    | Remove a secret by name                                                               |
 | `faable deploy domains list`  | List custom domains and their DNS state                                               |
 | `faable deploy domains add`   | Add a domain (prints the CNAME to set)                                                |
