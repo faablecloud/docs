@@ -32,9 +32,28 @@ process can read them while it serves.
 
 ### Reserved names
 
-All of the names above are **reserved**. If you define a [secret](runtime.md)
-with one of those names it is ignored — the platform value always wins — so your
-app can rely on them meaning what this page says.
+All of the names above are **reserved**, plus `START_COMMAND` (how the runtime
+knows how to boot your app). If you define a [secret](runtime.md) with one of
+those names it is **ignored** — the platform value always wins — so your app can
+rely on them meaning what this page says.
+
+The CLI and the dashboard both flag a reserved name as you set it, so you don't
+have to come back to this page to find out why your `PORT=3000` did nothing.
+
+### Runtime defaults
+
+These are **not** reserved — the runtime image sets them, and a secret of yours
+does override them. They are listed here because overriding them is usually a
+mistake:
+
+| Variable           | Default      | Set on          |
+| :----------------- | :----------- | :-------------- |
+| `NODE_ENV`         | `production` | Node runtimes   |
+| `PYTHONUNBUFFERED` | `1`          | Python runtimes |
+
+Setting `NODE_ENV=development` on a deployed app is the common one: frameworks
+switch to development behaviour (slower, more verbose, sometimes unsafe) even
+though the build was a production build.
 
 ## Release versioning
 
