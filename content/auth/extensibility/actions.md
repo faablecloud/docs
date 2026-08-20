@@ -65,15 +65,39 @@ event = {
   };
   client: { client_id: string; name: string };
   connection: { name: string; strategy: string };
-  request: { ip: string; userAgent: string };
+  request: {
+    ip: string;
+    userAgent: string;
+    // Raw Accept-Language header, e.g. "en-GB,en;q=0.9". Empty when absent.
+    language: string;
+    // Coarse device class parsed from the User-Agent.
+    device: 'mobile' | 'desktop' | 'bot' | 'unknown';
+    // true when `ip` belongs to a known datacenter / hosting / proxy range.
+    ip_datacenter?: boolean;
+    // How many of your currently-active blocks have seen this exact IP.
+    ip_active_blocks?: number;
+    // Same, widened to the IP's /24 (or /48 for IPv6). Only ever non-zero for
+    // datacenter addresses, so it can never implicate a residential range.
+    ip_network_active_blocks?: number;
+  };
   stats: {
     // true when this login is the user's SIGNUP — the identity was created
     // by the same flow that triggered the action. Always false on `continue`
     // resumes, even if the original paused flow was a signup.
     is_new_user: boolean;
+    // Age of the account in milliseconds. Undefined when it cannot be dated.
+    account_age_ms?: number;
+    // true when this login's primary language tag differs from the one seen
+    // at the user's first login. Only ever true on a returning login.
+    language_changed?: boolean;
+    // How many times THIS action has already denied THIS user.
+    deny_count?: number;
   };
 };
 ```
+
+> [!NOTE]
+> The three `ip_*` fields are resolved **on demand**: Faable only computes them when your action's source mentions them by name, so an action that never reads them costs nothing. Treat `undefined` as "not evaluated" and compare explicitly (`=== true`).
 
 > [!TIP]
 > `event.stats.is_new_user` distinguishes a **signup** from a returning login, regardless of how the user registered (email/password form, Google, GitHub…). Every flow passes through `post-login`, which makes it the one reliable place to react to new accounts.
@@ -81,15 +105,35 @@ event = {
 ### The `api` object
 
 ```ts
-api.access.deny(reason: string)
+api.access.deny(reason: string, opts?: {
+  blockFor?: string | number   // '48h', '7d', or milliseconds
+  code?: string                // short machine tag for your audit rows
+  details?: Record<string, unknown>
+})
   // Reject the login. Returns HTTP 401 to the client with the given reason.
   // No further actions in the chain run.
+  //
+  // With `blockFor`, the verdict is PERSISTED: further attempts by the same
+  // user are denied for that long without re-running your code, and
+  // `event.stats.deny_count` counts how often it has fired, so you can back
+  // off progressively. `code` and `details` are audit-only — they land in the
+  // log row, never in the message the user sees.
+
+api.access.review(code: string, details?: Record<string, unknown>)
+  // Let the login through, but flag it for a human. The user is unaffected;
+  // the audit row is marked `review: true` with your code and details.
+  //
+  // Use it for rules that are worth noticing but not worth blocking on. A
+  // rule you are not confident enough to enforce is still worth shipping
+  // here — a flagged row you can review beats a rule you never deployed.
 
 api.redirect.sendUserTo(url: string)
   // Pause the login flow and send the user's browser to `url`.
   // Faable persists state so the flow can resume via /continue once the
   // user returns.
 ```
+
+`deny` and `review` are independent: an action may do both, and the deny still wins the verdict.
 
 ### Example — block users with an unverified email and require ToS acceptance
 
