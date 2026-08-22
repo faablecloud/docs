@@ -4,6 +4,7 @@ export default {
   'guide-django': 'Deploy Django',
   'guide-fastapi': 'Deploy FastAPI',
   'guide-flask': 'Deploy Flask',
+  databases: 'Databases & SQLite',
   'migrate-from-vercel': 'Migrate from Vercel',
   'migrate-from-netlify': 'Migrate from Netlify'
 }
