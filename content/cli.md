@@ -333,6 +333,8 @@ faable auth users list -q alice                    # full-text over name/email/p
 faable auth users get user_abc123
 ```
 
+`users get` prints the full user card — email and verification, creation date, last login with its IP, suspension state, and the user's **federated identities**: for each linked provider (e.g. GitHub) the provider login, profile URL, and when the provider account was created. Provider tokens are never shown. With `--json` the identities are included (sanitized) under `identities`.
+
 `--query` takes a FaableQL filter — space-separated `field:value` terms over `email`, `name`, `phone`, `suspended`, `email_verified`, `country_iso`, `locale`, and `last_ip`. Listings fetch one page (`--limit`, up to 200); add `--all` to walk every page.
 
 #### Suspend users
@@ -430,7 +432,7 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable deploy domains check` | DNS verification diagnostic for a domain                                              |
 | `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)                                               |
 | `faable auth users list`      | List and filter users (`--query`, `-q`, `--suspended`)                                |
-| `faable auth users get`       | Show a user, including suspension state                                               |
+| `faable auth users get`       | Show a user: suspension state, last IP and federated identities (GitHub login, etc.)  |
 | `faable auth users suspend`   | Suspend users by id — bulk via args or stdin                                          |
 | `faable auth users reinstate` | Reinstate suspended users by id — bulk via args or stdin                              |
 | `faable auth actions list`    | List login-flow actions                                                               |
