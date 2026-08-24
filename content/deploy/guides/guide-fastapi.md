@@ -161,6 +161,7 @@ The WAF ships in monitor mode conventions described in the [WAF guide](../securi
 ## Related
 
 - [What the Builder Expects](../build-requirements.mdx) — full detection and start-command rules
+- [Deploy a WhatsApp Bot](guide-whatsapp-bot.md) · [Deploy a Telegram Bot](guide-telegram-bot.md) — webhook bots on this stack
 - [Deploy Next.js](guide-next.md) · [Deploy Django](guide-django.md) · [Deploy Flask](guide-flask.md) · [Deploy Node.js Express](guide-express.md)
 - [Environment & Releases](../environment.mdx) · [Custom domains](../domains/custom-domain.md) · [WAF](../security-waf.md)
 - [Secure your API with OAuth 2.0](../../auth/oauth-flows/client-credentials.mdx) — Faable Auth is included in the same subscription

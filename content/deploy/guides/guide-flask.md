@@ -1,7 +1,7 @@
 ---
 schema: faq
 title: Deploy a Flask App
-description: Deploy a Flask application to Faable Deploy from GitHub. Zero-config gunicorn start command, environment variables, static files, and 100% European hosting with a built-in WAF.
+description: Deploy a Flask app or REST API to Faable Deploy from GitHub. Zero-config gunicorn start command, a complete JSON API example, environment variables, static files, and 100% European hosting with a built-in WAF.
 ---
 
 # Deploy a Flask App 🌶️
@@ -70,6 +70,76 @@ gunicorn
 ```
 
 That is a complete, deployable repo — two files.
+
+## A JSON API, end to end
+
+Most Flask projects deployed on Faable are REST APIs — a service another app or a bot calls over HTTP. Here is a complete one with the pieces that are easy to get wrong in production: JSON errors instead of HTML, CORS for a browser client, config from the environment, and a health check.
+
+```txt
+# requirements.txt
+Flask>=3.0
+flask-cors>=5.0
+gunicorn
+```
+
+```python
+# app.py
+import os
+
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
+
+app = Flask(__name__)
+
+# Only the origins you actually serve — never "*" on an API that takes a key.
+CORS(app, resources={r"/v1/*": {"origins": os.environ.get("ALLOWED_ORIGINS", "").split(",")}})
+
+API_KEY = os.environ["API_KEY"]
+
+
+@app.before_request
+def require_key():
+    if request.path.startswith("/v1/") and request.headers.get("X-API-Key") != API_KEY:
+        return jsonify(error="unauthorized"), 401
+
+
+@app.get("/v1/items")
+def list_items():
+    # Page from the query string, clamped — an unbounded limit is how APIs fall over.
+    limit = min(int(request.args.get("limit", 20)), 100)
+    return jsonify(items=fetch_items(limit), limit=limit)
+
+
+@app.post("/v1/items")
+def create_item():
+    body = request.get_json(silent=True) or {}
+    if not body.get("name"):
+        return jsonify(error="name is required"), 422
+    return jsonify(item=save_item(body)), 201
+
+
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
+
+
+@app.errorhandler(HTTPException)
+def json_errors(error):
+    """Flask returns HTML error pages by default — clients want JSON."""
+    return jsonify(error=error.name, status=error.code), error.code
+
+
+@app.errorhandler(Exception)
+def unhandled(error):
+    app.logger.exception("unhandled error")
+    return jsonify(error="internal server error", status=500), 500
+```
+
+Two details that matter once it's live:
+
+- **Log to stdout.** `app.logger` goes to the deployment logs in the dashboard and to `faable deploy logs`. Don't write log files — the filesystem is ephemeral.
+- **Don't hold state in memory.** A module-level cache or counter is lost on every deploy, and on every wake from sleep. Use a database — see [Databases](databases.md).
 
 ## Configuration and secrets
 
@@ -192,6 +262,7 @@ One by default. Increase it with `startCommand` only if your workload is CPU-bou
 ## Related
 
 - [What the Builder Expects](../build-requirements.mdx) — full detection and start-command rules
+- [Deploy a WhatsApp Bot](guide-whatsapp-bot.md) · [Deploy a Telegram Bot](guide-telegram-bot.md) — webhook bots on this stack
 - [Deploy Next.js](guide-next.md) · [Deploy Django](guide-django.md) · [Deploy FastAPI](guide-fastapi.md) · [Deploy Node.js Express](guide-express.md)
 - [Environment & Releases](../environment.mdx) · [Custom domains](../domains/custom-domain.md) · [WAF](../security-waf.md)
 - [Add authentication to your app](../../auth/get-started.md) — Faable Auth is included in the same subscription

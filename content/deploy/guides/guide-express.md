@@ -78,6 +78,7 @@ Faable also injects `PORT`, `FAABLE_APP_ID`, `FAABLE_RELEASE` and `FAABLE_GIT_CO
 ## Related
 
 - [What the Builder Expects](../build-requirements.mdx) — detection rules, Node.js versions, the `$PORT` contract
+- [Deploy a WhatsApp Bot](guide-whatsapp-bot.md) · [Deploy a Telegram Bot](guide-telegram-bot.md) — webhook bots on this stack
 - [Deploy Next.js](guide-next.md) · [Deploy Django](guide-django.md) · [Deploy FastAPI](guide-fastapi.md) · [Deploy Flask](guide-flask.md)
 - [Custom domains](../domains/custom-domain.md) · [WAF](../security-waf.md)
 - [Add authentication to your app](../../auth/get-started.md) — Faable Auth is included in the same subscription

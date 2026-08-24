@@ -284,24 +284,32 @@
     "modified": "2026-08-22T21:19:45.842Z"
   },
   "content/deploy/guides/guide-django.md": {
-    "modified": "2026-08-15T19:11:40+02:00",
-    "published": "2026-08-11T12:09:26+02:00"
+    "published": "2026-08-11T12:09:26+02:00",
+    "modified": "2026-08-24T15:57:55.247Z"
   },
   "content/deploy/guides/guide-express.md": {
-    "modified": "2026-08-15T19:11:40+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-08-24T15:57:55.247Z"
   },
   "content/deploy/guides/guide-fastapi.md": {
-    "modified": "2026-08-15T19:11:40+02:00",
-    "published": "2026-08-11T12:09:26+02:00"
+    "published": "2026-08-11T12:09:26+02:00",
+    "modified": "2026-08-24T15:57:55.247Z"
   },
   "content/deploy/guides/guide-flask.md": {
-    "modified": "2026-08-15T19:11:40+02:00",
-    "published": "2026-08-11T12:09:26+02:00"
+    "published": "2026-08-11T12:09:26+02:00",
+    "modified": "2026-08-24T15:57:55.247Z"
   },
   "content/deploy/guides/guide-next.md": {
     "modified": "2026-08-15T19:11:40+02:00",
     "published": "2026-08-15T19:11:40+02:00"
+  },
+  "content/deploy/guides/guide-telegram-bot.md": {
+    "published": "2026-08-24T15:57:55.247Z",
+    "modified": "2026-08-24T15:57:55.247Z"
+  },
+  "content/deploy/guides/guide-whatsapp-bot.md": {
+    "published": "2026-08-24T15:57:55.247Z",
+    "modified": "2026-08-24T15:57:55.247Z"
   },
   "content/deploy/guides/migrate-from-netlify.mdx": {
     "modified": "2026-07-16T12:45:25+02:00",
