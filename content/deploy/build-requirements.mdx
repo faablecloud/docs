@@ -190,14 +190,14 @@ The platform also injects `FAABLE_HOST` (your app's public URL). Platform-manage
 }
 ```
 
-| Field                 | Purpose                                                                                                                                     |
-| :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
-| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                                                    |
-| `buildpack`           | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection.                                                                   |
-| `rootDir`             | Monorepo Root Directory — the subdirectory the app builds from. The app's Root Directory in the dashboard takes precedence when set.        |
-| `buildCommand`        | Node: build step used when `package.json` has no `build` script (the `build` script wins otherwise). Python: replaces the manifest install. |
-| `startCommand`        | Overrides everything — framework detection and `npm run start`. On a Next.js app it also opts out of the standalone output.                 |
-| `next.standalone`     | Set `false` to ship the full workspace instead of Next's compact standalone output.                                                         |
+| Field                 | Purpose                                                                                                                                                                                              |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                                                                                                             |
+| `buildpack`           | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection.                                                                                                                            |
+| `rootDir`             | Monorepo Root Directory — the subdirectory the app builds from. This is where you set it; a per-app Root Directory (support-configured, for several apps in one repo) takes precedence when present. |
+| `buildCommand`        | Node: build step used when `package.json` has no `build` script (the `build` script wins otherwise). Python: replaces the manifest install.                                                          |
+| `startCommand`        | Overrides everything — framework detection and `npm run start`. On a Next.js app it also opts out of the standalone output.                                                                          |
+| `next.standalone`     | Set `false` to ship the full workspace instead of Next's compact standalone output.                                                                                                                  |
 
 ---
 
@@ -221,7 +221,13 @@ The version from `engines.node` in `package.json`, resolved to the latest releas
 
 ### How do I deploy a single app from a monorepo?
 
-Set the app's **Root Directory** in the dashboard (or `rootDir` in `faable.json`). Dependencies install at the workspace root, and the app builds from the subdirectory — hoisted packages and shared workspace libraries resolve normally. One Faable app per deployable package.
+Add a `faable.json` at the repository root declaring the subdirectory to build from:
+
+```json
+{ "rootDir": "apps/api" }
+```
+
+Dependencies install at the workspace root, and the app builds from the subdirectory — hoisted packages and shared workspace libraries resolve normally. One Faable app per deployable package. See [Monorepos (Root Directory)](#monorepos-root-directory) for the details.
 
 ### What port should my app listen on?
 
