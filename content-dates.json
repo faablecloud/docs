@@ -151,6 +151,10 @@
     "modified": "2026-08-13T18:25:17+02:00",
     "published": "2026-03-31T11:42:44+02:00"
   },
+  "content/auth/pricing.mdx": {
+    "published": "2026-08-24T16:03:44.464Z",
+    "modified": "2026-08-24T16:03:44.464Z"
+  },
   "content/auth/quickstart/angular.mdx": {
     "modified": "2026-07-16T12:45:45+02:00",
     "published": "2026-07-07T12:06:31+02:00"
@@ -327,6 +331,10 @@
     "published": "2026-03-31T11:42:44+02:00",
     "modified": "2026-08-24T15:09:03.610Z"
   },
+  "content/deploy/pricing.mdx": {
+    "published": "2026-08-24T16:03:44.464Z",
+    "modified": "2026-08-24T16:03:44.464Z"
+  },
   "content/deploy/runtime.md": {
     "modified": "2026-08-05T13:04:09+02:00",
     "published": "2026-03-31T11:42:44+02:00"
@@ -354,6 +362,10 @@
   "content/platform/pricing.md": {
     "published": "2026-05-16T11:42:20+02:00",
     "modified": "2026-08-20T12:40:21.884Z"
+  },
+  "content/platform/pricing.mdx": {
+    "published": "2026-08-24T16:03:44.464Z",
+    "modified": "2026-08-24T16:03:44.464Z"
   },
   "content/platform/privacy-policy.md": {
     "modified": "2026-08-13T18:25:17+02:00",

@@ -16,4 +16,11 @@ if (isProductionHost) {
     capture_exceptions: false,
     debug: false
   })
+
+  // The landing registers `app: "landing"` on the same PostHog project and the
+  // same faable.com host, so without this docs traffic is indistinguishable
+  // from it in any breakdown.
+  posthog.register({
+    app: 'docs'
+  })
 }
