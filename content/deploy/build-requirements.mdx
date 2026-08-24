@@ -1,7 +1,7 @@
 ---
 schema: faq
 title: What the Builder Expects in Your Repo
-description: How Faable's remote builder detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, Dockerfile as escape hatch — plus monorepo Root Directory, the $PORT contract and faable.json options.
+description: How Faable's remote builder detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, and a Dockerfile as the escape hatch on the Hobby and Pro plans — plus monorepo Root Directory, the $PORT contract and faable.json options.
 ---
 
 # What the Builder Expects in Your Repo 📦
@@ -16,12 +16,15 @@ Deploys are built by **buildpacks** (Heroku/CNB-style): each one checks for its 
 | :------- | :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
 | 1        | `package.json`                                                       | **Node.js** (see below)                                                                                                                    |
 | 2        | `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml` | **Python** (see below)                                                                                                                     |
-| 3        | `Dockerfile`                                                         | **Docker** — your Dockerfile, built verbatim                                                                                               |
+| 3        | `Dockerfile`                                                         | **Docker** — your Dockerfile, built verbatim · **Hobby or Pro** ([why](pricing.md#docker-and-bring-your-own-image))                        |
 | 4        | `main.py`, `app.py`, or `wsgi.py` (fallback, no manifest at all)     | **Python** without dependency install (see below)                                                                                          |
 | —        | None of the above                                                    | ❌ Deploy fails with a diagnostic listing what was looked for, what your repo contains, and any config from another platform it recognizes |
 
 > [!IMPORTANT]
 > The order matters: if your repo has both a `package.json` and a `Dockerfile`, it is built as a **Node.js** project and the Dockerfile is ignored. The Dockerfile path is the escape hatch for stacks the buildpacks don't detect natively.
+
+> [!WARNING]
+> **The Docker buildpack requires a paid plan.** Docker and Dockerfile builds — and deploying a prebuilt image — are available on **Hobby and Pro**. Free apps build with the managed Node and Python buildpacks; a free-plan deploy that resolves to Docker stops before the build with a plan message rather than a build error. See [Docker and bring-your-own-image](pricing.md#docker-and-bring-your-own-image). Note the precedence above works in your favour here: a repo with both a `package.json` and a `Dockerfile` is a Node.js build, so it deploys on Free unchanged.
 
 You can skip detection entirely and **force a buildpack** — `node`, `python`, or `docker` — with the `buildpack` field in `faable.json`:
 
@@ -29,7 +32,7 @@ You can skip detection entirely and **force a buildpack** — `node`, `python`, 
 { "buildpack": "docker" }
 ```
 
-A forced buildpack still runs its own detection, so the plan is computed from your real project files — forcing `docker` without a `Dockerfile` fails with a clear error.
+A forced buildpack still runs its own detection, so the plan is computed from your real project files — forcing `docker` without a `Dockerfile` fails with a clear error. Forcing `docker` is subject to the same plan requirement as detecting it.
 
 ---
 
@@ -158,6 +161,9 @@ A lone `main.py` / `app.py` / `wsgi.py` with no dependency manifest at all is pi
 
 ## 🐳 Dockerfile Projects
 
+> [!IMPORTANT]
+> Available on the **Hobby and Pro** plans. On Free, apps build with the managed Node and Python buildpacks — see [Docker and bring-your-own-image](pricing.md#docker-and-bring-your-own-image) for what that means for your repo.
+
 No `package.json`, no Python manifests, but a `Dockerfile`? The builder runs it **verbatim** with BuildKit on Faable's build infrastructure (targeting `linux/amd64`), pushes the image and pins the deploy to its digest — you control everything. Just honor the port contract below. If a `package.json` with a `next` dependency sits beside the Dockerfile (reachable by forcing `"buildpack": "docker"`), the deploy is registered as a Next.js app so the platform provisions its build cache.
 
 ---
@@ -193,7 +199,7 @@ The platform also injects `FAABLE_HOST` (your app's public URL). Platform-manage
 | Field                 | Purpose                                                                                                                                                                                              |
 | :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                                                                                                             |
-| `buildpack`           | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection.                                                                                                                            |
+| `buildpack`           | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection. `docker` requires Hobby or Pro.                                                                                            |
 | `rootDir`             | Monorepo Root Directory — the subdirectory the app builds from. This is where you set it; a per-app Root Directory (support-configured, for several apps in one repo) takes precedence when present. |
 | `buildCommand`        | Node: build step used when `package.json` has no `build` script (the `build` script wins otherwise). Python: replaces the manifest install.                                                          |
 | `startCommand`        | Overrides everything — framework detection and `npm run start`. On a Next.js app it also opts out of the standalone output.                                                                          |
@@ -213,7 +219,13 @@ Because there's also a `package.json` (or Python manifest) at the root, which ta
 
 ### My repo was made for another platform (Cerebrium, Replicate, Fly…) — will it deploy?
 
-Cerebrium projects deploy natively (see above). For other platforms, the detection error names the config file it recognized (`cog.yaml`, `fly.toml`, `render.yaml`, `vercel.json`, `netlify.toml`, `railway.json`, `heroku.yml`…) — Faable can't consume those directly; add one of the supported manifests or a `Dockerfile`.
+Cerebrium projects deploy natively (see above). For other platforms, the detection error names the config file it recognized (`cog.yaml`, `fly.toml`, `render.yaml`, `vercel.json`, `netlify.toml`, `railway.json`, `heroku.yml`…) — Faable can't consume those directly; add one of the supported manifests, or a `Dockerfile` if you are on Hobby or Pro.
+
+### My deploy says Docker builds "require a paid plan" — what now?
+
+That is a plan entitlement, not a build error: Docker and Dockerfile builds (and deploying a prebuilt image) are available on **Hobby and Pro**. Nothing is wrong with your repository and there is no build log to read — the platform declined the build instead of running it.
+
+On the Free plan, add the manifest for your stack at the repository root and the managed buildpack takes over: a `package.json` for Node.js, a `requirements.txt` or `pyproject.toml` for Python. If your repo already has one _and_ a Dockerfile, [detection prefers the manifest](#-how-detection-works), so it deploys on Free as-is. Otherwise, upgrading to Hobby builds your Dockerfile verbatim. Full comparison: [Docker and bring-your-own-image](pricing.md#docker-and-bring-your-own-image).
 
 ### Which Node version does my app run on?
 
