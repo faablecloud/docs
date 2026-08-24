@@ -64,6 +64,17 @@ On the Free plan each project can promote up to **10 successful deployments per 
 > [!TIP]
 > **Only successful deployments count.** A build that fails never touches the quota, so iterating on a broken build can't lock you out for the rest of the day.
 
+## Sleep on the Free plan
+
+A Free app sleeps after **2 hours without traffic** and starts again on the next real request — a cold start of a few seconds. Nothing is lost while it sleeps: the release, its environment and any attached volume stay exactly as they were. Apps on Hobby and Pro run 24/7 and never sleep.
+
+**External uptime monitors do not keep a Free app awake.** A ping from a monitoring service (Uptime Kuma, UptimeRobot, Pingdom, StatusCake, Better Stack, Site24x7 and similar) is answered by the platform on the app's behalf, so it never starts the instance:
+
+- **`200`** while your latest release is healthy — the app is asleep and will start on real traffic.
+- **`503`** when the platform knows the app is broken: the promoted deployment failed, or the app has no release yet.
+
+Responses carry an `X-Faable-Probe` header (`sleeping` or `unhealthy`) so you can tell them apart from your app's own answers. Your monitor therefore keeps catching the failures that matter on a Free app — a broken release, an app that never deployed — but it does not see errors your code returns while asleep. If you need a monitor to reach the app itself on every check, upgrade to Hobby or Pro, where the app is always running.
+
 ## Build artifact size
 
 When Faable builds your app it produces a **build artifact** — a compressed archive holding your application plus its installed dependencies — and your instances boot from it. The size of that archive is capped per plan:
