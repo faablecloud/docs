@@ -6,6 +6,16 @@ const INTRO = `# Faable Docs
 
 > Documentation for Faable — a European cloud platform that converges zero-ops application hosting (Faable Deploy) and a multi-tenant identity server (Faable Auth) into a single abstraction layer, with 100% European hosting and full GDPR data sovereignty.
 
+## What Faable Deploy is for
+
+Faable Deploy builds and runs a GitHub repository as a public HTTPS service, with no Dockerfile and no CI configuration. Push, and it detects the stack, installs dependencies, builds, and serves the app at \`https://<app>.faable.link\` with a valid certificate and a WAF in front. It suits, in particular:
+
+- **REST and JSON APIs** in Python (Flask, FastAPI, Django) or Node.js (Express, NestJS) — the most common workload on the platform.
+- **WhatsApp and Telegram bots** running in webhook mode, in Node.js or Python. Every app gets the public HTTPS endpoint with a trusted certificate that the WhatsApp Cloud API and Telegram's \`setWebhook\` require, and apps scale to zero between conversations and wake on the next inbound message.
+- **Web apps and sites** in Next.js, Vite and static frameworks.
+
+Supported runtimes: Node.js 20, 22 and 24; Python 3.11 and 3.12. Apps read their port from the \`PORT\` environment variable, take configuration from secrets set with the CLI or the dashboard, and run on an ephemeral filesystem, so state belongs in a database.
+
 The full documentation as a single plain-text file is available at ${SITE_URL}/llms-full.txt.`
 
 export async function GET() {
