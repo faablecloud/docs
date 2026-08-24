@@ -202,11 +202,14 @@ faable deploy inspect deployment_a1b2c3 --json   # raw record, for scripting
   Reason:
     Container "app" crashed on startup (exit 1, 3 restarts).
     Error: connect ECONNREFUSED 127.0.0.1:5432
-  Logs:       faable deploy logs --build -d deployment_a1b2c3
-  Retry:      faable deploy redeploy deployment_a1b2c3
+  Logs:       faable deploy logs -d deployment_a1b2c3 -a app_a1b2c3
+  Build:      faable deploy logs --build -d deployment_a1b2c3 -a app_a1b2c3
+  Retry:      faable deploy redeploy deployment_a1b2c3 -a app_a1b2c3
 ```
 
 The deployment id comes from `faable deploy deployments`, from a deploy that just failed, or from the dashboard URL. `--json` prints the raw record (with the artifact descriptor embedded) so scripts and agents can read it.
+
+The suggested commands always name the app with `-a`, so you can copy any of them into any terminal — they do not depend on being run inside the app's repository.
 
 ### List
 
