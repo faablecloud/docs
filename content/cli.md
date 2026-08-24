@@ -1,6 +1,6 @@
 ---
 title: Faable CLI
-description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, status, logs, deployments, secrets, and custom domains — plus Faable Auth management (users, suspensions, actions, OAuth clients, audit logs) for Node.js, Python, and Dockerfile apps.
+description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, status, logs, deployments, inspect, secrets, and custom domains — plus Faable Auth management (users, suspensions, actions, OAuth clients, audit logs) for Node.js, Python, and Dockerfile apps.
 ---
 
 # Faable CLI
@@ -144,16 +144,23 @@ faable deploy status
 
 ### Logs
 
-Runtime logs of the app (last 24 hours), or the **build output** of the latest deployment — the first thing to check after a failed deploy:
+Runtime logs of the app (last 24 hours), or the **build output** of a deployment — the first thing to check after a failed deploy. `-d` scopes either kind to one deployment id:
 
 ```bash
-faable deploy logs             # runtime logs
+faable deploy logs             # runtime logs of whatever is serving now
 faable deploy logs --build     # build output of the latest deployment
-faable deploy logs --build --follow       # tail the build that is running right now
-faable deploy logs -d deployment_a1b2c3   # scope to one deployment
+faable deploy logs --build --follow          # tail the build that is running right now
+
+faable deploy logs -d deployment_a1b2c3          # runtime logs of THAT deployment
+faable deploy logs --build -d deployment_a1b2c3  # its build output
 ```
 
 `--follow` (or `-f`) tails a build that is still running — the same live output the dashboard's build logs modal shows — and exits red if the build fails. On a finished deployment it prints the recorded output instead.
+
+The two sources behave differently, and it matters when you are debugging an old deployment:
+
+- **Build output** is stored on the deployment itself, so it stays readable for as long as the deployment exists — including failed builds.
+- **Runtime logs** are a rolling **24-hour window** (last 200 lines, your `app` container only). A deployment that stopped serving more than a day ago has nothing left to show; its build output still does.
 
 ### Deployments
 
@@ -169,6 +176,37 @@ faable deploy deployments
   🔴 BUILD_ERROR  deployment_c3d4e5  dbd9afa  (push, 41m ago)
   ⚪ SUPERSEDED  deployment_b2c3d4  e31edcd  (push, 2h ago)
 ```
+
+### Inspect — one deployment, by id
+
+Everything the platform recorded about a single deployment: phase, commit and author, release, detected stack, the packaged runnable (profile, runtime, size), the runtime image it was pinned to, and the **full failure reason** when it went red. Without an id it inspects the latest deployment of the app.
+
+```bash
+faable deploy inspect deployment_a1b2c3
+faable deploy inspect                      # the latest one
+faable deploy inspect deployment_a1b2c3 --json   # raw record, for scripting
+```
+
+```
+🔴 ERROR  deployment_a1b2c3
+  App:        shop-api (app_a1b2c3)
+  Created:    35m ago (2026-08-24T09:12:03.747Z)
+  Trigger:    push (webhook)
+  Serving:    no (not live)
+  Commit:     4ae34bf "fix: bump deps" (main by acme-bot)
+  Release:    1.2.0
+  Stack:      node 22.1.0 (next)
+  Artifact:   next-standalone · node 22 · 41.2 MB (sealed 34m ago)
+  Start:      npm run start
+  Runtime:    faable-runtime-node:22
+  Reason:
+    Container "app" crashed on startup (exit 1, 3 restarts).
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+  Logs:       faable deploy logs --build -d deployment_a1b2c3
+  Retry:      faable deploy redeploy deployment_a1b2c3
+```
+
+The deployment id comes from `faable deploy deployments`, from a deploy that just failed, or from the dashboard URL. `--json` prints the raw record (with the artifact descriptor embedded) so scripts and agents can read it.
 
 ### List
 
@@ -421,6 +459,7 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable deploy status`        | What is live: phase, URL, stack, latest deploy                                        |
 | `faable deploy logs`          | Runtime logs (`--build` for build output, `--build --follow` to tail a running build) |
 | `faable deploy deployments`   | Recent deployments with phases and commits                                            |
+| `faable deploy inspect`       | Full record of one deployment by id (`--json` for the raw one)                        |
 | `faable deploy list`          | List your apps                                                                        |
 | `faable deploy open`          | Open the live app (`--dashboard` for the console)                                     |
 | `faable deploy link`          | Link directory to a Faable app                                                        |
