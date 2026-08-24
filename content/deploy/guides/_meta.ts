@@ -6,6 +6,7 @@ export default {
   'guide-flask': 'Deploy Flask',
   'guide-whatsapp-bot': 'Deploy a WhatsApp Bot',
   'guide-telegram-bot': 'Deploy a Telegram Bot',
+  'guide-uptime-kuma': 'Deploy Uptime Kuma',
   databases: 'Databases & SQLite',
   'migrate-from-vercel': 'Migrate from Vercel',
   'migrate-from-netlify': 'Migrate from Netlify'
