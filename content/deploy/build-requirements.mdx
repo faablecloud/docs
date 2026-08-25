@@ -1,7 +1,7 @@
 ---
 schema: faq
 title: What the Builder Expects in Your Repo
-description: How Faable's remote builder detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, and a Dockerfile as the escape hatch on the Hobby and Pro plans — plus monorepo Root Directory, the $PORT contract and faable.json options.
+description: How Faable's remote builder detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, composer.json or plain .php files for PHP, and a Dockerfile as the escape hatch on the Hobby and Pro plans — plus monorepo Root Directory, the $PORT contract and faable.json options.
 ---
 
 # What the Builder Expects in Your Repo 📦
@@ -14,19 +14,23 @@ Deploys are built by **buildpacks** (Heroku/CNB-style): each one checks for its 
 
 | Priority | File found                                                           | Buildpack                                                                                                                                  |
 | :------- | :------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
-| 1        | `package.json`                                                       | **Node.js** (see below)                                                                                                                    |
-| 2        | `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml` | **Python** (see below)                                                                                                                     |
-| 3        | `Dockerfile`                                                         | **Docker** — your Dockerfile, built verbatim · **Hobby or Pro** ([why](pricing.md#docker-and-bring-your-own-image))                        |
-| 4        | `main.py`, `app.py`, or `wsgi.py` (fallback, no manifest at all)     | **Python** without dependency install (see below)                                                                                          |
+| 1        | `composer.json`                                                      | **PHP** (see below)                                                                                                                        |
+| 2        | `package.json`                                                       | **Node.js** (see below)                                                                                                                    |
+| 3        | `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml` | **Python** (see below)                                                                                                                     |
+| 4        | `Dockerfile`                                                         | **Docker** — your Dockerfile, built verbatim · **Hobby or Pro** ([why](pricing.md#docker-and-bring-your-own-image))                        |
+| 5        | `index.php`, or any `.php` file in the root or `public/` (fallback)  | **PHP** without dependency install (see below)                                                                                             |
+| 5        | `main.py`, `app.py`, or `wsgi.py` (fallback, no manifest at all)     | **Python** without dependency install (see below)                                                                                          |
 | —        | None of the above                                                    | ❌ Deploy fails with a diagnostic listing what was looked for, what your repo contains, and any config from another platform it recognizes |
 
 > [!IMPORTANT]
 > The order matters: if your repo has both a `package.json` and a `Dockerfile`, it is built as a **Node.js** project and the Dockerfile is ignored. The Dockerfile path is the escape hatch for stacks the buildpacks don't detect natively.
+>
+> **PHP is the exception**: a `Dockerfile` beside a PHP project wins, and the app keeps building from your own image. PHP repositories that already ship one are running on it — detection never re-platforms them. Force `"buildpack": "php"` in `faable.json` to take the managed runtime instead.
 
 > [!WARNING]
 > **The Docker buildpack requires a paid plan.** Docker and Dockerfile builds — and deploying a prebuilt image — are available on **Hobby and Pro**. Free apps build with the managed Node and Python buildpacks; a free-plan deploy that resolves to Docker stops before the build with a plan message rather than a build error. See [Docker and bring-your-own-image](pricing.md#docker-and-bring-your-own-image). Note the precedence above works in your favour here: a repo with both a `package.json` and a `Dockerfile` is a Node.js build, so it deploys on Free unchanged.
 
-You can skip detection entirely and **force a buildpack** — `node`, `python`, or `docker` — with the `buildpack` field in `faable.json`:
+You can skip detection entirely and **force a buildpack** — `php`, `node`, `python`, or `docker` — with the `buildpack` field in `faable.json`:
 
 ```json
 { "buildpack": "docker" }
@@ -159,6 +163,78 @@ A lone `main.py` / `app.py` / `wsgi.py` with no dependency manifest at all is pi
 
 ---
 
+## 🐘 PHP Projects
+
+Detected by `composer.json`, or — with no `composer.json` at all — by any `.php` file in the repository root or in `public/`. Your app runs on Faable's shared PHP runtime: **Apache with mod_php**, so your `.htaccess` rules work as written (`mod_rewrite`, `mod_headers` and `mod_expires` are enabled).
+
+A minimal repo the builder accepts is exactly the one you already have:
+
+```
+my-site/
+├── index.php       ← triggers PHP detection
+├── login.php
+└── css/style.css
+```
+
+### Document Root
+
+The builder points Apache at the first of these that holds an `index.php`, and falls back to the repository root:
+
+| Layout                                      | Document root       |
+| :------------------------------------------ | :------------------ |
+| `public/index.php` (Laravel, Symfony, Slim) | `public/`           |
+| `public_html/index.php`                     | `public_html/`      |
+| `web/index.php`                             | `web/`              |
+| `.php` files in the repository root         | the repository root |
+
+When the repository root is the document root, everything beside your PHP is web-reachable — so the runtime denies dotfiles (`.env` first of all), `.sql`/`.sqlite`/`.db`/`.log`/`.ini`/`.sh`/`.yml` files, `composer.json`/`composer.lock`, `package.json`, `faable.json`, `Dockerfile`, `Procfile`, and the `vendor/`, `node_modules/` and `.git/` directories. Directory listings are off. Move anything that isn't web content out of the document root anyway — a `public/` layout is the safe default.
+
+### Dependencies
+
+With a `composer.json`, the builder runs:
+
+```
+composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+```
+
+Your scripts run (Laravel's `package:discover`, Symfony's `cache:clear`), so `vendor/` ships with the app. A `buildCommand` in `faable.json` replaces that install entirely. Without a `composer.json` nothing is installed — plain PHP deploys as it is, and the build log says so.
+
+### PHP Version
+
+First match wins:
+
+1. `.php-version`
+2. `config.platform.php` in `composer.json`
+3. `require.php` in `composer.json` — the platform default is used whenever the constraint allows it, otherwise the highest supported version that satisfies it
+4. Default: `8.3`
+
+Supported PHP versions: **8.2, 8.3 and 8.4**. A pin outside that list fails at detection with the supported list, rather than building an app nothing can run.
+
+### Extensions
+
+The runtime ships `bcmath`, `exif`, `gd`, `intl`, `mysqli`, `opcache`, `pdo_mysql`, `pdo_pgsql` and `zip`, on top of what the official PHP image includes (`curl`, `mbstring`, `openssl`, `session`, `sqlite3`/`pdo_sqlite`, `xml`…). Run `php -m` in a deployed script to see the exact set. An app that needs more ships its own `Dockerfile` (Hobby or Pro).
+
+Defaults worth knowing: `memory_limit` 256M, `max_execution_time` 60s, `upload_max_filesize` and `post_max_size` 32M, and **`display_errors` is off** — errors go to the deploy logs (`faable deploy logs`), never to your visitors.
+
+### What PHP Apps Have to Bring Themselves
+
+Two things trip up PHP projects more than any other stack, and neither is a build error — the deploy succeeds and the app misbehaves at runtime:
+
+- **There is no database beside your app.** `new mysqli("localhost", "root", "", …)` — the XAMPP/WAMP default — has nothing to connect to. Use a managed MySQL or PostgreSQL database and read the credentials from environment variables (`faable deploy secrets set DB_HOST=…`). The build log warns when it spots a localhost connection in your sources.
+- **The filesystem is ephemeral.** Uploads and generated files live in the running container only: they are lost on restart, on sleep/wake and on every deploy, and two instances never see each other's files. Conventional write targets (`uploads/`, `storage/`, `writable/`, `var/`, `bootstrap/cache/`…) are made writable at start-up for caches and temporary work — put anything that must survive in object storage or a database.
+
+WordPress is refused at detection for exactly those two reasons, with an explanation instead of a broken site.
+
+### Start Command
+
+By default the app is served by Apache from the detected document root. A `startCommand` in `faable.json` overrides it completely — use it for an app that starts another way, e.g.:
+
+```json
+{ "startCommand": "php artisan queue:work" }
+```
+
+---
+
 ## 🐳 Dockerfile Projects
 
 > [!IMPORTANT]
@@ -199,9 +275,9 @@ The platform also injects `FAABLE_HOST` (your app's public URL). Platform-manage
 | Field                 | Purpose                                                                                                                                                                                              |
 | :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                                                                                                             |
-| `buildpack`           | Force a buildpack (`node`, `python`, `docker`) instead of auto-detection. `docker` requires Hobby or Pro.                                                                                            |
+| `buildpack`           | Force a buildpack (`php`, `node`, `python`, `docker`) instead of auto-detection. `docker` requires Hobby or Pro.                                                                                     |
 | `rootDir`             | Monorepo Root Directory — the subdirectory the app builds from. This is where you set it; a per-app Root Directory (support-configured, for several apps in one repo) takes precedence when present. |
-| `buildCommand`        | Node: build step used when `package.json` has no `build` script (the `build` script wins otherwise). Python: replaces the manifest install.                                                          |
+| `buildCommand`        | Node: build step used when `package.json` has no `build` script (the `build` script wins otherwise). Python and PHP: replaces the manifest install.                                                  |
 | `startCommand`        | Overrides everything — framework detection and `npm run start`. On a Next.js app it also opts out of the standalone output.                                                                          |
 | `next.standalone`     | Set `false` to ship the full workspace instead of Next's compact standalone output.                                                                                                                  |
 
@@ -216,6 +292,20 @@ Usually the module isn't installed where the app runs: check that it's listed in
 ### I have a Dockerfile but Faable ignores it — why?
 
 Because there's also a `package.json` (or Python manifest) at the root, which takes precedence. Force it with `"buildpack": "docker"` in `faable.json`, remove the manifest from the root, or embrace the zero-config Node/Python buildpacks.
+
+### Can I deploy a PHP app that needs MySQL?
+
+Yes — but the database has to live somewhere else. Faable runs your PHP app, not a database beside it, so a `new mysqli("localhost", "root", "", "my_db")` copied from a XAMPP project connects to nothing. Point it at a managed MySQL or PostgreSQL provider and read the credentials from environment variables:
+
+```php
+$db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASSWORD'), getenv('DB_NAME'));
+```
+
+Then `faable deploy secrets set DB_HOST=… DB_USER=…`. The build log warns you when it finds a localhost connection in your sources, so you find out at deploy time rather than from a blank page.
+
+### Can I deploy WordPress?
+
+Not yet, and the deploy says so instead of shipping a broken site: WordPress needs a MySQL database beside the app and a persistent filesystem for `wp-content/uploads`, and Faable gives an app neither.
 
 ### My repo was made for another platform (Cerebrium, Replicate, Fly…) — will it deploy?
 
