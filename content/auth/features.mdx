@@ -1,0 +1,155 @@
+---
+schema: faq
+title: Faable Auth features
+description: Everything Faable Auth does — social and passwordless login, the five OAuth 2.0 grants, full OpenID Connect, APIs and permissions, the user lifecycle, Actions, webhooks, audit logs, custom domains and a CLI — on a European tenant, included from the Free plan.
+---
+
+# Faable Auth features
+
+**Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect.** It covers the whole identity surface of a product: how people sign in, how your APIs authorize them, what happens over the account's lifetime, and how you extend and audit all of it — without you writing or operating any protocol plumbing. Every tenant runs on European infrastructure, and Auth is [included in every plan, starting on Free](pricing.mdx).
+
+New here? Start with [Get Started](get-started.md) or pick a [quickstart](quickstart). Evaluating against another vendor? See [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx).
+
+## How users sign in
+
+A [connection](connections.md) is a source of users. Enable the ones you want on a [client](clients.md); your application code is identical whichever the user picks, because Faable normalizes every result into standard OAuth 2.0 / OIDC tokens.
+
+| Connection                           | What it gives users                                                                                                                                                          |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Database** (`database`)            | Email + password, with credentials stored and hashed by Faable. Self-service [signup](signup.md) from a browser-only app.                                                    |
+| **[Passwordless](passwordless.mdx)** | Magic link or 6-digit OTP by email. The account is created on first successful verification, already `email_verified`.                                                       |
+| **[Social](social)**                 | Google, GitHub, Microsoft (Entra ID) and Figma, with endpoints preconfigured — paste credentials and go.                                                                     |
+| **Custom OAuth 2.0** (`custom`)      | Any other provider: you supply authorize, token and userinfo URLs. [Facebook](social/facebook.md) is the worked example.                                                     |
+| **External OIDC issuer** (`oidc`)    | Trust a third-party issuer's JWTs — GitHub Actions being the canonical case — for [Token Exchange](oauth-flows/token-exchange.mdx). Machine-to-machine, not a browser login. |
+
+Two details that save work:
+
+- **Universal Login** renders every enabled connection on one hosted screen, or you can send users straight to a provider with `connection_id=…` on `/authorize`.
+- **Shared Faable OAuth apps** for Google, GitHub and Microsoft let you switch a connection on before registering anything with the provider — the consent screen shows Faable until you paste your own credentials.
+
+## Protocol surface
+
+### OAuth 2.0 grants
+
+| Grant                                                           | Use it for                                                                                     |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [Authorization Code + PKCE](oauth-flows/authorization-code.mdx) | Browser and native apps. `S256` is enforced — no other challenge method is advertised.         |
+| [Client Credentials](oauth-flows/client-credentials.mdx)        | Backend services and workers, with no user involved.                                           |
+| [Device Code](oauth-flows/device-code.mdx) (RFC 8628)           | A `yourcli login` command, smart TVs, input-constrained devices.                               |
+| [Refresh Token](oauth-flows/refresh-token.mdx)                  | Keeping sessions alive without sending the user back through login.                            |
+| [Token Exchange](oauth-flows/token-exchange.mdx) (RFC 8693)     | Keyless CI/CD: trade a GitHub Actions OIDC token for a Faable access token — no secrets in CI. |
+
+Not sure which one applies? [Which flow should I use?](oauth-flows) answers it in a table.
+
+### OpenID Connect
+
+Faable Auth implements [OpenID Connect Core 1.0](oidc) on top of those grants:
+
+- **Discovery** at `/.well-known/openid-configuration`, so SDKs and third-party tools configure themselves from the tenant URL alone.
+- **ID tokens** signed with RS256, verifiable against the tenant's rotating **JWKS**.
+- **[UserInfo](oidc/userinfo.md)** — standard profile claims, scope-gated per OIDC §5.4.
+- **[RP-Initiated Logout](oidc/logout.md)** plus **Front-Channel Logout 1.0**: one `/logout` call clears the session at the tenant and notifies every other application signed into it.
+- **[Dynamic Client Registration](clients.md#dynamic-client-registration)** (RFC 7591) — what MCP clients, IDE integrations and OAuth debuggers expect when they onboard themselves.
+
+Because it's standards-first, anything that speaks OIDC plugs in. [Shopify Plus customer accounts](integrations/shopify.md), for instance, lets a store swap its built-in login for your tenant — configured entirely from the two dashboards, no code.
+
+## Your APIs and permissions
+
+Register each backend as an [API](apis.md) (an OAuth resource server) and it gets its own audience identifier, its own permission catalog, and its own token rules:
+
+- **Audience-scoped tokens** — a token minted for `https://api.example.com` carries that `aud`, so every other service rejects it.
+- **Permissions** as `verb:resource` strings, with `enforce_policies` intersecting whatever a client requests against what the API actually defines.
+- **`access_token_authz` dialect** to get a structured `permissions` claim next to `scope`.
+- **Token lifetimes** per API, from 60 seconds to 30 days, and `allow_offline_access` to decide who may hold a refresh token.
+- **Roles and teams** — group users and grant permissions collectively rather than one by one.
+
+Your backend verifies all of this offline: signature against the JWKS, then issuer, audience and scope. [Validate Access Tokens](validate-access-tokens.mdx) ships the Express middleware.
+
+## The account lifecycle
+
+Everything that happens to an identity after (and before) the first login is a supported flow, not something you rebuild:
+
+| Flow                                    | What it does                                                                                                                                |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Signup](signup.md)                     | Email + password registration from a browser-only app, and an `is_new_user` marker on the OAuth callback so you can branch into onboarding. |
+| [Change Email](change-email.md)         | Ownership-verified email updates, with an optional double confirmation from the old address for high-risk accounts.                         |
+| [Team Invitations](team-invitations.md) | Invite by email: known users join the team directly, unknown addresses get a link that creates the account on first click.                  |
+| [Suspend Users](suspend-users.md)       | Block a user across every login flow, token grant, session and management call — instantly, reversibly, without deleting data.              |
+| [Logs](logs.md)                         | A queryable record of email deliveries, webhook attempts and authentication events, filterable with FaableQL.                               |
+
+## Extensibility
+
+- **[Actions](extensibility/actions.md)** run your own JavaScript inside the flow, sandboxed. The `post-login` trigger fires after authentication and **before** tokens are issued, so an Action can enrich the token, deny access with `api.access.deny()`, or send the user through your own UI — terms of service, an MFA step, whatever the rule is — and pick the flow back up on the `continue` trigger.
+- **[Webhooks](extensibility/webhooks.md)** deliver `user.created`, `user.updated`, `user.deleted` and `auth.login` as signed HTTPS POSTs, with HMAC-SHA256 signatures and a timestamp for replay protection.
+
+## Running the tenant
+
+- **[Faable Dashboard](https://dashboard.faable.com)** for connections, clients, users, teams, Actions and settings.
+- **Management API** — the same surface over HTTP, reached with a client-credentials token for the `faable:management:<account_id>` audience.
+- **[`faable auth`](../cli.md#faable-auth)** in the CLI: `users`, `actions`, `clients` and `logs`, with `--query` filters, `--json` output for piping, and bulk suspend/reinstate from a filtered listing.
+- **[Audit logs](logs.md)** in the dashboard and over the API, or mirrored into your own warehouse through a webhook.
+
+## Branding and delivery
+
+- **[Custom Domain](custom-domain.md)** — serve login from `auth.example.com`. Ownership is proven with a DNS TXT record and the TLS certificate is issued and renewed automatically.
+- **Transactional emails** — welcome, OTP and magic link, invitations, email-change confirmations — are rendered with your tenant's logo and colors, localized (English and Spanish today), and overridable per tenant from the dashboard.
+- **Delivery is auditable**: every send lands in [Logs](logs.md) with its `message_id`, so a "the email never arrived" report is a query, not a guess.
+
+## SDKs and quickstarts
+
+| Package                                                                                  | For                                                             |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js)                       | Browsers and React Native — PKCE, session state, token refresh. |
+| [`@faable/auth-helpers-react`](https://www.npmjs.com/package/@faable/auth-helpers-react) | React hooks for session and user state.                         |
+| [`@faable/auth-sdk`](https://www.npmjs.com/package/@faable/auth-sdk)                     | Node.js backends — token verification and the Management API.   |
+
+Copy-paste [quickstarts](quickstart) exist for React, Next.js (client and server-side), Vue, Nuxt, SvelteKit, Angular, vanilla JavaScript, React Native and FastAPI. If you'd rather learn the model properly first, the [Auth Academy](academy) is a five-module course with a lab, an exam and a credential at the end.
+
+## Plans and hosting
+
+Auth is part of the single Faable subscription, and the core — social login, database and passwordless connections, RBAC and teams — is available on **Free**. Webhooks and custom domains start at **Hobby**; audit logs and multiple auth accounts at **Pro**. Full detail, including MAU allowances, is on [Auth pricing](pricing.mdx).
+
+Your users' identities live on **our own hardware in a European datacenter** — not a US platform with an optional EU region. There is no non-EU region to fall back to. See [Security and Compliance](../platform/security-compliance.md) for the full posture, including the certifications we do not hold.
+
+## Not available yet
+
+Being explicit beats discovering it mid-integration:
+
+- **SAML** and any pre-built enterprise SSO connector. Corporate IdPs connect over OAuth 2.0 / OIDC.
+- **Built-in MFA.** A second factor has to be enforced by your application; a `post-login` [Action](extensibility/actions.md) can gate the login on it.
+- **SMS one-time codes.** Passwordless is email only.
+- **Sign in with Apple**, which requires a client secret signed as an ES256 JWT — not supported through custom OAuth connections yet.
+
+## FAQ
+
+### Is Faable Auth free?
+
+Yes — Faable Auth is included in every plan, starting on **Free**, with a fair-use monthly-active-user allowance and one Action per account. Paid plans raise the MAU allowance and unlock webhooks, custom domains, audit logs and multiple auth accounts. See [Auth pricing](pricing.mdx).
+
+### Does Faable Auth support MFA or SAML?
+
+Not natively today. Faable Auth speaks OAuth 2.0 and OpenID Connect, so an enterprise IdP that speaks OIDC connects fine, but there is no SAML connector and no built-in second factor. You can enforce MFA in your own application and gate the login on it with a `post-login` [Action](extensibility/actions.md).
+
+### Can I use Faable Auth without Faable Deploy?
+
+Yes. Faable Auth is a standalone identity server — your applications can run anywhere, on any cloud or on your own machines, and only need to reach the tenant over HTTPS. Running them on [Faable Deploy](../deploy/get-started.md) simply means one subscription and one support relationship.
+
+### Where is my users' data hosted?
+
+On Faable's own hardware in a European datacenter, under European law. There is no non-EU region, so identities do not leave Europe. The details are in [Security and Compliance](../platform/security-compliance.md).
+
+### Does my API have to call Faable on every request?
+
+No. Access tokens are JWTs signed with RS256, so your backend verifies them offline against the tenant's cached JWKS, then checks issuer, audience and scope. See [Validate Access Tokens](validate-access-tokens.mdx).
+
+### How do I migrate from another identity provider?
+
+There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx), plus comparisons for [Firebase Authentication](compare-firebase-auth.mdx), [Supabase Auth](compare-supabase-auth.mdx), [AWS Cognito](compare-aws-cognito.mdx) and [Authelia](compare-authelia.mdx). In every case you export users from the old provider and import them over the Management API — password hashes included, so nobody is forced to reset, and social-only users re-link on their first login through the same provider.
+
+## Start building
+
+1. Create your account and auth tenant in the [Faable Dashboard](https://dashboard.faable.com).
+2. Enable a [connection](connections.md) and register a [client](clients.md).
+3. Wire it up with a [quickstart](quickstart).
+
+<PricingCta product="auth-features">Create your auth tenant</PricingCta>
