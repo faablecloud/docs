@@ -1,6 +1,7 @@
 import { generateStaticParamsFor, importPage } from 'nextra/pages'
 import { useMDXComponents as getMDXComponents } from '../../../mdx-components'
 import { datesForMdxPath } from '../../_lib/last-modified'
+import { OG_SIZE, ogImageUrl } from '../../_lib/og'
 import {
   buildArticle,
   buildBreadcrumb,
@@ -16,6 +17,15 @@ export async function generateMetadata(props, parent) {
 
   const path = params.mdxPath ? params.mdxPath.join('/') : ''
 
+  // Per-page social card, rendered from this page's title by
+  // app/og/[[...mdxPath]]/route.jsx, instead of the one shared brand image.
+  const image = {
+    url: ogImageUrl(params.mdxPath),
+    width: OG_SIZE.width,
+    height: OG_SIZE.height,
+    alt: metadata.title
+  }
+
   return {
     ...metadata,
     alternates: {
@@ -26,13 +36,15 @@ export async function generateMetadata(props, parent) {
       ...metadata.openGraph,
       title: metadata.title,
       description: metadata.description,
-      url: `https://faable.com/docs/${path}`
+      url: `https://faable.com/docs/${path}`,
+      images: [image]
     },
     twitter: {
       ...previousMetadata.twitter,
       ...metadata.twitter,
       title: metadata.title,
-      description: metadata.description
+      description: metadata.description,
+      images: [image]
     }
   }
 }

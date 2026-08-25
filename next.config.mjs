@@ -17,7 +17,7 @@ export default withNextra({
     // basePath; /_next/static keeps Next's own immutable header.
     return [
       {
-        source: '/:path((?!_next/|_pagefind/|badges/|certs/).*)',
+        source: '/:path((?!_next/|_pagefind/|badges/|certs/|og/).*)',
         headers: [
           {
             key: 'Cache-Control',
@@ -27,7 +27,7 @@ export default withNextra({
         ]
       },
       {
-        source: '/:path(_pagefind/.*|badges/.*|certs/.*)',
+        source: '/:path(_pagefind/.*|badges/.*|certs/.*|og/.*)',
         headers: [
           {
             key: 'Cache-Control',
