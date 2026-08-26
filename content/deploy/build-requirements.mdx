@@ -165,6 +165,9 @@ A lone `main.py` / `app.py` / `wsgi.py` with no dependency manifest at all is pi
 
 ## 🐘 PHP Projects
 
+> [!TIP]
+> Deploying Laravel or a plain PHP site? [Deploy a PHP App](guides/guide-php.md) walks through both end to end, including the environment a stock Laravel needs.
+
 Detected by `composer.json`, or — with no `composer.json` at all — by any `.php` file in the repository root or in `public/`. Your app runs on Faable's shared PHP runtime: **Apache with mod_php**, so your `.htaccess` rules work as written (`mod_rewrite`, `mod_headers` and `mod_expires` are enabled).
 
 A minimal repo the builder accepts is exactly the one you already have:
@@ -346,4 +349,4 @@ Yes — `faable deploy` uploads your project sources and the build runs on Faabl
 - **[Get Started](get-started.md)** — link a repo and ship your first deploy.
 - **[Runtime](runtime.md)** — how your app runs: restarts, env vars, app manager.
 - **[GitHub Actions](github-actions.md)** — deploy from CI on every push.
-- **Framework guides** — complete end-to-end examples: [Express](guides/guide-express.md) (Node.js), [Django](guides/guide-django.md), [FastAPI](guides/guide-fastapi.md), [Flask](guides/guide-flask.md).
+- **Framework guides** — complete end-to-end examples: [Express](guides/guide-express.md) (Node.js), [Django](guides/guide-django.md), [FastAPI](guides/guide-fastapi.md), [Flask](guides/guide-flask.md), [PHP & Laravel](guides/guide-php.md).

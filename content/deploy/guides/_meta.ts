@@ -4,6 +4,7 @@ export default {
   'guide-django': 'Deploy Django',
   'guide-fastapi': 'Deploy FastAPI',
   'guide-flask': 'Deploy Flask',
+  'guide-php': 'Deploy PHP & Laravel',
   'guide-whatsapp-bot': 'Deploy a WhatsApp Bot',
   'guide-telegram-bot': 'Deploy a Telegram Bot',
   'guide-uptime-kuma': 'Deploy Uptime Kuma',
