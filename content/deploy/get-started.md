@@ -27,6 +27,9 @@ Three concepts model the whole product:
 
 That's it — nothing to configure, no tokens or YAML to write.
 
+> [!NOTE]
+> Linked an empty repository? Just push your first commit. Faable deploys from the repository's default branch, so whether your first push creates `main` or `master`, the app picks it up. You can change the deploy branch at any time from the app page.
+
 > [!TIP]
 > Faable detects your framework automatically and, if your project has a build step, runs it for you before every deploy. Need multi-environment setups (staging/preview/production) or custom build commands? See the [advanced deploy options](github-actions.md).
 
