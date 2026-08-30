@@ -11,23 +11,25 @@ Faable Deploy is part of the unified Faable subscription. The platform fee and b
 
 ## What each plan includes for Deploy
 
-| Plan      | Deploy entitlements                                                                                                                                                                                                                                 |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | 1 free `bi.xs` instance per project · catalog limited to `bi.xs` · **managed Node and Python buildpacks only** · **up to 10 successful deployments per day per project** (resets at 00:00 UTC) · **build artifacts up to 512 MB** · 10 GB bandwidth |
-| **Hobby** | Full instance catalog · **Docker, Dockerfile and prebuilt-image deploys** · **unlimited deployments** · **build artifacts up to 2 GB** · apps run 24/7 · custom domains per app · egress overage **0.24 €/GB**                                      |
-| **Pro**   | Everything in Hobby · egress overage **0.18 €/GB** · 99.9 % uptime SLA                                                                                                                                                                              |
+| Plan      | Deploy entitlements                                                                                                                                                                                                                                      |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | 1 free `bi.xs` instance per project · catalog limited to `bi.xs` · **managed Node, Python and PHP buildpacks only** · **up to 10 successful deployments per day per project** (resets at 00:00 UTC) · **build artifacts up to 512 MB** · 10 GB bandwidth |
+| **Hobby** | Full instance catalog · **Docker, Dockerfile and prebuilt-image deploys** · **unlimited deployments** · **build artifacts up to 2 GB** · apps run 24/7 · custom domains per app · egress overage **0.24 €/GB**                                           |
+| **Pro**   | Everything in Hobby · egress overage **0.18 €/GB** · 99.9 % uptime SLA                                                                                                                                                                                   |
 
 ## Docker and bring-your-own-image
 
 **Docker and Dockerfile builds — and deploying a prebuilt image — require a paid plan (Hobby or Pro).**
 
-On the **Free** plan, apps build with the two managed buildpacks:
+On the **Free** plan, apps build with the three managed buildpacks:
 
 | Your repository has                                                | Free plan            |
 | :----------------------------------------------------------------- | :------------------- |
+| `composer.json`                                                    | ✅ PHP buildpack     |
 | `package.json`                                                     | ✅ Node.js buildpack |
 | `requirements.txt`, `pyproject.toml`, `Pipfile`, `cerebrium.toml`  | ✅ Python buildpack  |
 | `main.py`, `app.py` or `wsgi.py` with no manifest                  | ✅ Python fallback   |
+| `.php` files with no `composer.json` **and no `Dockerfile`**       | ✅ PHP fallback      |
 | Only a `Dockerfile`, or `{"buildpack": "docker"}` in `faable.json` | ❌ Hobby or Pro      |
 | A prebuilt image deployed directly (no source build)               | ❌ Hobby or Pro      |
 
@@ -35,7 +37,7 @@ A free-plan deploy that resolves to the Docker buildpack stops with `Docker and 
 
 Two ways forward:
 
-- **Deploy with a managed buildpack.** Most projects that carry a Dockerfile also carry a `package.json` or a `requirements.txt` — and when both exist at the repository root, [detection prefers the managed buildpack anyway](build-requirements.mdx#-how-detection-works), so those repos deploy on Free with no changes at all. A repository holding _only_ a Dockerfile needs the matching manifest added.
+- **Deploy with a managed buildpack.** Most projects that carry a Dockerfile also carry a `package.json`, a `requirements.txt` or a `composer.json` — and when both exist at the repository root, [detection prefers the managed buildpack anyway](build-requirements.mdx#-how-detection-works), so those repos deploy on Free with no changes at all. A repository holding _only_ a Dockerfile needs the matching manifest added. **PHP is the exception**: plain `.php` files are a fallback signal that a `Dockerfile` outranks, so a PHP repo shipping one must add a `composer.json` or remove the `Dockerfile`.
 - **Upgrade to Hobby or Pro.** Your Dockerfile is then built verbatim with BuildKit, exactly as described in [Dockerfile Projects](build-requirements.mdx#-dockerfile-projects).
 
 > [!NOTE]
