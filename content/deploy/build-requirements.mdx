@@ -95,17 +95,26 @@ Next.js is the exception: it always runs as a server (never static), with a pers
 
 ### Monorepos (Root Directory)
 
-To deploy one app from a monorepo (Turborepo, npm/yarn/pnpm workspaces), declare its **Root Directory** with `rootDir` in a `faable.json` at the repository root:
+To deploy one app from a repository holding several, declare its **Root Directory** with `rootDir` in a `faable.json` at the repository root:
 
 ```json
 { "rootDir": "apps/api" }
 ```
 
+This works for both shapes a monorepo comes in:
+
+- **A workspace** (Turborepo, npm/yarn/pnpm workspaces) — a `package.json` at the repository root ties the packages together.
+- **Sibling folders** — `client/` and `server/`, each self-contained with its own `package.json` and lockfile, and nothing at the repository root.
+
 The builder then:
 
-- installs dependencies at the **workspace root** (hoisted packages resolve normally),
+- installs dependencies at the **workspace root** when there is one (hoisted packages resolve normally), and **inside the Root Directory** when the repository root has no `package.json`,
 - detects, builds and packages the app **inside the Root Directory**,
 - for Next.js, points the standalone output tracing at the workspace root so shared packages are included.
+
+`rootDir` is honored by every buildpack: Node, Python, PHP and a `Dockerfile` in a subdirectory.
+
+There is only ever **one** `faable.json`, and it lives at the repository root — `startCommand`, `buildCommand` and the rest are read from there too, not from inside the Root Directory.
 
 The path is relative to the repository root — absolute paths and `..` segments are rejected, and the build fails with a clear error if the directory doesn't exist.
 
@@ -332,7 +341,7 @@ Add a `faable.json` at the repository root declaring the subdirectory to build f
 { "rootDir": "apps/api" }
 ```
 
-Dependencies install at the workspace root, and the app builds from the subdirectory — hoisted packages and shared workspace libraries resolve normally. One Faable app per deployable package. See [Monorepos (Root Directory)](#monorepos-root-directory) for the details.
+The app builds from that subdirectory. Dependencies install at the workspace root when the repository root has a `package.json` (so hoisted packages and shared workspace libraries resolve normally), and inside the subdirectory when it doesn't — a repo that is just `client/` + `server/` works without a workspace. Keep the `faable.json` at the repository root: it is the only one read. One Faable app per deployable package. See [Monorepos (Root Directory)](#monorepos-root-directory) for the details.
 
 ### What port should my app listen on?
 
