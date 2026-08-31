@@ -1,7 +1,7 @@
 ---
 schema: faq
 title: What the Builder Expects in Your Repo
-description: How Faable's remote builder detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, composer.json or plain .php files for PHP, and a Dockerfile as the escape hatch on the Hobby and Pro plans — plus monorepo Root Directory, the $PORT contract and faable.json options.
+description: How Faable's remote builder detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, composer.json or plain .php files for PHP, an index.html for a plain static site, and a Dockerfile as the escape hatch on the Hobby and Pro plans — plus monorepo Root Directory, the $PORT contract and faable.json options.
 ---
 
 # What the Builder Expects in Your Repo 📦
@@ -20,6 +20,7 @@ Deploys are built by **buildpacks** (Heroku/CNB-style): each one checks for its 
 | 4        | `Dockerfile`                                                         | **Docker** — your Dockerfile, built verbatim · **Hobby or Pro** ([why](pricing.md#docker-and-bring-your-own-image))                        |
 | 5        | `index.php`, or any `.php` file in the root or `public/` (fallback)  | **PHP** without dependency install (see below)                                                                                             |
 | 5        | `main.py`, `app.py`, or `wsgi.py` (fallback, no manifest at all)     | **Python** without dependency install (see below)                                                                                          |
+| 6        | `index.html` in the root, `public/`, `dist/`, `build/` or `_site/`   | **Static** — the files are the site, served by nginx (see below)                                                                           |
 | —        | None of the above                                                    | ❌ Deploy fails with a diagnostic listing what was looked for, what your repo contains, and any config from another platform it recognizes |
 
 > [!IMPORTANT]
@@ -30,7 +31,7 @@ Deploys are built by **buildpacks** (Heroku/CNB-style): each one checks for its 
 > [!WARNING]
 > **The Docker buildpack requires a paid plan.** Docker and Dockerfile builds — and deploying a prebuilt image — are available on **Hobby and Pro**. Free apps build with the managed Node, Python and PHP buildpacks; a free-plan deploy that resolves to Docker stops before the build with a plan message rather than a build error. See [Docker and bring-your-own-image](pricing.md#docker-and-bring-your-own-image). Note the precedence above works in your favour here: a repo with both a `package.json` and a `Dockerfile` is a Node.js build, so it deploys on Free unchanged. The PHP exception cuts the other way, though — a `Dockerfile` beside a PHP project wins, so a repo of plain `.php` files with a `Dockerfile` resolves to Docker and needs the `Dockerfile` removed (or a `composer.json` added) to build on Free.
 
-You can skip detection entirely and **force a buildpack** — `php`, `node`, `python`, or `docker` — with the `buildpack` field in `faable.json`:
+You can skip detection entirely and **force a buildpack** — `php`, `node`, `python`, `docker`, or `static` — with the `buildpack` field in `faable.json`:
 
 ```json
 { "buildpack": "docker" }
@@ -144,7 +145,7 @@ A `buildCommand` in `faable.json` replaces the manifest install entirely — use
 4. `requires-python` in `pyproject.toml`
 5. Default: `3.11`
 
-Supported Python minors: **3.11 and 3.12** — the app runs on Faable's shared runtime image for the resolved minor.
+Supported Python minors: **3.10, 3.11, 3.12 and 3.13** — the app runs on Faable's shared runtime image for the resolved minor.
 
 **Start command**, first match wins:
 
@@ -247,6 +248,54 @@ By default the app is served by Apache from the detected document root. A `start
 
 ---
 
+## 📄 Static Sites
+
+No `package.json`, no framework, no build step — just an `index.html` and the files beside it:
+
+```
+my-site/
+├── index.html      ← triggers static detection
+├── style.css
+├── script.js
+└── assets/
+```
+
+That deploys as it is. Your files are served by **nginx** on Faable's shared static runtime: no language runtime boots, nothing is installed, and the deploy is over in seconds. It is the same site you would open with `file://`, on a URL.
+
+This is the **last** buildpack detection tries, and deliberately so: an `index.html` is the weakest signal in the repository — every framework ships one. Any manifest (`package.json`, `requirements.txt`, `composer.json`) or a `Dockerfile` claims the repo first, so a React project keeps building as React and only a repo nothing else can build lands here.
+
+### Document Root
+
+The builder serves the first of these that holds an `index.html`:
+
+| Layout                              | Served directory    |
+| :---------------------------------- | :------------------ |
+| `public/index.html`                 | `public/`           |
+| `dist/index.html`                   | `dist/`             |
+| `build/index.html`                  | `build/`            |
+| `_site/index.html`                  | `_site/`            |
+| `index.html` in the repository root | the repository root |
+
+A build output directory wins over the repository root, so a repo carrying a committed build in `dist/` ships **only** that directory — the sources beside it never leave the builder. When the repository root is the document root there is nothing to separate, so the whole repository is published: every file becomes a URL, not just the pages you link to. The build log says so, and names any `.env`-style file it finds. Keep secrets out of a repo you deploy this way.
+
+`docs/` is **not** a document root: it is GitHub Pages' convention, but it is also where most repositories keep documentation for a project that is not a website. Point `rootDir` at it if that is what you want to publish.
+
+### Single-Page Apps
+
+By default an unknown path returns **404** — correct for a multi-page site, wrong for a client-side router. Turn on the rewrite-to-`index.html` fallback in `faable.json`:
+
+```json
+{ "static": { "spa": true } }
+```
+
+You rarely need this: a React, Vue or Angular repo has a `package.json`, so it builds with the [Node.js buildpack](#static-frontends), which already knows whether its framework wants an SPA fallback. This switch is for a **built** SPA committed to the repository with no manifest beside it.
+
+### What You Don't Get
+
+There is no server, so there is nothing to run server-side code with: no PHP, no API routes, no `$PORT` to listen on, no environment variables reaching your pages (a static file is served byte-for-byte, so a secret in your JavaScript is a public secret). Assets are cached hard for 30 days by their URL — hash your filenames if you need instant invalidation. If your site needs any of that, it needs a real runtime: add a `package.json`, a Python manifest, or a `Dockerfile`.
+
+---
+
 ## 🐳 Dockerfile Projects
 
 > [!IMPORTANT]
@@ -280,18 +329,20 @@ The platform also injects `FAABLE_HOST` (your app's public URL). Platform-manage
   "rootDir": "apps/web",
   "buildCommand": "npm run build:prod",
   "startCommand": "node dist/main.js",
-  "next": { "standalone": false }
+  "next": { "standalone": false },
+  "static": { "spa": false }
 }
 ```
 
 | Field                 | Purpose                                                                                                                                                                                              |
 | :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                                                                                                             |
-| `buildpack`           | Force a buildpack (`php`, `node`, `python`, `docker`) instead of auto-detection. `docker` requires Hobby or Pro.                                                                                     |
+| `buildpack`           | Force a buildpack (`php`, `node`, `python`, `docker`, `static`) instead of auto-detection. `docker` requires Hobby or Pro.                                                                           |
 | `rootDir`             | Monorepo Root Directory — the subdirectory the app builds from. This is where you set it; a per-app Root Directory (support-configured, for several apps in one repo) takes precedence when present. |
 | `buildCommand`        | Node: build step used when `package.json` has no `build` script (the `build` script wins otherwise). Python and PHP: replaces the manifest install.                                                  |
 | `startCommand`        | Overrides everything — framework detection and `npm run start`. On a Next.js app it also opts out of the standalone output.                                                                          |
 | `next.standalone`     | Set `false` to ship the full workspace instead of Next's compact standalone output.                                                                                                                  |
+| `static.spa`          | Static sites only: set `true` so unknown paths rewrite to `index.html` (client-side routers). Defaults to `false` — unknown paths 404.                                                               |
 
 ---
 
@@ -318,6 +369,14 @@ Then `faable deploy secrets set DB_HOST=… DB_USER=…`. The build log warns yo
 ### Can I deploy WordPress?
 
 Not yet, and the deploy says so instead of shipping a broken site: WordPress needs a MySQL database beside the app and a persistent filesystem for `wp-content/uploads`, and Faable gives an app neither.
+
+### Can I deploy a plain HTML site with no framework and no package.json?
+
+Yes. A repository that is an `index.html` plus its CSS, JavaScript and images deploys as it is — the static buildpack picks it up and nginx serves the files, with no build step and no manifest to add. That covers a portfolio, a landing page, a CV, a course project, or a site built by hand or by an AI tool. If the site lives in a subdirectory, point `rootDir` at it. See [Static Sites](#-static-sites).
+
+### Why is my static site 404ing on every route except the homepage?
+
+Because a static site serves files, and the file for that route does not exist. That is correct for a multi-page site and wrong for a single-page app with a client-side router — turn on the fallback with `{ "static": { "spa": true } }` in `faable.json` and unknown paths rewrite to `index.html`.
 
 ### My repo was made for another platform (Cerebrium, Replicate, Fly…) — will it deploy?
 
