@@ -34,7 +34,7 @@ Direct answers to the most common questions about Faable. For details, follow th
 
 ## What frameworks and stacks does Faable Deploy support?
 
-**Faable Deploy runs any stack that listens on the `$PORT` environment variable in a Linux container.** It auto-detects **Node.js** (20, 22, 24) — including Next.js and Express — and **Python** (3.11, 3.12) — including Django, FastAPI, and Flask — plus static frontends (Astro, Vite, Angular, Gatsby, CRA, Vue). Anything else deploys from your own `Dockerfile`. Your server binds to `0.0.0.0` on `$PORT` and Faable handles the rest. See the guides for [Next.js](deploy/guides/guide-next.md), [Express](deploy/guides/guide-express.md), [Django](deploy/guides/guide-django.md), [FastAPI](deploy/guides/guide-fastapi.md) and [Flask](deploy/guides/guide-flask.md), or the full [build requirements](deploy/build-requirements.mdx).
+**Faable Deploy runs any stack that listens on the `$PORT` environment variable in a Linux container.** It auto-detects **Node.js** (20, 22, 24) — including Next.js and Express — and **Python** (3.10, 3.11, 3.12, 3.13) — including Django, FastAPI, and Flask — plus static frontends (Astro, Vite, Angular, Gatsby, CRA, Vue). Anything else deploys from your own `Dockerfile`. Your server binds to `0.0.0.0` on `$PORT` and Faable handles the rest. See the guides for [Next.js](deploy/guides/guide-next.md), [Express](deploy/guides/guide-express.md), [Django](deploy/guides/guide-django.md), [FastAPI](deploy/guides/guide-fastapi.md) and [Flask](deploy/guides/guide-flask.md), or the full [build requirements](deploy/build-requirements.mdx).
 
 ## Does Faable Auth replace Auth0, Clerk, or Keycloak?
 

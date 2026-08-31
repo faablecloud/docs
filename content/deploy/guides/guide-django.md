@@ -142,7 +142,7 @@ Faable Deploy does not provide a managed database; point `DATABASE_URL` at your 
 
 ## Choosing the Python version
 
-The default is Python 3.11. Supported minors are **3.11 and 3.12** — pin one with a `runtime.txt`:
+The default is Python 3.11. Supported minors are **3.10, 3.11, 3.12 and 3.13** — pin one with a `runtime.txt`:
 
 ```txt
 python-3.12
@@ -171,7 +171,7 @@ Set it as the `buildCommand` in `faable.json` so it runs at build time: `{"build
 
 ### Which Python versions does Faable support for Django?
 
-3.11 and 3.12. The default is 3.11; pin the one you want with `runtime.txt` (`python-3.12`), `.python-version`, or `requires-python` in `pyproject.toml`. Note that Django 6.x requires Python ≥3.12, so on the latest Django you must pin `3.12` explicitly.
+3.10, 3.11, 3.12 and 3.13. The default is 3.11; pin the one you want with `runtime.txt` (`python-3.13`), `.python-version`, or `requires-python` in `pyproject.toml`. Note that Django 6.x requires Python ≥3.12, so on the latest Django you must pin `3.12` or `3.13` explicitly.
 
 ### Does Faable run my Django migrations automatically?
 

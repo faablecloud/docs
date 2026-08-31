@@ -32,7 +32,7 @@ Every major library supports webhook mode. Use it.
 Detection is file-based ([full rules](../build-requirements.mdx)):
 
 - **Node.js** — a `package.json` with a `start` script. Supported versions: 20, 22 and 24.
-- **Python** — a `requirements.txt`, `pyproject.toml` or `Pipfile`, plus a module defining your app object. Supported versions: 3.11 and 3.12.
+- **Python** — a `requirements.txt`, `pyproject.toml` or `Pipfile`, plus a module defining your app object. Supported versions: 3.10, 3.11, 3.12 and 3.13.
 
 ## Serve on `$PORT`
 
