@@ -238,6 +238,8 @@ exports.onExecuteClientCredentials = async (event, api) => {
 
 The claim is then present on the login tokens, on every token obtained by refreshing them, and on M2M tokens. The audit log records an `action.claims` row per action with the claim **names** and total size — never the values.
 
+**Reading the claims back.** Access-token claims also come back from `/userinfo` and `/me` as top-level properties (profile fields always win over a same-named claim), so `session.user` in [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) carries them with no extra call. To read them without a request, `auth.getClaims()` decodes the token locally, and `@faable/auth-helpers-react` exposes `useClaims()` / `useClaim(name)`. Treat them as display data: authorization happens where the token is validated.
+
 ### Tracking signup conversions
 
 For **signup analytics** (Google Ads conversions, PostHog events…), you don't need an Action at all: when a flow creates a new account, the redirect back to your app carries a one-time **`signup=true`** query parameter — for every flow (register form, passwordless, social OAuth). Fire your conversion client-side when you see it:

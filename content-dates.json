@@ -73,7 +73,7 @@
   },
   "content/auth/extensibility/actions.md": {
     "published": "2026-05-16T11:42:20+02:00",
-    "modified": "2026-09-02T16:46:51.541Z"
+    "modified": "2026-09-02T20:38:43.621Z"
   },
   "content/auth/extensibility/webhooks.md": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -168,8 +168,8 @@
     "published": "2026-07-27T14:41:26+02:00"
   },
   "content/auth/quickstart/javascript.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-07T12:06:31+02:00"
+    "published": "2026-07-07T12:06:31+02:00",
+    "modified": "2026-09-02T20:38:43.621Z"
   },
   "content/auth/quickstart/nextjs-server-side.mdx": {
     "modified": "2026-07-16T12:45:45+02:00",

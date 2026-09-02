@@ -129,6 +129,15 @@ If your backend validates the token's `audience`, pass your [API](../apis.md) id
 
 From the session: `const { data } = await auth.getSession()`, then `data.session?.access_token`. There is no separate `getAccessToken()` — `getSession()` already refreshes expired tokens before returning.
 
+### How do I read custom claims (roles, tenant, station…) in the client?
+
+Two ways, both fed by the same access token:
+
+- `session.user` already carries the custom claims your tenant puts on the token (an Action's `api.accessToken.setCustomClaim` or a connection's `claims_mapping`) as top-level properties, because `/me` returns them: `data.session.user['ciapol.com/station_id']`.
+- `auth.getClaims<{ 'ciapol.com/station_id': string }>()` decodes the token locally (standard claims like `sub`, `scope`, `exp` plus your custom ones) and refreshes an expired session first, like `getSession()`. `auth.getClaim('ciapol.com/station_id')` returns a single value or `null`.
+
+Claims are decoded, not signature-verified: use them for UI and routing, never as authorization — the API that receives the token is what validates it. See [Actions](../extensibility/actions.md#example--custom-claims-on-every-token).
+
 ### Do I need a framework or a build step?
 
 No. `@faable/auth-js` is framework-agnostic and works with any bundler (Vite here) or plain ES modules. The [React](react.md), [Vue](vue.md), [SvelteKit](sveltekit.md), and [Angular](angular.md) quickstarts wire the same client into each framework.
