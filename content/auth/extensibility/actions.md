@@ -11,13 +11,17 @@ Actions are stored per-account, run in execution order, and have a focused API f
 
 ## Triggers
 
-| Trigger              | When it runs                                                                                                            | Typical use                                                                                  |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `post-login`         | After the user is authenticated, **before** tokens are issued.                                                          | Enforce rules, redirect to custom UI (terms of service, MFA enrollment), enrich the session. |
-| `continue`           | When the user returns from a `post-login` redirect via the `/continue` endpoint.                                        | Pick up state and decide what to do next.                                                    |
-| `client-credentials` | On a `client_credentials` token request, **before** the machine-to-machine access token is issued. No user, no browser. | Add custom claims to M2M tokens, deny specific clients.                                      |
+An action runs on every trigger whose **hook it exports**. There is nothing to configure: export `onExecutePostLogin` and the action runs after login; export `onExecuteClientCredentials` too and the same action also runs on machine-to-machine token requests. The server derives the read-only `triggers` list from the code every time it is saved.
 
-Multiple actions can be registered at the same trigger; they execute in ascending `order`. The first one to call `api.access.deny()` short-circuits the chain; the first one to call `api.redirect.sendUserTo()` pauses the flow. Custom claims set with `setCustomClaim()` accumulate across the chain (the last action to set a name wins).
+| Trigger              | Hook to export               | When it runs                                                                                                            | Typical use                                                                                 |
+| -------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `post-login`         | `onExecutePostLogin`         | After the user is authenticated, **before** tokens are issued.                                                          | Enforce rules, redirect to custom UI (terms of service, MFA enrollment), enrich the tokens. |
+| `continue`           | `onExecuteContinue`          | When the user returns from a `post-login` redirect via the `/continue` endpoint.                                        | Pick up state and decide what to do next.                                                   |
+| `client-credentials` | `onExecuteClientCredentials` | On a `client_credentials` token request, **before** the machine-to-machine access token is issued. No user, no browser. | Add custom claims to M2M tokens, deny specific clients.                                     |
+
+Several actions can export the same hook. They execute in ascending `order`; on the same `order`, the **newest** action runs first. The first one to call `api.access.deny()` short-circuits the chain; the first one to call `api.redirect.sendUserTo()` pauses the flow. Custom claims set with `setCustomClaim()` accumulate across the chain (the last action to set a name wins).
+
+Code that exports no hook, or that fails to load (syntax error, crash at the top level), is rejected when you save it with a `400` and the reason — never at the first login it would have broken.
 
 > [!IMPORTANT]
 > **Plan limits**: Free accounts can have **1 Action** per account. Hobby and Pro allow unlimited Actions. See [Auth pricing](../pricing.md).
@@ -33,22 +37,33 @@ Multiple actions can be registered at the same trigger; they execute in ascendin
 
 ### Fields
 
-| Field     | Description                                       |
-| --------- | ------------------------------------------------- |
-| `name`    | Free-text label (max 200 chars).                  |
-| `trigger` | `post-login`, `continue` or `client-credentials`. |
-| `code`    | The JavaScript source to execute.                 |
-| `enabled` | When `false`, the action is skipped.              |
-| `order`   | Integer; lower runs first.                        |
+| Field      | Description                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| `name`     | Free-text label (max 200 chars).                                                                           |
+| `triggers` | Read-only. Derived from the hooks the code exports: any of `post-login`, `continue`, `client-credentials`. |
+| `code`     | The JavaScript source to execute.                                                                          |
+| `enabled`  | When `false`, the action is skipped.                                                                       |
+| `order`    | Integer; lower runs first.                                                                                 |
 
 ## Writing an Action
 
-Your code must export an async function whose name matches the trigger. For `post-login`:
+Your code exports one async function per hook it wants to handle. A minimal `post-login` action:
 
 ```js
 exports.onExecutePostLogin = async (event, api) => {
   // event holds context about the current login.
   // api is how you affect the outcome.
+}
+```
+
+One action may export several hooks — it then runs on each of those triggers:
+
+```js
+exports.onExecutePostLogin = async (event, api) => {
+  /* users */
+}
+exports.onExecuteClientCredentials = async (event, api) => {
+  /* services */
 }
 ```
 
@@ -192,17 +207,17 @@ exports.onExecutePostLogin = async (event, api) => {
 
 ### Example — custom claims on every token
 
-A resource server needs to know which station a caller belongs to, whether the token was issued to a person (`authorization_code`, and its refreshes) or to a service (`client_credentials`). Two actions, one per trigger:
+A resource server needs to know which station a caller belongs to, whether the token was issued to a person (`authorization_code`, and its refreshes) or to a service (`client_credentials`). One action exporting both hooks:
 
 ```js
-// Trigger: post-login
+// Runs on post-login
 exports.onExecutePostLogin = async (event, api) => {
   const station = event.user.app_metadata?.station_id ?? 'unassigned'
   api.accessToken.setCustomClaim('https://example.com/station_id', station)
   api.idToken.setCustomClaim('https://example.com/station_id', station)
 }
 
-// Trigger: client-credentials
+// Runs on client-credentials
 // Clients carry no free-form metadata, so map them here (or fetch the
 // mapping from your own config at deploy time).
 const STATION_BY_CLIENT = {
