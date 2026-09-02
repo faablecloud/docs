@@ -1,6 +1,6 @@
 ---
 title: Faable CLI
-description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, status, logs, deployments, inspect, secrets, and custom domains — plus Faable Auth management (users, suspensions, actions, OAuth clients, audit logs) for Node.js, Python, and Dockerfile apps.
+description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, cancel, status, logs, deployments, inspect, secrets, and custom domains — plus Faable Auth management (users, suspensions, actions, OAuth clients, audit logs) for Node.js, Python, and Dockerfile apps.
 ---
 
 # Faable CLI
@@ -123,6 +123,17 @@ faable deploy redeploy deployment_a1b2c3   # a specific one
 ```
 
 The platform refuses to rebuild code older than what production is serving — push a new deploy in that case.
+
+### Cancel — stop a build you no longer want
+
+Deployed from the wrong directory, or pushed a commit you meant to amend? Stop the build instead of waiting for it to finish and then deploying over it. Without arguments it cancels the deployment currently in flight:
+
+```bash
+faable deploy cancel
+faable deploy cancel deployment_a1b2c3   # a specific one
+```
+
+Only a deployment that is still **queued or building** can be canceled. Once the platform has taken it over to roll it out, it runs to completion — production keeps serving the last promoted deployment either way, so a cancel never takes your site down. Cancelling twice is not an error.
 
 ## Inspecting
 
@@ -459,6 +470,7 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable deploy`               | Deploy project to production                                                          |
 | `faable deploy trigger`       | Build the repo HEAD server-side (no upload)                                           |
 | `faable deploy redeploy`      | Retry a failed deployment from its source                                             |
+| `faable deploy cancel`        | Stop a deployment that is still queued or building                                    |
 | `faable deploy status`        | What is live: phase, URL, stack, latest deploy                                        |
 | `faable deploy logs`          | Runtime logs (`--build` for build output, `--build --follow` to tail a running build) |
 | `faable deploy deployments`   | Recent deployments with phases and commits                                            |
