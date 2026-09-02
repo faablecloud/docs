@@ -11,12 +11,13 @@ Actions are stored per-account, run in execution order, and have a focused API f
 
 ## Triggers
 
-| Trigger      | When it runs                                                                     | Typical use                                                                                  |
-| ------------ | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `post-login` | After the user is authenticated, **before** tokens are issued.                   | Enforce rules, redirect to custom UI (terms of service, MFA enrollment), enrich the session. |
-| `continue`   | When the user returns from a `post-login` redirect via the `/continue` endpoint. | Pick up state and decide what to do next.                                                    |
+| Trigger              | When it runs                                                                                                            | Typical use                                                                                  |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `post-login`         | After the user is authenticated, **before** tokens are issued.                                                          | Enforce rules, redirect to custom UI (terms of service, MFA enrollment), enrich the session. |
+| `continue`           | When the user returns from a `post-login` redirect via the `/continue` endpoint.                                        | Pick up state and decide what to do next.                                                    |
+| `client-credentials` | On a `client_credentials` token request, **before** the machine-to-machine access token is issued. No user, no browser. | Add custom claims to M2M tokens, deny specific clients.                                      |
 
-Multiple actions can be registered at the same trigger; they execute in ascending `order`. The first one to call `api.access.deny()` short-circuits the chain; the first one to call `api.redirect.sendUserTo()` pauses the flow.
+Multiple actions can be registered at the same trigger; they execute in ascending `order`. The first one to call `api.access.deny()` short-circuits the chain; the first one to call `api.redirect.sendUserTo()` pauses the flow. Custom claims set with `setCustomClaim()` accumulate across the chain (the last action to set a name wins).
 
 > [!IMPORTANT]
 > **Plan limits**: Free accounts can have **1 Action** per account. Hobby and Pro allow unlimited Actions. See [Auth pricing](../pricing.md).
@@ -131,9 +132,28 @@ api.redirect.sendUserTo(url: string)
   // Pause the login flow and send the user's browser to `url`.
   // Faable persists state so the flow can resume via /continue once the
   // user returns.
+
+api.accessToken.setCustomClaim(name: string, value: JsonValue)
+api.idToken.setCustomClaim(name: string, value: JsonValue)
+  // Add a custom claim to the access token / id_token this login mints.
+  // Not a verdict: it composes with `review` and with a plain return. Claims
+  // persist across refreshes (they travel inside the refresh token) until
+  // the next login. A later `deny` discards them.
+  //
+  // Rules — an invalid call throws and fails the action (the login fails
+  // with a reason; nothing is silently dropped):
+  //   - name matches ^[A-Za-z0-9_.:/-]{1,128}$ — namespaced names such as
+  //     `https://example.com/station_id` are the convention
+  //   - name is not reserved: sub, iss, aud, exp, iat, nbf, jti, scope,
+  //     permissions, teams, roles, client_id, azp, sid, auth_time, nonce
+  //   - value is JSON-plain: string, number, boolean, null, or arrays /
+  //     objects of those
+  //   - at most 10 custom claims and 2 KB serialized per token
 ```
 
-`deny` and `review` are independent: an action may do both, and the deny still wins the verdict.
+`deny` and `review` are independent: an action may do both, and the deny still wins the verdict. Custom claims set by an action override a claim of the same name coming from the connection's `claims_mapping`; standard OIDC identity claims of the id_token (`email`, `name`, …) are never overridden.
+
+On the `client-credentials` trigger the `api` object only has `accessToken.setCustomClaim`, `access.deny` and `access.review` — there is no id_token and no browser to redirect. A `deny` there answers the token request with `401 access_denied`.
 
 ### Example — block users with an unverified email and require ToS acceptance
 
@@ -169,6 +189,39 @@ exports.onExecutePostLogin = async (event, api) => {
   }
 }
 ```
+
+### Example — custom claims on every token
+
+A resource server needs to know which station a caller belongs to, whether the token was issued to a person (`authorization_code`, and its refreshes) or to a service (`client_credentials`). Two actions, one per trigger:
+
+```js
+// Trigger: post-login
+exports.onExecutePostLogin = async (event, api) => {
+  const station = event.user.app_metadata?.station_id ?? 'unassigned'
+  api.accessToken.setCustomClaim('https://example.com/station_id', station)
+  api.idToken.setCustomClaim('https://example.com/station_id', station)
+}
+
+// Trigger: client-credentials
+// Clients carry no free-form metadata, so map them here (or fetch the
+// mapping from your own config at deploy time).
+const STATION_BY_CLIENT = {
+  'aBcD1234…': 'station_madrid_centro',
+  'eFgH5678…': 'station_valencia_norte'
+}
+exports.onExecuteClientCredentials = async (event, api) => {
+  const station = STATION_BY_CLIENT[event.client.client_id]
+  if (!station) {
+    api.access.deny('This client has no station assigned', {
+      code: 'station-missing'
+    })
+    return
+  }
+  api.accessToken.setCustomClaim('https://example.com/station_id', station)
+}
+```
+
+The claim is then present on the login tokens, on every token obtained by refreshing them, and on M2M tokens. The audit log records an `action.claims` row per action with the claim **names** and total size — never the values.
 
 ### Tracking signup conversions
 
