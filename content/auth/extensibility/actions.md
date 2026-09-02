@@ -33,13 +33,13 @@ Multiple actions can be registered at the same trigger; they execute in ascendin
 
 ### Fields
 
-| Field     | Description                          |
-| --------- | ------------------------------------ |
-| `name`    | Free-text label (max 200 chars).     |
-| `trigger` | `post-login` or `continue`.          |
-| `code`    | The JavaScript source to execute.    |
-| `enabled` | When `false`, the action is skipped. |
-| `order`   | Integer; lower runs first.           |
+| Field     | Description                                       |
+| --------- | ------------------------------------------------- |
+| `name`    | Free-text label (max 200 chars).                  |
+| `trigger` | `post-login`, `continue` or `client-credentials`. |
+| `code`    | The JavaScript source to execute.                 |
+| `enabled` | When `false`, the action is skipped.              |
+| `order`   | Integer; lower runs first.                        |
 
 ## Writing an Action
 
