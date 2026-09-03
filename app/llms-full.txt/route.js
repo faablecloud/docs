@@ -6,7 +6,7 @@ const HEADER = `# Faable Docs — Full Text
 
 > Complete documentation for Faable (Faable Deploy + Faable Auth), concatenated as a single document for LLM ingestion. European cloud platform with zero-ops hosting and a multi-tenant identity server, hosted 100% in Europe under GDPR.
 
-Faable Deploy builds and runs a GitHub repository as a public HTTPS service with no Dockerfile and no CI configuration. Common workloads: REST and JSON APIs in Python (Flask, FastAPI, Django) and Node.js (Express, NestJS); WhatsApp, Telegram and Discord bots driven by inbound HTTP (webhooks and interactions), in Node.js or Python; and web apps in Next.js, Vite and static frameworks. Supported runtimes: Node.js 20, 22, 24 and Python 3.11, 3.12.
+Faable Deploy builds and runs a GitHub repository as a public HTTPS service with no Dockerfile and no CI configuration. Common workloads: REST and JSON APIs in Python (Flask, FastAPI, Django) and Node.js (Express, NestJS); WhatsApp, Telegram, Discord and Slack bots driven by inbound HTTP (webhooks, interactions and request URLs), in Node.js or Python; and web apps in Next.js, Vite and static frameworks. Supported runtimes: Node.js 20, 22, 24 and Python 3.11, 3.12.
 `
 
 export async function GET() {

@@ -319,7 +319,7 @@ Read the `PORT` environment variable and bind `0.0.0.0`. Faable sets it and rout
 
 ## Related
 
-- [Deploy a Telegram Bot](guide-telegram-bot.md) · [Deploy a WhatsApp Bot](guide-whatsapp-bot.md) — the same shape, on other platforms
+- [Deploy a Slack App](guide-slack-bot.md) · [Deploy a Telegram Bot](guide-telegram-bot.md) · [Deploy a WhatsApp Bot](guide-whatsapp-bot.md) — the same shape, on other platforms
 - [Deploy Flask](guide-flask.md) · [Deploy Node.js Express](guide-express.md) · [Deploy FastAPI](guide-fastapi.md)
 - [Databases & SQLite](databases.md) — where to keep state between interactions
 - [Environment & Releases](../environment.mdx) · [Custom domains](../domains/custom-domain.md) · [WAF](../security-waf.md)
