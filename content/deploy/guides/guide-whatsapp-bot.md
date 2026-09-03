@@ -322,6 +322,7 @@ Read the `PORT` environment variable and bind `0.0.0.0`. Faable sets it for you 
 - [Deploy a Telegram Bot](guide-telegram-bot.md) — the same shape, with Telegram's webhook API
 - [Deploy a Discord Bot](guide-discord-bot.md) — the same shape, over Discord's HTTP interactions
 - [Deploy a Slack App](guide-slack-bot.md) — the same shape, over Slack's Request URL
+- [Deploy a Stripe Webhook Endpoint](guide-stripe-webhooks.md) — webhooks with idempotency
 - [Deploy Flask](guide-flask.md) · [Deploy Node.js Express](guide-express.md) · [Deploy FastAPI](guide-fastapi.md)
 - [Databases & SQLite](databases.md) — where to keep conversation state
 - [Environment & Releases](../environment.mdx) · [Custom domains](../domains/custom-domain.md) · [WAF](../security-waf.md)
