@@ -116,7 +116,6 @@ Your users' identities live on **our own hardware in a European datacenter** —
 Being explicit beats discovering it mid-integration:
 
 - **SAML** and any pre-built enterprise SSO connector. Corporate IdPs connect over OAuth 2.0 / OIDC.
-- **Built-in MFA.** A second factor has to be enforced by your application; a `post-login` [Action](extensibility/actions.md) can gate the login on it.
 - **SMS one-time codes.** Passwordless is email only.
 - **Sign in with Apple**, which requires a client secret signed as an ES256 JWT — not supported through custom OAuth connections yet.
 
@@ -128,7 +127,7 @@ Yes — Faable Auth is included in every plan, starting on **Free**, with a fair
 
 ### Does Faable Auth support MFA or SAML?
 
-Not natively today. Faable Auth speaks OAuth 2.0 and OpenID Connect, so an enterprise IdP that speaks OIDC connects fine, but there is no SAML connector and no built-in second factor. You can enforce MFA in your own application and gate the login on it with a `post-login` [Action](extensibility/actions.md).
+MFA yes, SAML not yet. [Two-step verification](mfa.md) is built in — authenticator app codes, security keys and passkeys — with a hosted enrolment and challenge, and a policy you set per account or per client. Passkeys can also replace the password entirely. There is still no SAML connector; an enterprise IdP that speaks OIDC connects fine.
 
 ### Can I use Faable Auth without Faable Deploy?
 

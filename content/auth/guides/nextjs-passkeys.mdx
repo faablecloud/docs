@@ -1,0 +1,169 @@
+---
+title: Sign in with Face ID, Touch ID or a Passkey in Next.js
+description: Let users of your Next.js app sign in with Face ID, Touch ID, Windows Hello or a hardware key — no password — using Faable Auth and @faable/auth-js. Plus step-up for sensitive actions.
+---
+
+import { Callout } from 'nextra/components'
+
+# Sign in with Face ID or a passkey in Next.js
+
+By the end of this guide your Next.js app signs users in with **Face ID, Touch ID, Windows Hello or a hardware security key** — a passkey — and never sees a password. Returning users get the passkey offered from inside the email field, the way Stripe or GitHub do it. You will also gate one sensitive action behind a fresh second factor.
+
+The surprising part: **your application contains no WebAuthn code.** The ceremony runs on Faable Auth's hosted screen, and there is a good reason it has to — explained below.
+
+## What you need
+
+- A Next.js app already signing in with Faable Auth. If not, do the [Next.js quickstart](../quickstart/nextjs.mdx) first — this guide starts where it ends: a `faableauth` client in `lib/faable.ts` and `SessionContextProvider` around your tree.
+- `@faable/auth-js` and `@faable/auth-helpers-react` at a version that ships `getAal()` / `useAal()` (2.5 or later).
+- A tenant on the **Hobby** plan or above, for the policy step at the end.
+
+## 1. Turn passkeys on
+
+In the [Faable Dashboard](https://dashboard.faable.com), open your auth account:
+
+1. **Login Experience → Passkeys** — switch on **Sign in with a passkey**. The hosted login screen now shows a "Continue with a passkey" button at the top.
+2. **Security → Two-step verification** — set the mode to **Optional** for now. Users who register a passkey get to use it; everyone else is unaffected.
+
+<Callout type="warning">
+  **Set the Relying Party ID before anyone enrols.** A passkey is bound to the
+  domain it was created on. If your login lives at `acme.auth.faable.link` today
+  and moves to `auth.acme.com` tomorrow, every passkey stops working. In
+  **Security → Two-step verification → WebAuthn Relying Party ID**, put a domain
+  you own (`acme.com`): passkeys then work across every host under it, and the
+  move costs nothing later.
+</Callout>
+
+## 2. The sign-in button
+
+Nothing changes. The button you already have sends the user to `/authorize`; the hosted screen does the rest:
+
+```tsx
+// components/SignInButton.tsx
+'use client'
+
+import { faableauth } from '@/lib/faable'
+
+export function SignInButton() {
+  return (
+    <button onClick={() => faableauth.authorize({ response_type: 'code' })}>
+      Sign in
+    </button>
+  )
+}
+```
+
+On the hosted screen a user who has a passkey sees two things: the **Continue with a passkey** button, and — on Chrome, Safari and Edge — the same passkey suggested from inside the email field as soon as it gets focus (WebAuthn _conditional UI_). Either way, Face ID or Touch ID comes up, and the browser lands back on your callback with an authorization code exactly as a password login would.
+
+### Why the ceremony is not in your app
+
+A WebAuthn credential is scoped to an **origin**. The passkey is created on `acme.auth.faable.link` (or your custom domain), so only pages served from that origin can ask the authenticator to sign with it. Your app on `app.acme.com` cannot — not with `@simplewebauthn/browser`, not with `navigator.credentials` directly. The browser refuses before any code of yours runs.
+
+That is why Faable hosts the enrolment and the challenge on the auth domain, and why this guide has no `credentials.get()` in it. The upside is that your app does not carry the WebAuthn dependency, the browser-specific autofill wiring, or the security-key edge cases; the hosted screen already does.
+
+## 3. Let users register a passkey
+
+Users add passkeys on Faable's hosted security page, from a signed-in browser. Link to it from your account settings:
+
+```tsx
+// components/SecurityLink.tsx
+const AUTH_DOMAIN = 'https://acme.auth.faable.link' // the same `domain` as your client
+
+export function SecurityLink() {
+  return (
+    <a href={`${AUTH_DOMAIN}/flow/account/security`}>
+      Security — add a passkey or an authenticator app
+    </a>
+  )
+}
+```
+
+The page lists what they have, offers **Add a security key or passkey** (Face ID / Touch ID / Windows Hello / a hardware key) and **Add an authenticator app**, and lets them remove either. The user has to be signed in on the auth domain for it to load, which they are right after logging in through your app.
+
+<Callout type="info">
+  The hosted page is served from the auth origin — that is not a limitation, it
+  is the point. Registering a passkey from `app.acme.com` would bind it to
+  `app.acme.com`, where the login screen never runs.
+</Callout>
+
+## 4. Show how they signed in
+
+Every session's access token says how it was authenticated ([RFC 8176](https://datatracker.ietf.org/doc/html/rfc8176) `amr`) and to what assurance level (`acr`). The React helpers read them locally, no request:
+
+```tsx
+// components/SignedInWith.tsx
+'use client'
+
+import { useAal, useHasAmr } from '@faable/auth-helpers-react'
+
+export function SignedInWith() {
+  const aal = useAal()
+  const passkey = useHasAmr('hwk')
+
+  if (aal === 0) return null
+  return (
+    <p>
+      {passkey
+        ? 'Signed in with Face ID / passkey'
+        : 'Signed in with a password'}
+      {aal === 2 ? ' · two-step verified' : ''}
+    </p>
+  )
+}
+```
+
+A passkey that verified the user (Face ID, Touch ID, a PIN) is **two factors in one gesture**, so those sessions arrive at `aal === 2` straight away and are never asked for a second step. A bare hardware key without user verification is one factor.
+
+## 5. Step-up before a sensitive action
+
+Changing payment details, deleting an organisation, exporting data: ask for a fresh second factor first, without changing the policy for everyone.
+
+```tsx
+// components/DeleteOrganisation.tsx
+'use client'
+
+import { faableauth } from '@/lib/faable'
+import { useAal } from '@faable/auth-helpers-react'
+
+export function DeleteOrganisation({ onDelete }: { onDelete: () => void }) {
+  const aal = useAal()
+
+  const handleClick = () => {
+    if (aal < 2) {
+      // Comes back to this same page with aal === 2 once Face ID / the code
+      // checks out. Users with nothing enrolled are taken through enrolment.
+      faableauth.stepUp({ redirectTo: window.location.href })
+      return
+    }
+    onDelete()
+  }
+
+  return <button onClick={handleClick}>Delete organisation</button>
+}
+```
+
+`stepUp()` sends the browser through `/authorize` with `acr_values=urn:faable:loa:2` and `prompt=login`, so the server asks for a second factor even when it would not have, and even though a single-factor session exists. When the user lands back, the token carries `acr: urn:faable:loa:2` and the button works.
+
+<Callout type="info">
+  Trust the **server**, not the hook, for the action itself. `useAal()` decodes
+  the token without verifying it — good for hiding a button, not for authorising
+  a delete. Your API should check the `acr` claim on the validated access token
+  before it acts (see [Validate Access Tokens](../validate-access-tokens.mdx)).
+</Callout>
+
+## 6. Require it for everyone (optional)
+
+Once your users have had a chance to enrol, switch **Security → Two-step verification** to **Required**. From then on every login asks; anyone with nothing enrolled is taken through enrolment during the login instead of being locked out. Users who lose their device get back in with a recovery code, or by an administrator removing the factor from their user page.
+
+If your app also signs users in with the passwordless **OTP grant** — codes exchanged from your own UI rather than the hosted screen — read [Direct grants](../mfa.md#direct-grants) first: that path gets a `403 mfa_required` you have to handle with `signInWithMfa()`.
+
+## Testing locally
+
+WebAuthn only allows a non-HTTPS origin on `localhost`. The hosted screens run on the auth domain over HTTPS, so **local development of your Next.js app works unchanged** — the ceremony never runs on `localhost:3000`, it runs on `acme.auth.faable.link`.
+
+To try Face ID without a phone, Chrome's DevTools has a virtual authenticator: **More tools → WebAuthn → Enable virtual authenticator environment**, add an authenticator with _internal_ transport and _user verification_ on. Register a passkey from the hosted security page, sign out, and the next sign-in offers it from the email field.
+
+## Where to go next
+
+- [Two-Step Verification](../mfa.md) — the full reference: modes, recovery codes, tokens, direct grants
+- [Custom Domain](../custom-domain.md) — read the Relying Party ID warning above before moving
+- [Validate Access Tokens](../validate-access-tokens.mdx) — checking `acr` on the server

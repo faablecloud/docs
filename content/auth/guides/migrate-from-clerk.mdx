@@ -32,7 +32,7 @@ description: A step-by-step guide to migrating from Clerk to Faable Auth. Move f
 ## Things that change (and things that don't)
 
 - **No change:** your underlying need — sign-up, login, sessions, social login — all supported.
-- **Not supported yet:** built-in MFA. If you rely on Clerk's second factor, plan to enforce it in your own application (an [Action](../extensibility/actions.md) can gate the login on it) before cutting over.
+- **Second factor:** [two-step verification](../mfa.md) is built in (authenticator apps, security keys and passkeys), but enrolments do not migrate — users re-enrol on first login under a `required` policy.
 - **Changes:** you move from Clerk-specific components to standard OAuth/OIDC flows, which removes SDK lock-in but means building (or restyling) some UI.
 
 ## Related

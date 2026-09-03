@@ -15,7 +15,7 @@ description: How Faable Auth compares to Amazon Cognito as a managed identity pr
 | Social login (Google, GitHub, Microsoft) | ✅                                  | ✅                                             |
 | Passwordless (magic link / OTP)          | ✅                                  | Limited (custom flows)                         |
 | Enterprise SSO / SAML                    | ❌ not yet                          | ✅                                             |
-| MFA / 2FA                                | ❌ not yet                          | ✅                                             |
+| MFA / 2FA                                | ✅ TOTP + passkeys                  | ✅                                             |
 | Machine-to-machine (M2M) tokens          | ✅                                  | ✅ (app clients)                               |
 | Multi-tenant by design                   | ✅                                  | User pools (you model isolation)               |
 | Developer experience                     | ✅ Focused dashboard + SDK          | Powerful but complex (IAM, pools, app clients) |
@@ -36,7 +36,7 @@ description: How Faable Auth compares to Amazon Cognito as a managed identity pr
 
 - You're **all-in on AWS** and want identity that integrates natively with other AWS services (IAM roles, AppSync, API Gateway authorizers).
 - You need Cognito-specific features tightly coupled to the AWS control plane.
-- You need **SAML or built-in MFA today** — Faable Auth implements neither yet.
+- You need **SAML today** — Faable Auth has no SAML connector yet (MFA and passkeys are built in).
 
 ## Related
 

@@ -15,7 +15,7 @@ description: How Faable Auth compares to Supabase Auth. Faable Auth is a standal
 | Social login (Google, GitHub, Microsoft) | ✅                                  | ✅                             |
 | Passwordless (magic link / OTP)          | ✅                                  | ✅                             |
 | Enterprise SSO / SAML                    | ❌ not yet                          | ✅ (Pro/Team tiers)            |
-| MFA / 2FA                                | ❌ not yet                          | ✅                             |
+| MFA / 2FA                                | ✅ TOTP + passkeys                  | ✅                             |
 | Machine-to-machine (M2M) tokens          | ✅                                  | Limited                        |
 | Multi-tenant by design                   | ✅                                  | You model it in Postgres / RLS |
 | Standalone (any database/stack)          | ✅                                  | Coupled to Supabase Postgres   |
@@ -35,7 +35,7 @@ description: How Faable Auth compares to Supabase Auth. Faable Auth is a standal
 
 - You're **already building on Supabase** (Postgres, storage, edge functions) and want auth tightly integrated with row-level security in the same database.
 - You want the all-in-one Supabase developer experience for a single-tenant app.
-- You need **SAML or built-in MFA today** — Faable Auth implements neither yet.
+- You need **SAML today** — Faable Auth has no SAML connector yet (MFA and passkeys are built in).
 
 ## Related
 

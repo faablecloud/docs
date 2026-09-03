@@ -19,6 +19,7 @@ export default {
   'change-email': 'Change Email',
   'team-invitations': 'Team Invitations',
   'suspend-users': 'Suspend Users',
+  mfa: 'Two-Step Verification',
   logs: 'Logs',
   advancedSeparator: { type: 'separator', title: 'Advanced' },
   extensibility: 'Extensibility',

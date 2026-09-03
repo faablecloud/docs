@@ -44,24 +44,24 @@
     "published": "2026-03-31T11:42:44+02:00"
   },
   "content/auth/compare-authelia.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-07-27T13:52:25+02:00"
+    "published": "2026-07-27T13:52:25+02:00",
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/compare-aws-cognito.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/compare-firebase-auth.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/compare-supabase-auth.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/compare.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-26T11:51:20+02:00"
+    "published": "2026-06-26T11:51:20+02:00",
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/connections.md": {
     "modified": "2026-07-27T13:52:25+02:00",
@@ -81,7 +81,7 @@
   },
   "content/auth/features.mdx": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-08-25T09:39:11.452Z"
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/get-started.md": {
     "modified": "2026-07-27T13:52:25+02:00",
@@ -92,12 +92,16 @@
     "published": "2026-06-27T13:49:17+02:00"
   },
   "content/auth/guides/migrate-from-clerk.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/guides/migrate-from-keycloak.mdx": {
     "modified": "2026-07-27T13:52:25+02:00",
     "published": "2026-06-27T13:49:17+02:00"
+  },
+  "content/auth/guides/nextjs-passkeys.mdx": {
+    "published": "2026-09-03T23:21:07.937Z",
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/integrations/shopify.md": {
     "modified": "2026-07-26T19:48:06+02:00",
@@ -106,6 +110,10 @@
   "content/auth/logs.md": {
     "modified": "2026-07-16T12:45:45+02:00",
     "published": "2026-05-16T11:42:20+02:00"
+  },
+  "content/auth/mfa.md": {
+    "published": "2026-09-03T23:21:07.937Z",
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/oauth-flows/authorization-code.mdx": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -153,7 +161,7 @@
   },
   "content/auth/pricing.mdx": {
     "published": "2026-08-24T16:03:44.464Z",
-    "modified": "2026-08-25T09:39:11.452Z"
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/auth/quickstart/angular.mdx": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -381,7 +389,7 @@
   },
   "content/faq.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-08-31T19:01:57.039Z"
+    "modified": "2026-09-03T23:21:07.937Z"
   },
   "content/index.md": {
     "modified": "2026-04-14T17:28:31+02:00",

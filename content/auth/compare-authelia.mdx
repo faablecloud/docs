@@ -21,7 +21,7 @@ If you're protecting Grafana, Sonarr or an internal dashboard behind Traefik, Au
 | Self-service signup                      | ✅                                                                             | ❌ (users are provisioned by an admin)      |
 | Social login (Google, GitHub, Microsoft) | ✅                                                                             | ❌                                          |
 | Passwordless (magic link / OTP)          | ✅                                                                             | ❌ as a first factor                        |
-| MFA / 2FA                                | ❌ not yet                                                                     | ✅ TOTP, WebAuthn/passkeys, Duo push        |
+| MFA / 2FA                                | ✅ TOTP, WebAuthn/passkeys                                                     | ✅ TOTP, WebAuthn/passkeys, Duo push        |
 | SAML                                     | ❌ not yet                                                                     | ❌ (on their roadmap)                       |
 | Machine-to-machine (M2M) tokens          | ✅                                                                             | Limited                                     |
 | Multi-tenant by design                   | ✅                                                                             | ❌ single instance, single directory        |
@@ -43,7 +43,7 @@ If you're protecting Grafana, Sonarr or an internal dashboard behind Traefik, Au
 ## When Authelia might fit better
 
 - **You're protecting self-hosted services behind a reverse proxy.** Forward auth with Traefik, nginx or Caddy is exactly what Authelia is for, and Faable Auth does not do it.
-- **You want MFA today.** TOTP, WebAuthn/passkeys and Duo push are built in — Faable Auth has no second factor yet.
+- **You want Duo push or per-route access rules.** Authelia has both; Faable Auth ships TOTP and WebAuthn/passkeys but no push provider, and it is an identity provider rather than a reverse-proxy gate.
 - **Everything must stay on your own hardware**, with no third party involved at any point.
 - **Your user directory is already LDAP** and you want to keep it as the source of truth.
 

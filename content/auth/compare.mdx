@@ -47,7 +47,7 @@ Each option below is a strong identity solution; this page helps you pick by pri
 - **Auth0** has the deepest feature surface and ecosystem (now part of Okta); a fit for large enterprises already standardized on it, if EU sovereignty isn't a hard requirement.
 - **Clerk** offers excellent prebuilt React UI components and developer experience for B2C/B2B apps that are happy on US hosting.
 - **Keycloak** is the go-to when you specifically want open-source, self-hosted identity and have the team to operate it.
-- **You need SAML or built-in MFA today.** Faable Auth doesn't implement either yet — enterprise connections speak OAuth 2.0 / OIDC only, and second factors have to be enforced in your own application (an [Action](extensibility/actions.md) can gate the login on it). All three alternatives ship both.
+- **You need SAML today.** Faable Auth doesn't implement it yet — enterprise connections speak OAuth 2.0 / OIDC only. All three alternatives ship it. ([Two-step verification](mfa.md) is built in, so that one is no longer a gap.)
 
 ## How Faable Auth works
 
