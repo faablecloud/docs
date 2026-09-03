@@ -289,7 +289,7 @@
   },
   "content/deploy/guides/guide-discord-bot.md": {
     "published": "2026-09-03T09:22:01.059Z",
-    "modified": "2026-09-03T09:56:16.628Z"
+    "modified": "2026-09-03T10:06:40.468Z"
   },
   "content/deploy/guides/guide-django.md": {
     "published": "2026-08-11T12:09:26+02:00",
@@ -307,6 +307,10 @@
     "published": "2026-08-11T12:09:26+02:00",
     "modified": "2026-08-31T19:01:57.039Z"
   },
+  "content/deploy/guides/guide-llm-streaming.md": {
+    "published": "2026-09-03T10:06:40.468Z",
+    "modified": "2026-09-03T10:06:40.468Z"
+  },
   "content/deploy/guides/guide-next.md": {
     "modified": "2026-08-15T19:11:40+02:00",
     "published": "2026-08-15T19:11:40+02:00"
@@ -317,15 +321,15 @@
   },
   "content/deploy/guides/guide-slack-bot.md": {
     "published": "2026-09-03T09:32:11.930Z",
-    "modified": "2026-09-03T09:56:16.628Z"
+    "modified": "2026-09-03T10:06:40.468Z"
   },
   "content/deploy/guides/guide-stripe-webhooks.md": {
     "published": "2026-09-03T09:56:16.628Z",
-    "modified": "2026-09-03T09:56:16.628Z"
+    "modified": "2026-09-03T10:06:40.468Z"
   },
   "content/deploy/guides/guide-telegram-bot.md": {
     "published": "2026-08-24T15:57:55.247Z",
-    "modified": "2026-09-03T09:56:16.628Z"
+    "modified": "2026-09-03T10:06:40.468Z"
   },
   "content/deploy/guides/guide-uptime-kuma.md": {
     "published": "2026-08-24T20:47:22.168Z",
