@@ -10,6 +10,7 @@ export default {
   'guide-slack-bot': 'Deploy a Slack App',
   'guide-stripe-webhooks': 'Deploy a Stripe Webhook Endpoint',
   'guide-llm-streaming': 'Deploy an LLM App with Streaming',
+  'guide-github-app': 'Deploy a GitHub App',
   'guide-telegram-bot': 'Deploy a Telegram Bot',
   'guide-uptime-kuma': 'Deploy Uptime Kuma',
   databases: 'Databases & SQLite',

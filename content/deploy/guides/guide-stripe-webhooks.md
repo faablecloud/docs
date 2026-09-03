@@ -295,6 +295,7 @@ Read the `PORT` environment variable and bind `0.0.0.0`. Faable sets it and rout
 ## Related
 
 - [Deploy a Slack App](guide-slack-bot.md) · [Deploy a Discord Bot](guide-discord-bot.md) · [Deploy a Telegram Bot](guide-telegram-bot.md) · [Deploy a WhatsApp Bot](guide-whatsapp-bot.md) — the same verify-and-acknowledge shape
+- [Deploy a GitHub App](guide-github-app.md) — the same shape, plus authenticating back as the app
 - [Deploy an LLM App with Streaming](guide-llm-streaming.md) — the other side of the coin: long responses, sent as they are generated
 - [Deploy Flask](guide-flask.md) · [Deploy Node.js Express](guide-express.md) · [Deploy FastAPI](guide-fastapi.md)
 - [Databases & SQLite](databases.md) — where the idempotency record belongs
