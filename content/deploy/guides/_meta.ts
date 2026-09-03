@@ -6,6 +6,7 @@ export default {
   'guide-flask': 'Deploy Flask',
   'guide-php': 'Deploy PHP & Laravel',
   'guide-whatsapp-bot': 'Deploy a WhatsApp Bot',
+  'guide-discord-bot': 'Deploy a Discord Bot',
   'guide-telegram-bot': 'Deploy a Telegram Bot',
   'guide-uptime-kuma': 'Deploy Uptime Kuma',
   databases: 'Databases & SQLite',
