@@ -313,15 +313,15 @@
   },
   "content/deploy/guides/guide-telegram-bot.md": {
     "published": "2026-08-24T15:57:55.247Z",
-    "modified": "2026-08-31T19:01:57.039Z"
+    "modified": "2026-09-03T09:15:36.341Z"
   },
   "content/deploy/guides/guide-uptime-kuma.md": {
     "published": "2026-08-24T20:47:22.168Z",
-    "modified": "2026-08-24T20:47:22.168Z"
+    "modified": "2026-09-03T09:15:36.341Z"
   },
   "content/deploy/guides/guide-whatsapp-bot.md": {
     "published": "2026-08-24T15:57:55.247Z",
-    "modified": "2026-08-31T19:01:57.039Z"
+    "modified": "2026-09-03T09:15:36.341Z"
   },
   "content/deploy/guides/migrate-from-netlify.mdx": {
     "modified": "2026-07-16T12:45:25+02:00",
@@ -341,7 +341,7 @@
   },
   "content/deploy/pricing.mdx": {
     "published": "2026-08-24T16:03:44.464Z",
-    "modified": "2026-08-30T15:41:15.147Z"
+    "modified": "2026-09-03T09:15:36.341Z"
   },
   "content/deploy/runtime.md": {
     "modified": "2026-08-05T13:04:09+02:00",

@@ -14,7 +14,7 @@ This guide covers the [WhatsApp Cloud API](https://developers.facebook.com/docs/
 
 This is the one architectural decision that matters, so make it first.
 
-Faable Deploy scales an app to zero after **two hours without an inbound HTTP request**, and wakes it on the next one. That model fits a webhook bot perfectly: WhatsApp delivers a message, the request wakes your app, your app replies. Between conversations it costs you nothing.
+Faable Deploy scales an app to zero once no HTTP request has arrived for a while — **30 minutes on the Free plan, 2 hours on Hobby and Pro** — and wakes it on the next one. That model fits a webhook bot perfectly: WhatsApp delivers a message, the request wakes your app, your app replies. Between conversations it costs you nothing, and a bot with steady traffic never sleeps at all.
 
 It does **not** fit a bot that holds a socket open and polls — the pattern used by unofficial libraries like Baileys or `whatsapp-web.js`, which pair with a phone and keep a WebSocket alive:
 
@@ -276,7 +276,7 @@ A [custom domain](../domains/custom-domain.md) works the same way, with its cert
 
 ## What sleeping does and doesn't break
 
-After two hours with no requests, your bot scales to zero. The next WhatsApp message wakes it. What you should know:
+After 30 minutes with no requests on the Free plan — 2 hours on Hobby and Pro — your bot scales to zero. The next WhatsApp message wakes it. What you should know:
 
 - **The first message after a sleep is slower** — the container has to start. Meta's retry window absorbs this comfortably, but keep boot work light: connect to databases lazily, not at import time.
 - **In-memory state is gone.** Conversation context held in a module-level dictionary disappears on sleep and on every deploy. Put it in a database — see [Databases](databases.md).
@@ -303,7 +303,7 @@ No. Faable detects Node.js from `package.json` and Python from `requirements.txt
 
 ### Does a WhatsApp bot keep running when nobody is messaging it?
 
-It scales to zero after two hours of no traffic and wakes on the next inbound message, so a webhook bot behaves exactly as you'd expect while costing nothing while idle. A bot that keeps a WebSocket open — Baileys, `whatsapp-web.js` — does not survive that, which is why the Cloud API is the right fit here.
+It scales to zero after 30 minutes of no traffic on the Free plan — 2 hours on Hobby and Pro — and wakes on the next inbound message, so a webhook bot behaves exactly as you'd expect while costing nothing while idle. A bot people message regularly simply stays up. A bot that keeps a WebSocket open instead — Baileys, `whatsapp-web.js` — receives no inbound requests at all, so nothing keeps it awake on any plan, which is why the Cloud API is the right fit here.
 
 ### Can I use Baileys or whatsapp-web.js on Faable Deploy?
 

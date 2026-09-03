@@ -14,7 +14,7 @@ Faable Deploy is part of the unified Faable subscription. The platform fee and b
 | Plan      | Deploy entitlements                                                                                                                                                                                                                                      |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Free**  | 1 free `bi.xs` instance per project · catalog limited to `bi.xs` · **managed Node, Python and PHP buildpacks only** · **up to 10 successful deployments per day per project** (resets at 00:00 UTC) · **build artifacts up to 512 MB** · 10 GB bandwidth |
-| **Hobby** | Full instance catalog · **Docker, Dockerfile and prebuilt-image deploys** · **unlimited deployments** · **build artifacts up to 2 GB** · apps run 24/7 · custom domains per app · egress overage **0.24 €/GB**                                           |
+| **Hobby** | Full instance catalog · **Docker, Dockerfile and prebuilt-image deploys** · **unlimited deployments** · **build artifacts up to 2 GB** · **always-on: apps under traffic never sleep** · custom domains per app · egress overage **0.24 €/GB**           |
 | **Pro**   | Everything in Hobby · egress overage **0.18 €/GB** · 99.9 % uptime SLA                                                                                                                                                                                   |
 
 ## Docker and bring-your-own-image
@@ -66,16 +66,31 @@ On the Free plan each project can promote up to **10 successful deployments per 
 > [!TIP]
 > **Only successful deployments count.** A build that fails never touches the quota, so iterating on a broken build can't lock you out for the rest of the day.
 
-## Sleep on the Free plan
+## Sleep and always-on
 
-A Free app sleeps after **2 hours without traffic** and starts again on the next real request — a cold start of a few seconds. Nothing is lost while it sleeps: the release, its environment and any attached volume stay exactly as they were. Apps on Hobby and Pro run 24/7 and never sleep.
+An idle app scales to zero and starts again on the next real request — a cold start of a few seconds. Nothing is lost while it sleeps: the release, its environment and any attached volume stay exactly as they were.
+
+How long an app has to be idle before that happens depends on the plan:
+
+| Plan      | Idle before it sleeps |
+| --------- | --------------------- |
+| **Free**  | **30 minutes**        |
+| **Hobby** | 2 hours               |
+| **Pro**   | 2 hours               |
+
+**Hobby and Pro are always-on: an app that is being used never sleeps.** There is no forced downtime and no daily rest window — as long as traffic keeps arriving, your app keeps running, around the clock. The two-hour window only ever applies to an app nobody is using, and the first request after it wakes it again.
+
+Free is shorter by design: a free instance holds its CPU and memory reservation whether or not anyone is using it, so it is released sooner.
+
+> [!NOTE]
+> **Coming to the Free plan: a daily rest window.** Free apps will be required to sleep for **4 hours out of every 24**, including under traffic. This is **not in effect yet** — today a Free app sleeps only when it has been idle for 30 minutes — and we will announce the date before it applies. If your app has to answer around the clock, that is what Hobby is for.
 
 **External uptime monitors do not keep a Free app awake.** A ping from a monitoring service (Uptime Kuma, UptimeRobot, Pingdom, StatusCake, Better Stack, Site24x7 and similar) is answered by the platform on the app's behalf, so it never starts the instance:
 
 - **`200`** while your latest release is healthy — the app is asleep and will start on real traffic.
 - **`503`** when the platform knows the app is broken: the promoted deployment failed, or the app has no release yet.
 
-Responses carry an `X-Faable-Probe` header (`sleeping` or `unhealthy`) so you can tell them apart from your app's own answers. Your monitor therefore keeps catching the failures that matter on a Free app — a broken release, an app that never deployed — but it does not see errors your code returns while asleep. If you need a monitor to reach the app itself on every check, upgrade to Hobby or Pro, where the app is always running.
+Responses carry an `X-Faable-Probe` header (`sleeping` or `unhealthy`) so you can tell them apart from your app's own answers. Your monitor therefore keeps catching the failures that matter on a Free app — a broken release, an app that never deployed — but it does not see errors your code returns while asleep. If you need a monitor to reach the app itself on every check, upgrade to Hobby or Pro: a monitored app is an app under traffic, and on those plans it stays up.
 
 ## Build artifact size
 

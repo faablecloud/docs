@@ -14,9 +14,9 @@ This guide covers **Node.js** and **Python**, both with the plain Bot API — no
 
 Make this decision first, because it decides whether your bot works at all.
 
-Faable Deploy scales an app to zero after **two hours without an inbound HTTP request**, and wakes it on the next one. A webhook bot fits that exactly: Telegram POSTs an update, the request wakes your app, your app answers. Idle time is free.
+Faable Deploy scales an app to zero once no HTTP request has arrived for a while — **30 minutes on the Free plan, 2 hours on Hobby and Pro** — and wakes it on the next one. A webhook bot fits that exactly: Telegram POSTs an update, the request wakes your app, your app answers. Idle time is free, and a bot that people actually use never sleeps at all.
 
-A bot built on `getUpdates` long-polling does the opposite — it makes _outbound_ calls in a loop and receives no inbound traffic at all. Nothing keeps it awake, so after two hours it sleeps and simply stops polling. It also can't be scaled or redeployed cleanly, because Telegram allows only one active `getUpdates` consumer per token.
+A bot built on `getUpdates` long-polling does the opposite — it makes _outbound_ calls in a loop and receives no inbound traffic at all. Nothing keeps it awake, so it sleeps as soon as that window elapses **on any plan**, and simply stops polling. It also can't be scaled or redeployed cleanly, because Telegram allows only one active `getUpdates` consumer per token.
 
 |                        | `setWebhook`                     | `getUpdates` polling                   |
 | :--------------------- | :------------------------------- | :------------------------------------- |
@@ -230,7 +230,7 @@ curl "https://api.telegram.org/bot$TELEGRAM_TOKEN/getWebhookInfo"
 
 ## What sleeping does and doesn't break
 
-After two hours with no requests, your bot scales to zero. The next Telegram update wakes it. What that means in practice:
+After 30 minutes with no requests on the Free plan — 2 hours on Hobby and Pro — your bot scales to zero. The next Telegram update wakes it. What that means in practice:
 
 - **The first update after a sleep is slower** — the container starts up. Telegram's retries absorb it, but keep boot work light: open database connections lazily, not at import time.
 - **In-memory state is gone.** A conversation step held in a module-level dictionary disappears on sleep and on every deploy. Persist it — see [Databases](databases.md).
@@ -253,7 +253,7 @@ Yes. Run the bot in webhook mode and it's an ordinary web server. Faable Deploy 
 
 ### Should my Telegram bot use webhooks or getUpdates polling on Faable?
 
-Webhooks. Faable scales apps to zero after two hours without an inbound request, and a polling bot receives no inbound traffic, so it sleeps and stops working. A webhook bot is woken by each update and costs nothing while idle.
+Webhooks. Faable scales an app to zero after 30 minutes without an inbound request on the Free plan, or 2 hours on Hobby and Pro. A polling bot receives no inbound traffic at all, so it sleeps on every plan and stops working. A webhook bot is woken by each update, costs nothing while idle, and stays up continuously once it has real traffic.
 
 ### Do I need a Dockerfile to deploy a Telegram bot?
 

@@ -1,7 +1,7 @@
 ---
 schema: faq
 title: Deploy Uptime Kuma
-description: Self-host Uptime Kuma on Faable Deploy by forking the repo — no Dockerfile, no config. Why you must pick MariaDB over SQLite, what scale-to-zero means for a monitor, and how to run it 24/7. 100% European hosting.
+description: Self-host Uptime Kuma on Faable Deploy by forking the repo — no Dockerfile, no config. Why you must pick MariaDB over SQLite, what scale-to-zero means for a monitor, and which plan keeps its checks running continuously. 100% European hosting.
 ---
 
 # Deploy Uptime Kuma 📈
@@ -36,14 +36,18 @@ Uptime Kuma bundles the `mysql2` driver, so MariaDB and MySQL work natively with
 
 This is the one that surprises people, so be clear-eyed about it.
 
-On the **Free** plan an app sleeps after **two hours without inbound traffic** and wakes on the next real request. For most apps that is ideal — it costs nothing while idle. For a monitor it is a genuine limitation: **a sleeping Uptime Kuma is not running its checks.** It cannot poll your services, evaluate uptime, or send you a notification about an outage, because nothing of it is running to do so.
+An app sleeps when **no inbound HTTP request** has reached it for a while, and wakes on the next one. For most apps that is ideal — it costs nothing while idle. For a monitor it is a genuine limitation: **a sleeping Uptime Kuma is not running its checks.** It cannot poll your services, evaluate uptime, or send you a notification about an outage, because nothing of it is running to do so.
 
-So pick the plan that matches what you actually want:
+The word to hold on to is **inbound**. Uptime Kuma's checks go _out_, so they never count as traffic and never keep it awake by themselves. What keeps it awake is somebody — or something — opening it: its dashboard, its status page, an external ping.
 
-| You want                                                                | Plan             | What happens                                                             |
-| :---------------------------------------------------------------------- | :--------------- | :----------------------------------------------------------------------- |
-| A dashboard you open occasionally, checks running only while you use it | Free             | Sleeps after 2h idle; checks run only while awake                        |
-| A monitor that actually watches your services around the clock          | **Hobby or Pro** | The app [runs 24/7 and never sleeps](../pricing.mdx) — checks never stop |
+That makes the plan difference concrete:
+
+| You want                                                                | Plan             | What happens                                                                                                                                                                                |
+| :---------------------------------------------------------------------- | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| A dashboard you open occasionally, checks running only while you use it | Free             | Sleeps after **30 minutes** idle, and the platform answers monitor pings on the app's behalf, so it cannot be kept awake from outside                                                       |
+| A monitor that watches your services continuously                       | **Hobby or Pro** | A four-times longer window (**2 hours**), and inbound traffic reaches your app instead of being answered for it — so its dashboard, its status page or an external ping all keep it running |
+
+On Hobby and Pro nothing sleeps while it is being used. The two-hour window only expires if genuinely nothing touches the app for two hours — so if your Uptime Kuma has a status page people load, or you point a second monitor at it, it simply keeps running.
 
 If continuous monitoring is the point, Hobby or Pro is the supported way to get it. Pinging your own app from somewhere else to keep it awake does not turn a Free app into a reliable monitor: the checks still only run when something happens to be poking it, you are paying for it in wake time either way, and you have built a monitor whose reliability depends on a second thing you also have to monitor.
 
