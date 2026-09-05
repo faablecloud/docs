@@ -9,6 +9,49 @@ Shopify Plus lets a store replace the built-in customer login with **your own Op
 
 Faable Auth satisfies every requirement Shopify publishes for a third-party provider: authorization code flow, PKCE (S256), discovery, JWKS, RS256 signing, refresh tokens and RP-Initiated Logout. The contract is pinned by end-to-end tests in the server, so a release that would break the storefront login does not ship.
 
+## Why one account for your product and your store
+
+Out of the box, a Shopify store has its own customer list, its own login and its own password resets. If you also run an app, a member area or a customer portal, your customers end up with **two accounts that do not know about each other**: two emails to remember, two "forgot password" flows, and no way for your product to know what someone bought or for the store to know who is a member.
+
+Connecting Shopify to Faable Auth collapses that into one identity:
+
+```mermaid
+flowchart LR
+    U((Shopper)) --> A[Your web / mobile app]
+    U --> S[Shopify storefront]
+    U --> P[Customer portal, community, ...]
+    A --> F[Faable Auth<br/>one user, one login]
+    S --> F
+    P --> F
+    F -. tags, addresses, name .-> S
+    F -. roles, teams, claims .-> A
+```
+
+| Without the integration                                        | With Faable Auth as the store's identity provider                                                          |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Separate signup and password for the store                     | The store reuses the account the shopper already has; a new shopper on the store gets an app account too   |
+| Store login is email + password only                           | Google, GitHub, Microsoft, magic links, passkeys and two-step verification, the same as in your app        |
+| Membership status lives in your database, invisible to Shopify | An Action turns it into a Shopify customer tag on every sign-in; Shopify pricing and segments react to it  |
+| Blocking a fraudulent customer means two admin panels          | Suspending the user in Faable Auth ends the store session at the next token refresh                        |
+| Support reconstructs "who signed in where" from two systems    | One audit log with every login, denial and token issued for the store                                      |
+| Customer identity belongs to the store                         | Identity belongs to you; adding a second store, a mobile app or a new channel does not create new accounts |
+
+### Real-world scenarios
+
+**A fitness app that also sells equipment.** Members subscribe inside the app and buy mats, bands and apparel in a Shopify store. With one account, a member who taps "Shop" in the app is already signed in on the storefront, and the loyalty tier stored in the app becomes a `loyalty-gold` tag in Shopify that unlocks member pricing through Shopify's own discount rules. A visitor who first buys a mat on the store and later downloads the app signs in with the same email and password, or the same passkey, without a second signup.
+
+**A B2B distributor with a customer portal and a wholesale store.** Buyers use the portal for invoices and order history, and a Shopify Plus B2B storefront for ordering. Faable Auth is the one login for both. [Team invitations](../team-invitations.md) bring a new purchasing manager into a customer's team; an Action reads the team's terms and emits a `wholesale` tag and the company's shipping addresses, so the buyer lands in Shopify with the right catalog and addresses already in place. When a customer stops paying, suspending the account in Faable Auth blocks the portal immediately and the store at the next refresh.
+
+**A media brand with a community and a merch store.** The community runs on [passwordless](../passwordless.mdx) login: a magic link, no password ever. Because every passwordless user has a verified email by construction, the same accounts satisfy Shopify's `email_verified` requirement with nothing else to configure. Newsletter readers buy merch with the link they already use, and the `signup-web` tag from the Action tells the store which customers came from the community.
+
+**A hardware company with a device app and a spare-parts store.** Owners set up their device in a mobile app protected with passkeys. Buying a replacement filter in the Shopify store uses the same passkey: Face ID on the phone, no password, and the shipping address from the app profile arrives in Shopify through the standard `address` claim, so checkout is pre-filled.
+
+**A brand with several stores.** An EU store and a US store are two Shopify stores, each connected as its own client in the same Faable Auth tenant. A customer who moves between them is one person with one login and one order history on your side. Shopify still keeps a customer record per store, but neither store owns the identity; you do.
+
+### What the shopper notices
+
+Almost nothing, which is the point. The "Sign in" button on the store sends them to your login page on your domain, with your branding and the sign-in methods your app already offers. After signing in they are back on the store, signed in, for up to 90 days. If they signed in to your app through Faable Auth recently in the same browser, the store sign-in is a single redirect with no form at all.
+
 ## How it works
 
 Shopify is a regular OpenID Connect Relying Party. It reads your discovery document once, sends shoppers to your `/authorize` endpoint, exchanges the code for tokens, and reads `sub` and `email` from the ID token to find or create the customer.
