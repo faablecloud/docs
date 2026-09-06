@@ -1,15 +1,15 @@
 ---
 title: Pricing
-description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Free, Hobby, Pro) with a monthly platform fee plus usage.
+description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Free 0 €, Hobby 15 €/month, Pro 99 €/month), each a flat monthly fee.
 ---
 
 # Pricing
 
 Faable is sold as a **single subscription that covers every product** — both Faable Deploy (compute) and Faable Auth (identity). Pick the platform tier that matches the stage you're at, and you're done.
 
-The model is **hybrid**: a monthly **platform fee** that unlocks features and entitlements, plus **usage** for the resources you consume (compute instances, MAU above the included allowance, and — on Pro only — egress above the plan's monthly allowance). Each month you receive the bill for the **previous** month's usage.
+The model is **flat**: each tier is a fixed monthly fee that unlocks features and entitlements, and everything the tier includes — instances, deployments, MAU, egress — comes with the fee. You know what a project costs before you deploy it.
 
-**Egress is never metered on Free or Hobby.** Each of those tiers includes a fixed monthly allowance (10 GB and 50 GB); Pro includes 100 GB and meters traffic beyond it. See [Deploy pricing](../deploy/pricing.md#bandwidth).
+**Exactly one resource on the platform is metered: egress above the allowance, on Pro.** Free and Hobby are flat with no exception — their allowance is what the tier includes (10 GB and 50 GB), and no per-GB line can appear on their invoice. Pro includes 100 GB and meters traffic beyond it at 0.18 €/GB. See [Deploy pricing](../deploy/pricing.md#bandwidth).
 
 Plans apply **per project**: each project has its own plan, starting on Free.
 
@@ -17,13 +17,13 @@ Plans apply **per project**: each project has its own plan, starting on Free.
 
 ## Plans
 
-| Plan      | Monthly fee  | What you get                                                                                                                                                                  |
-| --------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | 0 €          | Try Faable end-to-end. 1 free instance, up to 10 successful deployments per day, build artifacts up to 512 MB, 10 GB egress / month, Faable Auth included, community support. |
-| **Hobby** | 15 € + usage | Production-ready for a single product. Full instance catalog, unlimited deployments, build artifacts up to 2 GB, 50 GB egress / month, custom domains, email support.         |
-| **Pro**   | 99 € + usage | Multiple auth accounts, 10,000 MAU pooled, 100 GB egress / month plus metered traffic beyond it, audit logs, 99.9 % uptime SLA.                                               |
+| Plan      | Monthly fee | What you get                                                                                                                                                                  |
+| --------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | 0 €         | Try Faable end-to-end. 1 free instance, up to 10 successful deployments per day, build artifacts up to 512 MB, 10 GB egress / month, Faable Auth included, community support. |
+| **Hobby** | 15 €        | Production-ready for a single product. Full instance catalog, unlimited deployments, build artifacts up to 2 GB, 50 GB egress / month, custom domains, email support.         |
+| **Pro**   | 99 €        | Multiple auth accounts, 10,000 MAU pooled, 100 GB egress / month plus metered traffic beyond it, audit logs, 99.9 % uptime SLA.                                               |
 
-The platform fee unlocks the tier; usage charges depend on what you actually deploy and how many users authenticate. The deep-dives below break down exactly what each plan includes per product.
+The fee unlocks the tier, and the tier is the whole price. The deep-dives below break down exactly what each plan includes per product.
 
 ## What's covered by your plan
 

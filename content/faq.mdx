@@ -1,6 +1,6 @@
 ---
 title: Frequently Asked Questions
-description: Frequently asked questions about Faable — what it is, European hosting and GDPR data residency, pricing and free tier, supported frameworks, the built-in WAF, MAU-based auth pricing, and how Faable Deploy and Faable Auth are bundled.
+description: Frequently asked questions about Faable — what it is, European hosting and GDPR data residency, flat per-plan pricing and the free tier, supported frameworks, the built-in WAF, MAU allowances in Faable Auth, and how Faable Deploy and Faable Auth are bundled.
 schema: faq
 ---
 
@@ -18,7 +18,7 @@ Direct answers to the most common questions about Faable. For details, follow th
 
 ## How much does Faable cost?
 
-**Faable uses one subscription covering both Deploy and Auth, with three platform tiers: Free (0 €), Hobby (15 €/month + usage), and Pro (99 €/month + usage).** Pricing is hybrid — a monthly platform fee plus usage for compute, monthly active users (MAU) above the included allowance, and egress above the plan allowance on Pro only (Free includes 10 GB/month and Hobby 50 GB/month, neither of them metered). Plans apply per project. See the [pricing page](platform/pricing.md) for full details.
+**Faable uses one subscription covering both Deploy and Auth, with three platform tiers: Free (0 €), Hobby (15 €/month), and Pro (99 €/month).** Pricing is flat — each tier is a fixed monthly fee, and what the tier includes comes with it. Exactly one resource on the platform is metered: egress above the plan allowance, and only on Pro (Free includes 10 GB/month and Hobby 50 GB/month, neither of them metered). Plans apply per project. See the [pricing page](platform/pricing.md) for full details.
 
 ## Is there a free tier?
 
@@ -44,7 +44,7 @@ Direct answers to the most common questions about Faable. For details, follow th
 
 ## How is Faable Auth priced — what is MAU?
 
-**Faable Auth is priced by monthly active users (MAU): the number of distinct users who authenticate in a calendar month.** Each platform tier includes an MAU allowance, and you pay usage only above it — there are no per-feature add-ons. See [Faable Auth pricing](auth/pricing.md).
+**Faable Auth entitlements are sized by monthly active users (MAU): the number of distinct users who authenticate in a calendar month.** Each platform tier includes an MAU allowance — 250 on Hobby, 10,000 pooled on Pro — and there is no per-user line on your invoice: going beyond the allowance is a reason to talk to us, handled case by case, not an automatic charge. There are no per-feature add-ons either. See [Faable Auth pricing](auth/pricing.md).
 
 ## Does Faable include a Web Application Firewall?
 
