@@ -387,8 +387,18 @@ app. Two rules, depending on what the caller should get back:
 | `block` | `403`  | You want the request refused — a scanner probe, an admin path that should not be public            |
 | `sink`  | `404`  | Your app does not serve that path anyway. Faable replies with the same 404, without the cold start |
 
-Patterns are anchored regular expressions matched against the request path. **Quote them
-in your shell** — `$`, `\` and `?` are shell metacharacters.
+A rule selects requests by **path**, by **user-agent**, or by both at once:
+
+| You write                            | It matches                                       |
+| ------------------------------------ | ------------------------------------------------ |
+| `waf block '^/wp-admin'`             | that path, from anyone                           |
+| `waf block --user-agent YisouSpider` | that crawler, on **every** path                  |
+| `waf block '^/api/' -u YisouSpider`  | that path **and** that crawler — both must match |
+
+Patterns are regular expressions. Path patterns are matched against the request path and
+user-agent patterns against the `User-Agent` header, unanchored (agents append versions
+and URLs, so `YisouSpider` matches `YisouSpider/5.0`). **Quote them in your shell** —
+`$`, `\` and `?` are shell metacharacters.
 
 ### Block a path
 
@@ -417,6 +427,32 @@ Use `sink` for paths your app 404s anyway. A 404 on `robots.txt` means "no crawl
 restrictions", which is exactly what your app was already replying — the only difference
 is that Faable answers it and your container stays asleep.
 
+### Block a crawler
+
+```bash
+faable deploy waf block --user-agent YisouSpider
+```
+
+A user-agent rule has **no path restriction**: it applies to every path on the app. That
+is usually what you want for a scraper that is only there to read your pages, and it is
+why the rule is refused if the pattern would also match a real browser — `Safari`, for
+instance, matches Chrome, whose user-agent ends in `Safari/537.36`.
+
+Search engines, AI crawlers and uptime monitors are refused too, but only until you say
+you mean it:
+
+```
+❌ Pattern also matches Googlebot. Blocking search or AI crawlers removes you from
+   their results, and blocking uptime monitors changes what they see.
+   Re-run with --force if that is what you want.
+```
+
+To restrict a rule to certain paths, give both halves — then **both** have to match:
+
+```bash
+faable deploy waf block '^/api/' --user-agent YisouSpider
+```
+
 ### List
 
 ```bash
@@ -430,9 +466,13 @@ each one answers.
 
 ```bash
 faable deploy waf rm '^/robots\.txt$'
+faable deploy waf rm --user-agent YisouSpider
+faable deploy waf rm '^/api/' --user-agent YisouSpider
 ```
 
-The path reaches your app again within ~20s.
+Remove a rule the same way you created it: `'^/login'` and `'^/login' -u YisouSpider` are
+two different rules that happen to share a path, so removing one leaves the other in
+place. Those requests reach your app again within ~20s.
 
 <Callout type="info">
   Certificate renewal is never affected: Faable keeps `/.well-known/acme-challenge/`
@@ -440,9 +480,13 @@ The path reaches your app again within ~20s.
   rule is safe on custom domains.
 </Callout>
 
-Some paths cannot be ruled on, and the CLI tells you why instead of accepting them: a
-pattern that would match your site root `/` (it would take the whole app offline), and
-lookahead/backreference syntax, which the edge's regex engine does not support.
+Some patterns cannot be ruled on, and the CLI tells you why instead of accepting them:
+
+- a path pattern matching your site root `/`, or a user-agent pattern matching a real
+  browser — both would take the whole app offline;
+- a user-agent pattern matching Faable's own platform traffic, which would break
+  certificate renewal for the app;
+- lookahead and backreference syntax, which the edge's regex engine does not support.
 
 ## Faable Auth
 
@@ -559,8 +603,8 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable deploy domains check` | DNS verification diagnostic for a domain                                              |
 | `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)                                               |
 | `faable deploy waf list`      | Show the edge rules in effect for the app                                             |
-| `faable deploy waf block`     | Refuse a path at the edge with a 403                                                  |
-| `faable deploy waf sink`      | Answer a path with a 404 without waking the app                                       |
+| `faable deploy waf block`     | Refuse requests at the edge with a 403 (by path, user-agent, or both)                 |
+| `faable deploy waf sink`      | Answer requests with a 404 without waking the app                                     |
 | `faable deploy waf rm`        | Remove one of your edge rules                                                         |
 | `faable auth users list`      | List and filter users (`--query`, `-q`, `--suspended`)                                |
 | `faable auth users get`       | Show a user: suspension state, last IP and federated identities (GitHub login, etc.)  |
