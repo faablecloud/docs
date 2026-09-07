@@ -266,3 +266,7 @@ In production, Actions run on a dedicated worker process via RPC (so a misbehavi
 
 - [Webhooks](webhooks.md) — react to events **after** they happen instead of intercepting them inline.
 - [Logs](../logs.md) — inspect Action execution and `console.log` output.
+
+## Actions inside a login flow
+
+A [login flow](../login-flows.md) has an **Actions** node: that is where the `post-login` chain runs, exactly as it does without a custom flow. A deny stops the login there; a redirect pauses it and `continue` picks the flow back up at the same node. Conditions in the flow are a closed set of facts — for anything they cannot express, the Action is the place.

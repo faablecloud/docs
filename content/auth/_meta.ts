@@ -23,6 +23,7 @@ export default {
   mfa: 'Two-Step Verification',
   logs: 'Logs',
   advancedSeparator: { type: 'separator', title: 'Advanced' },
+  'login-flows': 'Login Flows',
   extensibility: 'Extensibility',
   'custom-domain': 'Custom Domain',
   integrations: 'Integrations',
