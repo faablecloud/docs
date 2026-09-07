@@ -1,13 +1,13 @@
 ---
 title: Faable CLI
-description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, cancel, status, logs, deployments, inspect, secrets, and custom domains — plus Faable Auth management (users, suspensions, actions, OAuth clients, audit logs) for Node.js, Python, and Dockerfile apps.
+description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, cancel, status, logs, deployments, inspect, secrets, custom domains, and edge rules that stop scanner traffic from waking a sleeping app — plus Faable Auth management (users, suspensions, actions, OAuth clients, audit logs) for Node.js, Python, and Dockerfile apps.
 ---
 
 # Faable CLI
 
 The Faable CLI (`@faable/faable`) is your command-line interface for managing and deploying applications on the Faable platform — Node.js (Next.js, Express, …), Python (Django, FastAPI, Flask), or your own Dockerfile. Deploy, manage secrets, and attach custom domains without leaving the terminal.
 
-The CLI covers both **Faable Deploy** (everything below up to Domains) and **Faable Auth** ([`faable auth`](#faable-auth): users, actions, OAuth clients, and the audit log).
+The CLI covers both **Faable Deploy** (everything below up to Edge rules) and **Faable Auth** ([`faable auth`](#faable-auth): users, actions, OAuth clients, and the audit log).
 
 ## Installation
 
@@ -371,6 +371,79 @@ faable deploy domains rm www.example.com
 
 Asks for confirmation (skip with `--yes`). The app stays live on its `faable.link` URL.
 
+## Edge rules (WAF)
+
+Scanners and crawlers ask every app on the internet for paths it never serves —
+`/.env`, `/wp-login.php`, `/robots.txt`, probes under `/.well-known/`. Faable already
+blocks the well-known scanner families for you. What is left is the traffic that is
+specific to your app: on a scale-to-zero app, every one of those requests **starts your
+container** just to answer a 404.
+
+`faable deploy waf` lets you handle those paths at the edge, so they never reach your
+app. Two rules, depending on what the caller should get back:
+
+| Command | Answer | Use it when                                                                                        |
+| ------- | ------ | -------------------------------------------------------------------------------------------------- |
+| `block` | `403`  | You want the request refused — a scanner probe, an admin path that should not be public            |
+| `sink`  | `404`  | Your app does not serve that path anyway. Faable replies with the same 404, without the cold start |
+
+Patterns are anchored regular expressions matched against the request path. **Quote them
+in your shell** — `$`, `\` and `?` are shell metacharacters.
+
+### Block a path
+
+```bash
+faable deploy waf block '^/\.well-known/'
+```
+
+```
+🛡️  ^/\.well-known/ → 403 at the edge for shop-api (app_a1b2c3).
+
+Matching requests are blocked before they reach your app, so they no longer wake it.
+
+It takes about 20s to reach the edge. Then check it with:
+  curl -s -o /dev/null -w '%{http_code}\n' https://shop-api.faable.link<path>
+
+Undo: faable deploy waf rm '^/\.well-known/' -a app_a1b2c3
+```
+
+### Answer a path without waking the app
+
+```bash
+faable deploy waf sink '^/robots\.txt$'
+```
+
+Use `sink` for paths your app 404s anyway. A 404 on `robots.txt` means "no crawling
+restrictions", which is exactly what your app was already replying — the only difference
+is that Faable answers it and your container stays asleep.
+
+### List
+
+```bash
+faable deploy waf list
+```
+
+Shows the platform rulesets protecting your app plus every rule you added, with what
+each one answers.
+
+### Remove
+
+```bash
+faable deploy waf rm '^/robots\.txt$'
+```
+
+The path reaches your app again within ~20s.
+
+<Callout type="info">
+  Certificate renewal is never affected: Faable keeps `/.well-known/acme-challenge/`
+  reachable even when one of your rules would cover it, so a broad `^/\.well-known/`
+  rule is safe on custom domains.
+</Callout>
+
+Some paths cannot be ruled on, and the CLI tells you why instead of accepting them: a
+pattern that would match your site root `/` (it would take the whole app offline), and
+lookahead/backreference syntax, which the edge's regex engine does not support.
+
 ## Faable Auth
 
 Manage a Faable Auth tenant from the terminal: `faable auth <users|actions|clients|logs>`. Commands reuse your `faable login` session. Every subcommand accepts `--auth-url https://<account>.auth.faable.link` (env `FAABLE_AUTH_URL`) to target your tenant, and read commands accept `--json` for a machine-clean output you can pipe to `jq`.
@@ -485,6 +558,10 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable deploy domains add`   | Add a domain (prints the CNAME to set)                                                |
 | `faable deploy domains check` | DNS verification diagnostic for a domain                                              |
 | `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)                                               |
+| `faable deploy waf list`      | Show the edge rules in effect for the app                                             |
+| `faable deploy waf block`     | Refuse a path at the edge with a 403                                                  |
+| `faable deploy waf sink`      | Answer a path with a 404 without waking the app                                       |
+| `faable deploy waf rm`        | Remove one of your edge rules                                                         |
 | `faable auth users list`      | List and filter users (`--query`, `-q`, `--suspended`)                                |
 | `faable auth users get`       | Show a user: suspension state, last IP and federated identities (GitHub login, etc.)  |
 | `faable auth users suspend`   | Suspend users by id — bulk via args or stdin                                          |
