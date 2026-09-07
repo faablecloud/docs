@@ -17,15 +17,11 @@ The order is yours. Drag methods in the dashboard, or set `login_methods.order` 
 
 Removing a method here is enforced, not cosmetic. A connection taken off a client's login screen is also refused at `/authorize?connection=<id>` for that client — the screen and the server always agree about what a client may use.
 
-![The Login methods section of the dashboard: an ordered list of the tenant's connections with move and remove controls](/auth/login-experience/login-methods.webp)
-
 ## Sign in with a passkey
 
 A passkey verified with a biometric or a device PIN proves possession **and** knowledge in one gesture, which is why a passkey login is never asked for a second factor afterwards. Turn it on under **Login Experience → Passkeys**.
 
 Two things happen on the login screen. A **Continue with a passkey** button appears at the top. And, in browsers that support it, the passkey is also offered from inside the email field — returning users pick it from the autofill suggestions and never touch the button.
-
-![The hosted login screen with a passkey suggested inside the email field](/auth/login-experience/passkey-autofill.webp)
 
 Registration runs entirely on your auth domain: a passkey is bound to the origin that created it, so the ceremony cannot be moved into your own application. Your app only ever sees the resulting session.
 
@@ -43,8 +39,6 @@ Turning passkey sign-in on does not, on its own, get anyone a passkey. Left to a
 
 That prompt is the **passkey offer**. With it on, a user who signs in with a password, an email code or a social login — and has no passkey or authenticator app yet — is taken to a hosted screen before returning to your application:
 
-![The hosted passkey offer: "Sign in faster next time", a Create a passkey button and a Not now link](/auth/login-experience/passkey-offer.webp)
-
 It never blocks the login. The user can say **Not now**; a browser that cannot create passkeys skips the screen without showing it; a failed registration offers to continue without one; and a user who simply closes the tab is signed in normally on their next visit. The login is complete before the screen appears — the offer is a question, not a gate.
 
 Turn it on under **Login Experience → Passkeys**, next to passkey sign-in. It needs passkey sign-in on: there is no point creating a passkey that cannot be used to sign in. Two knobs keep it from becoming a nag:
@@ -55,8 +49,6 @@ Turn it on under **Login Experience → Passkeys**, next to passkey sign-in. It 
 | Maximum times asked | 3       | How many times a user is offered a passkey over their lifetime. `0` switches the offer off for this tenant. |
 
 Repeating the prompt measurably raises abandonment. Keep it rare.
-
-![The Passkeys section of the dashboard: the sign-in toggle, the offer toggle, and the snooze and cap fields](/auth/login-experience/passkey-settings.webp)
 
 ### From the API
 

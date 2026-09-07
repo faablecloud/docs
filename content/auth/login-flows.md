@@ -17,8 +17,6 @@ The one rule that governs everything: **the flow decides the order of screens; y
 
 Every account runs a flow already: the one compiled from its settings. Open **Auth → Login Flow** to see it.
 
-![The Login Flow page showing the compiled graph of an account: start, the method chooser, four credentials converging on Actions, then sign in](/auth/login-flows/default-flow.webp)
-
 With two-step verification on, a gate appears after the Actions with its three ways out; with the passkey offer on, an invitation hangs off the "nothing owed" path — and only there. Whoever just passed or enrolled a second factor is never offered a passkey on top. That rule is topology, not code: you can see it.
 
 Nothing is stored for the default flow. Change a setting and the graph you see changes with it.
@@ -26,8 +24,6 @@ Nothing is stored for the default flow. Change a setting and the graph you see c
 ## One tenant, different access per client
 
 Each client can run its own flow. The precedence is by whole graph: the client's flow if it has one, else the account's, else the compiled one — reflecting **that client's** overrides, so an admin app with `mfa_policy: required` compiles to a gated graph while the consumer app of the same tenant does not.
-
-![A client page showing "Login flow: inherits the account flow" with a Customize for this client button](/auth/login-flows/client-binding.webp)
 
 On a client, **Login flow** says which graph it runs. **Customize for this client** gives it its own, starting from what it runs today.
 
@@ -67,14 +63,10 @@ Each can be negated.
 
 **Customize** turns the compiled graph into a flow of your own — never a blank canvas. From then on the page shows two views: **Running** (what logins walk) and **Draft** (what you are editing).
 
-![The editor: the draft on the canvas with a condition selected, its properties on the right, and the Save, Validate, Try and Publish buttons](/auth/login-flows/editor.webp)
-
 - **Validate** checks the draft against the rules a publish enforces and paints each problem on its node: exactly one start; every handle connected; nothing unreachable; no cycle without a condition; a second-factor gate on every path when the policy wants one; the passkey offer only with the offer on.
 - **Try this flow** opens a real login in a new tab that runs the **draft**, for your browser only, for ten minutes. Nothing is published.
 - **Publish** freezes the draft under its revision. New logins run it; logins already in flight finish on the revision they started. The previous revision goes to history.
 - **Roll back** makes a previous revision run again, without touching the draft.
-
-![A login in a new tab running the draft, reached with the preview token](/auth/login-flows/preview.webp)
 
 ## Recipes
 
