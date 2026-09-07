@@ -9,6 +9,7 @@
 //   DASHBOARD_STATE=./.shots/dashboard-state.json \   # Playwright storageState of a signed-in staff session
 //   node scripts/shots-auth.mjs [name ...]
 //
+// Eight shots: four for login-experience, four for login-flows.
 // Take them against STAGING with a canary tenant of the Faable Staff project
 // (arch/deploy/canary-apps.md): no real users, and the account has a
 // `webauthn_rp_id` so the passkey ceremony works in the capture browser.
@@ -64,6 +65,41 @@ const SHOTS = {
       await page.waitForTimeout(800)
     },
     out: 'auth/login-experience/passkey-autofill.webp'
+  },
+  'default-flow': {
+    url: () => dashboardPath('loginflow'),
+    needs: 'dashboard',
+    ready: async page => page.getByTestId('flow-node-end').waitFor(),
+    clip: async page => page.getByTestId('flow-canvas').boundingBox(),
+    out: 'auth/login-flows/default-flow.webp'
+  },
+  'client-binding': {
+    url: () =>
+      `${DASHBOARD_URL}/auth/${PROJECT}/account/${ACCOUNT}/client/${process.env.SHOTS_CLIENT_DOC_ID}`,
+    needs: 'dashboard',
+    ready: async page => page.getByTestId('login-flow-binding').waitFor(),
+    clip: async page => page.getByTestId('login-flow-binding').boundingBox(),
+    out: 'auth/login-flows/client-binding.webp'
+  },
+  editor: {
+    // A materialised flow with a condition selected: click the Draft view,
+    // then the first condition node, so the properties panel is filled.
+    url: () => dashboardPath('loginflow'),
+    needs: 'dashboard',
+    ready: async page => {
+      await page.getByTestId('flow-view-draft').click()
+      await page.locator('[data-testid^="flow-node-"]').first().click()
+      await page.getByTestId('flow-properties').waitFor()
+    },
+    out: 'auth/login-flows/editor.webp'
+  },
+  preview: {
+    // The hosted login reached with a preview token: run "Try this flow" by
+    // hand first and paste the opened URL in SHOTS_PREVIEW_URL.
+    url: () => process.env.SHOTS_PREVIEW_URL,
+    needs: 'tenant',
+    ready: async page => page.getByRole('heading').first().waitFor(),
+    out: 'auth/login-flows/preview.webp'
   },
   'passkey-offer': {
     // Reached only through a real login: sign in with the canary user's
