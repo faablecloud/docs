@@ -95,6 +95,16 @@ type IN ("user.passkey_offer.shown", "user.passkey_offer.accepted")
 
 On a user's detail page the **Passkey offer** row shows how many times they were asked and when they last declined. **Ask again** resets it — the answer both to "why does it keep asking me" and "I want to be asked again". Over the API: `POST /user/:id/passkey-prompt/reset`.
 
+## Ask for the email first
+
+Under **Login Experience → Screen**, **Ask for the email first** turns the login into two steps: a single email field, then the methods that apply — with the email already filled in. It is the shape Stripe and Google use, and it is the natural place for the passkey suggestion to appear.
+
+Nothing is looked up between the two steps. The address is carried on the login, not resolved to a user, so the first screen cannot be used to find out which addresses have an account.
+
+## Remember the last method
+
+**Remember the last method** moves the method a returning browser used last time to the top of the screen, with a _Last used_ tag. The hosted screen remembers it in a first-party cookie on your auth domain; whether to act on it is decided by this setting on the server, so turning it off is immediate and complete.
+
 ## Per-client overrides
 
 Every setting on this page is a tenant default that a client can override for its own login screen — the method order, whether passkeys are offered, whether users are invited to create one. Open the client under **Clients → Login experience**; a client that sets nothing inherits what the account says, field by field.
