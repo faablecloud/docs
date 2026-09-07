@@ -21,7 +21,9 @@ Removing a method here is enforced, not cosmetic. A connection taken off a clien
 
 A passkey verified with a biometric or a device PIN proves possession **and** knowledge in one gesture, which is why a passkey login is never asked for a second factor afterwards. Turn it on under **Login Experience → Passkeys**.
 
-Two things happen on the login screen. A **Continue with a passkey** button appears at the top. And, in browsers that support it, the passkey is also offered from inside the email field — returning users pick it from the autofill suggestions and never touch the button.
+Two things happen on the login screen. A **Continue with a passkey** button appears under the password form, behind an _or sign in with_ rule, next to the social buttons (you can move it with the method order). And, in browsers that support it, the passkey is also offered from inside the email field — returning users pick it from the autofill suggestions and never touch the button.
+
+The button names what the passkey _is_ on that device — **Touch ID** on a Mac, **Face ID** on an iPhone, **Windows Hello** on Windows — with the matching icon, because that is the word the user recognises. The screen asks the browser whether a platform authenticator is present; a machine without one gets the generic label. Underneath it is the same WebAuthn ceremony either way. The same naming appears on the second-factor screen and on the passkey offer.
 
 Registration runs entirely on your auth domain: a passkey is bound to the origin that created it, so the ceremony cannot be moved into your own application. Your app only ever sees the resulting session.
 
@@ -89,13 +91,21 @@ On a user's detail page the **Passkey offer** row shows how many times they were
 
 ## Ask for the email first
 
-Under **Login Experience → Screen**, **Ask for the email first** turns the login into two steps: a single email field, then the methods that apply — with the email already filled in. It is the shape Stripe and Google use, and it is the natural place for the passkey suggestion to appear.
+Under **Login Experience → Screen**, **Ask for the email first** turns the login into two steps: a single email field, then the methods that apply. On the second screen the email is shown, not asked again — the password form has only the password field, with a **Change** link back to the first step — and the emailed-code form comes pre-filled. It is the shape Stripe and Google use, and it is the natural place for the passkey suggestion to appear.
 
 Nothing is looked up between the two steps. The address is carried on the login, not resolved to a user, so the first screen cannot be used to find out which addresses have an account.
 
 ## Remember the last method
 
 **Remember the last method** moves the method a returning browser used last time to the top of the screen, with a _Last used_ tag. The hosted screen remembers it in a first-party cookie on your auth domain; whether to act on it is decided by this setting on the server, so turning it off is immediate and complete.
+
+## Remember me on this device
+
+**Offer "Remember me on this device"** adds a checkbox to the password and emailed-code forms (a passkey login honours it too). Unticked, the session ends when the browser closes; ticked, it lasts the number of days you set (30 by default, up to 365). With the option off there is no box and every session lasts 30 days, as it always has.
+
+The checkbox only shortens or extends the session cookie on your auth domain. It is separate from **Remember this device** under two-step verification, which decides how long a browser is excused from a second factor.
+
+Over the API the setting is `login_methods.remember_me` (`off` or `optional`) and `remember_me_days`; the forms send `remember_me: true|false` when the box is shown.
 
 ## Per-client overrides
 

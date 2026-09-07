@@ -29,20 +29,38 @@ On a client, **Login flow** says which graph it runs. **Customize for this clien
 
 ## Nodes
 
-| Node            | What it does                                                                 | Reads               |
-| --------------- | ---------------------------------------------------------------------------- | ------------------- |
-| Start           | Where every login begins.                                                    | —                   |
-| Email first     | Asks for the email before showing any method. Nothing is looked up.          | `identifier_first`  |
-| Choose a method | The hosted login screen: which methods, in what order.                       | `login_methods`     |
-| Credential      | The user proved who they are (password, code, social, passkey).              | —                   |
-| Actions         | Runs your post-login [Actions](extensibility/actions.md). A deny stops here. | Actions             |
-| Second factor?  | Decides whether a factor is owed: `satisfied`, `challenge` or `enroll`.      | `mfa_policy`        |
-| Verify factor   | Asks for the code, key or passkey the user has.                              | —                   |
-| Enrol factor    | Enrols a first factor during the login.                                      | —                   |
-| Offer a passkey | Invites the user to create a passkey. Never blocks.                          | `passkey_promotion` |
-| Condition       | Branches on a fact: `then` / `else`.                                         | —                   |
-| Deny            | Refuses the login with an error you name.                                    | —                   |
-| Sign in         | Issues the tokens and returns the user to the app.                           | —                   |
+| Node            | What it does                                                                                                                      | Reads               |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| Start           | Where every login begins.                                                                                                         | —                   |
+| Email first     | Asks for the email before showing any method. Nothing is looked up.                                                               | `identifier_first`  |
+| Choose a method | The hosted login screen: which methods, in what order.                                                                            | `login_methods`     |
+| Credential      | The user proved who they are (password, code, social, passkey).                                                                   | —                   |
+| Actions         | Runs your post-login [Actions](extensibility/actions.md). A deny stops here.                                                      | Actions             |
+| Second factor?  | Decides whether a factor is owed: `satisfied`, `challenge` or `enroll`.                                                           | `mfa_policy`        |
+| Verify factor   | Asks for the code, key or passkey the user has. Which ones it offers, in what order and which is the default are set on the node. | —                   |
+| Enrol factor    | Enrols a first factor during the login.                                                                                           | —                   |
+| Offer a passkey | Invites the user to create a passkey. Never blocks.                                                                               | `passkey_promotion` |
+| Condition       | Branches on a fact: `then` / `else`.                                                                                              | —                   |
+| Deny            | Refuses the login with an error you name.                                                                                         | —                   |
+| Sign in         | Issues the tokens and returns the user to the app.                                                                                | —                   |
+
+### The verification screen
+
+**Verify factor** opens on a choice of cards — _Use a security key or biometrics_ (named after the device: Touch ID, Face ID, Windows Hello) and _Use your authenticator app_ — with one of them tagged as the default. Select the node to choose which ways to verify it lists, their order, the default, and whether recovery codes are offered as a way in. A user with only an authenticator app skips the choice and lands on the code field.
+
+The screen only ever lists factors the user actually has, so hiding one here never locks anybody out. Which factors are _accepted_ is the two-step verification policy's **allowed factors**; the node decides what the screen suggests.
+
+```json
+{
+  "id": "mfa_challenge",
+  "type": "mfa_challenge",
+  "config": {
+    "factors": ["webauthn", "totp"],
+    "preferred": "webauthn",
+    "recovery": true
+  }
+}
+```
 
 ## Conditions
 
