@@ -26,7 +26,7 @@ In the dashboard, open your auth account and go to **Security → Two-step verif
 | **Optional** | Users who enrolled a method are asked for it. Users who have not are let in.                                                                        |
 | **Required** | Everybody is asked. Users with no method are taken through enrolment **during** login — turning this on never locks out the users you already have. |
 
-You can also restrict which methods count (authenticator app, security key, or both), and a single client can override the account policy — useful when only your admin application needs it.
+You can also restrict which methods count (authenticator app, security key, or both), and a single client can override the account policy — useful when only your admin application needs it. See [Per-client overrides](login-experience.md#per-client-overrides).
 
 <Callout type="info">
   Turning the policy on is available from the **Hobby** plan up. Logins already
@@ -58,15 +58,7 @@ There is deliberately no way for an administrator to _add_ a factor on someone's
 
 A passkey verified with a biometric or a PIN proves possession **and** knowledge in a single gesture, which is why a passkey login is not asked for a second factor afterwards.
 
-Enable it under **Login Experience → Passkeys**. The login screen grows a "Continue with a passkey" button, and browsers that support it also offer the passkey from inside the email field, so returning users often never click anything.
-
-<Callout type="warning">
-  A passkey is bound to the domain it was created on. If your login moves to a
-  [custom domain](custom-domain.md), every passkey registered on the old domain
-  stops working. Set a **WebAuthn Relying Party ID** to a domain you own (e.g.
-  `example.com`) **before** users start enrolling, and passkeys keep working
-  across every host under it.
-</Callout>
+Passkey sign-in — the button, the autofill suggestion inside the email field, and the post-login invitation that gets users to create one — is configured under **Login Experience**. See [Login Experience → Sign in with a passkey](login-experience.md#sign-in-with-a-passkey) and [Inviting users to create a passkey](login-experience.md#inviting-users-to-create-a-passkey).
 
 ## In the tokens
 

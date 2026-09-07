@@ -79,6 +79,8 @@ export function SecurityLink() {
 
 The page lists what they have, offers **Add a security key or passkey** (Face ID / Touch ID / Windows Hello / a hardware key) and **Add an authenticator app**, and lets them remove either. The user has to be signed in on the auth domain for it to load, which they are right after logging in through your app.
 
+A link in your settings gets you single-digit enrolment. What actually gets users a passkey is the offer shown **right after they sign in** with a password or a code, before they reach your app — turn it on under **Login Experience → Passkeys**, next to passkey sign-in. It never blocks the login, and your callback handler does not change. See [Inviting users to create a passkey](../login-experience.md#inviting-users-to-create-a-passkey).
+
 <Callout type="info">
   The hosted page is served from the auth origin — that is not a limitation, it
   is the point. Registering a passkey from `app.acme.com` would bind it to

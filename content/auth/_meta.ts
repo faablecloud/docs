@@ -9,6 +9,7 @@ export default {
   connections: 'Connections',
   social: 'Social Login',
   passwordless: 'Passwordless',
+  'login-experience': 'Login Experience',
   apis: 'APIs',
   protocolSeparator: { type: 'separator', title: 'Protocol' },
   'oauth-flows': 'OAuth 2.0 Flows',

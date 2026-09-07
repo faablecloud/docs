@@ -69,13 +69,14 @@ Your backend verifies all of this offline: signature against the JWKS, then issu
 
 Everything that happens to an identity after (and before) the first login is a supported flow, not something you rebuild:
 
-| Flow                                    | What it does                                                                                                                                |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Signup](signup.md)                     | Email + password registration from a browser-only app, and an `is_new_user` marker on the OAuth callback so you can branch into onboarding. |
-| [Change Email](change-email.md)         | Ownership-verified email updates, with an optional double confirmation from the old address for high-risk accounts.                         |
-| [Team Invitations](team-invitations.md) | Invite by email: known users join the team directly, unknown addresses get a link that creates the account on first click.                  |
-| [Suspend Users](suspend-users.md)       | Block a user across every login flow, token grant, session and management call — instantly, reversibly, without deleting data.              |
-| [Logs](logs.md)                         | A queryable record of email deliveries, webhook attempts and authentication events, filterable with FaableQL.                               |
+| Flow                                    | What it does                                                                                                                                                            |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Login Experience](login-experience.md) | Which methods the hosted login screen offers and in what order, passkey sign-in, and a post-login invitation to create a passkey — per account, overridable per client. |
+| [Signup](signup.md)                     | Email + password registration from a browser-only app, and an `is_new_user` marker on the OAuth callback so you can branch into onboarding.                             |
+| [Change Email](change-email.md)         | Ownership-verified email updates, with an optional double confirmation from the old address for high-risk accounts.                                                     |
+| [Team Invitations](team-invitations.md) | Invite by email: known users join the team directly, unknown addresses get a link that creates the account on first click.                                              |
+| [Suspend Users](suspend-users.md)       | Block a user across every login flow, token grant, session and management call — instantly, reversibly, without deleting data.                                          |
+| [Logs](logs.md)                         | A queryable record of email deliveries, webhook attempts and authentication events, filterable with FaableQL.                                                           |
 
 ## Extensibility
 
@@ -127,7 +128,7 @@ Yes — Faable Auth is included in every plan, starting on **Free**, with a fair
 
 ### Does Faable Auth support MFA or SAML?
 
-MFA yes, SAML not yet. [Two-step verification](mfa.md) is built in — authenticator app codes, security keys and passkeys — with a hosted enrolment and challenge, and a policy you set per account or per client. Passkeys can also replace the password entirely. There is still no SAML connector; an enterprise IdP that speaks OIDC connects fine.
+MFA yes, SAML not yet. [Two-step verification](mfa.md) is built in — authenticator app codes, security keys and passkeys — with a hosted enrolment and challenge, and a policy you set per account or per client. Passkeys can also replace the password entirely, and the hosted login can [invite users to create one](login-experience.md#inviting-users-to-create-a-passkey) right after they sign in. There is still no SAML connector; an enterprise IdP that speaks OIDC connects fine.
 
 ### Can I use Faable Auth without Faable Deploy?
 
