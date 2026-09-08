@@ -92,7 +92,7 @@ CLI to specify it.
 To test features or preview changes before releasing to production, deploy the
 same repository to multiple **Faable apps** with different configurations
 (`staging`, `beta`, `preprod`…): create one workflow file per environment and
-point each one to a different app with `faable deploy <app_slug>`.
+point each one to a different app with `faable deploy --app <app_slug>`.
 
 In a monorepo you can also filter which pushes deploy which app — for example
 with [`turbo-ignore`](https://turbo.build/repo/docs/reference/turbo-ignore):

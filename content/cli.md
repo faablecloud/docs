@@ -86,11 +86,16 @@ The app is resolved automatically — no `app_id` required:
 - **In GitHub Actions**: from the repository linked to your app, via OIDC.
 - **Locally**: by matching your git origin remote against your apps' linked repositories (connected in the dashboard or via `faable deploy link`).
 
-Pass an app explicitly only for **monorepos** with several apps linked to the same repository:
+Pass an app explicitly — always with `--app`, never as a bare argument — for **monorepos** with several apps linked to the same repository, or for an app with no repository connected:
 
 ```bash
-faable deploy <app_id>
+faable deploy --app <app_id>
 ```
+
+> [!NOTE]
+> `deploy` takes only subcommands, so an app id written where a subcommand belongs is rejected instead of deploying.
+> `faable deploy <app_id> secrets list` fails with `Unknown command`; the correct form is `faable deploy secrets list --app <app_id>`.
+> The `--app` (`-a`) flag works the same on `deploy` and on every subcommand.
 
 **What happens during deploy:**
 
