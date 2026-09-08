@@ -92,10 +92,18 @@ Pass an app explicitly — always with `--app`, never as a bare argument — for
 faable deploy --app <app_id>
 ```
 
+A bare `faable deploy` is an alias of `faable deploy launch` — deploying is a subcommand like `status` or `secrets`, and the shortcut runs exactly the same code. Run `launch` explicitly whenever it reads better, especially from outside the project directory:
+
+```bash
+faable deploy launch --app <app_id> --workdir ./apps/web
+```
+
+Run it where no app can be resolved — a directory with no linked repository — and `deploy` lists its subcommands instead, the way `faable auth` does.
+
 > [!NOTE]
 > `deploy` takes only subcommands, so an app id written where a subcommand belongs is rejected instead of deploying.
 > `faable deploy <app_id> secrets list` fails with `Unknown command`; the correct form is `faable deploy secrets list --app <app_id>`.
-> The `--app` (`-a`) flag works the same on `deploy` and on every subcommand.
+> The `--app` (`-a`) flag works the same on `launch` and on every subcommand.
 
 **What happens during deploy:**
 
@@ -589,7 +597,8 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable login`                | Authenticate with Faable                                                              |
 | `faable whoami`               | Show current user                                                                     |
 | `faable logout`               | End the local session                                                                 |
-| `faable deploy`               | Deploy project to production                                                          |
+| `faable deploy`               | Deploy project to production (alias of `faable deploy launch`)                        |
+| `faable deploy launch`        | The deploy itself — `--app` to target another app, `--workdir` to deploy elsewhere    |
 | `faable deploy trigger`       | Build the repo HEAD server-side (no upload)                                           |
 | `faable deploy redeploy`      | Retry a failed deployment from its source                                             |
 | `faable deploy cancel`        | Stop a deployment that is still queued or building                                    |
