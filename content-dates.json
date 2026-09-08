@@ -71,6 +71,10 @@
     "modified": "2026-05-08T13:04:43+02:00",
     "published": "2026-05-08T13:04:43+02:00"
   },
+  "content/auth/email-sending.md": {
+    "published": "2026-09-08T15:36:40.096Z",
+    "modified": "2026-09-08T15:36:40.096Z"
+  },
   "content/auth/extensibility/actions.md": {
     "published": "2026-05-16T11:42:20+02:00",
     "modified": "2026-09-07T11:43:59.576Z"
@@ -217,7 +221,7 @@
   },
   "content/auth/signup.md": {
     "published": "2026-07-01T12:22:28+02:00",
-    "modified": "2026-09-08T08:36:31.780Z"
+    "modified": "2026-09-08T15:36:40.096Z"
   },
   "content/auth/social/apple.md": {
     "modified": "2026-07-27T13:52:25+02:00",

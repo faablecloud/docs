@@ -72,6 +72,8 @@ With `notification_settings.welcome_email_enabled` on, every new user receives t
 | `body`         | Replaces the default one-line body. Plain text, sent verbatim in every locale the account enables.                                                                        |
 | `social_links` | Up to six `{ label, url }` entries rendered as a "Follow <account>" block after the button (and one per line in the plain-text part). Empty or absent hides the block.    |
 
+See [Email Sending](email-sending.md) for the address these come from and how to let users reply.
+
 The subject, greeting and signature stay localised (`Welcome to <account>` / `Bienvenido a <account>`), so the email keeps working for tenants that enable more than one locale.
 
 ## The signup endpoint

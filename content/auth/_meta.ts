@@ -18,6 +18,7 @@ export default {
   usersSeparator: { type: 'separator', title: 'Users & Sessions' },
   signup: 'Signup',
   'change-email': 'Change Email',
+  'email-sending': 'Email Sending',
   'team-invitations': 'Team Invitations',
   'suspend-users': 'Suspend Users',
   mfa: 'Two-Step Verification',
