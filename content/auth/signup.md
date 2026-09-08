@@ -36,7 +36,7 @@ if (error) {
 > [!IMPORTANT]
 > **`signUp()` logs the user in through a redirect.** Just like every interactive username/password login in the SDK, the sign-in step submits a form that round-trips through the auth server. On success the browser navigates to your `redirectTo`, where [`initialize()`](quickstart/nextjs.mdx) delivers the live session and fires a `SIGNED_IN` event. `signUp()` only returns synchronously when signup itself fails.
 
-The new user is created with `email_verified: false`. Whether a verification or welcome email goes out is controlled by your tenant's account settings (`verify_email_auto_send`, `welcome_email_enabled`) — see [Connections](connections.md).
+The new user is created with `email_verified: false`. Whether a verification or welcome email goes out is controlled by your tenant's account settings (`verify_email_auto_send`, `welcome_email_enabled`) — see [Welcome email](#welcome-email) below.
 
 ### Parameters
 
@@ -48,6 +48,31 @@ The new user is created with `email_verified: false`. Whether a verification or 
 | `user_metadata`                     | no       | Arbitrary key/value metadata stored on the user.                                                                      |
 | `connection`                        | no       | Connection name, when the tenant has more than one database connection. Defaults to the tenant's database connection. |
 | `redirectTo`                        | no       | Where the auto-login lands after the redirect. Defaults to `config.redirectUri` / the current origin.                 |
+
+## Welcome email
+
+With `notification_settings.welcome_email_enabled` on, every new user receives the built-in welcome email once their address is verified. The default copy is generic (`Welcome to <account>`, a button to the first entry of `callback_hostnames`). You can personalise it per tenant with the `welcome_email` object of the account, through the management API (`POST /account/:id`) — the whole object is replaced on every update, and `null` returns to the generic copy.
+
+```json
+{
+  "welcome_email": {
+    "cta_url": "https://app.example.com/onboarding",
+    "body": "Your account is ready. Create your first project from the dashboard.",
+    "social_links": [
+      { "label": "GitHub", "url": "https://github.com/example" },
+      { "label": "LinkedIn", "url": "https://www.linkedin.com/company/example" }
+    ]
+  }
+}
+```
+
+| Field          | Description                                                                                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cta_url`      | Where the button sends the user. Defaults to `https://<first callback hostname>` — point it at your app, not your marketing site, so a fresh user lands somewhere useful. |
+| `body`         | Replaces the default one-line body. Plain text, sent verbatim in every locale the account enables.                                                                        |
+| `social_links` | Up to six `{ label, url }` entries rendered as a "Follow <account>" block after the button (and one per line in the plain-text part). Empty or absent hides the block.    |
+
+The subject, greeting and signature stay localised (`Welcome to <account>` / `Bienvenido a <account>`), so the email keeps working for tenants that enable more than one locale.
 
 ## The signup endpoint
 
