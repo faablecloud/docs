@@ -1,6 +1,7 @@
 ---
+schema: faq
 title: What is a multi-tenant identity server?
-description: A multi-tenant identity server is a single authentication system that securely isolates the users of many applications or organizations (tenants) from each other. Learn what it means and how Faable Auth implements it.
+description: A multi-tenant identity server is a single authentication system that securely isolates the users of many applications or organizations (tenants) from each other. Learn what it means, how isolation actually works, when you need one, and how Faable Auth implements it.
 ---
 
 # What is a multi-tenant identity server?
@@ -24,19 +25,70 @@ description: A multi-tenant identity server is a single authentication system th
 
 Multi-tenancy is what lets a SaaS business onboard a new customer organization without provisioning new infrastructure, and lets a team run several products from one identity system.
 
+## What "isolated" actually means
+
+A tenant boundary is only useful if nothing crosses it by accident. In a well-designed multi-tenant identity server:
+
+- **Users are scoped to the tenant.** The same email address can exist in two tenants as two unrelated identities. A user of tenant A cannot log in to tenant B.
+- **Configuration is per tenant.** Login methods, social providers, password rules, branding, MFA policy and the list of applications are all set independently.
+- **Tokens are bound to the tenant.** Each tenant signs with its own keys and publishes its own JWKS. An access token carries the tenant as its issuer (`iss`), and an API validating tokens for tenant A will reject a token minted by tenant B — the signature won't verify and the issuer won't match.
+- **The tenant is chosen before any request is processed.** Typically from the hostname: `acme.auth.example` is one tenant, `globex.auth.example` another. No request parameter can switch tenants mid-flow.
+
+## Tenant vs. your customers' organizations
+
+The word "tenant" causes most of the confusion, because SaaS products also call their customers tenants. There are two valid ways to model a B2B product, and the identity server should support both:
+
+| Model                              | How it looks                                                           | Choose it when                                                                  |
+| ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **One tenant, many organizations** | Your product is one tenant; each customer is a **team** inside it      | Most SaaS: one login page, one user pool, users can belong to several customers |
+| **One tenant per customer**        | Each customer gets its own tenant, domain, user pool and login methods | White-label or regulated deployments that need hard isolation per customer      |
+
+The first model is the common one: a single identity boundary for the product, with membership and roles handled by teams. The second is what "multi-tenant" strictly means at the identity-server level, and it's the one you reach for when a customer must never share a user directory, a login page or a signing key with anyone else.
+
 ## How Faable Auth implements multi-tenancy
 
 [Faable Auth](get-started.md) is multi-tenant by design. Four concepts model the whole product:
 
-- **Account** — your tenant, hosted at `https://<account>.auth.faable.link` or your own [custom domain](custom-domain.md).
+- **Account** — your tenant, hosted at `https://<account>.auth.faable.link` or your own [custom domain](custom-domain.md). Each account has its own signing keys, published at `/.well-known/jwks.json`, and its own OpenID discovery document.
 - **Connections** — the sources of users for that tenant: database (email + password), social, passwordless, or generic OIDC.
-- **Clients** — the applications that run OAuth flows against the tenant.
-- **Users & Teams** — identities grouped into teams with role-based access control (RBAC).
+- **Clients** — the applications that run OAuth flows against the tenant, each with its own callback URLs and enabled connections.
+- **Users & Teams** — identities grouped into teams with role-based access control (RBAC). Teams are how you model your customers' organizations inside one tenant; [invitations](team-invitations.md) add members by email.
 
-Tenants are isolated by host, so orgs, teams, and users stay separate without extra plumbing. On top of this you get social login, passwordless, machine-to-machine tokens, [Actions](extensibility/actions.md), and [Webhooks](extensibility/webhooks.md) — all hosted 100% in Europe under GDPR.
+Tenants are resolved **by host**: the request's hostname picks the account, and everything after that — users, keys, clients, [APIs](apis.md), [Actions](extensibility/actions.md), [Webhooks](extensibility/webhooks.md), the [login flow](login-flows.md) — belongs to that account only. Creating another tenant is a dashboard action, not a deployment. All of it is hosted 100% in Europe under GDPR.
+
+## FAQ
+
+### Is a multi-tenant identity server less secure than one server per tenant?
+
+No, provided isolation is enforced at every layer — separate user pools, separate signing keys, tenant resolved from the host. The security model is the same as a single-tenant server; what changes is that you don't operate one deployment per customer. Where you need a different _trust_ boundary (a customer who must not share a login page or key material with anyone), give that customer its own tenant.
+
+### Do each of my customers' organizations need their own tenant?
+
+Usually not. Most SaaS products run as **one tenant** and model customer organizations as **teams** inside it, so a user can belong to several customers and there's one login page. Reserve one-tenant-per-customer for white-label or strictly regulated cases.
+
+### Can each tenant have its own domain and branding?
+
+Yes. A tenant lives at `<account>.auth.faable.link` by default and can use a [custom domain](custom-domain.md) such as `login.yourapp.com`; the [login experience](login-experience.md) — logo, colours, wording — is configured per tenant.
+
+### Can the same person exist in two tenants?
+
+Yes, as two independent identities. Users are scoped to their tenant, so `alice@example.com` in tenant A and `alice@example.com` in tenant B are unrelated accounts with separate passwords, sessions and tokens.
+
+### How does an API know which tenant a token belongs to?
+
+From the token's `iss` claim and its signature. Each tenant signs with its own keys, so an API configured for one tenant's issuer and JWKS rejects tokens from any other tenant automatically. See [Validate Access Tokens](validate-access-tokens.md).
+
+### What's the difference between multi-tenancy and single sign-on?
+
+Single sign-on lets a user log in once and reach several **applications** inside the same tenant. Multi-tenancy lets one identity server host several **tenants** that don't share users at all. A multi-tenant server gives you SSO within each tenant, never across them.
+
+### Which standards does a multi-tenant identity server use?
+
+OAuth 2.0 for authorization and OpenID Connect for authentication, the same as a single-tenant one. Each tenant exposes its own discovery document (`/.well-known/openid-configuration`) and key set, so standard libraries work unchanged — you point them at the tenant's URL.
 
 ## Related
 
 - [Get Started with Faable Auth](get-started.md)
+- [Academy — Tenant Building Blocks](academy/02-tenant-building-blocks.md) — accounts, clients and connections in depth
 - [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
-- [Connections](connections.md) · [Clients](clients.md)
+- [Connections](connections.md) · [Clients](clients.md) · [Team Invitations](team-invitations.md) · [Custom Domain](custom-domain.md)

@@ -124,8 +124,8 @@
     "modified": "2026-09-07T09:57:50.249Z"
   },
   "content/auth/oauth-flows/authorization-code.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-04-08T20:16:59+02:00"
+    "published": "2026-04-08T20:16:59+02:00",
+    "modified": "2026-09-08T08:27:15.656Z"
   },
   "content/auth/oauth-flows/client-credentials.mdx": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -252,12 +252,12 @@
     "published": "2026-05-16T11:42:20+02:00"
   },
   "content/auth/validate-access-tokens.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-07-04T11:32:47+02:00"
+    "published": "2026-07-04T11:32:47+02:00",
+    "modified": "2026-09-08T08:27:15.656Z"
   },
   "content/auth/what-is-a-multi-tenant-identity-server.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-26T11:51:20+02:00"
+    "published": "2026-06-26T11:51:20+02:00",
+    "modified": "2026-09-08T08:27:15.656Z"
   },
   "content/cli.md": {
     "published": "2026-04-08T11:37:58+02:00",
@@ -357,7 +357,7 @@
   },
   "content/deploy/guides/guide-whatsapp-bot.md": {
     "published": "2026-08-24T15:57:55.247Z",
-    "modified": "2026-09-03T09:56:16.628Z"
+    "modified": "2026-09-08T08:27:15.656Z"
   },
   "content/deploy/guides/migrate-from-netlify.mdx": {
     "modified": "2026-07-16T12:45:25+02:00",

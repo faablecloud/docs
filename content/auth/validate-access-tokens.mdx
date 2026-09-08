@@ -1,7 +1,7 @@
 ---
 schema: faq
 title: Validate Access Tokens in Your API — Node.js & Express
-description: Verify Faable Auth JWT access tokens in your backend — check the RS256 signature against your tenant's JWKS, validate issuer and audience, and enforce scopes and permissions in Express.
+description: Verify Faable Auth JWT access tokens in your backend — check the RS256 signature against your tenant's JWKS, validate issuer and audience, and enforce scopes and permissions in Express. Same four checks in Python, Go, Java or .NET.
 ---
 
 # Validate Access Tokens in Your API 🛡️
@@ -21,7 +21,7 @@ A valid token must pass four checks:
 3. **Audience (`aud`)** — the `identifier` of your registered [API](apis.md).
 4. **Expiry (`exp`)** — handled automatically by any JWT library.
 
-Then you authorize the request using the token's `scope` / `permissions` claims.
+Then you authorize the request using the token's `scope` / `permissions` claims — and, if you enable them, `teams` / `roles`.
 
 > **Protecting Next.js routes instead of an API?** This guide is for verifying a
 > `Bearer` token your backend receives (typically machine-to-machine or a SPA
@@ -49,17 +49,19 @@ Access tokens are RS256-signed JWTs. Decoded, they look like this:
 }
 ```
 
-| Claim             | Description                                                                                                                                                         |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `sub`             | Who the token represents: a user id (`user_…`) for login flows, or the `client_id` for [machine-to-machine](oauth-flows/client-credentials.md) tokens.              |
-| `scope`           | Space-separated string of granted scopes.                                                                                                                           |
-| `permissions`     | Space-separated **string** (not an array) of granted API permissions. Only present when your API uses the `access_token_authz` token dialect — see [APIs](apis.md). |
-| `aud`             | The `identifier` of the API the token was issued for.                                                                                                               |
-| `iss`             | Your tenant URL — **no trailing slash**.                                                                                                                            |
-| `exp`             | Expiry (seconds since epoch). Lifetime comes from your API's `token_lifetime` (default 24 h).                                                                       |
-| `teams` / `roles` | Optional string arrays, included when your API enables `include_teams_in_access_token` / `include_roles_in_access_token`.                                           |
+| Claim             | Description                                                                                                                                                                                                     |
+| :---------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sub`             | Who the token represents: a user id (`user_…`) for login flows, or the `client_id` for [machine-to-machine](oauth-flows/client-credentials.md) tokens.                                                          |
+| `scope`           | Space-separated string of granted scopes.                                                                                                                                                                       |
+| `permissions`     | Space-separated **string** (not an array) of granted API permissions. Only present when your API uses the `access_token_authz` token dialect — see [APIs](apis.md).                                             |
+| `client_id`       | The client that obtained the token. Useful for logging and for per-client rules.                                                                                                                                |
+| `account`         | Your tenant's id. Every token carries it; you can ignore it for validation because `iss` already pins the tenant.                                                                                               |
+| `aud`             | The `identifier` of the API the token was issued for. When no `audience` was requested it falls back to `<tenant>/userinfo` — see [Pitfalls](#pitfalls-that-cause-invalid-token).                               |
+| `iss`             | Your tenant URL — **no trailing slash**. Custom-domain tenants issue with the custom domain (`https://login.yourapp.com`).                                                                                      |
+| `exp`             | Expiry (seconds since epoch). Lifetime comes from your API's `token_lifetime` (default 24 h).                                                                                                                   |
+| `teams` / `roles` | Optional string arrays, included when your API enables `include_teams_in_access_token` / `include_roles_in_access_token`. Use them for team- or role-based authorization without a database lookup per request. |
 
-Your tenant publishes its public keys at <TennantDomain url="/.well-known/jwks.json"/> and its OIDC metadata at <TennantDomain url="/.well-known/openid-configuration"/>. Keys rotate — always resolve them by the token header's `kid` via JWKS instead of pinning a fixed key (any JWKS library does this for you).
+Your tenant publishes its public keys at <TennantDomain url="/.well-known/jwks.json"/> and its OIDC metadata at <TennantDomain url="/.well-known/openid-configuration"/>. Keys are **per tenant** and rotate — always resolve them by the token header's `kid` via JWKS instead of pinning a fixed key (any JWKS library does this for you).
 
 ---
 
@@ -77,8 +79,11 @@ const AUDIENCE = 'https://api.myapp.com' // your API's identifier in the dashboa
 const JWKS = createRemoteJWKSet(new URL(`${ISSUER}/.well-known/jwks.json`))
 
 async function checkJwt(req, res, next) {
-  const token = req.headers.authorization?.replace(/^Bearer /, '')
-  if (!token) return res.status(401).json({ error: 'missing_token' })
+  const token = req.headers.authorization?.replace(/^Bearer /i, '')
+  if (!token) {
+    res.set('WWW-Authenticate', 'Bearer')
+    return res.status(401).json({ error: 'missing_token' })
+  }
 
   try {
     const { payload } = await jwtVerify(token, JWKS, {
@@ -89,6 +94,7 @@ async function checkJwt(req, res, next) {
     req.auth = payload // exp/iat already validated by jwtVerify
     next()
   } catch {
+    res.set('WWW-Authenticate', 'Bearer error="invalid_token"')
     res.status(401).json({ error: 'invalid_token' })
   }
 }
@@ -96,9 +102,13 @@ async function checkJwt(req, res, next) {
 // Authorize per-route: `scope` and `permissions` are space-separated strings
 const requireScope = (required: string) => (req, res, next) => {
   const granted = new Set(
-    `${req.auth.scope ?? ''} ${req.auth.permissions ?? ''}`.split(' ')
+    `${req.auth.scope ?? ''} ${req.auth.permissions ?? ''}`.split(/\s+/)
   )
   if (!granted.has(required)) {
+    res.set(
+      'WWW-Authenticate',
+      `Bearer error="insufficient_scope", scope="${required}"`
+    )
     return res.status(403).json({ error: 'insufficient_scope' })
   }
   next()
@@ -113,7 +123,37 @@ app.get('/orders', checkJwt, requireScope('read:orders'), (req, res) => {
 app.listen(3000)
 ```
 
-The same four checks apply in any language — Go, Java and .NET all have JWKS-aware JWT libraries; point them at your tenant's discovery URL. For Python there's a full walkthrough: **[FastAPI Quickstart](quickstart/fastapi.md)** (PyJWT + dependencies).
+Two status codes, on purpose: **`401`** means "I can't trust who you are" (missing, expired, wrong signature, wrong audience) and **`403`** means "I know who you are and you're not allowed" (scope missing). The `WWW-Authenticate` header is what [RFC 6750](https://datatracker.ietf.org/doc/html/rfc6750#section-3) prescribes; SDKs and API gateways use it to decide whether to refresh the token or give up.
+
+### The same four checks, mapped to library options
+
+| Check     | `jose` (Node)                | PyJWT (Python)                              |
+| :-------- | :--------------------------- | :------------------------------------------ |
+| Signature | `createRemoteJWKSet` + `kid` | `PyJWKClient(...).get_signing_key_from_jwt` |
+| Issuer    | `issuer: ISSUER`             | `issuer=ISSUER`                             |
+| Audience  | `audience: AUDIENCE`         | `audience=AUDIENCE`                         |
+| Expiry    | automatic                    | automatic                                   |
+| Algorithm | `algorithms: ['RS256']`      | `algorithms=["RS256"]`                      |
+
+**Python, in twelve lines** (the full FastAPI version with dependencies and scope enforcement is in the [FastAPI Quickstart](quickstart/fastapi.md)):
+
+```python
+import jwt  # PyJWT
+
+ISSUER = "https://your-domain.auth.faable.link"
+AUDIENCE = "https://api.myapp.com"
+jwks = jwt.PyJWKClient(f"{ISSUER}/.well-known/jwks.json")  # caches keys, handles rotation
+
+def verify(token: str) -> dict:
+    key = jwks.get_signing_key_from_jwt(token).key
+    return jwt.decode(token, key, algorithms=["RS256"], issuer=ISSUER, audience=AUDIENCE)
+
+def has_scope(claims: dict, required: str) -> bool:
+    granted = set(f"{claims.get('scope', '')} {claims.get('permissions', '')}".split())
+    return required in granted
+```
+
+Go, Java and .NET all have JWKS-aware JWT libraries; point them at your tenant's discovery URL and set issuer, audience and RS256 the same way.
 
 ---
 
@@ -122,10 +162,12 @@ The same four checks apply in any language — Go, Java and .NET all have JWKS-a
 These are the mistakes we see most often, especially when porting middleware from other providers:
 
 - **Trailing slash on the issuer.** Faable's `iss` is `https://your-domain.auth.faable.link` — no trailing slash. Auth0-style configs with a trailing `/` reject every token.
-- **Treating `permissions` as an array.** Faable emits it as a **space-separated string**; Auth0 emits an array. `payload.permissions.includes("read:orders")` on a string does a substring match — split on spaces first (as `requireScope` above does).
-- **Skipping the `audience` check.** A token requested without an `audience` is still valid OIDC-wise, but its `aud` falls back to `<tenant>/userinfo` — it was never meant for your API. Always validate `aud` against your API identifier; that single check rejects these.
+- **Treating `permissions` as an array.** Faable emits it as a **space-separated string**; Auth0 emits an array. `payload.permissions.includes("read:orders")` on a string does a substring match — `read:orders` would "match" `read:orders_archive`. Split on whitespace first (as `requireScope` above does).
+- **Skipping the `audience` check.** A token requested without an `audience` is still valid OIDC-wise, but its `aud` is `https://your-domain.auth.faable.link/userinfo` — it was only ever meant for the [UserInfo endpoint](oidc/userinfo.md), not your API. Always validate `aud` against your API identifier; that single check rejects these. If you see this `aud` in your logs, the client forgot to send `audience` on `/authorize` or `/oauth/token`.
 - **Validating access tokens against the `client_id`.** The **ID token's** `aud` is the client id; the **access token's** `aud` is the API identifier. Your backend validates access tokens — use the API identifier.
+- **Verifying the ID token instead of the access token.** The ID token proves _who logged in_ to the app that requested it; it is not meant for your API and its audience won't match. Clients should send the access token.
 - **Pinning a single public key.** Tenant signing keys rotate. Resolve keys via JWKS using the token header's `kid` (remote JWKS helpers handle caching and rotation).
+- **Custom domain mismatch.** If your tenant runs on a [custom domain](custom-domain.md), tokens are issued with that domain as `iss`. Configure the issuer your clients actually log in through, and fetch the JWKS from the same host.
 
 ---
 
@@ -139,8 +181,17 @@ TOKEN=$(curl -s -X POST 'https://your-domain.auth.faable.link/oauth/token' \
   -d '{"grant_type":"client_credentials","client_id":"...","client_secret":"...","audience":"https://api.myapp.com"}' \
   | jq -r .access_token)
 
-curl http://localhost:3000/orders -H "authorization: Bearer $TOKEN"
+curl -i http://localhost:3000/orders -H "authorization: Bearer $TOKEN"
 ```
+
+Then break it on purpose — the checks are only proven once each one has rejected something:
+
+```bash
+curl -i http://localhost:3000/orders                                  # 401 missing_token
+curl -i http://localhost:3000/orders -H "authorization: Bearer ${TOKEN}x"  # 401 invalid_token (bad signature)
+```
+
+Request the token without `audience` and you should get a `401` too — that is the `aud` check doing its job. Decode any token you're unsure about with [jwt.io](https://jwt.io) (client-side only; nothing is sent).
 
 ---
 
@@ -152,11 +203,27 @@ No. Verification is local — your API checks the RS256 signature against the JW
 
 ### What's the difference between `scope` and `permissions`?
 
-`scope` is what the client requested and was granted (standard OAuth). `permissions` appears when your API uses the `access_token_authz` dialect: with `enforce_policies` enabled it's the requested scopes **filtered against your API's permission catalog**, so it's the claim to trust for authorization. See [APIs](apis.md).
+`scope` is what the client requested and was granted (standard OAuth). `permissions` appears when your API uses the `access_token_authz` dialect: with `enforce_policies` enabled it's the requested scopes **filtered against your API's permission catalog**, so it's the claim to trust for authorization. Without `enforce_policies` the requested scopes are echoed verbatim. See [APIs](apis.md).
+
+### Why is there no `permissions` claim in my token?
+
+Your API is using the default `access_token` dialect, which never emits it. Switch the API's token dialect to `access_token_authz` in the dashboard, or authorize on `scope` instead.
+
+### Why does my token say `aud: "https://…/userinfo"`?
+
+The client didn't ask for your API. Add `audience=https://api.myapp.com` to the `/authorize` request (or to the `/oauth/token` request for client credentials). Your API is right to reject such a token.
 
 ### How do I know if the caller is a user or a machine?
 
 Look at `sub`: user tokens carry a `user_…` id; [machine-to-machine](oauth-flows/client-credentials.md) tokens carry the client's `client_id`.
+
+### How do I authorize by team or role?
+
+Enable `include_teams_in_access_token` / `include_roles_in_access_token` on your API. The token then carries `teams` and `roles` as string arrays, so a route can check `req.auth.roles?.includes('admin')` with no database lookup. Membership changes show up on the next token, not the current one — keep `token_lifetime` short if that matters.
+
+### How long is an access token valid?
+
+24 hours by default, configurable per API through `token_lifetime`. A token stays valid until `exp` even if the user is suspended or logs out — a shorter lifetime bounds that window, and the [Refresh Token flow](oauth-flows/refresh-token.md) keeps sessions alive without long-lived access tokens.
 
 ### Can I use a library other than jose?
 
@@ -164,14 +231,15 @@ Yes — any JWT library with JWKS support works (`express-oauth2-jwt-bearer`, `j
 
 ### How do I do this in Python?
 
-Same four checks with [PyJWT](https://pyjwt.readthedocs.io/) — `PyJWKClient` handles the JWKS cache and key rotation. See the [FastAPI Quickstart](quickstart/fastapi.md) for the complete dependency-based version, including scope enforcement.
+Same four checks with [PyJWT](https://pyjwt.readthedocs.io/) — `PyJWKClient` handles the JWKS cache and key rotation; the snippet above is the whole thing. See the [FastAPI Quickstart](quickstart/fastapi.md) for the complete dependency-based version, including scope enforcement.
 
 ---
 
 ## 🔗 Related
 
 - **[FastAPI Quickstart](quickstart/fastapi.md)** — the Python version of this guide, with PyJWT and FastAPI dependencies.
-- **[APIs](apis.md)** — register your API, define its `identifier` (audience) and permission catalog.
+- **[APIs](apis.md)** — register your API, define its `identifier` (audience), token dialect and permission catalog.
 - **[Client Credentials Flow](oauth-flows/client-credentials.md)** — how machine clients obtain the tokens your API validates.
 - **[Authorization Code Flow](oauth-flows/authorization-code.md)** — how user tokens are issued, with [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js).
-- **[RFC 7517 — JSON Web Key (JWK)](https://datatracker.ietf.org/doc/html/rfc7517)** and **[RFC 9068 — JWT Access Tokens](https://datatracker.ietf.org/doc/html/rfc9068)** — the standards involved.
+- **[UserInfo Endpoint](oidc/userinfo.md)** — what a token without an audience is actually for.
+- **[RFC 6750 — Bearer Token Usage](https://datatracker.ietf.org/doc/html/rfc6750)**, **[RFC 7517 — JSON Web Key (JWK)](https://datatracker.ietf.org/doc/html/rfc7517)** and **[RFC 9068 — JWT Access Tokens](https://datatracker.ietf.org/doc/html/rfc9068)** — the standards involved.
