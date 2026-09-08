@@ -1,6 +1,8 @@
 export default {
   'guide-next': 'Deploy Next.js',
   'guide-express': 'Deploy Node.js Express',
+  'guide-vite': 'Deploy Vite',
+  'guide-astro': 'Deploy Astro',
   'guide-django': 'Deploy Django',
   'guide-fastapi': 'Deploy FastAPI',
   'guide-flask': 'Deploy Flask',

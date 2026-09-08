@@ -22,7 +22,7 @@ description: A step-by-step guide to migrating from Vercel to Faable Deploy. Mov
 ## Migration steps
 
 1. **Connect your repository.** Sign in to the [Faable Dashboard](https://dashboard.faable.com/account/register) and link the GitHub repo you deploy on Vercel today.
-2. **Make sure your app reads the port Faable provides.** Your server should bind to the `PORT` environment variable rather than a hardcoded port (see the [Express guide](guide-express.md) for the one-line pattern, and [What the Builder Expects](../build-requirements.mdx#the-port-contract) for the details). Static frontends and most frameworks work with their standard `start` command — no change needed.
+2. **Make sure your app reads the port Faable provides.** Your server should bind to the `PORT` environment variable rather than a hardcoded port (see the [Express guide](guide-express.md) for the one-line pattern, and [What the Builder Expects](../build-requirements.mdx#-the-port-contract) for the details). Static frontends and most frameworks work with their standard `start` command — no change needed.
 3. **Copy environment variables** from your Vercel project settings into the Faable app — in the dashboard, or from the terminal with the [CLI](../../cli.md#secrets): `faable deploy secrets set KEY=VALUE KEY2=VALUE2`.
 4. **Deploy.** Push to your branch (or run `faable deploy`); Faable detects the stack, builds, and serves it with free SSL. See [Get Started](../get-started.md) and [What is zero-config CI/CD?](../what-is-zero-config-cicd.mdx).
 5. **Move your domain.** Add your [custom domain](../domains/custom-domain.md) in Faable, update the DNS record, and let [SSL](../domains/ssl-certificates.md) provision automatically. Keep the Vercel deployment live until DNS propagates.

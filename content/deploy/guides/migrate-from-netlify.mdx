@@ -22,7 +22,7 @@ description: A step-by-step guide to migrating from Netlify to Faable Deploy. Mo
 ## Migration steps
 
 1. **Connect your repository** in the [Faable Dashboard](https://dashboard.faable.com/account/register).
-2. **Read the port Faable provides.** For server-rendered or backend apps, listen on the `PORT` environment variable rather than a hardcoded port (see the [Express guide](guide-express.md), and [What the Builder Expects](../build-requirements.mdx#the-port-contract) for details). Static sites build and serve with their standard build command — no change needed.
+2. **Read the port Faable provides.** For server-rendered or backend apps, listen on the `PORT` environment variable rather than a hardcoded port (see the [Express guide](guide-express.md), and [What the Builder Expects](../build-requirements.mdx#-the-port-contract) for details). Static sites build and serve with their standard build command — no change needed.
 3. **Copy environment variables** from Netlify's site settings — in the dashboard, or from the terminal with the [CLI](../../cli.md#secrets): `faable deploy secrets set KEY=VALUE KEY2=VALUE2`.
 4. **Re-create redirects.** Move any `_redirects` / `netlify.toml` rules into your framework's routing or your server, since Faable serves your app directly rather than through Netlify's edge rules.
 5. **Deploy** by pushing your branch or running `faable deploy` — Faable detects, builds, and serves with free SSL. See [Get Started](../get-started.md).
