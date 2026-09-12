@@ -5,7 +5,7 @@ description: How Faable Cloud protects your applications and data — European i
 
 # Security and Compliance
 
-**Last updated:** 13 August 2026
+**Last updated:** 12 September 2026
 
 This page describes the security controls that are actually in place on the Faable platform, and states plainly which certifications we do and do not hold. If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
 
@@ -112,6 +112,23 @@ If your procurement requires a formal certification, tell us at [support@faable.
 If you find a security issue in the platform, report it to [support@faable.com](mailto:support@faable.com) with enough detail to reproduce it. We will acknowledge it, keep you informed while we fix it, and credit you if you want. Please do not run intrusive tests against production or against other customers' applications — ask us first and we will find a way to test safely.
 
 We do not currently run a paid bug bounty programme.
+
+## Reporting abuse
+
+This is different from the section above. A vulnerability is a flaw in Faable. **Abuse is something a customer has deployed on Faable** — a phishing page, malware, a spam relay, an open proxy, content that infringes someone's rights. We host applications we did not write, on `*.faable.link` subdomains and on customers' own domains, and we act on them when they break our [acceptable use policy](terms-of-service.md).
+
+**Report it to [support@faable.com](mailto:support@faable.com)** with `Abuse report` in the subject. You do not need a Faable account, and you do not need to be the injured party.
+
+What helps us act fast:
+
+- the **full URL or hostname** — `something.faable.link`, or the custom domain;
+- **what you saw**, in one or two sentences, and **when** you saw it;
+- **evidence** you already have: a screenshot, the response headers, a sample message, the URL that linked to it;
+- for phishing, **which brand or service is being impersonated**.
+
+What happens next. We acknowledge every report, normally within two business days. We verify it ourselves rather than taking it on trust, because a takedown against a legitimate application is its own kind of harm. Where the report is confirmed, our terms let us **suspend or remove the content or the account immediately and without prior notice**, and we do; we tell the customer what happened and, where the problem can be fixed, how to fix it. Serious or repeated abuse ends the account, and we report it to the competent authorities where that is appropriate.
+
+We also scan deployments automatically for known abuse signatures. That catches the categories we already know about — reports from people who run into something are how we find the ones we do not.
 
 ## Incident response
 
