@@ -117,7 +117,7 @@ We do not currently run a paid bug bounty programme.
 
 This is different from the section above. A vulnerability is a flaw in Faable. **Abuse is something a customer has deployed on Faable** — a phishing page, malware, a spam relay, an open proxy, content that infringes someone's rights. We host applications we did not write, on `*.faable.link` subdomains and on customers' own domains, and we act on them when they break our [acceptable use policy](terms-of-service.md).
 
-**Report it to [support@faable.com](mailto:support@faable.com)** with `Abuse report` in the subject. You do not need a Faable account, and you do not need to be the injured party.
+**Report it to [abuse@faable.com](mailto:abuse@faable.com)**. You do not need a Faable account, and you do not need to be the injured party.
 
 What helps us act fast:
 

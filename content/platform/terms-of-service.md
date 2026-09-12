@@ -157,6 +157,6 @@ If you contract as a **consumer**, this clause does not deprive you of the prote
 
 Questions about this Agreement: **[support@faable.com](mailto:support@faable.com)**
 Data protection questions: **[privacy@faable.com](mailto:privacy@faable.com)**
-Reporting abuse hosted on Faable: **[support@faable.com](mailto:support@faable.com)** — see [how to report abuse](security-compliance.md)
+Reporting abuse hosted on Faable: **[abuse@faable.com](mailto:abuse@faable.com)** — see [how to report abuse](security-compliance.md)
 
 See also: [Privacy Policy](privacy-policy.md) · [Security & Compliance](security-compliance.md) · [Pricing](pricing.md)
