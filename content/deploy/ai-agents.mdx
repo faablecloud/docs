@@ -1,0 +1,76 @@
+---
+title: Hosting AI agents in Europe
+description: What it takes to run an AI agent in production on European infrastructure — which agent shapes fit a scale-to-zero platform and which do not, the 60-second time-to-first-byte limit on model calls, where agent memory has to live because the filesystem is ephemeral, and how Faable Deploy fits. 100% European hosting, GDPR data sovereignty.
+---
+
+# Hosting AI agents in Europe
+
+**An AI agent in production is a long-running program with two unusual properties: it waits on a model for seconds at a time, and it often has no user watching it.** Those two things — not the model, not the framework — decide which platform can run it. This page covers what to look for, and is honest about where a scale-to-zero platform like [Faable Deploy](get-started.md) is the wrong choice.
+
+If you want the code, the [LLM streaming guide](guides/guide-llm-streaming.md) has working Node.js and Python implementations.
+
+## The question that decides everything: what wakes your agent
+
+Managed application platforms in Europe — Faable included — put an idle app to sleep and wake it on the next **inbound HTTP request**. That single mechanic is what makes them cheap, and it is also what makes some agents a bad fit. Work out which shape yours is before you choose anything:
+
+| Agent shape              | What it looks like                                                                                              | Fits scale-to-zero?                                     |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Request-driven**       | An HTTP endpoint: a chat backend, a tool the model calls, a webhook that receives an event and reasons about it | ✅ Yes — each request wakes it, idle time costs nothing |
+| **Schedule-driven**      | Runs on a timer, but triggered from outside (a cron service, a queue that POSTs)                                | ✅ Yes — the trigger is an inbound request              |
+| **Continuously polling** | Loops on `getUpdates`, polls a queue, or holds a WebSocket open to a provider                                   | ❌ No — see below                                       |
+
+The third row is the trap, and it is the shape most "autonomous agent" tutorials produce. An agent that polls makes **outbound** calls in a loop and receives no inbound traffic at all. Nothing resets the idle timer, so the platform puts it to sleep and the loop simply stops — on **any** plan, paid included. It will look like the platform killed your agent. What actually happened is that nothing ever told the platform the agent was working.
+
+**The fix is usually to invert the trigger**: have the queue, the scheduler, or the provider call your agent over HTTPS instead of having your agent ask them in a loop. Most providers support webhooks for exactly this reason. If yours genuinely cannot be inverted — a long-lived WebSocket to a broker you do not control, say — you need a platform that bills for a process that is always running, not one that scales to zero.
+
+## What a model call does to your request
+
+An agent that calls a model holds a request open for a long time. Every platform in front of your app has an opinion about that, and it is usually expressed as a timeout on your **response headers**, not on the whole response.
+
+On Faable Deploy the limit is **60 seconds to the first byte**. What happens after those headers is not capped: a response streaming for **96 seconds, with 12-second gaps between chunks**, arrives complete and unbuffered. So the rule is:
+
+> Send the headers immediately, then stream tokens as they arrive. The limit is on time-to-first-byte, not on the length of the answer.
+
+An agent that thinks for a while and returns one large JSON blob at the end will start failing with a `504` the moment a generation runs long — a bigger prompt, a harder question, a reasoning model taking its time. It reads as a platform timeout and it is really a design choice in the app. Streaming is not a nicety for an agent; it is what keeps it inside the window.
+
+Cold starts land in the same budget: the first request after a sleep adds container start to your time-to-first-byte. One more reason to write the headers before calling the model rather than after.
+
+## Where the agent's memory lives
+
+An agent accumulates state — conversation history, scratchpads, tool results, embeddings. On any modern platform the application filesystem is **ephemeral**: it is real and writable, but it belongs to one instance, and instances are replaced on every deploy, every restart, and every wake from sleep.
+
+That makes the local disk a scratchpad, not storage. In practice:
+
+- **Conversation and task state** → a database outside the app. The [databases guide](guides/databases.md) covers free EU-hosted options that take minutes to set up.
+- **Vectors and embeddings** → a managed vector store, or Postgres with `pgvector`.
+- **Model API keys** → [secrets](environment.mdx), never the repository.
+
+An agent that keeps its memory in a local SQLite file will appear to work, then quietly forget everything the first time it sleeps.
+
+## What to check on any European platform
+
+If data sovereignty is why you are looking at European hosting in the first place, the agent workload deserves more scrutiny than a normal web app, because agents send data to model providers:
+
+- **Where the app runs** — compute, storage and backups inside the EU/EEA, with a DPA and a public subprocessor list.
+- **Where the model runs** — this is the one people miss. Hosting your agent in Frankfurt does not keep your prompts in Europe if the model call goes to a US provider. If that matters for your data, that is a decision about your model provider, not your hosting platform.
+- **What reaches the logs** — agent traffic tends to carry user content in payloads. Check what the platform retains.
+
+## How Faable Deploy fits
+
+[Faable Deploy](get-started.md) runs an agent the same way it runs any other app: connect a GitHub repository, and it detects the stack, builds it, and serves it at `https://<app>.faable.link` with free SSL and a built-in [Web Application Firewall](security-waf.md). Hosting is **100% European with GDPR data sovereignty**, and the same subscription includes [Faable Auth](../auth/get-started.md) if the agent needs to know who is talking to it.
+
+What is specific to agents:
+
+- **Serve on `$PORT`** and answer HTTP — that is the whole contract. Any framework works; there is nothing agent-specific to configure.
+- **Idle time is free.** An agent that handles bursts of work and then waits costs nothing while waiting. Apps sleep after **30 minutes** of no requests on Free and **2 hours** on Hobby and Pro, and wake on the next one.
+- **Streaming works** — Server-Sent Events pass through unbuffered, which is what the 60-second rule above requires.
+- **Start free.** The Free plan runs a `bi.xs` instance (0.5 CPU, 1 GB) per project with the managed Node, Python and PHP buildpacks. Agents that need a bigger machine, or that ship as a Docker image, need Hobby or Pro — see [pricing](pricing.mdx).
+
+**When to choose something else:** if your agent must hold a process open with no inbound traffic and the trigger genuinely cannot be inverted, a scale-to-zero platform is the wrong tool and you will fight it. Pick a host that bills for an always-running process instead.
+
+## Related
+
+- [Deploy an LLM app with streaming](guides/guide-llm-streaming.md) — working Node.js and Python code
+- [Databases & SQLite](guides/databases.md) — where agent state has to live
+- [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx) — the deployment model this builds on
+- [Runtime](runtime.md) — sleep, wake, and what the platform expects from your process

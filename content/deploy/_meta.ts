@@ -13,6 +13,8 @@ export default {
   'security-waf': 'Web Application Firewall',
   learnSeparator: { type: 'separator', title: 'Learn & Compare' },
   'what-is-zero-config-cicd': 'What is zero-config CI/CD?',
+  'ai-agents': 'Hosting AI agents in Europe',
+  'european-alternatives': 'European alternatives to Vercel, Render & Railway',
   compare: 'Faable Deploy vs Vercel, Render & Railway',
   'compare-heroku': 'vs Heroku',
   'compare-fly-io': 'vs Fly.io'

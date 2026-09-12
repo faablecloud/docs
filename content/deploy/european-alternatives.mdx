@@ -1,0 +1,82 @@
+---
+title: European alternatives to Vercel, Render and Railway
+description: A guide to the European platform-as-a-service field for teams that need EU data sovereignty — the three categories of European alternative, the questions that actually separate them, why "EU region" and "European platform" are not the same claim, and where Faable Deploy fits. 100% European hosting, GDPR.
+---
+
+# European alternatives to Vercel, Render and Railway
+
+**If you are replacing Vercel, Render or Railway because you need your application and its data to stay in Europe, the hard part is not finding a platform with an EU region — the incumbents have those. It is deciding how much of the stack has to be European for your requirement to actually be met.** This page lays out the field and the questions that separate one answer from another.
+
+We build one of these platforms, so read this knowing that. What follows is the honest shape of the market; where Faable Deploy fits is at the end, and it is not the right answer for everyone.
+
+## First: what does "European" have to mean for you?
+
+This is the question that decides everything else, and it is worth answering before you compare features. "European hosting" is used for at least three different claims:
+
+| The claim                                           | What it means                                                     | Usually enough for                                         |
+| --------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------- |
+| **EU region**                                       | A US-owned provider runs your workload in an EU datacenter        | GDPR data residency, in many organisations                 |
+| **European provider on third-party infrastructure** | An EU company operates the platform, but it runs on a hyperscaler | Procurement rules about who you contract with              |
+| **European provider on European infrastructure**    | Both the company and the machines are in Europe                   | Sovereignty requirements that exclude extraterritorial law |
+
+Nothing on this list is dishonest, and the first is a real, defensible position for most teams. But they are not interchangeable, and a requirement written as "must be hosted in Europe" rarely says which one it means. Settle that first, because it eliminates most of the field immediately.
+
+## The three categories of European alternative
+
+### 1. European PaaS on its own or European infrastructure
+
+Closest in spirit to Vercel or Render — connect a Git repository, push, the platform builds and runs it — but operated by an EU company on infrastructure it controls or sources in Europe.
+
+- **[Clever Cloud](https://clever.cloud/)** (France) states that it operates "our own datacenters in France" to meet sovereignty requirements, and deploys "directly from Git with no manual scripts", detecting the language and managing scaling. It also supports Docker applications.
+- **[Scalingo](https://scalingo.com/)** describes itself as PaaS plus database-as-a-service with "all datacenters in Europe", "no data transfer outside EU" and "European jurisdiction only", including an Outscale SecNumCloud region.
+- **Faable Deploy** — see below.
+
+This is the category to look at when the requirement is sovereignty rather than residency.
+
+### 2. European PaaS running on hyperscaler infrastructure
+
+An EU company provides the platform, developer experience and contract, while the compute runs on a large cloud provider.
+
+- **[Upsun](https://upsun.com/)** (formerly Platform.sh) describes "Git-driven automation — GitOps for your entire platform" and lets you "deploy to AWS, GCP, Azure, IBM Cloud, or OVHcloud".
+
+This category is often the strongest engineering answer for complex applications, and it is worth being clear-eyed about the trade: you get a European counterparty and, depending on the region you pick, American infrastructure underneath. If your requirement is about who you contract with, that is fine. If it is about whose legal system can reach the machines, it may not be.
+
+**Northflank**, **Sliplane** and **IONOS Deploy Now** also operate in this broad space; check each one's current region and ownership story against the table above rather than trusting a summary, including this one.
+
+### 3. Self-hosted platforms on European IaaS
+
+Open-source platforms — **Coolify**, **Dokku**, **CapRover** and similar — that give you a Vercel-like experience on servers you rent yourself, typically from **Hetzner**, **OVHcloud** or **Scaleway**.
+
+Maximum control and usually the lowest bill. The cost is that you now operate it: patching, backups, monitoring, TLS renewal and the 3 a.m. page are yours. This is an excellent answer for a team that has someone to own it, and a poor one for a team that picked a PaaS precisely so nobody would have to.
+
+## The questions that actually separate them
+
+Once the category is settled, these are the things that differ in ways that matter later:
+
+- **What happens to an idle app.** Some platforms bill a process that runs continuously; others sleep an idle app and wake it on the next request. This changes both your bill and which workloads fit — see [hosting AI agents](ai-agents.mdx) for the case where it matters most.
+- **Whether security is included or assembled.** A Web Application Firewall, DDoS protection and TLS are either part of the platform or a separate purchase and a separate integration.
+- **Whether identity is your problem.** Most platforms host your app and stop there; authentication is a second vendor, a second bill and a second data-processing agreement — which, for a European sovereignty requirement, is a second thing to verify.
+- **Where the logs live.** Application logs routinely carry personal data. A platform hosted in the EU whose observability stack is not is a gap that audits find.
+- **The DPA and subprocessor list.** Ask for both, and read the subprocessor list — it is where the actual answer to "is this European?" usually is.
+
+## Where Faable Deploy fits
+
+[Faable Deploy](get-started.md) sits in the first category: a European company running European infrastructure, with **100% European hosting and GDPR data sovereignty**. You connect a GitHub repository and it detects the stack, builds it, and serves it at `https://<app>.faable.link` with free SSL — [zero-config CI/CD](what-is-zero-config-cicd.mdx), no pipeline files or servers to configure.
+
+Two things are unusual enough to be the reason teams pick it:
+
+- **The [Web Application Firewall](security-waf.md) is built in**, on every plan, rather than an enterprise add-on or something you put in front yourself.
+- **[Faable Auth](../auth/get-started.md) ships in the same subscription** — hosting and identity from one provider, under one contract and one DPA, instead of a PaaS plus Auth0 or Clerk.
+
+Apps scale to zero when idle — after 30 minutes on Free, 2 hours on Hobby and Pro — and wake on the next request, so idle time costs nothing. [Pricing](pricing.mdx) is a flat monthly fee per plan.
+
+**When another option fits better:** if you need a process that runs continuously with no inbound traffic, scale-to-zero will fight you. If you are already deep in a hyperscaler's managed services, a platform in category 2 keeps you next to them. And if you have someone who genuinely wants to operate the platform, category 3 will be cheaper than all of us.
+
+For a feature-by-feature comparison against the US incumbents rather than the European field, see [Faable Deploy vs Vercel, Render & Railway](compare.mdx), [vs Heroku](compare-heroku.mdx) and [vs Fly.io](compare-fly-io.mdx). If you are moving an existing project, there are guides for [migrating from Vercel](guides/migrate-from-vercel.mdx) and [from Netlify](guides/migrate-from-netlify.mdx).
+
+## Related
+
+- [Faable Deploy vs Vercel, Render & Railway](compare.mdx)
+- [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx)
+- [Hosting AI agents in Europe](ai-agents.mdx)
+- [Pricing](pricing.mdx)

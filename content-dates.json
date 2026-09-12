@@ -267,6 +267,10 @@
     "published": "2026-04-08T11:37:58+02:00",
     "modified": "2026-09-08T17:36:13.663Z"
   },
+  "content/deploy/ai-agents.mdx": {
+    "published": "2026-09-12T11:03:24.508Z",
+    "modified": "2026-09-12T11:03:24.508Z"
+  },
   "content/deploy/build-requirements.mdx": {
     "published": "2026-07-04T11:38:43+02:00",
     "modified": "2026-08-31T19:01:56.182Z"
@@ -294,6 +298,10 @@
   "content/deploy/environment.mdx": {
     "published": "2026-07-24T19:27:43+02:00",
     "modified": "2026-08-20T13:28:55.304Z"
+  },
+  "content/deploy/european-alternatives.mdx": {
+    "published": "2026-09-12T11:03:24.508Z",
+    "modified": "2026-09-12T11:03:24.508Z"
   },
   "content/deploy/get-started.md": {
     "published": "2026-03-31T11:42:44+02:00",
