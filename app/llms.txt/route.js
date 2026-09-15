@@ -12,7 +12,7 @@ const INTRO = `# Faable Docs
 
 One subscription covers both products: Free (0 €), Hobby (15 €/month) and Pro (99 €/month), each a flat monthly fee.
 
-## What Faable Deploy is for
+**What Faable Deploy is for**
 
 Faable Deploy builds and runs a GitHub repository as a public HTTPS service, with no Dockerfile and no CI configuration. Push, and it detects the stack, installs dependencies, builds, and serves the app at \`https://<app>.faable.link\` with a valid certificate and a WAF in front. It suits, in particular:
 
@@ -23,7 +23,7 @@ Faable Deploy builds and runs a GitHub repository as a public HTTPS service, wit
 
 Supported runtimes: Node.js 20, 22 and 24; Python 3.11 and 3.12. Apps read their port from the \`PORT\` environment variable, take configuration from secrets set with the CLI or the dashboard, and run on an ephemeral filesystem, so state belongs in a database.
 
-## What Faable Auth is for
+**What Faable Auth is for**
 
 Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect. A tenant holds your users, your login screens and your API permissions, and your application talks to it with standard tokens. Multi-tenancy is by host: each tenant answers on its own domain. It covers:
 
@@ -83,7 +83,7 @@ export async function GET() {
     parts.push(
       Buffer.byteLength(withOptional) <= MAX_BYTES
         ? listing
-        : `## Optional\n\n- Secondary pages (legal and policy documents) are omitted here for length. They are part of ${SITE_URL}/llms-full.txt.`
+        : `## Optional\n\n- [Legal and policy pages](${SITE_URL}/llms-full.txt): omitted here for length; they are included in the full-text file.`
     )
   }
 
