@@ -6,9 +6,9 @@ export const dynamic = 'force-static'
 // pages are the ones this file says can be skipped when context is short.
 const MAX_BYTES = 40_000
 
-const INTRO = `# Faable Docs
+const INTRO = `# Faable
 
-> Documentation for Faable — a European cloud platform that converges zero-ops application hosting (Faable Deploy) and a multi-tenant identity server (Faable Auth) into a single abstraction layer, with 100% European hosting and full GDPR data sovereignty.
+> Faable is a European cloud platform that converges zero-ops application hosting (Faable Deploy) and a multi-tenant identity server (Faable Auth) into a single abstraction layer. Ship apps and AI agents straight from a Git repository — automatic deployments, free SSL, a built-in WAF and turnkey authentication — with no servers, pipelines or infrastructure to manage. Hosting is 100% European with full GDPR data sovereignty, and support comes from the engineers who build the platform.
 
 One subscription covers both products: Free (0 €), Hobby (15 €/month) and Pro (99 €/month), each a flat monthly fee.
 
@@ -35,6 +35,24 @@ Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and Op
 Client libraries: \`@faable/auth-js\` for browser and native apps, \`@faable/auth-sdk\` for server-side code and the Management API.
 
 The full documentation as a single plain-text file is available at ${SITE_URL}/llms-full.txt.`
+
+// Not pages under content/, so they cannot come from the page map — and they
+// are the two things this file would lose by replacing the hand-written index
+// the landing used to serve at faable.com/llms.txt.
+const PACKAGES = `## SDKs & Libraries
+
+- [@faable/auth-js](https://www.npmjs.com/package/@faable/auth-js): Browser and React Native auth client — Authorization Code + PKCE, session storage, token refresh, multi-tab sync.
+- [@faable/auth-helpers-react](https://www.npmjs.com/package/@faable/auth-helpers-react): React provider and hooks (\`SessionContextProvider\`, \`useSession\`, \`useUser\`) on top of @faable/auth-js.
+- [@faable/auth-sdk](https://www.npmjs.com/package/@faable/auth-sdk): Node.js server SDK — verify access tokens and call the Auth Management API with client credentials.
+- [@faable/deploy-sdk](https://www.npmjs.com/package/@faable/deploy-sdk): Node.js client for the Faable Deploy API — manage apps, deployments, domains and secrets programmatically.
+- [@faable/faable](https://www.npmjs.com/package/@faable/faable): The Faable CLI — \`npm i -g @faable/faable\` to deploy and manage apps from the terminal.`
+
+const COMPANY = `## Company
+
+- [Dashboard / Console](https://dashboard.faable.com): Sign in and manage your apps and identity tenants.
+- [GitHub](https://github.com/faablecloud)
+- [LinkedIn](https://www.linkedin.com/company/faablecloud)
+- [YouTube](https://www.youtube.com/channel/UCntzOA0TcsxWdne1EFZDu2g)`
 
 function section(title, pages, budget) {
   const lines = pages.map(page => pageLine(page, budget?.(page)))
@@ -75,7 +93,7 @@ export async function GET() {
 
   const parts = [INTRO]
   if (start.length) parts.push(section('Start here', start))
-  parts.push(...sections)
+  parts.push(...sections, PACKAGES, COMPANY)
 
   if (optional.length) {
     const listing = section('Optional', optional)
