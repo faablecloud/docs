@@ -1,6 +1,7 @@
 ---
 title: Get Started
 description: Deploy your first app on Faable Deploy in minutes — push to GitHub, run a workflow, and serve at <app>.faable.link with free SSL.
+rank: entry
 ---
 
 # Get Started with Faable Deploy

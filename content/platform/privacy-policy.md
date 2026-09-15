@@ -1,6 +1,7 @@
 ---
 title: Privacy Policy
 description: How Faable Cloud collects, uses, stores, and protects personal data. Controller and processor roles, legal bases, retention periods, sub-processors, international transfers, and your GDPR rights.
+rank: low
 ---
 
 # Privacy Policy

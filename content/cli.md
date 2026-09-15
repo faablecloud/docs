@@ -1,6 +1,7 @@
 ---
 title: Faable CLI
 description: The Faable CLI (@faable/faable) covers the full deploy cycle from the terminal — deploy, trigger, redeploy, cancel, status, logs, deployments, inspect, secrets, custom domains, and edge rules that stop scanner traffic from waking a sleeping app — plus Faable Auth management (users, suspensions, actions, OAuth clients, audit logs) for Node.js, Python, and Dockerfile apps.
+rank: entry
 ---
 
 # Faable CLI

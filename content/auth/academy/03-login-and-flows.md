@@ -1,6 +1,7 @@
 ---
 title: 'Module 3 — Login & Flows'
 description: The OAuth flows Faable supports — Authorization Code with PKCE, social, passwordless OTP, and refresh tokens — and when to use each.
+rank: none
 ---
 
 # Module 3 — Login & Flows

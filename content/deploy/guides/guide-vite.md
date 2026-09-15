@@ -1,6 +1,7 @@
 ---
 title: Deploy a Vite App
 description: Deploy a Vite app (React, Vue, Svelte, Solid, Preact) to Faable Deploy from GitHub. Zero-config static builds, SPA routing, VITE_ environment variables, and 100% European hosting with a built-in WAF.
+rank: high
 ---
 
 # Deploy a Vite App

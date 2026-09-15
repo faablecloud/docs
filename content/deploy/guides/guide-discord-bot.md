@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a Discord Bot
 description: Host a Discord bot on Faable Deploy from GitHub, in Node.js or Python. HTTP interactions with Ed25519 signature verification, slash command registration, deferred replies for the 3-second deadline, the $PORT contract and secrets — and why the gateway does not fit a scale-to-zero platform. 100% European hosting.
+rank: high
 ---
 
 # Deploy a Discord Bot 🎮

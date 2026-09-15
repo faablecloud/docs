@@ -1,6 +1,7 @@
 ---
 title: 'Module 1 — OAuth & OIDC Foundations'
 description: The minimum OAuth 2.0 and OpenID Connect you need before integrating Faable Auth — actors, tokens, and scopes.
+rank: none
 ---
 
 # Module 1 — OAuth & OIDC Foundations

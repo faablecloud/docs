@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a Next.js App
 description: Deploy a Next.js application to Faable Deploy from GitHub. Zero-config build and start, automatic standalone output (~150 MB images), environment variables, monorepo support, and 100% European hosting with a built-in WAF.
+rank: high
 ---
 
 # Deploy a Next.js App ▲

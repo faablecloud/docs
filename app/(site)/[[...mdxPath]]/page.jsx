@@ -15,6 +15,10 @@ export async function generateMetadata(props, parent) {
   const { metadata } = await importPage(params.mdxPath)
   const previousMetadata = await parent
 
+  // `rank` weighs the page for llms.txt and the sitemap (see app/_lib/pages.js);
+  // it is not a Next metadata field, so keep it out of the spread below.
+  const { rank, ...pageMetadata } = metadata
+
   const path = params.mdxPath ? params.mdxPath.join('/') : ''
 
   // Per-page social card, rendered from this page's title by
@@ -27,7 +31,7 @@ export async function generateMetadata(props, parent) {
   }
 
   return {
-    ...metadata,
+    ...pageMetadata,
     alternates: {
       canonical: `https://faable.com/docs/${path}`
     },

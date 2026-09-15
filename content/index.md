@@ -1,6 +1,7 @@
 ---
 title: Platform
 description: Learn about the Faable Cloud Platform, a comprehensive suite for developers featuring zero-config deployments and robust identity management.
+rank: entry
 ---
 
 # Welcome to the Faable Cloud Platform

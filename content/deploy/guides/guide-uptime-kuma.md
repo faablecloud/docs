@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy Uptime Kuma
 description: Self-host Uptime Kuma on Faable Deploy by forking the repo — no Dockerfile, no config. Why you must pick MariaDB over SQLite, what scale-to-zero means for a monitor, and which plan keeps its checks running continuously. 100% European hosting.
+rank: high
 ---
 
 # Deploy Uptime Kuma 📈

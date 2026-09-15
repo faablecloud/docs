@@ -1,35 +1,35 @@
 {
   "content/auth/academy/01-oauth-foundations.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-23T23:48:20+02:00"
+    "published": "2026-06-23T23:48:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/academy/02-tenant-building-blocks.md": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-23T23:48:20+02:00"
+    "published": "2026-06-23T23:48:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/academy/03-login-and-flows.md": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-23T23:48:20+02:00"
+    "published": "2026-06-23T23:48:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/academy/04-integrate-your-app.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-23T23:48:20+02:00"
+    "published": "2026-06-23T23:48:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/academy/05-server-and-management-api.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-23T23:48:20+02:00"
+    "published": "2026-06-23T23:48:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/academy/exam.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-23T23:48:20+02:00"
+    "published": "2026-06-23T23:48:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/academy/index.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-23T23:48:20+02:00"
+    "published": "2026-06-23T23:48:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/academy/lab.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-23T23:48:20+02:00"
+    "published": "2026-06-23T23:48:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/apis.md": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -45,23 +45,23 @@
   },
   "content/auth/compare-authelia.mdx": {
     "published": "2026-07-27T13:52:25+02:00",
-    "modified": "2026-09-03T23:21:07.937Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/compare-aws-cognito.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-09-03T23:21:07.937Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/compare-firebase-auth.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-09-03T23:21:07.937Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/compare-supabase-auth.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-09-03T23:21:07.937Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-09-03T23:21:07.937Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/connections.md": {
     "modified": "2026-07-27T13:52:25+02:00",
@@ -85,27 +85,27 @@
   },
   "content/auth/features.mdx": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-09-07T09:57:50.249Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/get-started.md": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/guides/migrate-from-auth0.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/guides/migrate-from-clerk.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-09-03T23:21:07.937Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/guides/migrate-from-keycloak.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/guides/nextjs-passkeys.mdx": {
     "published": "2026-09-03T23:21:07.937Z",
-    "modified": "2026-09-07T09:57:50.249Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/hosted-login.md": {
     "published": "2026-09-15T16:19:54.986Z",
@@ -113,7 +113,7 @@
   },
   "content/auth/integrations/shopify.md": {
     "published": "2026-07-26T19:48:06+02:00",
-    "modified": "2026-09-05T23:29:03.438Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/login-experience.md": {
     "published": "2026-09-07T09:57:50.249Z",
@@ -121,7 +121,7 @@
   },
   "content/auth/login-flows.md": {
     "published": "2026-09-07T11:43:59.576Z",
-    "modified": "2026-09-07T17:11:18.471Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/logs.md": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -133,31 +133,31 @@
   },
   "content/auth/oauth-flows/authorization-code.mdx": {
     "published": "2026-04-08T20:16:59+02:00",
-    "modified": "2026-09-08T08:27:15.656Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/oauth-flows/client-credentials.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-04-08T20:16:59+02:00"
+    "published": "2026-04-08T20:16:59+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/oauth-flows/device-code.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-04-08T20:16:59+02:00"
+    "published": "2026-04-08T20:16:59+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/oauth-flows/index.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-04T11:30:21+02:00"
+    "published": "2026-07-04T11:30:21+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/oauth-flows/refresh-token.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-04-08T20:16:59+02:00"
+    "published": "2026-04-08T20:16:59+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/oauth-flows/token-exchange.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-04T11:34:33+02:00"
+    "published": "2026-07-04T11:34:33+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/oidc/index.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-15T13:30:12+02:00"
+    "published": "2026-07-15T13:30:12+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/oidc/logout.md": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -177,51 +177,51 @@
   },
   "content/auth/pricing.mdx": {
     "published": "2026-08-24T16:03:44.464Z",
-    "modified": "2026-09-03T23:21:07.937Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/angular.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-07T12:06:31+02:00"
+    "published": "2026-07-07T12:06:31+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/fastapi.mdx": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-07-27T13:52:25+02:00"
+    "published": "2026-07-27T13:52:25+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/index.mdx": {
-    "modified": "2026-07-27T14:41:26+02:00",
-    "published": "2026-07-27T14:41:26+02:00"
+    "published": "2026-07-27T14:41:26+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/javascript.mdx": {
     "published": "2026-07-07T12:06:31+02:00",
-    "modified": "2026-09-02T20:38:43.621Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/nextjs-server-side.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-09T11:50:57+02:00"
+    "published": "2026-07-09T11:50:57+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/nextjs.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-05-19T18:22:48+02:00"
+    "published": "2026-05-19T18:22:48+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/nuxt.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-07T12:06:31+02:00"
+    "published": "2026-07-07T12:06:31+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/react-native.md": {
-    "modified": "2026-07-27T13:52:25+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/react.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-04T11:36:09+02:00"
+    "published": "2026-07-04T11:36:09+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/sveltekit.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-07T12:06:31+02:00"
+    "published": "2026-07-07T12:06:31+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/quickstart/vue.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-07-07T12:06:31+02:00"
+    "published": "2026-07-07T12:06:31+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/signup.md": {
     "published": "2026-07-01T12:22:28+02:00",
@@ -261,35 +261,35 @@
   },
   "content/auth/validate-access-tokens.mdx": {
     "published": "2026-07-04T11:32:47+02:00",
-    "modified": "2026-09-08T08:27:15.656Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/auth/what-is-a-multi-tenant-identity-server.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-09-08T08:27:15.656Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/cli.md": {
     "published": "2026-04-08T11:37:58+02:00",
-    "modified": "2026-09-08T17:36:13.663Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/ai-agents.mdx": {
     "published": "2026-09-12T11:03:24.508Z",
-    "modified": "2026-09-12T11:03:24.508Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/build-requirements.mdx": {
     "published": "2026-07-04T11:38:43+02:00",
     "modified": "2026-08-31T19:01:56.182Z"
   },
   "content/deploy/compare-fly-io.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/compare-heroku.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/compare.mdx": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-06-26T11:51:20+02:00"
+    "published": "2026-06-26T11:51:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/domains/custom-domain.md": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -301,15 +301,15 @@
   },
   "content/deploy/environment.mdx": {
     "published": "2026-07-24T19:27:43+02:00",
-    "modified": "2026-08-20T13:28:55.304Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/european-alternatives.mdx": {
     "published": "2026-09-12T11:03:24.508Z",
-    "modified": "2026-09-12T11:03:24.508Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/get-started.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-08-28T10:01:50.578Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/github-actions.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -317,83 +317,83 @@
   },
   "content/deploy/guides/databases.md": {
     "published": "2026-08-22T21:19:45.842Z",
-    "modified": "2026-08-22T21:19:45.842Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-astro.md": {
     "published": "2026-09-08T08:38:28.546Z",
-    "modified": "2026-09-08T08:38:28.546Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-discord-bot.md": {
     "published": "2026-09-03T09:22:01.059Z",
-    "modified": "2026-09-03T10:06:40.468Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-django.md": {
     "published": "2026-08-11T12:09:26+02:00",
-    "modified": "2026-08-31T19:01:57.039Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-express.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-08-24T15:57:55.247Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-fastapi.md": {
     "published": "2026-08-11T12:09:26+02:00",
-    "modified": "2026-08-31T19:01:57.039Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-flask.md": {
     "published": "2026-08-11T12:09:26+02:00",
-    "modified": "2026-08-31T19:01:57.039Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-github-app.md": {
     "published": "2026-09-03T10:10:51.713Z",
-    "modified": "2026-09-03T10:10:51.713Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-llm-streaming.md": {
     "published": "2026-09-03T10:06:40.468Z",
-    "modified": "2026-09-03T10:06:40.468Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-next.md": {
-    "modified": "2026-08-15T19:11:40+02:00",
-    "published": "2026-08-15T19:11:40+02:00"
+    "published": "2026-08-15T19:11:40+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-php.md": {
     "published": "2026-08-26T09:47:17.835Z",
-    "modified": "2026-08-26T09:47:17.835Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-slack-bot.md": {
     "published": "2026-09-03T09:32:11.930Z",
-    "modified": "2026-09-03T10:06:40.468Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-stripe-webhooks.md": {
     "published": "2026-09-03T09:56:16.628Z",
-    "modified": "2026-09-03T10:10:51.713Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-telegram-bot.md": {
     "published": "2026-08-24T15:57:55.247Z",
-    "modified": "2026-09-03T10:06:40.468Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-uptime-kuma.md": {
     "published": "2026-08-24T20:47:22.168Z",
-    "modified": "2026-09-03T09:15:36.341Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-vite.md": {
     "published": "2026-09-08T08:38:28.546Z",
-    "modified": "2026-09-08T08:38:28.546Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/guide-whatsapp-bot.md": {
     "published": "2026-08-24T15:57:55.247Z",
-    "modified": "2026-09-08T08:27:15.656Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/migrate-from-netlify.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-09-08T08:38:28.546Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/guides/migrate-from-vercel.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-09-08T08:38:28.546Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/how-it-works.mdx": {
-    "modified": "2026-08-15T22:44:00+02:00",
-    "published": "2026-07-16T12:45:25+02:00"
+    "published": "2026-07-16T12:45:25+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/pricing.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -401,7 +401,7 @@
   },
   "content/deploy/pricing.mdx": {
     "published": "2026-08-24T16:03:44.464Z",
-    "modified": "2026-09-11T11:20:26.023Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/deploy/runtime.md": {
     "modified": "2026-08-05T13:04:09+02:00",
@@ -416,16 +416,16 @@
     "published": "2026-03-31T11:42:44+02:00"
   },
   "content/deploy/what-is-zero-config-cicd.mdx": {
-    "modified": "2026-07-16T12:45:25+02:00",
-    "published": "2026-06-26T11:51:20+02:00"
+    "published": "2026-06-26T11:51:20+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/faq.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
     "modified": "2026-09-11T11:20:26.023Z"
   },
   "content/index.md": {
-    "modified": "2026-04-14T17:28:31+02:00",
-    "published": "2026-04-09T19:12:39+02:00"
+    "published": "2026-04-09T19:12:39+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/platform/pricing.md": {
     "published": "2026-05-16T11:42:20+02:00",
@@ -433,11 +433,11 @@
   },
   "content/platform/pricing.mdx": {
     "published": "2026-08-24T16:03:44.464Z",
-    "modified": "2026-09-11T11:20:26.023Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/platform/privacy-policy.md": {
-    "modified": "2026-08-13T18:25:17+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-09-15T18:25:27.649Z"
   },
   "content/platform/security-compliance.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -445,6 +445,6 @@
   },
   "content/platform/terms-of-service.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-09-12T12:36:53.346Z"
+    "modified": "2026-09-15T18:25:27.649Z"
   }
 }

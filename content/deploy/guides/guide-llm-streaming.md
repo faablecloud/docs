@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy an LLM App with Streaming
 description: Host an LLM-powered app or AI chatbot on Faable Deploy from GitHub, in Node.js or Python. Server-Sent Events from the Claude API to the browser, why streaming is required rather than optional, the 60-second time-to-first-byte limit, heartbeats, concurrency, the $PORT contract and API keys. 100% European hosting.
+rank: high
 ---
 
 # Deploy an LLM App with Streaming 🤖

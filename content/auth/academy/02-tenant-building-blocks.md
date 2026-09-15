@@ -1,6 +1,7 @@
 ---
 title: 'Module 2 — Tenant Building Blocks'
 description: Account, Connections, Clients, Users & Teams — the four concepts that model a Faable Auth tenant, plus how multi-tenancy works by host.
+rank: none
 ---
 
 # Module 2 — Tenant Building Blocks

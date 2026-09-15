@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a GitHub App
 description: Host a GitHub App on Faable Deploy from GitHub, in Node.js or Python. Webhook signature verification with X-Hub-Signature-256, the JWT to installation-token dance, storing a multi-line PEM private key as a secret, delivery redelivery and idempotency, the $PORT contract. 100% European hosting.
+rank: high
 ---
 
 # Deploy a GitHub App 🐙

@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a Slack App
 description: Host a Slack app or bot on Faable Deploy from GitHub, in Node.js or Python. Request URL setup, v0 signing-secret verification on the raw body, url_verification, slash commands, response_url for slow work, retry de-duplication, the $PORT contract and secrets — and why Socket Mode does not fit a scale-to-zero platform. 100% European hosting.
+rank: high
 ---
 
 # Deploy a Slack App 💼

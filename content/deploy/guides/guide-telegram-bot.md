@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a Telegram Bot
 description: Host a Telegram bot on Faable Deploy from GitHub, in Node.js or Python. Webhook setup with setWebhook, secret token verification, the $PORT contract, secrets, and why webhooks beat getUpdates polling on a scale-to-zero platform. 100% European hosting.
+rank: high
 ---
 
 # Deploy a Telegram Bot 🤖

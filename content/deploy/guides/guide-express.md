@@ -1,6 +1,7 @@
 ---
 title: Deploy a Node.js Express App
 description: Deploy a Node.js Express application to Faable Deploy from GitHub. Zero-config builds, the $PORT contract, environment variables, and 100% European hosting with a built-in WAF.
+rank: high
 ---
 
 # Deploy a Node.js Express App

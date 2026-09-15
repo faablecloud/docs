@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a FastAPI App
 description: Deploy a FastAPI application to Faable Deploy from GitHub. Zero-config uvicorn start command, environment variables, async workers, and 100% European hosting with a built-in WAF.
+rank: high
 ---
 
 # Deploy a FastAPI App ⚡

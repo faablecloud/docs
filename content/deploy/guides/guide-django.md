@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a Django App
 description: Deploy a Django application to Faable Deploy from GitHub. Zero-config gunicorn start command, static files with WhiteNoise, environment variables, migrations, and 100% European hosting with a built-in WAF.
+rank: high
 ---
 
 # Deploy a Django App 🐍

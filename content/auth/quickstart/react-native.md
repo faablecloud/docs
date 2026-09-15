@@ -1,6 +1,7 @@
 ---
 title: React Native Quickstart
 description: Add secure authentication to your React Native app with Faable Auth. Follow our guide to set up social login and passwordless flows for mobile.
+rank: high
 ---
 
 # React Native

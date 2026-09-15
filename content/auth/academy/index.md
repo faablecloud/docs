@@ -1,6 +1,7 @@
 ---
 title: Faable Auth Academy — Integrator
 description: A hands-on minicourse that takes you from OAuth basics to a working Faable Auth integration. Pass the lab and exam to earn the Faable Auth Integrator credential.
+rank: none
 ---
 
 # Faable Auth Academy — Integrator

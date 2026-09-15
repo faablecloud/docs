@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a WhatsApp Bot
 description: Host a WhatsApp bot on Faable Deploy from GitHub, in Node.js or Python. Webhook setup for the WhatsApp Cloud API, signature verification on the raw body, retries and de-duplication, permanent access tokens, the $PORT contract, secrets, and why webhooks beat long-polling on a scale-to-zero platform. 100% European hosting.
+rank: high
 ---
 
 # Deploy a WhatsApp Bot 💬

@@ -1,6 +1,7 @@
 ---
 title: 'Certification Exam — Integrator'
 description: The Faable Auth Integrator exam — multiple-choice and short-answer questions plus three practical tasks. Pass to earn the Integrator credential.
+rank: none
 ---
 
 # Certification Exam — Faable Auth Integrator

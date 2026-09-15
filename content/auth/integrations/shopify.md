@@ -1,6 +1,7 @@
 ---
 title: Shopify Plus customer accounts
 description: Use Faable Auth as the OpenID Connect identity provider for a Shopify Plus store. Step-by-step setup, the exact values to paste on each side, an end-to-end example, and how to sync names, phones, addresses and tags into Shopify customer profiles.
+rank: high
 ---
 
 # Shopify Plus customer accounts

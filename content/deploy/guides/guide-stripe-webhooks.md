@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a Stripe Webhook Endpoint
 description: Host a Stripe webhook endpoint on Faable Deploy from GitHub, in Node.js or Python. Signature verification on the raw body, idempotency against at-least-once delivery, out-of-order events, testing with the Stripe CLI, the $PORT contract and secrets — and why a platform that scales to zero is a good fit for webhooks. 100% European hosting.
+rank: high
 ---
 
 # Deploy a Stripe Webhook Endpoint 💳

@@ -1,6 +1,7 @@
 ---
 title: 'Module 5 — Server-side & Management API'
 description: Call the Faable Management API from backend code with client_credentials and @faable/auth-sdk, understand audience + scopes, and extend the flow with Actions and webhooks.
+rank: none
 ---
 
 # Module 5 — Server-side & Management API

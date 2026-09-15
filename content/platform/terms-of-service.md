@@ -1,6 +1,7 @@
 ---
 title: Terms of Service
 description: The agreement between you and Faable Cloud for using Faable Deploy and Faable Auth — accounts, plans and billing, acceptable use, service levels, liability, termination, and governing law.
+rank: low
 ---
 
 # Terms of Service

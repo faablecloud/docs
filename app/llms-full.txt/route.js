@@ -1,4 +1,4 @@
-import { collectPages } from '../_lib/llms'
+import { groupedPages } from '../_lib/llms'
 
 export const dynamic = 'force-static'
 
@@ -10,7 +10,7 @@ Faable Deploy builds and runs a GitHub repository as a public HTTPS service with
 `
 
 export async function GET() {
-  const grouped = await collectPages()
+  const grouped = await groupedPages()
 
   const parts = [HEADER]
   for (const [section, pages] of grouped) {

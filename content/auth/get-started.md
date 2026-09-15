@@ -1,6 +1,7 @@
 ---
 title: Get Started
 description: Set up Faable Auth in minutes — create a tenant, register a client, and authenticate your first user using OAuth 2.0, OpenID Connect, social login, or passwordless.
+rank: entry
 ---
 
 # Get Started with Faable Auth

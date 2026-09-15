@@ -2,6 +2,7 @@
 schema: faq
 title: Databases & SQLite
 description: Where to store your app's data on Faable Deploy. Why the filesystem is ephemeral, what that means for SQLite, and how to connect a free EU-hosted database like Neon or Turso in minutes.
+rank: high
 ---
 
 # Databases & SQLite 💾

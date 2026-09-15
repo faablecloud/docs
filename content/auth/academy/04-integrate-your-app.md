@@ -1,6 +1,7 @@
 ---
 title: 'Module 4 — Integrate Your App'
 description: Add login to a web app with @faable/auth-js — initialize the client, start the flow, handle the callback, and read the session and user.
+rank: none
 ---
 
 # Module 4 — Integrate Your App

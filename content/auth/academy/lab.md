@@ -1,6 +1,7 @@
 ---
 title: 'Hands-on Lab — Integrator'
 description: Build a working Faable Auth integration end to end in a throwaway practice tenant — client, login, and an M2M Management API call.
+rank: none
 ---
 
 # Hands-on Lab — Integrator

@@ -1,6 +1,7 @@
 ---
 title: OpenID Connect
 description: How Faable Auth implements OpenID Connect Core 1.0 — discovery, ID tokens, signing keys (JWKS), UserInfo, and RP-Initiated Logout — on top of OAuth 2.0.
+rank: high
 ---
 
 # OpenID Connect

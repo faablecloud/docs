@@ -1,6 +1,7 @@
 ---
 title: Deploy an Astro Site
 description: Deploy an Astro site to Faable Deploy from GitHub. Zero-config static builds, the SSR adapter path, PUBLIC_ environment variables, and 100% European hosting with a built-in WAF.
+rank: high
 ---
 
 # Deploy an Astro Site

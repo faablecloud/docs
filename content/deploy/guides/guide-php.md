@@ -2,6 +2,7 @@
 schema: faq
 title: Deploy a PHP App
 description: Deploy PHP and Laravel to Faable Deploy from GitHub. Apache with mod_php and working .htaccess, composer install, PHP 8.2-8.4, a complete Laravel walkthrough with APP_KEY and a managed database, and 100% European hosting.
+rank: high
 ---
 
 # Deploy a PHP App 🐘
