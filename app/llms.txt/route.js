@@ -2,6 +2,12 @@ import { SITE_URL, groupedPages, pageLine } from '../_lib/llms'
 
 export const dynamic = 'force-static'
 
+// This file is served at BOTH faable.com/llms.txt (Fastly rewrites the Host to
+// this app for the two llms paths) and faable.com/docs/llms.txt. The root is
+// the canonical one — it is where the convention puts it and where agents
+// actually fetch it — so that is what the file advertises about itself.
+const SITE_ROOT = SITE_URL.replace(/\/docs$/, '')
+
 // Above this, the `## Optional` section is dropped rather than shipped: those
 // pages are the ones this file says can be skipped when context is short.
 const MAX_BYTES = 40_000
@@ -34,7 +40,7 @@ Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and Op
 
 Client libraries: \`@faable/auth-js\` for browser and native apps, \`@faable/auth-sdk\` for server-side code and the Management API.
 
-The full documentation as a single plain-text file is available at ${SITE_URL}/llms-full.txt.`
+The full documentation as a single plain-text file is available at ${SITE_ROOT}/llms-full.txt.`
 
 // Not pages under content/, so they cannot come from the page map — and they
 // are the two things this file would lose by replacing the hand-written index
@@ -101,7 +107,7 @@ export async function GET() {
     parts.push(
       Buffer.byteLength(withOptional) <= MAX_BYTES
         ? listing
-        : `## Optional\n\n- [Legal and policy pages](${SITE_URL}/llms-full.txt): omitted here for length; they are included in the full-text file.`
+        : `## Optional\n\n- [Legal and policy pages](${SITE_ROOT}/llms-full.txt): omitted here for length; they are included in the full-text file.`
     )
   }
 
