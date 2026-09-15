@@ -9,6 +9,7 @@ export default {
   connections: 'Connections',
   social: 'Social Login',
   passwordless: 'Passwordless',
+  'hosted-login': 'Hosted Login UI',
   'login-experience': 'Login Experience',
   apis: 'APIs',
   protocolSeparator: { type: 'separator', title: 'Protocol' },
