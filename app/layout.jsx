@@ -1,6 +1,18 @@
 import '../globals.css'
 import { ProdGoogleTagManager } from './components/ProdGoogleTagManager'
 
+// llms.txt discovery for AI crawlers (llmstxt.org) — emits
+// <link rel="alternate" type="text/plain" title="llms.txt" href=...>.
+// Every page must spread this into its own `alternates`: Next replaces the
+// whole field per level instead of merging, so a page that only sets
+// `canonical` drops these two links (app/(site)/[[...mdxPath]]/page.jsx).
+export const LLMS_ALTERNATE_TYPES = {
+  'text/plain': [
+    { url: 'https://faable.com/docs/llms.txt', title: 'llms.txt' },
+    { url: 'https://faable.com/docs/llms-full.txt', title: 'llms-full.txt' }
+  ]
+}
+
 export const metadata = {
   metadataBase: new URL('https://faable.com'),
   title: {
@@ -30,19 +42,7 @@ export const metadata = {
     ]
   },
   authors: [{ name: 'Faable Team', url: 'https://faable.com' }],
-  // llms.txt discovery for AI crawlers (llmstxt.org) — emits
-  // <link rel="alternate" type="text/plain" title="llms.txt" href=...>
-  alternates: {
-    types: {
-      'text/plain': [
-        { url: 'https://faable.com/docs/llms.txt', title: 'llms.txt' },
-        {
-          url: 'https://faable.com/docs/llms-full.txt',
-          title: 'llms-full.txt'
-        }
-      ]
-    }
-  },
+  alternates: { types: LLMS_ALTERNATE_TYPES },
   openGraph: {
     title: 'Faable Docs - Empowering Developers to Build and Scale',
     description:

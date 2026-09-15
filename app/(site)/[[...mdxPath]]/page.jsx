@@ -7,6 +7,7 @@ import {
   buildBreadcrumb,
   buildFaqPage
 } from '../../_lib/page-schema'
+import { LLMS_ALTERNATE_TYPES } from '../../layout'
 
 export const generateStaticParams = generateStaticParamsFor('mdxPath')
 
@@ -33,7 +34,10 @@ export async function generateMetadata(props, parent) {
   return {
     ...pageMetadata,
     alternates: {
-      canonical: `https://faable.com/docs/${path}`
+      canonical: `https://faable.com/docs/${path}`,
+      // Next replaces `alternates` wholesale per level: without this, the
+      // llms.txt discovery links declared in the root layout never render.
+      types: LLMS_ALTERNATE_TYPES
     },
     openGraph: {
       ...previousMetadata.openGraph,
