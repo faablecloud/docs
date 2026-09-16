@@ -118,7 +118,7 @@ Your users' identities live on **our own hardware in a European datacenter** —
 Being explicit beats discovering it mid-integration:
 
 - **SAML** and any pre-built enterprise SSO connector. Corporate IdPs connect over OAuth 2.0 / OIDC.
-- **SMS one-time codes.** Passwordless is email only.
+- **Signing in with an SMS code.** Passwordless _login_ is email only. SMS is used for password recovery and phone verification on Hobby and Pro — see [Phone verification](phone-verification.md).
 - **Sign in with Apple**, which requires a client secret signed as an ES256 JWT — not supported through custom OAuth connections yet.
 
 ## FAQ

@@ -30,18 +30,23 @@ If you expect to exceed your plan's MAU allowance, [contact us](https://github.c
 
 ## Feature gating
 
-| Feature                                 |       Free        |    Hobby     |     Pro      |
-| --------------------------------------- | :---------------: | :----------: | :----------: |
-| Social Login                            |        ✅         |      ✅      |      ✅      |
-| Database (username/password) connection |        ✅         |      ✅      |      ✅      |
-| Passwordless (OTP / Magic Link)         |        ✅         |      ✅      |      ✅      |
-| RBAC, Teams                             |        ✅         |      ✅      |      ✅      |
-| Actions (PostLogin)                     | ✅ (1 Action max) | ✅ unlimited | ✅ unlimited |
-| Two-step verification (MFA, passkeys)   |         —         |      ✅      |      ✅      |
-| Webhooks                                |         —         |      ✅      |      ✅      |
-| Custom Domain                           |         —         |      ✅      |      ✅      |
-| Audit logs                              |         —         |      —       |      ✅      |
-| Multiple auth accounts                  |         —         |      —       |      ✅      |
+| Feature                                 |       Free        |               Hobby               |                Pro                |
+| --------------------------------------- | :---------------: | :-------------------------------: | :-------------------------------: |
+| Social Login                            |        ✅         |                ✅                 |                ✅                 |
+| Database (username/password) connection |        ✅         |                ✅                 |                ✅                 |
+| Passwordless (OTP / Magic Link)         |        ✅         |                ✅                 |                ✅                 |
+| RBAC, Teams                             |        ✅         |                ✅                 |                ✅                 |
+| Actions (PostLogin)                     | ✅ (1 Action max) |           ✅ unlimited            |           ✅ unlimited            |
+| Two-step verification (MFA, passkeys)   |         —         |                ✅                 |                ✅                 |
+| Webhooks                                |         —         |                ✅                 |                ✅                 |
+| Custom Domain                           |         —         |                ✅                 |                ✅                 |
+| Password recovery by SMS                |         —         | 20 SMS/mo incl. · €0.20/SMS after | 20 SMS/mo incl. · €0.18/SMS after |
+| Audit logs                              |         —         |                 —                 |                ✅                 |
+| Multiple auth accounts                  |         —         |                 —                 |                ✅                 |
+
+### SMS
+
+Password recovery and phone verification can go out as a 6-digit code by SMS to a user's verified mobile — for the university, hospital and corporate mailboxes that quarantine automated mail. Hobby and Pro include **20 SMS per month**; every SMS above that is invoiced at the tier's per-message price (€0.20 on Hobby, €0.18 on Pro). Free is email only. When a plan cannot send — allowance used up on a plan that does not meter, or billing unreachable — recovery falls back to email; nobody is left without a way in. See [Phone verification](phone-verification.md).
 
 ## Related
 
