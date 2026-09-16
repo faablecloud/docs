@@ -20,6 +20,7 @@ export default {
   signup: 'Signup',
   'change-email': 'Change Email',
   'email-sending': 'Email Sending',
+  'phone-verification': 'Phone Verification',
   'team-invitations': 'Team Invitations',
   'suspend-users': 'Suspend Users',
   mfa: 'Two-Step Verification',
