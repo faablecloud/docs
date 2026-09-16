@@ -28,7 +28,7 @@ Content-Type: application/json
 
 `phone` is optional: when omitted, the code goes to the phone already stored on the user. When given, it replaces the user's phone (normalised) and marks it unverified until the code is confirmed.
 
-Who may call it — the same rule as [email verification](email-verification.md):
+Who may call it — the same rule as the email verification endpoints:
 
 - the user themself, with their session or a bearer token of their own;
 - a **machine token** (client credentials) — the usual way from your backend right after signup;
