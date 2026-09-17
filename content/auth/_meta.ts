@@ -25,6 +25,7 @@ export default {
   'suspend-users': 'Suspend Users',
   mfa: 'Two-Step Verification',
   logs: 'Logs',
+  errors: 'Error Codes',
   advancedSeparator: { type: 'separator', title: 'Advanced' },
   'login-flows': 'Login Flows',
   extensibility: 'Extensibility',

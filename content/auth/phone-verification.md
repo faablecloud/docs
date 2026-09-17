@@ -15,7 +15,7 @@ Wherever a phone number reaches Faable Auth — `POST /user`, `POST /user/{id}`,
 
 1. A number that already carries an international prefix is stored as it is.
 2. A number without one (`636647460`, how most people type it) is resolved with the account's **default country** — `default_country_iso`, set in the dashboard under _Settings_.
-3. With a default country set, anything that still cannot be resolved is refused with **400** and `error_code: "invalid_phone"`.
+3. With a default country set, anything that still cannot be resolved is refused with **400** and `error_code: "invalid_phone"` (see [Error codes](errors.md)).
 4. With **no** default country set, a national number cannot be resolved and there is nothing your code could do differently, so it is stored as it arrived — and reading the user back shows `phone_e164: false`.
 
 So **set the default country before your backend starts writing phone numbers**. Without it, national numbers are kept but no SMS will ever reach them.
