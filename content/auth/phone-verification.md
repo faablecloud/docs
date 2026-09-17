@@ -15,16 +15,19 @@ Wherever a phone number reaches Faable Auth — `POST /user`, `POST /user/{id}`,
 
 1. A number that already carries an international prefix is stored as it is.
 2. A number without one (`636647460`, how most people type it) is resolved with the account's **default country** — `default_country_iso`, set in the dashboard under _Settings_.
-3. Anything that still cannot be resolved is refused with **400** and `error_code: "invalid_phone"`.
+3. With a default country set, anything that still cannot be resolved is refused with **400** and `error_code: "invalid_phone"`.
+4. With **no** default country set, a national number cannot be resolved and there is nothing your code could do differently, so it is stored as it arrived — and reading the user back shows `phone_e164: false`.
 
-So **set the default country before your backend starts writing phone numbers**. Without it, every national number is refused, and a number stored in some other shape can never receive an SMS.
+So **set the default country before your backend starts writing phone numbers**. Without it, national numbers are kept but no SMS will ever reach them.
 
 Two more things make the data usable:
 
 - Ask for a **mobile** explicitly, with `<input type="tel">`. A landline cannot receive SMS.
 - Better, collect the country code in the form itself, so the number arrives in E.164 and the default country never has to guess. The hosted screens do this.
 
-Reading a user back tells you where they stand: `phone_e164` is `true` when the stored number is a usable E.164. A `false` there is a number stored before this rule existed — no SMS will reach it until it is written again in a shape we can resolve.
+Reading a user back tells you where they stand: `phone_e164` is `true` when the stored number is a usable E.164. A `false` there is a number we could not resolve — stored before this rule existed, or written while the account had no default country. No SMS will reach it until it is written again in a shape we can resolve; setting the default country and saving the same number again is usually enough.
+
+The `message` of a `400` is written for the person filling in your form, not for you — if your signup form shows server errors verbatim, it will read _"Invalid phone number. Include the country code, for example +34600123456."_ Branch on `error_code`, not on the text.
 
 ## Start a verification
 
