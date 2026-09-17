@@ -10,6 +10,7 @@ export default {
   environment: 'Environment & Releases',
   'github-actions': 'Deploy from your own CI',
   sdk: 'Deploy SDK',
+  errors: 'Error Codes',
   'security-waf': 'Web Application Firewall',
   learnSeparator: { type: 'separator', title: 'Learn & Compare' },
   'what-is-zero-config-cicd': 'What is zero-config CI/CD?',
