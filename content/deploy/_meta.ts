@@ -4,6 +4,7 @@ export default {
   guides: 'Guides & Migrations',
   domains: 'Custom Domains',
   runtime: 'Runtime',
+  images: 'Image Optimization',
   pricing: 'Pricing',
   advancedSeparator: { type: 'separator', title: 'Advanced' },
   'build-requirements': 'What the Builder Expects',
