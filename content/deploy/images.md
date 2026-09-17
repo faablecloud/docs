@@ -95,7 +95,9 @@ module.exports = {
   source returns the same bytes, from the same cache entry.
 - **It never converts to a heavier format.** If your source is already WebP or
   AVIF and the browser has not said it prefers something else, you get your file
-  as it is — no re-encoding, no larger output.
+  as it is — never a bigger one in a different format.
+- **It never serves more bytes than it started with.** When re-encoding an image
+  would not make it smaller, you get your original file back, untouched.
 - **It converts when it pays off.** A JPEG or PNG served to a browser that
   accepts WebP comes back as WebP.
 - **SVG is passed through untouched**, with a restrictive `Content-Security-Policy`.
