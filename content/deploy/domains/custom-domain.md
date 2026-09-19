@@ -12,7 +12,7 @@ description: Learn how to configure a custom domain for your Faable application.
 For a subdomain such as `www.example.com`, create a `CNAME` record pointing to the target shown in the dashboard:
 
 ```txt
-www    IN      CNAME      <domain_id>.domains.faable.link.
+www    IN      CNAME      <domain_id>.faable.link.
 ```
 
 🚀 Your site is ready at: `https://www.example.com`
@@ -22,10 +22,10 @@ www    IN      CNAME      <domain_id>.domains.faable.link.
 If your domain is an apex (root) domain such as `example.com`, create an `ALIAS` record instead of a `CNAME`, because the DNS standard does not allow `CNAME` at the zone apex:
 
 ```txt
-.    IN      ALIAS      <domain_id>.domains.faable.link.
+.    IN      ALIAS      <domain_id>.faable.link.
 ```
 
-Check with your DNS provider that it supports `ALIAS` (sometimes called `ANAME` or "CNAME flattening") at the apex — it is not universally available. Providers that support it include Cloudflare, Route 53, and DNSimple, among others. If yours does not, use the `www` subdomain with a redirect from the apex.
+Check with your DNS provider that it supports `ALIAS` (sometimes called `ANAME` or "CNAME flattening") at the apex — it is not universally available. Providers that support it include Cloudflare, Route 53, DNSimple and Namecheap. GoDaddy does not. If yours does not, use an `A` record or serve on `www` and redirect the root — all three options, and how to choose, are in [Apex domains](apex.md).
 
 ## Verification and propagation
 
@@ -35,13 +35,19 @@ Check with your DNS provider that it supports `ALIAS` (sometimes called `ANAME` 
 
 ## Troubleshooting
 
-- **Domain stuck "unverified":** the DNS record is missing or points to the wrong target. Re-check the exact `<domain_id>.domains.faable.link.` value in the dashboard (note the trailing dot) and that you edited the right zone.
+- **Domain stuck "unverified":** the DNS record is missing or points to the wrong target. Re-check the exact `<domain_id>.faable.link.` value in the dashboard (note the trailing dot) and that you edited the right zone.
 - **Certificate not issued yet:** verification must succeed first; a misconfigured record blocks SSL. See [SSL certificates](ssl-certificates.md).
-- **Apex `CNAME` rejected by provider:** use an `ALIAS`/`ANAME` record, or point `www` to Faable and redirect the apex to `www`.
+- **Apex `CNAME` rejected by provider:** this is a DNS rule, not a bug. See [Apex domains](apex.md); for GoDaddy specifically, [GoDaddy](godaddy.md).
 - **Old site still showing:** you're seeing cached DNS. Wait for the previous TTL to expire, then re-check with `dig`.
 - **Conflicting records:** remove any existing `A`/`AAAA`/`CNAME` on the same name that point elsewhere, since they override or conflict with the Faable record.
+- **Domain shows "Check error" and is managed by Cloudflare:** the proxy (orange cloud) hides your record from Faable. See [Cloudflare](cloudflare.md).
+- **Editing records at your registrar changes nothing:** the domain is using someone else's nameservers. Check with `dig NS example.com +short` and edit the records there — see [Cloudflare](cloudflare.md) or [Namecheap](namecheap.md).
 
 ## Related
 
+- [Apex Domains](apex.md)
+- [Cloudflare](cloudflare.md)
+- [GoDaddy](godaddy.md)
+- [Namecheap](namecheap.md)
 - [SSL Certificates](ssl-certificates.md)
 - [Get Started with Faable Deploy](../get-started.md)

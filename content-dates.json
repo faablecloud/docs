@@ -299,9 +299,25 @@
     "published": "2026-06-26T11:51:20+02:00",
     "modified": "2026-09-15T18:25:27.649Z"
   },
+  "content/deploy/domains/apex.md": {
+    "published": "2026-09-19T10:00:04.166Z",
+    "modified": "2026-09-19T10:00:04.166Z"
+  },
+  "content/deploy/domains/cloudflare.md": {
+    "published": "2026-09-19T10:00:04.166Z",
+    "modified": "2026-09-19T10:00:04.166Z"
+  },
   "content/deploy/domains/custom-domain.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-09-19T10:00:04.166Z"
+  },
+  "content/deploy/domains/godaddy.md": {
+    "published": "2026-09-19T10:00:04.166Z",
+    "modified": "2026-09-19T10:00:04.166Z"
+  },
+  "content/deploy/domains/namecheap.md": {
+    "published": "2026-09-19T10:00:04.166Z",
+    "modified": "2026-09-19T10:00:04.166Z"
   },
   "content/deploy/domains/ssl-certificates.md": {
     "modified": "2026-06-27T13:49:17+02:00",
