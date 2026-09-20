@@ -108,6 +108,7 @@ Generated from the server's catalogue (`npm run dump-error-codes`); the same lis
 | <a id="build_token_expired"></a>`build_token_expired`                     | 401    | The build token is past its lifetime.                                                                                 |
 | <a id="build_token_unusable"></a>`build_token_unusable`                   | 401    | The deployment reached a terminal phase, so its build token no longer works.                                          |
 | <a id="github_token_invalid"></a>`github_token_invalid`                   | 401    | The stored GitHub token was rejected; the user must reconnect.                                                        |
+| <a id="github_token_refresh_failed"></a>`github_token_refresh_failed`     | 401    | GitHub refused to refresh the stored authorization. The user has to reconnect.                                        |
 | <a id="invalid_apikey"></a>`invalid_apikey`                               | 401    | The API key does not exist or has been revoked.                                                                       |
 | <a id="invalid_build_token"></a>`invalid_build_token`                     | 401    | The build token is not valid for this deployment.                                                                     |
 | <a id="invalid_token"></a>`invalid_token`                                 | 401    | The bearer token is missing, malformed or expired.                                                                    |
@@ -157,6 +158,7 @@ Generated from the server's catalogue (`npm run dump-error-codes`); the same lis
 | <a id="unsupported_media_type"></a>`unsupported_media_type`               | 415    | The `Content-Type` is not accepted by this endpoint.                                                                  |
 | <a id="unprocessable_entity"></a>`unprocessable_entity`                   | 422    | The request is well-formed but cannot be processed.                                                                   |
 | <a id="app_rate_limited"></a>`app_rate_limited`                           | 429    | A new account may only create a few apps in its first 24 hours.                                                       |
+| <a id="github_rate_limited"></a>`github_rate_limited`                     | 429    | GitHub is rate-limiting Faable. Transient: retry after a short wait.                                                  |
 | <a id="project_rate_limited"></a>`project_rate_limited`                   | 429    | A new account may only create a few projects in its first hours. It opens with time, or with a plan.                  |
 | <a id="too_many_requests"></a>`too_many_requests`                         | 429    | Rate limit exceeded. Honour the `Retry-After` header.                                                                 |
 | <a id="internal_error"></a>`internal_error`                               | 500    | Unexpected server error. Retry later; the request id is logged.                                                       |
