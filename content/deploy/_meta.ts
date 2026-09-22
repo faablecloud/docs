@@ -4,6 +4,7 @@ export default {
   guides: 'Guides & Migrations',
   domains: 'Custom Domains',
   runtime: 'Runtime',
+  http3: 'HTTP/3',
   images: 'Image Optimization',
   pricing: 'Pricing',
   advancedSeparator: { type: 'separator', title: 'Advanced' },
