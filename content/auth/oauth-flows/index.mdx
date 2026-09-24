@@ -16,6 +16,7 @@ Faable Auth implements the standard OAuth 2.0 / OpenID Connect grants. Which one
 | A user logs into your web, SPA, or mobile app                         | [Authorization Code with PKCE](/auth/oauth-flows/authorization-code) |
 | A backend service calls an API — no user involved                     | [Client Credentials](/auth/oauth-flows/client-credentials)           |
 | A user logs into a CLI tool, Smart TV, or IoT device                  | [Device Code](/auth/oauth-flows/device-code)                         |
+| Your own app must take the password itself — no browser, no redirect  | [Password](/auth/oauth-flows/password) (last resort)                 |
 | You already have a session and want to renew it without re-login      | [Refresh Token](/auth/oauth-flows/refresh-token)                     |
 | A CI job or workload has a JWT from a trusted issuer (GitHub Actions) | [Token Exchange](/auth/oauth-flows/token-exchange)                   |
 
@@ -26,6 +27,7 @@ Faable Auth implements the standard OAuth 2.0 / OpenID Connect grants. Which one
 | [Authorization Code + PKCE](/auth/oauth-flows/authorization-code) | Yes                   | No                    | Access + ID + Refresh token             | SPA, mobile, server-side web       |
 | [Client Credentials](/auth/oauth-flows/client-credentials)        | No                    | **Yes**               | Access token                            | Backend service, cron, CI          |
 | [Device Code](/auth/oauth-flows/device-code)                      | Yes                   | No                    | Access + ID + Refresh token             | CLI, Smart TV, IoT                 |
+| [Password](/auth/oauth-flows/password)                            | Yes                   | Yes, if confidential  | Access + ID + Refresh token             | Your own first-party app           |
 | [Refresh Token](/auth/oauth-flows/refresh-token)                  | Already authenticated | No                    | New access + ID + rotated refresh token | Any client holding a refresh token |
 | [Token Exchange](/auth/oauth-flows/token-exchange)                | No                    | No                    | Access token (30 min)                   | CI job, federated workload         |
 

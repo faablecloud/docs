@@ -3,6 +3,7 @@ export default {
   'authorization-code': 'Authorization Code (PKCE)',
   'client-credentials': 'Client Credentials (M2M)',
   'device-code': 'Device Code (CLI & TV)',
+  password: 'Password (first-party apps)',
   'refresh-token': 'Refresh Token',
   'token-exchange': 'Token Exchange (CI/CD)'
 }

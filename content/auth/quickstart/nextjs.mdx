@@ -292,12 +292,12 @@ export default function LoginPage() {
 
 Parameters:
 
-| Field          | Required | Description                                                                                                          |
-| -------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
-| `username`     | Yes      | The user's email (or username, depending on your Database Connection's identifier settings).                         |
-| `password`     | Yes      | The user's password. Submitted over TLS to Faable Auth — never store it client-side.                                 |
-| `redirect_uri` | No       | Overrides the `redirect_uri` configured on the client. Must be in your Client's **Allowed Callback URLs** whitelist. |
-| `state`        | No       | Opaque value round-tripped through the OAuth flow. Useful for CSRF protection or preserving navigation intent.       |
+| Field          | Required | Description                                                                                                                        |
+| -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `username`     | Yes      | The user's email or username, as the Database Connection's [sign-in identifier](../connections.md#what-users-sign-in-with) allows. |
+| `password`     | Yes      | The user's password. Submitted over TLS to Faable Auth — never store it client-side.                                               |
+| `redirect_uri` | No       | Overrides the `redirect_uri` configured on the client. Must be in your Client's **Allowed Callback URLs** whitelist.               |
+| `state`        | No       | Opaque value round-tripped through the OAuth flow. Useful for CSRF protection or preserving navigation intent.                     |
 
 On success the user lands on your callback URL with an authorization code that `@faable/auth-js` exchanges for a session — exactly like the hosted-login flow. On failure, the returned `error` carries the server message (wrong credentials, blocked user, etc.).
 

@@ -28,6 +28,29 @@ Those four **categories** (`database`, `social`, `passwordless`, `oidc`) are wha
 
 > **Not available yet:** SMS one-time codes, SAML, and any pre-built enterprise SSO connector (Okta, Entra ID as an _enterprise_ connection rather than a social one). For an OIDC-compliant corporate IdP, a `custom` connection covers browser login today, as long as its userinfo endpoint returns `id`, `name` and `email`.
 
+## What users sign in with
+
+A `database` connection decides what its users type in the sign-in field — `login_identifier`:
+
+| `login_identifier`  | Users sign in with                | The hosted login screen                                   |
+| ------------------- | --------------------------------- | --------------------------------------------------------- |
+| `email`             | their email address               | Asks for an email and checks the format before sending it |
+| `username`          | their username                    | Asks for a username                                       |
+| `email_or_username` | either — the email is tried first | Asks for “email or username” and accepts both             |
+
+The server enforces it, not just the screen: under `email`, a username does not sign anyone in, and under `username`, an email does not.
+
+New database connections use `email`. A connection created before this setting existed behaves as `email_or_username`, which is what the login always did, until you change it. Change it under **Sign-in identifier** on the connection's page in the dashboard, or over the API:
+
+```http
+POST /connection/<connection_id>
+Content-Type: application/json
+
+{ "login_identifier": "email" }
+```
+
+Usernames are set on a user's credential with the Management API. Before switching a connection to `email`, make sure none of its users signs in by username only — they would not be able to sign in.
+
 ## Using Connections for OAuth Login
 
 When a developer uses Faable Auth to implement a login flow (such as the standard OAuth2 Authorization Code flow), the concept of a connection is crucial.
