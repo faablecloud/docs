@@ -1,30 +1,105 @@
 ---
 title: Faable Auth vs Auth0, Clerk & Keycloak
-description: How Faable Auth compares to Auth0, Clerk, and Keycloak. Faable Auth is a managed, multi-tenant identity server with OAuth 2.0/OIDC, social login, passwordless, and M2M tokens — hosted 100% in Europe with full GDPR compliance.
+description: How Faable Auth compares to Auth0, Clerk and Keycloak — pricing, M2M tokens, B2B organizations, hosted login pages, CLI and config-as-code, data residency and migration — for a managed OAuth 2.0 / OIDC identity server hosted in Europe.
 rank: high
 ---
 
 # Faable Auth vs Auth0, Clerk & Keycloak
 
-**Short answer:** Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect — comparable to Auth0 or Clerk, but **hosted 100% in Europe with full GDPR data sovereignty**, with **no infrastructure for you to run** (unlike self-hosted Keycloak), and bundled in the **same subscription as Faable Deploy** with **simple MAU-based pricing** and **support from the engineers who run it**.
+**Short answer:** Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect — the same category as Auth0, a standards-first alternative to Clerk, and a way to get Keycloak's protocol coverage **without running Keycloak**. What sets it apart: **flat plan pricing** instead of per-user, per-organization and per-token add-ons; **hosted login pages** on every plan; identities held **by a European company on its own hardware in Europe**; and the **same subscription as [Faable Deploy](../deploy/get-started.md)**.
 
 Each option below is a strong identity solution; this page helps you pick by priorities.
 
-## Quick comparison
+> Competitor details checked against each vendor's pricing and docs in September 2026. They change often — confirm anything decisive on their own sites.
 
-| Capability                               | Faable Auth                         | Auth0                            | Clerk         | Keycloak              |
-| ---------------------------------------- | ----------------------------------- | -------------------------------- | ------------- | --------------------- |
-| OAuth 2.0 / OIDC standards               | ✅                                  | ✅                               | ✅            | ✅                    |
-| Social login (Google, GitHub, Microsoft) | ✅                                  | ✅                               | ✅            | ✅                    |
-| Passwordless (magic link / OTP)          | ✅                                  | ✅                               | ✅            | Via extensions        |
-| Machine-to-machine (M2M) tokens          | ✅                                  | ✅                               | Limited       | ✅                    |
-| Multi-tenant by design                   | ✅                                  | Add-on / Organizations           | Organizations | Realms (you model it) |
-| Extensibility (custom code in the flow)  | ✅ Actions + Webhooks               | ✅ Actions                       | Webhooks      | SPIs (Java)           |
-| Fully managed (no servers to run)        | ✅                                  | ✅                               | ✅            | ❌ self-hosted        |
-| 100% European hosting + GDPR sovereignty | ✅                                  | EU region available (US company) | US-based      | Wherever you host it  |
-| Bundled with app hosting                 | ✅ Faable Deploy, same subscription | ❌                               | ❌            | ❌                    |
+## At a glance
 
-> Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+| Capability                  | Faable Auth                                            | Auth0                                        | Clerk                                               | Keycloak                              |
+| --------------------------- | ------------------------------------------------------ | -------------------------------------------- | --------------------------------------------------- | ------------------------------------- |
+| **Pricing model**           | Flat: Free, Hobby 15 €, Pro 99 €                       | Per MAU by tier, B2C and B2B price lists     | Per retained user, plus add-ons                     | Free software — you pay infra and ops |
+| Free tier                   | 50 MAU                                                 | 25,000 MAU                                   | 50,000 retained users per app                       | —                                     |
+| OAuth 2.0 / OIDC provider   | ✅                                                     | ✅                                           | ✅ ("OAuth applications")                           | ✅ OpenID Certified                   |
+| Machine-to-machine          | ✅ client credentials, not metered                     | ✅ 1,000 tokens/month free, paid tiers above | ✅ own M2M tokens (not client credentials), metered | ✅ service accounts                   |
+| Device code, token exchange | ✅                                                     | Device code ✅                               | —                                                   | ✅                                    |
+| Dynamic client registration | ✅                                                     | ✅                                           | —                                                   | ✅                                    |
+| Social login                | Google, GitHub, Microsoft, Figma + custom OAuth 2.0    | ✅ broad catalogue                           | ✅ broad catalogue                                  | ✅ brokering                          |
+| Passwordless by email       | ✅ link or code (Hobby and up)                         | ✅ all plans                                 | ✅                                                  | Via extensions                        |
+| SMS sign-in                 | ❌                                                     | ✅                                           | ✅ paid plans                                       | Via extensions                        |
+| Passkeys                    | ✅ sign-in (Pro) and second factor (Hobby)             | ✅                                           | ✅ paid plans                                       | ✅ built in since 26.4                |
+| MFA                         | Authenticator app, security keys, passkeys             | ✅ tiered: basic → adaptive                  | TOTP, SMS, backup codes (Pro)                       | TOTP, WebAuthn, recovery codes        |
+| Enterprise SSO / SAML       | ❌ OIDC only — coming on Pro                           | ✅ 1 connection free, $100/month each above  | ✅ 1 per app on Pro, $75/month each above           | ✅ as IdP and SP                      |
+| B2B organizations           | Tenants per account, teams and roles                   | 5 free, unlimited on B2B tiers               | 100 free, then per org with the B2B add-on          | Realms; Organizations since 26        |
+| Custom code in the login    | [Actions](extensibility/actions.md) + webhooks         | Actions (5–30 by tier)                       | Webhooks                                            | Java SPIs                             |
+| Hosted login pages          | ✅ [all plans](#hosted-login-pages)                    | ✅ Universal Login                           | ✅ Account Portal + components                      | ✅ themes you build                   |
+| Admin CLI                   | ✅ [`faable auth`](#cli-and-config-as-code)            | ✅ `auth0`, Deploy CLI, Terraform            | ✅ `clerk` (dev-focused)                            | ✅ `kcadm.sh`, realm export/import    |
+| Fully managed               | ✅                                                     | ✅                                           | ✅                                                  | ❌ self-hosted                        |
+| Where identities live       | Faable's own hardware in Europe, EU company            | Region you choose (EU available), US company | United States only                                  | Wherever you host it                  |
+| SOC 2 / ISO 27001           | ❌ [not certified](../platform/security-compliance.md) | ✅                                           | SOC 2 (report on Business)                          | Your own                              |
+| Bundled with app hosting    | ✅ Faable Deploy, same subscription                    | ❌                                           | ❌                                                  | ❌                                    |
+
+## Pricing, worked through
+
+The three managed products price in very different shapes, so the fair comparison is by what you need, not by headline rate.
+
+- **Auth0** is free up to 25,000 MAU with most features in reduced quantities (5 organizations, 1 enterprise connection, 1,000 M2M tokens a month, 5 Actions, one day of logs). Paid tiers start at $35/month for consumer apps and **$150/month for B2B**, rise with MAU, and Professional starts at $240 / $800. Enterprise connections are $100/month each, and more M2M tokens are a separate add-on.
+- **Clerk** is free up to 50,000 retained users per app, then $25/month on Pro with **$0.02 per retained user** above 50,000. Organizations beyond 100 need the $100/month B2B add-on and a per-organization price; M2M tokens and API keys are metered per creation and per verification.
+- **Keycloak** has no license fee. You pay for the servers, a PostgreSQL database, the upgrades — 26.x has shipped a minor version every few months — and the people who know how to run it.
+- **Faable Auth** is the plan fee: **Free** up to 50 MAU, **Hobby 15 €** up to 250, **Pro 99 €** with no MAU limit, and M2M tokens are never metered. See [Auth pricing](pricing.mdx).
+
+**The honest reading:** for a consumer app with tens of thousands of users and simple needs, the free tiers of Auth0 and Clerk cost nothing and Faable costs 99 €. Faable pulls ahead when you're B2B (organizations, machine tokens and SSO are where the others charge), when you're past their free tiers, or when a predictable bill matters more than a zero one.
+
+## Hosted login pages
+
+All four host the login; they differ in what you can change and what it takes.
+
+- **Auth0 Universal Login** is the most customizable: no-code branding and text in the dashboard, Liquid page templates, or your own React app with Auth0 running the flow. The last two require a custom domain.
+- **Clerk** splits it in two: the hosted **Account Portal**, which "cannot be customized beyond the options provided in the Clerk Dashboard", and prebuilt React components you embed for full control. Production requires a domain you own.
+- **Keycloak** renders every screen from a theme — FreeMarker templates and CSS, or React through community tooling like Keycloakify. Anything is possible, and you maintain it across upgrades.
+- **Faable Auth** hosts [every screen](hosted-login.md) — sign-in, sign-up, reset, two-step verification, passkey enrolment and the [offer right after login](login-experience.md#inviting-users-to-create-a-passkey), a [security page](hosted-login.md#the-one-screen-your-users-go-to-on-their-own) where users manage their own factors, and device activation for CLIs. You set the logo, the methods and their order, email-first and remember-me, per account or per client. You can't restyle the pages beyond that — if pixel-level design control is the requirement, Auth0 or Clerk's components are the better fit.
+
+## CLI and config-as-code
+
+- **Auth0** has the most complete tooling: the `auth0` CLI (users, apps, Actions, `logs tail`, `test login`), the Deploy CLI for tenant config in YAML, and an official Terraform provider.
+- **Clerk**'s `clerk` CLI is built for getting started and developing: framework setup, listing and creating users, impersonation links and a local webhook relay. There is no official Terraform provider.
+- **Keycloak** has `kcadm.sh` for everything the admin API does, and `kc.sh export`/`import` to move whole realms — with the cluster stopped.
+- **[`faable auth`](../cli.md#faable-auth)** is built for operating a live tenant: query users with FaableQL filters, suspend or reinstate them in bulk from a pipe, ship Actions from a file and switch them off without a deploy, create clients, and read the audit trail.
+
+```bash
+faable auth users list --query email_verified:false --json \
+  | jq -r '.[].id' | faable auth users suspend -y -r "unverified batch"
+faable auth actions update action_xyz -f ./gate.js
+faable auth logs list --origin oauth --status failed --since 2026-09-23
+```
+
+There's no Terraform provider or declarative config export for Faable Auth yet; configuration as code goes through the Management API. If that's central to how you work, Auth0 is ahead.
+
+## Where your users' data lives
+
+- **Auth0** offers an EU region (data in AWS Frankfurt and Dublin); it is part of Okta, a US company.
+- **Clerk** says plainly that it "does not offer regional data residency or region selection" — data is in the US, with EU transfers under the Data Privacy Framework.
+- **Keycloak** lives wherever you run it.
+- **Faable Auth** runs on **our own hardware in a European datacenter**, operated by a European company, with no non-EU region. We are not SOC 2 or ISO 27001 certified; Auth0 is, and Clerk holds SOC 2. See [Security and Compliance](../platform/security-compliance.md).
+
+## Migrating to Faable
+
+There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx). The concepts map closely — Auth0 tenant → Faable account, application → client, API → API, Action → Action.
+
+One thing to plan for: **Faable can't import password hashes**. Imported users sign in with an emailed code or set a new password through the reset flow; social users keep their account if you import their identity. Getting the hashes out is its own hurdle at the source anyway: Auth0 only exports them through a support ticket, and not on the Free tier.
+
+## When Faable Auth is the better fit
+
+- **You need European data sovereignty** from the company, not just the region.
+- **You're building B2B** and don't want organizations, M2M tokens and SSO priced as separate meters.
+- **You don't want to operate auth infrastructure** — the main cost of self-hosting Keycloak.
+- **You want hosted pages that cover the whole lifecycle**, including a security page and a passkey nudge, without building a theme.
+- **You want auth and hosting together.** [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.mdx).
+
+## When another tool might fit better
+
+- **Auth0** has the deepest feature surface and tooling (Terraform, Deploy CLI, adaptive MFA, SAML as IdP) and SOC 2 / ISO certifications — a fit for enterprises already standardized on Okta.
+- **Clerk** has excellent React components for teams that want to design the auth UI inside their app and are happy with US hosting.
+- **Keycloak** is the choice when you want open-source identity on your own infrastructure and have the team to operate it.
+- **You need SAML, SMS login or Sign in with Apple today.** All three have them; Faable Auth doesn't yet.
 
 ## Other alternatives at a glance
 
@@ -32,23 +107,8 @@ Each option below is a strong identity solution; this page helps you pick by pri
 | ---------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- |
 | [Supabase Auth](compare-supabase-auth.mdx)           | Auth built into the Supabase backend (Postgres + RLS)             | You're already all-in on Supabase                                    |
 | [AWS Cognito](compare-aws-cognito.mdx)               | AWS-native identity, wired into IAM and API Gateway               | You're all-in on AWS                                                 |
-| [Firebase Authentication](compare-firebase-auth.mdx) | B2C-oriented identity inside Google's mobile stack                | You're shipping a consumer app on Firebase                           |
+| [Firebase Authentication](compare-firebase-auth.mdx) | Sign-in SDK for apps built on Firebase                            | You're shipping a consumer app on Firebase                           |
 | [Authelia](compare-authelia.mdx)                     | Self-hosted SSO portal that gates services behind a reverse proxy | You're protecting self-hosted infrastructure, not building a product |
-
-## When Faable Auth is the better fit
-
-- **You need European data sovereignty.** User identities stay in Europe under European law, with full GDPR compliance.
-- **You don't want to operate auth infrastructure.** Faable Auth is fully managed — no servers, upgrades, or database to run (the main cost of self-hosting Keycloak).
-- **You want auth and hosting together.** [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.md) and one support relationship.
-- **You want predictable pricing** based on monthly active users (MAU), not per-feature add-ons that escalate at scale.
-- **Multi-tenancy is first-class** — isolate orgs, teams, and users by host without extra plumbing.
-
-## When another tool might fit better
-
-- **Auth0** has the deepest feature surface and ecosystem (now part of Okta); a fit for large enterprises already standardized on it, if EU sovereignty isn't a hard requirement.
-- **Clerk** offers excellent prebuilt React UI components and developer experience for B2C/B2B apps that are happy on US hosting.
-- **Keycloak** is the go-to when you specifically want open-source, self-hosted identity and have the team to operate it.
-- **You need SAML today.** Faable Auth doesn't implement it yet — enterprise connections speak OAuth 2.0 / OIDC only. All three alternatives ship it. ([Two-step verification](mfa.md) is built in, so that one is no longer a gap.)
 
 ## How Faable Auth works
 

@@ -1,45 +1,136 @@
 ---
 title: Faable Auth vs Firebase Authentication
-description: How Faable Auth compares to Firebase Authentication. Faable Auth is a standards-based, multi-tenant OAuth 2.0 / OIDC identity server hosted 100% in Europe under GDPR — without Google ecosystem lock-in — with first-class M2M tokens.
+description: Faable Auth vs Firebase Authentication and Google Cloud Identity Platform — pricing, sign-in methods and passkeys, hosted login pages vs FirebaseUI, CLI, OAuth/OIDC provider support and M2M tokens, multi-tenancy, US-only data processing and migration.
 rank: high
 ---
 
 # Faable Auth vs Firebase Authentication
 
-**Short answer:** Faable Auth and Firebase Authentication both make it easy to add login to an app, but Firebase is optimized for B2C mobile/web apps inside Google's ecosystem, while Faable Auth is a **standards-based, multi-tenant OAuth 2.0 / OpenID Connect identity server** built for B2B and multi-tenant SaaS. Faable Auth is **hosted 100% in Europe under GDPR**, has **first-class machine-to-machine tokens**, and is **bundled with [Faable Deploy](../deploy/get-started.md)** — without tying you to Google Cloud.
+**Short answer:** Firebase Authentication is a sign-in SDK for apps built on Firebase: generous free tier, great mobile SDKs, and tokens made for Firebase's own services. It is **not an identity provider for other applications** — no authorization-code flow for third parties, no client credentials — and Google states that it **processes data exclusively in the United States**. Faable Auth is a **standards-based OAuth 2.0 / OpenID Connect identity server**: any app, API or tool that speaks OIDC can use it, it ships **hosted login pages** instead of a UI library you host, and your users' identities stay **in Europe**.
 
-## Quick comparison
+> Firebase details checked against firebase.google.com and the Identity Platform docs in September 2026. Many of the features below need the **"Firebase Authentication with Identity Platform"** upgrade — it is noted where it applies.
 
-| Capability                               | Faable Auth                         | Firebase Authentication           |
-| ---------------------------------------- | ----------------------------------- | --------------------------------- |
-| OAuth 2.0 / OIDC standards               | ✅                                  | Partial (Google-centric tokens)   |
-| Social login (Google, GitHub, Microsoft) | ✅                                  | ✅                                |
-| Passwordless (magic link / OTP)          | ✅                                  | ✅ (email link, phone)            |
-| Enterprise SSO / SAML                    | ❌ not yet                          | ✅ (Identity Platform tier)       |
-| MFA / 2FA                                | ✅ TOTP + passkeys                  | ✅                                |
-| Machine-to-machine (M2M) tokens          | ✅                                  | ❌ (not the focus)                |
-| Multi-tenant by design                   | ✅                                  | Tenants in Identity Platform tier |
-| 100% European hosting + GDPR sovereignty | ✅                                  | Google Cloud regions              |
-| Ecosystem lock-in                        | None (standards-based)              | Tied to Firebase/Google Cloud     |
-| Bundled with app hosting                 | ✅ Faable Deploy, same subscription | Firebase Hosting (separate model) |
+## At a glance
 
-> Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+| Capability                               | Faable Auth                                                                        | Firebase Authentication                                                       |
+| ---------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **Pricing model**                        | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU)       | 50,000 MAU free, then per MAU (Identity Platform); SMS per message            |
+| OAuth 2.0 / OIDC provider for your apps  | ✅ discovery, JWKS, UserInfo, logout                                               | ❌ issues Firebase ID tokens for its own SDKs                                 |
+| Third-party apps "Sign in with your app" | ✅ any OIDC client, [dynamic registration](clients.md#dynamic-client-registration) | ❌                                                                            |
+| Machine-to-machine tokens                | ✅ [client credentials](oauth-flows/client-credentials.mdx)                        | ❌ service accounts and the Admin SDK instead                                 |
+| Device code for CLIs and TVs             | ✅                                                                                 | ❌                                                                            |
+| Email + password                         | ✅                                                                                 | ✅                                                                            |
+| Email magic link / code                  | ✅ both (Hobby and up)                                                             | Link only — 5 emails a day on the free Spark plan                             |
+| Phone number sign-in                     | ❌ (SMS is used for recovery)                                                      | ✅ Blaze plan only                                                            |
+| Anonymous users                          | ❌                                                                                 | ✅                                                                            |
+| Social login                             | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                          | Google, Apple, Facebook, GitHub, Microsoft, X, Yahoo, Play Games, Game Center |
+| Passkeys                                 | ✅ as sign-in method (Pro) and as second factor (Hobby)                            | ❌ not documented for production                                              |
+| MFA                                      | Authenticator app, security keys, passkeys                                         | SMS and TOTP (Identity Platform)                                              |
+| Enterprise SSO / SAML                    | ❌ OIDC only — SAML coming on Pro                                                  | ✅ SAML and OIDC (Identity Platform; 50 MAU free, then $0.015 each)           |
+| Hosted login pages                       | ✅ [every screen](#hosted-login-pages)                                             | ❌ FirebaseUI is a library you host                                           |
+| Custom code in the login                 | [Actions](extensibility/actions.md) — JavaScript in the flow                       | Blocking functions on Cloud Functions (Identity Platform)                     |
+| Multi-tenancy                            | Every auth account is a tenant                                                     | Tenants (Identity Platform)                                                   |
+| Admin CLI                                | ✅ [`faable auth`](#cli-and-automation)                                            | Export and import only                                                        |
+| Authentication logs                      | ✅ dashboard, API and CLI (Pro)                                                    | Cloud Logging, off by default (Identity Platform)                             |
+| Where identities are processed           | Faable's own hardware in Europe, EU company                                        | United States only                                                            |
+| Export password hashes                   | ❌ not through the API                                                             | ✅ `firebase auth:export` (modified scrypt)                                   |
+| SOC 2 / ISO 27001                        | ❌ [not certified](../platform/security-compliance.md)                             | ✅                                                                            |
+
+## Pricing, worked through
+
+Firebase's free tier is its strongest argument: 50,000 monthly active users with email, phone, anonymous and social sign-in. Beyond that, with the Identity Platform upgrade, MAU are billed per user. MFA, SAML/OIDC, blocking functions, tenants and activity logs all need that upgrade.
+
+| Monthly active users | Faable Auth  | Firebase (with Identity Platform) |
+| -------------------- | ------------ | --------------------------------- |
+| 200                  | 15 € (Hobby) | $0                                |
+| 50,000               | 99 € (Pro)   | $0                                |
+| 100,000              | 99 € (Pro)   | $275                              |
+| 250,000              | 99 € (Pro)   | $965                              |
+
+Enterprise SSO users are billed separately ($0.015 each after 50), and SMS is billed per message by country — $0.04 to Spain and the UK, $0.10 to Germany, up to $0.47 elsewhere.
+
+**The honest reading:** below roughly 70,000 users Firebase is cheaper, and for a consumer app below 50,000 it is free. Faable makes sense on price above that, or when the reasons below matter more than the bill.
+
+Faable figures are the plan fees from [Auth pricing](pricing.mdx), in euros, VAT excluded. Firebase figures are Google's list prices in US dollars.
+
+## Hosted login pages
+
+This is the biggest practical difference after the protocol.
+
+**Firebase has no hosted login page.** You build the screens in your app, or drop in [FirebaseUI](https://firebase.google.com/docs/auth/web/firebaseui) — whose web version 7 is still in beta — and host it yourself. What Firebase does host is the **email action handler**: the page a user lands on from a password-reset or verification email, on your project's Firebase Hosting domain.
+
+**Faable Auth hosts every screen** on your auth domain, and your app only redirects to `/authorize`:
+
+| Screen                                     | Faable Auth                                                                                 | Firebase                              |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Sign in, sign up                           | ✅ hosted                                                                                   | You build it, or host FirebaseUI      |
+| Forgot / reset password                    | ✅ hosted                                                                                   | ✅ hosted action handler              |
+| Two-step verification challenge, enrolment | ✅ hosted, with recovery codes                                                              | You build it                          |
+| Passkey enrolment and the post-login offer | ✅ hosted                                                                                   | —                                     |
+| A page where users manage their factors    | ✅ [`/flow/account/security`](hosted-login.md#the-one-screen-your-users-go-to-on-their-own) | You build it                          |
+| Device activation (CLI / TV login)         | ✅ hosted                                                                                   | —                                     |
+| Custom domain                              | ✅ DNS records, certificate issued for you (Pro)                                            | Needs Firebase Hosting in the project |
+
+Hosting matters for more than saving work: a passkey is bound to the domain that created it, and a session cookie on one auth domain is what gives your second app single sign-on. See [Hosted Login UI](hosted-login.md).
+
+## CLI and automation
+
+The Firebase CLI covers Auth at the edges: `firebase auth:export` and `auth:import` for moving users, the local Auth emulator, and provider settings for a handful of methods through `firebase deploy --only auth`. Listing, disabling or inspecting users, or reading sign-in activity, means writing Admin SDK code or going to the Google Cloud console.
+
+[`faable auth`](../cli.md#faable-auth) does those day-to-day operations directly:
+
+```bash
+faable auth users list --query email_verified:false --limit 50
+faable auth users get user_abc123              # identities, last login and IP, suspension
+faable auth users suspend user_abc123 -r "chargeback"
+faable auth actions create -n add-claims -t post-login -f ./claims.js
+faable auth clients create -n my-app --callback https://app.example.com/callback
+faable auth logs list --user user_abc123 --since 2026-09-01
+```
+
+Faable has no local emulator: you develop against a Free tenant.
+
+## Tokens your backend can verify
+
+A Firebase ID token is a JWT for **your Firebase project**: its issuer is `securetoken.google.com/<project>` and its audience is the project ID. That works well inside Firebase, but it is not an access token scoped to an API, and third-party tools that expect an OIDC provider can't use it.
+
+Faable issues standard OAuth 2.0 access tokens with an audience per [API](apis.md), permissions, and RS256 signatures verifiable against the tenant's JWKS — the same tokens a SaaS tool, an MCP client or your own microservices already know how to check. See [Validate Access Tokens](validate-access-tokens.mdx).
+
+## Where your users' data lives
+
+Google's Firebase privacy page states that Firebase Authentication "processes data exclusively in the United States", and we found no option to choose another location. For a European product that has to explain its data flows, that is usually the deciding line.
+
+Faable Auth runs on **our own hardware in a European datacenter**, operated by a European company. We don't hold SOC 2 or ISO 27001, which Firebase does. See [Security and Compliance](../platform/security-compliance.md).
+
+## Migrating from Firebase
+
+`firebase auth:export` gives you users with their password hashes in Firebase's modified scrypt. Faable can't import password hashes, so:
+
+1. Create each user over the Management API, keeping `email_verified`.
+2. For Google, Apple or GitHub users, create their identity (`POST /identity`) with the provider's user id, so their next social login lands on the same account.
+3. Password users sign in with an emailed code ([passwordless](passwordless.mdx), Hobby and up) or use **Forgot password**, which works as "set your password" for an imported user.
+4. Replace Firebase ID-token verification in your backend with standard [access-token validation](validate-access-tokens.mdx).
+
+Phone-only and anonymous users have no equivalent in Faable and need a new sign-in method.
 
 ## When Faable Auth is the better fit
 
-- **You're building B2B or multi-tenant SaaS** and want [multi-tenancy](what-is-a-multi-tenant-identity-server.mdx) and [M2M tokens](clients.md) as first-class features.
-- **You need European data sovereignty** under GDPR rather than Google Cloud regional settings.
-- **You want standards portability** — plain OAuth 2.0 / OIDC you can move, not Firebase-specific SDKs.
-- **You want auth and hosting in one [subscription](pricing.md)** with [Faable Deploy](../deploy/get-started.md).
+- **Other applications need to sign in with your users** — partner apps, MCP clients, internal tools, a CLI. That takes a real OIDC provider.
+- **You have backend services** that need their own tokens, without service-account keys.
+- **You want hosted login pages** rather than building and hosting sign-in, MFA and account-security screens.
+- **Your users' identities need to stay in Europe.**
+- **You're past ~70,000 MAU** and want a flat bill.
 
 ## When Firebase Authentication might fit better
 
-- You're building a **consumer mobile app** already using Firebase (Firestore, Cloud Messaging, Analytics) and want identity that plugs straight into that stack.
-- You want Firebase's client SDKs and realtime database tightly integrated.
-- You need **SAML today** — Faable Auth has no SAML connector yet (MFA and passkeys are built in).
+- **You're building on Firebase** — Firestore security rules, Cloud Functions, Firebase Hosting — and want identity that plugs straight in.
+- **You're a consumer mobile app** that needs phone-number sign-in, anonymous users or Sign in with Apple.
+- **You have under 50,000 users** and the free tier is the point.
+- **You need SAML or a SOC 2 / ISO 27001 report today.**
 
 ## Related
 
 - [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
 - [Faable Auth vs AWS Cognito](compare-aws-cognito.mdx) · [vs Supabase Auth](compare-supabase-auth.mdx) · [vs Authelia](compare-authelia.mdx)
+- [Faable Auth features](features.mdx) · [Auth pricing](pricing.mdx)
 - [Get Started with Faable Auth](get-started.md)

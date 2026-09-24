@@ -1,47 +1,153 @@
 ---
 title: Faable Auth vs AWS Cognito
-description: How Faable Auth compares to Amazon Cognito as a managed identity provider. Faable Auth is a multi-tenant OAuth 2.0 / OIDC identity server with first-class developer experience, hosted 100% in Europe under GDPR — without AWS lock-in.
+description: Faable Auth vs Amazon Cognito user pools — pricing at 10k and 50k users, passwordless and passkeys, hosted login pages, CLI and automation, OAuth grants, multi-tenancy, EU data residency and what migrating in either direction really involves.
 rank: high
 ---
 
 # Faable Auth vs AWS Cognito
 
-**Short answer:** Faable Auth and Amazon Cognito are both managed identity providers built on OAuth 2.0 and OpenID Connect, but they target different teams. Cognito fits organizations already deep in the AWS ecosystem who accept its configuration complexity. Faable Auth is a **multi-tenant identity server with a simpler developer experience**, **hosted 100% in Europe with full GDPR data sovereignty**, **bundled with [Faable Deploy](../deploy/get-started.md) hosting**, and **no AWS account or IAM to manage**.
+**Short answer:** both are managed OAuth 2.0 / OpenID Connect identity providers with hosted login pages. Cognito is the natural choice when your stack already lives in AWS — IAM, API Gateway and ALB authorizers, AppSync — and it is cheaper up to roughly 18,000 monthly active users. Faable Auth is the better fit when you want **flat pricing that doesn't grow with every user and every machine token**, a login that needs **no AWS account, IAM or CloudFront certificate** to brand, protocol features Cognito doesn't ship (**device code, token exchange, dynamic client registration**), and identities stored by a **European company on its own hardware in Europe**.
 
-## Quick comparison
+> Cognito details checked against AWS's pricing page and developer guide in September 2026. AWS changes Cognito often — the passwordless and passkey support below is from late 2024, multi-region replication and password-hash import from mid-2026 — so confirm anything decisive on [aws.amazon.com/cognito](https://aws.amazon.com/cognito/).
 
-| Capability                               | Faable Auth                         | AWS Cognito                                    |
-| ---------------------------------------- | ----------------------------------- | ---------------------------------------------- |
-| OAuth 2.0 / OIDC standards               | ✅                                  | ✅                                             |
-| Social login (Google, GitHub, Microsoft) | ✅                                  | ✅                                             |
-| Passwordless (magic link / OTP)          | ✅                                  | Limited (custom flows)                         |
-| Enterprise SSO / SAML                    | ❌ not yet                          | ✅                                             |
-| MFA / 2FA                                | ✅ TOTP + passkeys                  | ✅                                             |
-| Machine-to-machine (M2M) tokens          | ✅                                  | ✅ (app clients)                               |
-| Multi-tenant by design                   | ✅                                  | User pools (you model isolation)               |
-| Developer experience                     | ✅ Focused dashboard + SDK          | Powerful but complex (IAM, pools, app clients) |
-| 100% European hosting + GDPR sovereignty | ✅                                  | Region-configurable within AWS                 |
-| Ecosystem lock-in                        | None (standards-based)              | Tied to AWS                                    |
-| Bundled with app hosting                 | ✅ Faable Deploy, same subscription | ❌                                             |
+## At a glance
 
-> Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+| Capability                             | Faable Auth                                                                      | AWS Cognito (user pools)                                         |
+| -------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Pricing model**                      | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU)     | Per MAU by feature plan, plus per M2M token                      |
+| **Free tier**                          | 50 MAU                                                                           | 10,000 MAU (Lite and Essentials); none on Plus                   |
+| OAuth 2.0 / OIDC provider              | ✅                                                                               | ✅                                                               |
+| Authorization code + PKCE, refresh     | ✅                                                                               | ✅                                                               |
+| Client credentials (M2M)               | ✅ no per-token charge                                                           | ✅ $0.00225 per token issued                                     |
+| Device code (RFC 8628)                 | ✅                                                                               | ❌ (AWS blog builds it with Lambda + DynamoDB)                   |
+| Token exchange (RFC 8693)              | ✅ e.g. keyless GitHub Actions                                                   | ❌                                                               |
+| Dynamic client registration (RFC 7591) | ✅ what MCP clients expect                                                       | ❌ clients are created through the API or IaC                    |
+| Social login                           | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                        | Google, Facebook, Apple, Amazon + generic OIDC/SAML (no GitHub)  |
+| Sign in with Apple                     | ❌ not yet                                                                       | ✅                                                               |
+| Passwordless by email                  | ✅ magic link or 6-digit code                                                    | Code only (Essentials); no magic links                           |
+| Passwordless by SMS                    | ❌ (SMS is used for recovery)                                                    | ✅ SMS code (Essentials)                                         |
+| Passkeys                               | ✅ as sign-in method (Pro) and as second factor (Hobby)                          | ✅ as sign-in method (Essentials); not after a password          |
+| MFA                                    | Authenticator app, security keys, passkeys                                       | TOTP, SMS, email (Essentials); adaptive (Plus)                   |
+| Enterprise SSO / SAML                  | ❌ OIDC only — SAML coming on Pro                                                | ✅ SAML and OIDC (50 federated MAU free, then $0.015 each)       |
+| Hosted login pages                     | ✅ [every screen](#hosted-login-pages), all plans                                | ✅ managed login (Essentials) or classic hosted UI (Lite)        |
+| Self-service security page for users   | ✅                                                                               | ❌                                                               |
+| Custom login domain                    | ✅ DNS records, certificate issued for you (Pro)                                 | ✅ requires an ACM certificate in us-east-1                      |
+| Custom code in the login               | [Actions](extensibility/actions.md) — JavaScript, edited in the dashboard or CLI | Lambda triggers (5-second timeout)                               |
+| Admin CLI                              | ✅ [`faable auth`](#cli-and-automation)                                          | ✅ `aws cognito-idp`                                             |
+| Infrastructure as code                 | Management API                                                                   | ✅ CloudFormation, CDK                                           |
+| Authentication logs                    | ✅ queryable in dashboard, API and CLI (Pro)                                     | CloudTrail on every plan; per-user activity logs need Plus       |
+| Where identities live                  | Faable's own hardware in Europe, EU company                                      | The AWS region you choose (8 in Europe), US company              |
+| Export password hashes                 | ❌ not through the API                                                           | ❌ not possible                                                  |
+| Import password hashes                 | ❌                                                                               | ✅ bcrypt, scrypt, Argon2id, PBKDF2 (next-generation pools only) |
+| SOC 2 / ISO 27001 / HIPAA              | ❌ [not certified](../platform/security-compliance.md)                           | ✅ in AWS compliance scope                                       |
+
+## Pricing, worked through
+
+Cognito charges per monthly active user, and the rate depends on the feature plan. Passkeys, passwordless codes, email MFA and the branded managed login all need **Essentials**:
+
+| Monthly active users | Faable Auth  | Cognito Essentials | Cognito Plus (adaptive auth, activity logs) |
+| -------------------- | ------------ | ------------------ | ------------------------------------------- |
+| 200                  | 15 € (Hobby) | $0 (free tier)     | $4                                          |
+| 10,000               | 99 € (Pro)   | $0 (free tier)     | $200                                        |
+| 50,000               | 99 € (Pro)   | $600               | $1,000                                      |
+| 250,000              | 99 € (Pro)   | $3,600             | $5,000                                      |
+
+On top of that, Cognito bills **every client-credentials token**: a backend fleet requesting a token per minute from 20 services is ~870,000 tokens a month, about **$1,950**. Enterprise SSO users are $0.015 each after the first 50, and SMS goes through Amazon SNS at SNS prices. On Faable, M2M tokens are not metered, and the only usage line an Auth invoice can carry is recovery SMS above the included 20 a month.
+
+**The honest reading:** between a few hundred and roughly 18,000 monthly active users, Cognito Essentials is cheaper — its free tier covers the first 10,000 and the next 7,700 cost less than a Pro plan. Past that point, or as soon as you need Plus features or issue M2M tokens at volume, Faable's flat fee wins, and it stays flat.
+
+Faable figures are the plan fees from [Auth pricing](pricing.mdx), in euros, VAT excluded. Cognito figures are AWS list prices in US dollars for US East, before tax, with no multi-region replication.
+
+## Hosted login pages
+
+Both products host the login so your application only redirects to it. The difference is how much of the account lifecycle those pages cover, and what it takes to make them look like yours.
+
+|                                            | Faable Auth                                                                                                                | Cognito managed login                                             |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Sign in, sign up, reset                    | ✅                                                                                                                         | ✅                                                                |
+| Two-step verification                      | ✅ challenge and enrolment, with recovery codes                                                                            | ✅                                                                |
+| Passkey enrolment                          | ✅ plus an [offer right after login](login-experience.md#inviting-users-to-create-a-passkey), which is what gets them used | ✅                                                                |
+| Users manage their own factors             | ✅ [`/flow/account/security`](hosted-login.md#the-one-screen-your-users-go-to-on-their-own)                                | ❌ there is no account page — you build it against the API        |
+| Device authorisation                       | ✅ for CLIs and TV apps                                                                                                    | ❌ no device-code grant                                           |
+| Email first, remember me, last method used | ✅ [Login Experience](login-experience.md) settings                                                                        | Choice-based sign-in                                              |
+| Per-app differences                        | Method order, passkeys and MFA policy per client                                                                           | One style per app client (up to 20 per pool)                      |
+| Branding                                   | Logo and icon                                                                                                              | Visual editor: logo, colours, background images, dark mode        |
+| Languages                                  | English and Spanish, from the browser's language                                                                           | 12 languages; the text itself can't be changed                    |
+| Custom domain                              | CNAME + TXT record, certificate issued and renewed for you                                                                 | ACM certificate you issue in us-east-1, served through CloudFront |
+| Session cookie                             | 30 days by default, up to 365 with "remember me"                                                                           | 1 hour, not configurable                                          |
+
+Cognito's branding editor is more flexible visually and it speaks more languages. Faable's pages cover more of the lifecycle — the security page and the device flow in particular are things you otherwise build and host yourself.
+
+See [Hosted Login UI](hosted-login.md) for every screen.
+
+## CLI and automation
+
+Both products can be run from a terminal. They differ in what the commands are designed for.
+
+**Cognito** exposes its whole API through `aws cognito-idp` and CloudFormation: user pools, clients, domains, branding and import jobs can all be declared as code, which is its real strength if you already run CDK or CloudFormation. Day-to-day operations are raw API calls (`admin-get-user`, `list-users` with a filter on a fixed set of standard attributes, 60 results per page), and there is no command to read a sign-in log unless you are on Plus and have set up log export.
+
+**[`faable auth`](../cli.md#faable-auth)** is built around the operations you do by hand when something happens:
+
+```bash
+# Who is this user, how did they sign in, from where?
+faable auth users get user_abc123
+
+# Everyone unverified, as JSON, suspended in one pipe
+faable auth users list --query email_verified:false --json \
+  | jq -r '.[].id' \
+  | faable auth users suspend -y -r "unverified batch"
+
+# Ship an Action from a file, switch it off without a deploy
+faable auth actions update action_xyz -f ./gate.js
+faable auth actions update action_xyz --no-enabled
+
+# What failed in the OAuth flow since yesterday?
+faable auth logs list --origin oauth --status failed --since 2026-09-23
+```
+
+For configuration as code, Faable has the [Management API](features.mdx#running-the-tenant) but no Terraform provider or CloudFormation equivalent. If declaring your identity setup in the same templates as the rest of AWS matters to you, that is a point for Cognito.
+
+## Multi-tenancy
+
+AWS documents five ways to model tenants in Cognito — a user pool, an app client, a group, a custom attribute or a custom scope per tenant — and every option shares the account's regional quotas. A local user's session signs them into **every** app client in the same pool, so real isolation usually means a pool per tenant.
+
+In Faable Auth, an [auth account](what-is-a-multi-tenant-identity-server.mdx) is the tenant: its own users, connections, clients, signing keys, login experience and logs. Inside an account, [teams](team-invitations.md) and roles group your customers' users. Several auth accounts on one subscription is a Pro feature.
+
+## Where your users' data lives
+
+Cognito keeps user-pool data in the region you choose, and eight of them are in Europe. Email and SMS go through the SES and SNS regions you configure. Cognito is not on the launch list of the AWS European Sovereign Cloud. Amazon Web Services is a US company, which is the question behind most EU procurement reviews rather than the region.
+
+Faable Auth runs on **our own hardware in a European datacenter**, operated by a European company, with no non-EU region to fall back to. We are not SOC 2 or ISO 27001 certified: if your procurement requires those, Cognito has them and we don't. See [Security and Compliance](../platform/security-compliance.md).
+
+## Migrating, in either direction
+
+**Leaving Cognito** is the hard part of any Cognito decision: AWS does not let you export password hashes. Every migration off Cognito ends with users setting a new password, or with a period where your app checks passwords against Cognito and re-creates them elsewhere.
+
+**From Cognito to Faable:** create users over the Management API, and let them in with an emailed code ([passwordless](passwordless.mdx), Hobby and up) or a password reset — a user created over the API gets a credential without a password, so **Forgot password** works as "set your password". Federated users keep their account if you also create their identity (`POST /identity` with the provider's user id). Faable can't import password hashes either, so the reset step is the same whichever tool you move to.
+
+**From Faable to Cognito**, or anywhere else: users, identities, roles and teams export over the Management API. Password hashes are not exposed there, so leaving Faable also ends in a password reset — plan for it the same way.
 
 ## When Faable Auth is the better fit
 
-- **You're not committed to AWS** and don't want to manage IAM, user pools, and app clients to ship login.
-- **You need European data sovereignty** with a straightforward GDPR posture rather than configuring AWS regions and data-processing terms.
-- **You want auth and hosting together** — [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.md).
-- **You value developer experience** — a focused [dashboard](https://dashboard.faable.com) and [SDK](https://www.npmjs.com/package/@faable/auth-js) over assembling Cognito primitives.
+- **You're past ~18,000 MAU, need Plus features, or issue lots of M2M tokens.** A flat 99 € replaces a bill that grows with every user and every service call.
+- **You don't want AWS in the login path.** No IAM, no pool settings you can't change after creation, no us-east-1 certificate for a custom domain.
+- **You need grants Cognito doesn't have** — device code for a CLI, token exchange for keyless CI, dynamic client registration for MCP clients.
+- **You want your users to manage their own security** on a hosted page, and to be nudged into passkeys right after they sign in.
+- **You want identities held by a European company in Europe**, and auth and [hosting](../deploy/get-started.md) on the same invoice.
 
 ## When AWS Cognito might fit better
 
-- You're **all-in on AWS** and want identity that integrates natively with other AWS services (IAM roles, AppSync, API Gateway authorizers).
-- You need Cognito-specific features tightly coupled to the AWS control plane.
-- You need **SAML today** — Faable Auth has no SAML connector yet (MFA and passkeys are built in).
+- **Your backend is on AWS** and you want API Gateway, ALB or AppSync to validate tokens natively, or IAM credentials for users through identity pools.
+- **You have fewer than ~18,000 users** and Essentials covers what you need — the free tier alone takes the first 10,000.
+- **You need SAML, Sign in with Apple or SMS login today.**
+- **Your procurement requires SOC 2, ISO 27001 or a HIPAA BAA.**
+- **You want identity declared in CloudFormation or CDK** alongside the rest of your infrastructure.
+- **You need multi-region failover** for authentication.
 
 ## Related
 
 - [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
 - [Faable Auth vs Supabase Auth](compare-supabase-auth.mdx) · [vs Firebase Authentication](compare-firebase-auth.mdx) · [vs Authelia](compare-authelia.mdx)
+- [Faable Auth features](features.mdx) · [Auth pricing](pricing.mdx)
 - [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx)
 - [Get Started with Faable Auth](get-started.md)

@@ -109,7 +109,7 @@ Copy-paste [quickstarts](quickstart) exist for React, Next.js (client and server
 
 ## Plans and hosting
 
-Auth is part of the single Faable subscription, and the core — social login, database and passwordless connections, RBAC and teams — is available on **Free**. Webhooks and custom domains start at **Hobby**; audit logs and multiple auth accounts at **Pro**. Full detail, including MAU allowances, is on [Auth pricing](pricing.mdx).
+Auth is part of the single Faable subscription, and the core — hosted login, database and social connections, RBAC and teams — is available on **Free** for up to 50 monthly active users. Two-step verification, passwordless login, Actions, custom login flows and webhooks start at **Hobby** (250 MAU); a custom login domain, passkeys as the sign-in method, audit logs, multiple auth accounts and unlimited MAU at **Pro**. Full detail is on [Auth pricing](pricing.mdx).
 
 Your users' identities live on **our own hardware in a European datacenter** — not a US platform with an optional EU region. There is no non-EU region to fall back to. See [Security and Compliance](../platform/security-compliance.md) for the full posture, including the certifications we do not hold.
 
@@ -125,7 +125,7 @@ Being explicit beats discovering it mid-integration:
 
 ### Is Faable Auth free?
 
-Yes — Faable Auth is included in every plan, starting on **Free**, with a fair-use monthly-active-user allowance and one Action per account. Paid plans raise the MAU allowance and unlock webhooks, custom domains, audit logs and multiple auth accounts. See [Auth pricing](pricing.mdx).
+Yes — Faable Auth is included in every plan, starting on **Free**: hosted login, email and password, social login and RBAC for up to 50 monthly active users. Hobby raises that to 250 and adds two-step verification, passwordless login, Actions and webhooks; Pro removes the MAU limit and adds a custom login domain, passkey sign-in and audit logs. See [Auth pricing](pricing.mdx).
 
 ### Does Faable Auth support MFA or SAML?
 
@@ -145,7 +145,7 @@ No. Access tokens are JWTs signed with RS256, so your backend verifies them offl
 
 ### How do I migrate from another identity provider?
 
-There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx), plus comparisons for [Firebase Authentication](compare-firebase-auth.mdx), [Supabase Auth](compare-supabase-auth.mdx), [AWS Cognito](compare-aws-cognito.mdx) and [Authelia](compare-authelia.mdx). In every case you export users from the old provider and import them over the Management API — password hashes included, so nobody is forced to reset, and social-only users re-link on their first login through the same provider.
+There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx), plus comparisons for [Firebase Authentication](compare-firebase-auth.mdx), [Supabase Auth](compare-supabase-auth.mdx), [AWS Cognito](compare-aws-cognito.mdx) and [Authelia](compare-authelia.mdx). In every case you export users from the old provider and create them over the Management API. Two things to plan for: **password hashes cannot be imported** — a migrated user signs in with an emailed code or sets a new password through the reset flow — and **social users keep their account only if you import their identity** (`POST /identity` with the provider's user id), otherwise their first social login creates a new user.
 
 ## Start building
 

@@ -12,37 +12,47 @@ Faable Auth is part of the unified Faable subscription — and it is **included 
 
 ## What each plan includes for Auth
 
-| Plan      | Auth entitlements                                                                                               |
-| --------- | --------------------------------------------------------------------------------------------------------------- |
-| **Free**  | Faable Auth included · 1 auth account · fair-use MAU allowance · passwordless, social login, RBAC · 1 Action    |
-| **Hobby** | 1 auth account · **250 MAU** · unlimited passwordless within MAU · unlimited Actions · Webhooks · Custom Domain |
-| **Pro**   | Everything in Hobby · **unlimited auth accounts** · **10,000 MAU pooled** across accounts · **Audit logs**      |
+| Plan      | Auth entitlements                                                                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | Hosted login, users and sessions · database and social connections · RBAC and teams · **up to 50 MAU**                                                                    |
+| **Hobby** | Everything in Free · **up to 250 MAU** · two-step verification (MFA) · passwordless magic link and code login · custom login flows · Actions · webhooks · recovery by SMS |
+| **Pro**   | Everything in Hobby · **unlimited MAU** · custom domain for your login · biometric passkey login (Touch ID, Face ID) · audit logs · multiple auth accounts                |
 
 ## Monthly Active Users (MAU)
 
 A **Monthly Active User** is any unique user who completes at least one successful login during a calendar month. The same user logging in from multiple devices in the same month counts once.
 
-- **Free** includes a fair-use MAU allowance while you build. If your project takes off, we'll reach out before applying any limit.
-- **Hobby** includes **250 MAU** on a single auth account.
-- **Pro** includes **10,000 MAU pooled** across every auth account on the subscription — useful when you run multiple products under one Faable plan.
+- **Free** includes up to **50 MAU** — enough to build and test with real people.
+- **Hobby** includes up to **250 MAU**.
+- **Pro** has **no MAU limit**, across every auth account on the subscription.
 
-If you expect to exceed your plan's MAU allowance, [contact us](https://github.com/orgs/faablecloud/discussions) before you do — overage is handled on a case-by-case basis at the time of writing.
+There is no per-user line on any invoice: the plan fee is the price. If a Free or Hobby project grows past its allowance, we'll get in touch before anything changes.
 
 ## Feature gating
 
-| Feature                                 |       Free        |               Hobby               |                Pro                |
-| --------------------------------------- | :---------------: | :-------------------------------: | :-------------------------------: |
-| Social Login                            |        ✅         |                ✅                 |                ✅                 |
-| Database (username/password) connection |        ✅         |                ✅                 |                ✅                 |
-| Passwordless (OTP / Magic Link)         |        ✅         |                ✅                 |                ✅                 |
-| RBAC, Teams                             |        ✅         |                ✅                 |                ✅                 |
-| Actions (PostLogin)                     | ✅ (1 Action max) |           ✅ unlimited            |           ✅ unlimited            |
-| Two-step verification (MFA, passkeys)   |         —         |                ✅                 |                ✅                 |
-| Webhooks                                |         —         |                ✅                 |                ✅                 |
-| Custom Domain                           |         —         |                ✅                 |                ✅                 |
-| Password recovery by SMS                |         —         | 20 SMS/mo incl. · €0.20/SMS after | 20 SMS/mo incl. · €0.18/SMS after |
-| Audit logs                              |         —         |                 —                 |                ✅                 |
-| Multiple auth accounts                  |         —         |                 —                 |                ✅                 |
+| Feature                                 | Free |               Hobby               |                Pro                |
+| --------------------------------------- | :--: | :-------------------------------: | :-------------------------------: |
+| Hosted login pages                      |  ✅  |                ✅                 |                ✅                 |
+| Database (username/password) connection |  ✅  |                ✅                 |                ✅                 |
+| Social login                            |  ✅  |                ✅                 |                ✅                 |
+| RBAC, Teams                             |  ✅  |                ✅                 |                ✅                 |
+| Two-step verification (MFA)             |  —   |                ✅                 |                ✅                 |
+| Passwordless (OTP / Magic Link)         |  —   |                ✅                 |                ✅                 |
+| Custom [login flows](login-flows.md)    |  —   |                ✅                 |                ✅                 |
+| [Actions](extensibility/actions.md)     |  —   |                ✅                 |                ✅                 |
+| Webhooks                                |  —   |                ✅                 |                ✅                 |
+| Password recovery by SMS                |  —   | 20 SMS/mo incl. · €0.20/SMS after | 20 SMS/mo incl. · €0.18/SMS after |
+| [Custom Domain](custom-domain.md)       |  —   |                 —                 |                ✅                 |
+| Passkeys as the sign-in method          |  —   |                 —                 |                ✅                 |
+| Audit logs                              |  —   |                 —                 |                ✅                 |
+| Multiple auth accounts                  |  —   |                 —                 |                ✅                 |
+| Enterprise SSO / SAML                   |  —   |                 —                 |            coming soon            |
+
+A passkey used as a **second factor** is part of two-step verification, so it is on Hobby. **Passkeys as the sign-in method** — Touch ID or Face ID instead of a password, see [Login Experience](login-experience.md#sign-in-with-a-passkey) — is Pro.
+
+### What happens on a downgrade
+
+Plan limits apply when you **turn a feature on**, never to what is already running. An Action created on Hobby keeps running, a custom login flow already published stays live, a custom domain that is already active keeps serving your login, and an MFA policy that is already on stays on. Your users are never locked out because a plan changed; you just cannot create new ones until you move back up.
 
 ### SMS
 

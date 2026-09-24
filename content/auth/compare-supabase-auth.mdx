@@ -1,45 +1,132 @@
 ---
 title: Faable Auth vs Supabase Auth
-description: How Faable Auth compares to Supabase Auth. Faable Auth is a standalone, multi-tenant OAuth 2.0 / OIDC identity server hosted 100% in Europe under GDPR, with M2M tokens — not coupled to a single database.
+description: Faable Auth vs Supabase Auth — pricing, sign-in methods and passkeys, hosted login pages vs building your own, CLI, OAuth 2.1 server and M2M tokens, multi-tenancy, EU regions vs jurisdiction, and migrating between them.
 rank: high
 ---
 
 # Faable Auth vs Supabase Auth
 
-**Short answer:** Faable Auth and Supabase Auth are both managed authentication services, but Supabase Auth is designed as part of the Supabase backend (Postgres + APIs), while Faable Auth is a **standalone, multi-tenant OAuth 2.0 / OpenID Connect identity server** you can put in front of any stack. Faable Auth is **hosted 100% in Europe under GDPR**, offers **first-class machine-to-machine tokens**, and is **bundled with [Faable Deploy](../deploy/get-started.md)** — without requiring you to adopt a specific database.
+**Short answer:** Supabase Auth is the auth layer of a Postgres backend: users live in the `auth` schema of your project database, and row-level security reads their JWT. If you're building on Supabase, that integration is hard to beat. Faable Auth is a **standalone OAuth 2.0 / OpenID Connect identity server** that sits in front of any stack, with **hosted login pages** you don't build, **machine-to-machine tokens**, a **multi-tenant model out of the box**, and identities held by a **European company on its own hardware in Europe**.
 
-## Quick comparison
+> Supabase details checked against supabase.com docs and pricing in September 2026. Supabase's OAuth 2.1 server and its passkeys are both in **beta** at the time of writing.
 
-| Capability                               | Faable Auth                         | Supabase Auth                  |
-| ---------------------------------------- | ----------------------------------- | ------------------------------ |
-| OAuth 2.0 / OIDC standards               | ✅                                  | ✅ (GoTrue)                    |
-| Social login (Google, GitHub, Microsoft) | ✅                                  | ✅                             |
-| Passwordless (magic link / OTP)          | ✅                                  | ✅                             |
-| Enterprise SSO / SAML                    | ❌ not yet                          | ✅ (Pro/Team tiers)            |
-| MFA / 2FA                                | ✅ TOTP + passkeys                  | ✅                             |
-| Machine-to-machine (M2M) tokens          | ✅                                  | Limited                        |
-| Multi-tenant by design                   | ✅                                  | You model it in Postgres / RLS |
-| Standalone (any database/stack)          | ✅                                  | Coupled to Supabase Postgres   |
-| 100% European hosting + GDPR sovereignty | ✅                                  | Region-configurable            |
-| Bundled with app hosting                 | ✅ Faable Deploy, same subscription | Part of the Supabase platform  |
+## At a glance
 
-> Competitor capabilities and tiers change frequently — confirm current details on each vendor's own pricing and docs.
+| Capability                               | Faable Auth                                                                  | Supabase Auth                                                                      |
+| ---------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Pricing model**                        | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU) | Included in the platform: Free 50,000 MAU, Pro from $25 with 100,000, then per MAU |
+| Standalone, any backend                  | ✅                                                                           | Possible, but always backed by a Supabase project and its Postgres                 |
+| OAuth 2.0 / OIDC provider for other apps | ✅                                                                           | Beta — authorization code + PKCE and refresh only                                  |
+| Machine-to-machine (client credentials)  | ✅                                                                           | ❌ not supported                                                                   |
+| Device code, token exchange              | ✅                                                                           | ❌                                                                                 |
+| Dynamic client registration              | ✅                                                                           | ✅ (beta)                                                                          |
+| Email + password                         | ✅                                                                           | ✅                                                                                 |
+| Email magic link / code                  | ✅ (Hobby and up)                                                            | ✅                                                                                 |
+| Phone OTP sign-in                        | ❌ (SMS is used for recovery)                                                | ✅ through your SMS provider                                                       |
+| Anonymous users, Web3 wallets            | ❌                                                                           | ✅                                                                                 |
+| Social login                             | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                    | 19 built-in (incl. Apple) + custom OAuth/OIDC                                      |
+| Passkeys                                 | ✅ as sign-in method (Pro) and as second factor (Hobby)                      | Beta, sign-in only; not an MFA factor                                              |
+| MFA                                      | Authenticator app, security keys, passkeys                                   | TOTP; phone MFA is a $75/month add-on                                              |
+| Enterprise SSO / SAML                    | ❌ OIDC only — SAML coming on Pro                                            | ✅ Pro and up (50 SSO MAU included, then $0.015 each)                              |
+| Hosted login pages                       | ✅ [every screen](#hosted-login-pages)                                       | ❌ you build them (UI blocks you copy in)                                          |
+| Custom login domain                      | ✅ included (Pro)                                                            | $10/month add-on (Pro and up)                                                      |
+| Multi-tenancy                            | Every auth account is a tenant; teams and roles inside                       | You model it with RLS and custom claims                                            |
+| Custom code in the login                 | [Actions](extensibility/actions.md) + [webhooks](extensibility/webhooks.md)  | Auth hooks (Postgres functions or HTTP)                                            |
+| Admin CLI for users and logs             | ✅ [`faable auth`](#cli-and-automation)                                      | ❌ Admin API from your server                                                      |
+| Auth log retention                       | Queryable in dashboard, API and CLI (Pro)                                    | 1 hour (Free), 7 days (Pro), 28 days (Team)                                        |
+| Idle projects                            | Never paused                                                                 | Free projects pause after 1 week of inactivity                                     |
+| Where identities live                    | Faable's own hardware in Europe, EU company                                  | An AWS region you pick (6 in Europe); Singapore entity, California law             |
+| Export password hashes                   | ❌ not through the API                                                       | ✅ they're in your database                                                        |
+| SOC 2 / HIPAA                            | ❌ [not certified](../platform/security-compliance.md)                       | ✅ SOC 2 report on Team; HIPAA add-on                                              |
+
+## Pricing, worked through
+
+Supabase Auth has no price of its own: it comes with the Supabase plan, which also pays for your database, storage and functions. So compare the whole bill, not the auth line.
+
+| Monthly active users | Faable Auth  | Supabase (auth part of the bill)      |
+| -------------------- | ------------ | ------------------------------------- |
+| 200                  | 15 € (Hobby) | $0 on Free — project pauses when idle |
+| 50,000               | 99 € (Pro)   | $25 (Pro base)                        |
+| 250,000              | 99 € (Pro)   | $25 + 150,000 × $0.00325 = $512.50    |
+
+Add-ons that matter for auth: custom domain $10/month, phone MFA $75/month, SAML users $0.015 each after 50. On Faable the plan includes the custom domain (Pro) and MFA (Hobby and up).
+
+**The honest reading:** if you're already paying for Supabase for the database, its auth is effectively free well past 100,000 users. Faable is the cheaper option only when you'd otherwise be paying Supabase _just_ for auth at scale — the reasons to pick it are mostly the ones below.
+
+Faable figures are plan fees from [Auth pricing](pricing.mdx), in euros, VAT excluded; Supabase figures are its list prices in US dollars.
+
+## Hosted login pages
+
+Supabase has **no hosted login page**. You build sign-in, sign-up, reset, MFA and — if you use the OAuth server — the consent screen in your own app. The Supabase UI Library gives you auth blocks to copy in; the older `@supabase/auth-ui-react` hasn't been maintained since 2024.
+
+Faable Auth hosts all of it on your auth domain:
+
+| Screen                                        | Faable Auth                                                                                 | Supabase     |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------ |
+| Sign in, sign up, forgot and reset password   | ✅ hosted                                                                                   | You build it |
+| Two-step verification challenge and enrolment | ✅ hosted, with recovery codes                                                              | You build it |
+| Passkey enrolment, and an offer after login   | ✅ hosted                                                                                   | You build it |
+| Users manage their own factors                | ✅ [`/flow/account/security`](hosted-login.md#the-one-screen-your-users-go-to-on-their-own) | You build it |
+| Device activation for a CLI or TV             | ✅ hosted                                                                                   | —            |
+| Method order, email first, remember me        | ✅ [Login Experience](login-experience.md), per account or per client                       | Your code    |
+
+Building your own screens gives you total control of the design. Hosting them gives you single sign-on across your apps for free (the session is a cookie on the auth domain), passkeys that work in every app (they're bound to one domain), and credentials that never touch your frontend. See [Hosted Login UI](hosted-login.md).
+
+## CLI and automation
+
+The Supabase CLI is excellent for **configuration and local development**: `supabase start` runs the whole stack, auth included, and auth settings live in `config.toml`. It has no commands for users or auth logs — those go through the Admin API with the `service_role` key, or the dashboard.
+
+[`faable auth`](../cli.md#faable-auth) is the other way round — no local stack, but day-to-day tenant operations from the terminal:
+
+```bash
+faable auth users list -q alice                      # full-text over name, email, phone
+faable auth users get user_abc123                    # linked identities, last login and IP
+faable auth users list --query email_verified:false --json \
+  | jq -r '.[].id' | faable auth users suspend -y -r "spam wave"
+faable auth logs list --origin oauth --status failed
+faable auth actions update action_xyz -f ./gate.js
+```
+
+## Machine-to-machine and other applications
+
+Supabase's OAuth 2.1 server (beta) lets third-party apps sign users in with your project, but only with the authorization-code flow: **client credentials is explicitly not supported**, so a backend service or a cron job has no token of its own.
+
+Faable issues [client-credentials](oauth-flows/client-credentials.mdx) tokens against each registered [API](apis.md), with their own audience and permissions, and supports [device code](oauth-flows/device-code.mdx) for CLIs and [token exchange](oauth-flows/token-exchange.mdx) for keyless CI.
+
+## Where your users' data lives
+
+Supabase lets you place a project in Frankfurt, Ireland, London, Paris, Stockholm or Zurich, on AWS. The contracting entity is Supabase Pte. Ltd. in Singapore, under California law, and its privacy policy says the service is primarily provided from the United States.
+
+Faable Auth runs on **our own hardware in a European datacenter**, operated by a European company. We don't hold SOC 2, which Supabase does (report on Team and up). See [Security and Compliance](../platform/security-compliance.md).
+
+## Migrating from Supabase
+
+You own the `auth.users` table, so exporting is a SQL query. Faable can't import the bcrypt hashes in it, so:
+
+1. Create each user over the Management API.
+2. For social users, create their identity (`POST /identity`) from `auth.identities`, so their next Google or GitHub login lands on the same account.
+3. Password users sign in with an emailed code ([passwordless](passwordless.mdx), Hobby and up) or use **Forgot password**, which works as "set your password" for an imported user.
+4. RLS policies that read `auth.uid()` need the Faable user id instead — the step that takes the most thought if your data stays in Supabase.
 
 ## When Faable Auth is the better fit
 
-- **You want identity independent of your database.** Faable Auth sits in front of any backend; you're not adopting Postgres + RLS to get auth.
-- **You're building multi-tenant B2B SaaS** and want [multi-tenancy](what-is-a-multi-tenant-identity-server.mdx) and [M2M tokens](clients.md) without extra plumbing.
-- **You need European data sovereignty** under GDPR.
-- **You want auth and hosting together** via [Faable Deploy](../deploy/get-started.md) in one [subscription](pricing.md).
+- **Your backend isn't Supabase** — or won't always be — and you want identity that doesn't live in one database.
+- **You need tokens for services**, not just for users.
+- **You want hosted login pages** instead of building and maintaining every screen.
+- **You're building multi-tenant B2B** and want tenants, teams and roles without modelling them in RLS.
+- **You need identities held by a European company in Europe**, and auth and [hosting](../deploy/get-started.md) on one invoice.
 
 ## When Supabase Auth might fit better
 
-- You're **already building on Supabase** (Postgres, storage, edge functions) and want auth tightly integrated with row-level security in the same database.
-- You want the all-in-one Supabase developer experience for a single-tenant app.
-- You need **SAML today** — Faable Auth has no SAML connector yet (MFA and passkeys are built in).
+- **You're building on Supabase** and want auth tied to row-level security in the same database.
+- **You want to design every screen yourself.**
+- **You need phone login, anonymous users, Web3 wallets or Sign in with Apple.**
+- **You need SAML or a SOC 2 report today.**
+- **You want a local stack** that runs auth offline.
 
 ## Related
 
 - [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
 - [Faable Auth vs AWS Cognito](compare-aws-cognito.mdx) · [vs Firebase Authentication](compare-firebase-auth.mdx) · [vs Authelia](compare-authelia.mdx)
+- [Faable Auth features](features.mdx) · [Auth pricing](pricing.mdx)
 - [Get Started with Faable Auth](get-started.md)

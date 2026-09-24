@@ -27,7 +27,7 @@ rank: high
 3. **Recreate Connections.** Translate each Keycloak Identity Provider into a Faable [Connection](../connections.md) (social or generic [OIDC](../connections.md)), reusing upstream client credentials.
 4. **Recreate Clients** with the same redirect URIs, web origins, and flow types.
 5. **Replace SPIs with Actions.** Move custom authenticator SPIs to [Actions](../extensibility/actions.md) — JavaScript in the flow instead of compiled Java extensions.
-6. **Export and import users.** Use Keycloak's export (`realm-export` / Admin REST API) to extract users and credentials, then import into Faable. Password hashes can be carried over so users don't reset.
+6. **Export and import users.** Use Keycloak's export (`kc.sh export` / Admin REST API) to extract users, then create them over the Faable Management API. Faable cannot import password hashes: each migrated user either signs in with an emailed code ([passwordless](../passwordless.mdx), Hobby and up) or sets a new password through **Forgot password** — a user created over the Management API gets a credential without a password, so the reset flow works as “set your password”. Tell your users before you switch. For social users, create their identity too (`POST /identity` with the connection and the provider's user id) so their first Google or GitHub login lands on the imported account instead of creating a new one.
 7. **Decommission your Keycloak deployment** once traffic is on Faable — and reclaim the operational time you spent running it.
 
 ## What you stop maintaining

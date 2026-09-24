@@ -21,6 +21,8 @@ Removing a method here is enforced, not cosmetic. A connection taken off a clien
 
 A passkey verified with a biometric or a device PIN proves possession **and** knowledge in one gesture, which is why a passkey login is never asked for a second factor afterwards. Turn it on under **Login Experience → Passkeys**.
 
+> **Plan requirement**: turning on passkeys as a sign-in method is available on the **Pro** plan. A passkey as a second factor is part of [two-step verification](mfa.md), available from Hobby. See [Auth pricing](pricing.mdx).
+
 Two things happen on the login screen. A **Continue with a passkey** button appears under the password form, behind an _or sign in with_ rule, next to the social buttons (you can move it with the method order). And, in browsers that support it, the passkey is also offered from inside the email field — returning users pick it from the autofill suggestions and never touch the button.
 
 The button names what the passkey _is_ on that device — **Touch ID** on a Mac, **Face ID** on an iPhone, **Windows Hello** on Windows — with the matching icon, because that is the word the user recognises. The screen asks the browser whether a platform authenticator is present; a machine without one gets the generic label. Underneath it is the same WebAuthn ceremony either way. The same naming appears on the second-factor screen and on the passkey offer.

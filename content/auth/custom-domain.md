@@ -7,6 +7,8 @@ description: Configure a custom domain for Faable Auth so your users see your ow
 
 Faable Auth allows you to serve the authentication UI from your own domain (e.g. `auth.example.com`) instead of the default Faable-hosted URL. This gives your users a fully branded login experience.
 
+> **Plan requirement**: adding a custom domain is available on the **Pro** plan. A domain that is already active keeps serving your login after a downgrade. See [Auth pricing](pricing.mdx).
+
 ## Step 1 — Add your domain in Settings
 
 1. Open your auth project in the [Faable Dashboard](https://dashboard.faable.com).

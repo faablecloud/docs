@@ -24,7 +24,7 @@ Several actions can export the same hook. They execute in ascending `order`; on 
 Code that exports no hook, or that fails to load (syntax error, crash at the top level), is rejected when you save it with a `400` and the reason — never at the first login it would have broken.
 
 > [!IMPORTANT]
-> **Plan limits**: Free accounts can have **1 Action** per account. Hobby and Pro allow unlimited Actions. See [Auth pricing](../pricing.md).
+> **Plan limits**: Actions are available from the **Hobby** plan up, with no limit on how many. An Action created on Hobby keeps running after a downgrade; only creating new ones needs the plan. See [Auth pricing](../pricing.md).
 
 ## CRUD endpoints
 
