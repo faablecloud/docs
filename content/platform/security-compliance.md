@@ -5,7 +5,7 @@ description: How Faable Cloud protects your applications and data — European i
 
 # Security and Compliance
 
-**Last updated:** 12 September 2026
+**Last updated:** 24 September 2026
 
 This page describes the security controls that are actually in place on the Faable platform, and states plainly which certifications we do and do not hold. If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
 
@@ -84,6 +84,22 @@ Backups are compressed, encrypted in transit, and stored in a separate account f
 | Per-app secrets, injected at runtime                        | Faable Deploy                                        | All plans    |
 
 ## Compliance
+
+### Compliance scope
+
+What Faable holds today, and what it does not. For anything marked **Ask Sales**, write to [support@faable.com](mailto:support@faable.com): tell us what your procurement needs and we will answer with what we can document, or where it stands on our roadmap.
+
+| Framework / assurance        | Status                                                                                                         |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| GDPR (EU processor, DPA)     | ✅ Compliant — [details below](#gdpr)                                                                          |
+| EU data residency            | ✅ All workloads and identities stay in Europe — [where your data runs](#where-your-data-runs)                 |
+| Data Processing Agreement    | ✅ [Section 10 of the Privacy Policy](privacy-policy.md#10-data-you-process-through-faable-our-processor-role) |
+| PCI DSS (card payments)      | ✅ Out of scope: card data goes to a PCI DSS Level 1 provider, never to Faable                                 |
+| Security questionnaires      | ✅ On request — [Ask Sales](mailto:support@faable.com?subject=Security%20questionnaire)                        |
+| SOC 2                        | Not held — [Ask Sales](mailto:support@faable.com?subject=SOC%202)                                              |
+| ISO 27001                    | Not held — [Ask Sales](mailto:support@faable.com?subject=ISO%2027001)                                          |
+| HIPAA (BAA)                  | Not available — [Ask Sales](mailto:support@faable.com?subject=HIPAA%20BAA)                                     |
+| Third-party penetration test | Not completed — [Ask Sales](mailto:support@faable.com?subject=Penetration%20test)                              |
 
 ### GDPR
 
