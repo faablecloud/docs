@@ -23,6 +23,7 @@ export default {
   'phone-verification': 'Phone Verification',
   'team-invitations': 'Team Invitations',
   'suspend-users': 'Suspend Users',
+  sessions: 'Sessions',
   mfa: 'Two-Step Verification',
   logs: 'Logs',
   errors: 'Error Codes',
