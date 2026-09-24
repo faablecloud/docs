@@ -51,7 +51,7 @@ flowchart LR
 
 ### What the shopper notices
 
-Almost nothing, which is the point. The "Sign in" button on the store sends them to your login page on your domain, with your branding and the sign-in methods your app already offers. After signing in they are back on the store, signed in, for up to 90 days. If they signed in to your app through Faable Auth recently in the same browser, the store sign-in is a single redirect with no form at all.
+Almost nothing, which is the point. The "Sign in" button on the store sends them to your [login page](../hosted-login.mdx) on your domain, with your branding and the sign-in methods your app already offers. After signing in they are back on the store, signed in, for up to 90 days. If they signed in to your app through Faable Auth recently in the same browser, the store sign-in is a single redirect with no form at all.
 
 ## How it works
 

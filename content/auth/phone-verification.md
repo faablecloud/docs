@@ -23,7 +23,7 @@ So **set the default country before your backend starts writing phone numbers**.
 Two more things make the data usable:
 
 - Ask for a **mobile** explicitly, with `<input type="tel">`. A landline cannot receive SMS.
-- Better, collect the country code in the form itself, so the number arrives in E.164 and the default country never has to guess. The hosted screens do this.
+- Better, collect the country code in the form itself, so the number arrives in E.164 and the default country never has to guess. The [hosted screens](hosted-login.mdx) do this.
 
 Reading a user back tells you where they stand: `phone_e164` is `true` when the stored number is a usable E.164. A `false` there is a number we could not resolve — stored before this rule existed, or written while the account had no default country. No SMS will reach it until it is written again in a shape we can resolve; setting the default country and saving the same number again is usually enough.
 

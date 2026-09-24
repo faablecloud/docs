@@ -10,7 +10,7 @@ import { Callout } from 'nextra/components'
 
 By the end of this guide your Next.js app signs users in with **Face ID, Touch ID, Windows Hello or a hardware security key** — a passkey — and never sees a password. Returning users get the passkey offered from inside the email field, the way Stripe or GitHub do it. You will also gate one sensitive action behind a fresh second factor.
 
-The surprising part: **your application contains no WebAuthn code.** The ceremony runs on Faable Auth's hosted screen, and there is a good reason it has to — explained below.
+The surprising part: **your application contains no WebAuthn code.** The ceremony runs on Faable Auth's [hosted screen](../hosted-login.mdx#passkey-offer), and there is a good reason it has to — explained below.
 
 ## What you need
 

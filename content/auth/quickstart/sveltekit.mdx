@@ -103,7 +103,7 @@ Read the store with Svelte's `$` auto-subscription — no session shows a **Sign
 {/if}
 ```
 
-- `signInWithOauthConnection({})` sends the user to your tenant's Universal Login with every [connection](../connections.md) you've enabled. Target one directly with `{ connection_id: "connection_..." }`.
+- `signInWithOauthConnection({})` sends the user to your tenant's [Universal Login](../hosted-login.mdx) with every [connection](../connections.md) you've enabled. Target one directly with `{ connection_id: "connection_..." }`.
 - `signOut({ returnTo })` clears the local session **and** the SSO cookie on the auth server. `returnTo` must be in **Allowed Logout URLs**.
 - Both methods redirect the browser on success — the promise intentionally never resolves, so don't put code after the `await`. Post-login logic belongs in `onAuthStateChange` (Step 3), which already updates the store.
 

@@ -124,7 +124,7 @@ https://{YOUR_DOMAIN}/authorize
   &connection=github
 ```
 
-If you omit `connection`, the Universal Login screen is shown and GitHub appears as one of the available sign-in options (provided the connection is enabled for the Client). See [OAuth Flows: Authorization Code](../oauth-flows/authorization-code.md) for the full request reference.
+If you omit `connection`, the [Universal Login](../hosted-login.mdx) screen is shown and GitHub appears as one of the available sign-in options (provided the connection is enabled for the Client). See [OAuth Flows: Authorization Code](../oauth-flows/authorization-code.md) for the full request reference.
 
 ## Test the connection
 

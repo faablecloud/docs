@@ -36,7 +36,7 @@ You can also restrict which methods count (authenticator app, security key, or b
 
 ## What your users see
 
-When the policy asks for a second factor, the login pauses on a Faable-hosted screen and picks up exactly where it left off once the factor checks out. Nothing changes in your application: the same `redirect_uri` receives the same authorization code, just a few seconds later.
+When the policy asks for a second factor, the login pauses on a [Faable-hosted screen](hosted-login.mdx#two-step-verification) and picks up exactly where it left off once the factor checks out. Nothing changes in your application: the same `redirect_uri` receives the same authorization code, just a few seconds later.
 
 Users manage their own methods at `https://<your-auth-domain>/flow/account/security`, where they can add an authenticator app, add a security key or passkey, and remove either.
 

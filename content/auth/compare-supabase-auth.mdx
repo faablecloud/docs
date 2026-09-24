@@ -12,32 +12,33 @@ rank: high
 
 ## At a glance
 
-| Capability                               | Faable Auth                                                                  | Supabase Auth                                                                      |
-| ---------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| **Pricing model**                        | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU) | Included in the platform: Free 50,000 MAU, Pro from $25 with 100,000, then per MAU |
-| Standalone, any backend                  | ✅                                                                           | Possible, but always backed by a Supabase project and its Postgres                 |
-| OAuth 2.0 / OIDC provider for other apps | ✅                                                                           | Beta — authorization code + PKCE and refresh only                                  |
-| Machine-to-machine (client credentials)  | ✅                                                                           | ❌ not supported                                                                   |
-| Device code, token exchange              | ✅                                                                           | ❌                                                                                 |
-| Dynamic client registration              | ✅                                                                           | ✅ (beta)                                                                          |
-| Email + password                         | ✅                                                                           | ✅                                                                                 |
-| Email magic link / code                  | ✅ (Hobby and up)                                                            | ✅                                                                                 |
-| Phone OTP sign-in                        | ❌ (SMS is used for recovery)                                                | ✅ through your SMS provider                                                       |
-| Anonymous users, Web3 wallets            | ❌                                                                           | ✅                                                                                 |
-| Social login                             | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                    | 19 built-in (incl. Apple) + custom OAuth/OIDC                                      |
-| Passkeys                                 | ✅ as sign-in method (Pro) and as second factor (Hobby)                      | Beta, sign-in only; not an MFA factor                                              |
-| MFA                                      | Authenticator app, security keys, passkeys                                   | TOTP; phone MFA is a $75/month add-on                                              |
-| Enterprise SSO / SAML                    | ❌ OIDC only — SAML coming on Pro                                            | ✅ Pro and up (50 SSO MAU included, then $0.015 each)                              |
-| Hosted login pages                       | ✅ [every screen](#hosted-login-pages)                                       | ❌ you build them (UI blocks you copy in)                                          |
-| Custom login domain                      | ✅ included (Pro)                                                            | $10/month add-on (Pro and up)                                                      |
-| Multi-tenancy                            | Every auth account is a tenant; teams and roles inside                       | You model it with RLS and custom claims                                            |
-| Custom code in the login                 | [Actions](extensibility/actions.md) + [webhooks](extensibility/webhooks.md)  | Auth hooks (Postgres functions or HTTP)                                            |
-| Admin CLI for users and logs             | ✅ [`faable auth`](#cli-and-automation)                                      | ❌ Admin API from your server                                                      |
-| Auth log retention                       | Queryable in dashboard, API and CLI (Pro)                                    | 1 hour (Free), 7 days (Pro), 28 days (Team)                                        |
-| Idle projects                            | Never paused                                                                 | Free projects pause after 1 week of inactivity                                     |
-| Where identities live                    | Faable's own hardware in Europe, EU company                                  | An AWS region you pick (6 in Europe); Singapore entity, California law             |
-| Export password hashes                   | ❌ not through the API                                                       | ✅ they're in your database                                                        |
-| SOC 2 / HIPAA                            | ❌ [not certified](../platform/security-compliance.md)                       | ✅ SOC 2 report on Team; HIPAA add-on                                              |
+| Capability                               | Faable Auth                                                                           | Supabase Auth                                                                      |
+| ---------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Pricing model**                        | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU)          | Included in the platform: Free 50,000 MAU, Pro from $25 with 100,000, then per MAU |
+| Standalone, any backend                  | ✅                                                                                    | Possible, but always backed by a Supabase project and its Postgres                 |
+| OAuth 2.0 / OIDC provider for other apps | ✅                                                                                    | Beta — authorization code + PKCE and refresh only                                  |
+| Machine-to-machine (client credentials)  | ✅                                                                                    | ❌ not supported                                                                   |
+| Device code, token exchange              | ✅                                                                                    | ❌                                                                                 |
+| Dynamic client registration              | ✅                                                                                    | ✅ (beta)                                                                          |
+| Email + password                         | ✅                                                                                    | ✅                                                                                 |
+| Email magic link / code                  | ✅ (Hobby and up)                                                                     | ✅                                                                                 |
+| Phone OTP sign-in                        | ❌ (SMS is used for recovery)                                                         | ✅ through your SMS provider                                                       |
+| Anonymous users, Web3 wallets            | ❌                                                                                    | ✅                                                                                 |
+| Social login                             | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                             | 19 built-in (incl. Apple) + custom OAuth/OIDC                                      |
+| Passkeys                                 | ✅ as sign-in method (Pro) and as second factor (Hobby)                               | Beta, sign-in only; not an MFA factor                                              |
+| MFA                                      | Authenticator app, security keys, passkeys                                            | TOTP; phone MFA is a $75/month add-on                                              |
+| Enterprise SSO / SAML                    | ❌ OIDC only — SAML coming on Pro                                                     | ✅ Pro and up (50 SSO MAU included, then $0.015 each)                              |
+| Hosted login pages                       | ✅ [every screen](#hosted-login-pages)                                                | ❌ you build them (UI blocks you copy in)                                          |
+| Custom login domain                      | ✅ included (Pro)                                                                     | $10/month add-on (Pro and up)                                                      |
+| Multi-tenancy                            | Every auth account is a tenant; teams and roles inside                                | You model it with RLS and custom claims                                            |
+| Custom code in the login                 | [Actions](extensibility/actions.md) + [webhooks](extensibility/webhooks.md)           | Auth hooks (Postgres functions or HTTP)                                            |
+| Admin CLI for users and logs             | ✅ [`faable auth`](#cli-and-automation)                                               | ❌ Admin API from your server                                                      |
+| Auth log retention                       | Queryable in dashboard, API and CLI (Pro)                                             | 1 hour (Free), 7 days (Pro), 28 days (Team)                                        |
+| Idle projects                            | Never paused                                                                          | Free projects pause after 1 week of inactivity                                     |
+| Where identities live                    | Faable's own hardware in Europe, EU company                                           | An AWS region you pick (6 in Europe); Singapore entity, California law             |
+| Export password hashes                   | ✅ [`faable auth users export`](guides/import-password-hashes.mdx#export), every plan | ✅ they're in your database                                                        |
+| Import password hashes                   | ✅ [bcrypt, scrypt, Argon2id, PBKDF2](guides/import-password-hashes.mdx), every plan  | ✅ bcrypt, inserted into `auth.users`                                              |
+| SOC 2 / HIPAA                            | ❌ [not certified](../platform/security-compliance.md)                                | ✅ SOC 2 report on Team; HIPAA add-on                                              |
 
 ## Pricing, worked through
 
@@ -61,16 +62,16 @@ Supabase has **no hosted login page**. You build sign-in, sign-up, reset, MFA an
 
 Faable Auth hosts all of it on your auth domain:
 
-| Screen                                        | Faable Auth                                                                                 | Supabase     |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------ |
-| Sign in, sign up, forgot and reset password   | ✅ hosted                                                                                   | You build it |
-| Two-step verification challenge and enrolment | ✅ hosted, with recovery codes                                                              | You build it |
-| Passkey enrolment, and an offer after login   | ✅ hosted                                                                                   | You build it |
-| Users manage their own factors                | ✅ [`/flow/account/security`](hosted-login.md#the-one-screen-your-users-go-to-on-their-own) | You build it |
-| Device activation for a CLI or TV             | ✅ hosted                                                                                   | —            |
-| Method order, email first, remember me        | ✅ [Login Experience](login-experience.md), per account or per client                       | Your code    |
+| Screen                                        | Faable Auth                                                                                  | Supabase     |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------ |
+| Sign in, sign up, forgot and reset password   | ✅ hosted                                                                                    | You build it |
+| Two-step verification challenge and enrolment | ✅ hosted, with recovery codes                                                               | You build it |
+| Passkey enrolment, and an offer after login   | ✅ hosted                                                                                    | You build it |
+| Users manage their own factors                | ✅ [`/flow/account/security`](hosted-login.mdx#the-one-screen-your-users-go-to-on-their-own) | You build it |
+| Device activation for a CLI or TV             | ✅ hosted                                                                                    | —            |
+| Method order, email first, remember me        | ✅ [Login Experience](login-experience.md), per account or per client                        | Your code    |
 
-Building your own screens gives you total control of the design. Hosting them gives you single sign-on across your apps for free (the session is a cookie on the auth domain), passkeys that work in every app (they're bound to one domain), and credentials that never touch your frontend. See [Hosted Login UI](hosted-login.md).
+Building your own screens gives you total control of the design. Hosting them gives you single sign-on across your apps for free (the session is a cookie on the auth domain), passkeys that work in every app (they're bound to one domain), and credentials that never touch your frontend. See [Hosted Login UI](hosted-login.mdx).
 
 ## CLI and automation
 

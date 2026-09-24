@@ -34,7 +34,7 @@ On a client, **Login flow** says which graph it runs. **Customize for this clien
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
 | Start           | Where every login begins.                                                                                                         | —                   |
 | Email first     | Asks for the email before showing any method. Nothing is looked up.                                                               | `identifier_first`  |
-| Choose a method | The hosted login screen: which methods, in what order.                                                                            | `login_methods`     |
+| Choose a method | The [hosted login screen](hosted-login.mdx): which methods, in what order.                                                        | `login_methods`     |
 | Credential      | The user proved who they are (password, code, social, passkey).                                                                   | —                   |
 | Actions         | Runs your post-login [Actions](extensibility/actions.md). A deny stops here.                                                      | Actions             |
 | Second factor?  | Decides whether a factor is owed: `satisfied`, `challenge` or `enroll`.                                                           | `mfa_policy`        |

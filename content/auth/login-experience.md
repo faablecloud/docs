@@ -5,7 +5,7 @@ description: What the hosted login screen offers and in what order, passkey sign
 
 # Login Experience
 
-The hosted login screen is not a fixed form. What it shows — which methods, in what order, whether passkeys are on, whether users are invited to create one — is configuration on your auth account, and any client can override it for its own login screen.
+The [hosted login screen](hosted-login.mdx) is not a fixed form. What it shows — which methods, in what order, whether passkeys are on, whether users are invited to create one — is configuration on your auth account, and any client can override it for its own login screen.
 
 Everything here lives under **Login Experience** in the dashboard, and under `login_methods` on the [Account and Client](clients.md) objects of the Management API.
 

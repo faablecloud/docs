@@ -23,7 +23,6 @@ rank: high
 | Token exchange (RFC 8693)              | ✅ e.g. keyless GitHub Actions                                                        | ❌                                                               |
 | Dynamic client registration (RFC 7591) | ✅ what MCP clients expect                                                            | ❌ clients are created through the API or IaC                    |
 | Social login                           | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                             | Google, Facebook, Apple, Amazon + generic OIDC/SAML (no GitHub)  |
-| Sign in with Apple                     | ❌ not yet                                                                            | ✅                                                               |
 | Passwordless by email                  | ✅ magic link or 6-digit code                                                         | Code only (Essentials); no magic links                           |
 | Passwordless by SMS                    | ❌ (SMS is used for recovery)                                                         | ✅ SMS code (Essentials)                                         |
 | Passkeys                               | ✅ as sign-in method (Pro) and as second factor (Hobby)                               | ✅ as sign-in method (Essentials); not after a password          |
@@ -67,7 +66,7 @@ Both products host the login so your application only redirects to it. The diffe
 | Sign in, sign up, reset                    | ✅                                                                                                                         | ✅                                                                |
 | Two-step verification                      | ✅ challenge and enrolment, with recovery codes                                                                            | ✅                                                                |
 | Passkey enrolment                          | ✅ plus an [offer right after login](login-experience.md#inviting-users-to-create-a-passkey), which is what gets them used | ✅                                                                |
-| Users manage their own factors             | ✅ [`/flow/account/security`](hosted-login.md#the-one-screen-your-users-go-to-on-their-own)                                | ❌ there is no account page — you build it against the API        |
+| Users manage their own factors             | ✅ [`/flow/account/security`](hosted-login.mdx#the-one-screen-your-users-go-to-on-their-own)                               | ❌ there is no account page — you build it against the API        |
 | Device authorisation                       | ✅ for CLIs and TV apps                                                                                                    | ❌ no device-code grant                                           |
 | Email first, remember me, last method used | ✅ [Login Experience](login-experience.md) settings                                                                        | Choice-based sign-in                                              |
 | Per-app differences                        | Method order, passkeys and MFA policy per client                                                                           | One style per app client (up to 20 per pool)                      |
@@ -78,7 +77,7 @@ Both products host the login so your application only redirects to it. The diffe
 
 Cognito's branding editor is more flexible visually and it speaks more languages. Faable's pages cover more of the lifecycle — the security page and the device flow in particular are things you otherwise build and host yourself.
 
-See [Hosted Login UI](hosted-login.md) for every screen.
+See [Hosted Login UI](hosted-login.mdx) for every screen.
 
 ## CLI and automation
 

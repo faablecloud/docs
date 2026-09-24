@@ -160,7 +160,7 @@ https://{YOUR_DOMAIN}/authorize
   &connection_id=connection_abc123
 ```
 
-Omit `connection_id` and the Universal Login screen appears with Microsoft as one of the options, provided the connection is enabled for that Client. See [Authorization Code Flow](../oauth-flows/authorization-code.md) for the full request reference.
+Omit `connection_id` and the [Universal Login](../hosted-login.mdx) screen appears with Microsoft as one of the options, provided the connection is enabled for that Client. See [Authorization Code Flow](../oauth-flows/authorization-code.md) for the full request reference.
 
 ## Rotate or revoke credentials
 

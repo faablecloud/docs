@@ -35,7 +35,7 @@ Don't confuse this with the `oidc` connection type, which is a different thing e
 1. **Register an app** with the provider (e.g. a Google OAuth client) and copy its client ID and secret.
 2. **Create a social [connection](/auth/connections)** in the Faable Dashboard and paste those credentials.
 3. **Enable the connection** on the [client](/auth/clients) that runs your login flow.
-4. **Log in.** Send users to the `/authorize` endpoint — they pick a provider on the Universal Login screen, or you can target one directly with `connection_id=connection_abc123`. Faable normalizes the result into standard OAuth 2.0 / OIDC tokens.
+4. **Log in.** Send users to the `/authorize` endpoint — they pick a provider on the [Universal Login](/auth/hosted-login) screen, or you can target one directly with `connection_id=connection_abc123`. Faable normalizes the result into standard OAuth 2.0 / OIDC tokens.
 
 ## Related
 

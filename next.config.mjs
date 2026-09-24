@@ -44,6 +44,11 @@ export default withNextra({
     // purpose, same policy as the landing: 301/308 get cached hard by
     // browsers/CDNs, which would block serving a real page here later.
     return [
+      // Trailing slash → canonical URL. Nextra turns `skipTrailingSlashRedirect`
+      // on, so `/auth/compare/` rendered with a 200 — and every relative link
+      // in the page body (`[Hosted login](hosted-login.mdx)` → `href="hosted-login"`)
+      // then resolved to `/auth/compare/hosted-login`, a 404.
+      { source: '/:path+/', destination: '/:path+', permanent: false },
       // Section roots: folders without an index page
       { source: '/auth', destination: '/auth/get-started', permanent: false },
       {
