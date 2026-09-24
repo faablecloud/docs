@@ -24,7 +24,6 @@ rank: high
 | Email + password                         | ✅                                                                                    | ✅                                                                                 |
 | Email magic link / code                  | ✅ (Hobby and up)                                                                     | ✅                                                                                 |
 | Phone OTP sign-in                        | ❌ (SMS is used for recovery)                                                         | ✅ through your SMS provider                                                       |
-| Anonymous users, Web3 wallets            | ❌                                                                                    | ✅                                                                                 |
 | Social login                             | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                             | 19 built-in (incl. Apple) + custom OAuth/OIDC                                      |
 | Passkeys                                 | ✅ as sign-in method (Pro) and as second factor (Hobby)                               | Beta, sign-in only; not an MFA factor                                              |
 | MFA                                      | Authenticator app, security keys, passkeys                                            | TOTP; phone MFA is a $75/month add-on                                              |
@@ -124,7 +123,7 @@ You own the `auth.users` table, so exporting is a SQL query, and Faable imports 
 - **You're building on Supabase** and want auth tied to row-level security in the same database.
 - **You want to design every screen yourself.**
 - **You need phone login, anonymous users, Web3 wallets or Sign in with Apple.**
-- **You need SAML or a SOC 2 report today.**
+- **You need SAML today.**
 - **You want a local stack** that runs auth offline.
 
 ## Related
