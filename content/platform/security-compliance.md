@@ -101,6 +101,24 @@ What Faable holds today, and what it does not. For anything marked **Ask Sales**
 | HIPAA (BAA)                  | Not available — [Ask Sales](mailto:support@faable.com?subject=HIPAA%20BAA)                                     |
 | Third-party penetration test | Not completed — [Ask Sales](mailto:support@faable.com?subject=Penetration%20test)                              |
 
+**European frameworks**
+
+| Framework                                     | Status                                                                                                                                                                                                                                                                                                                                                                                      |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NIS2 Directive (EU 2022/2555)                 | No certificate exists under NIS2. Supplier security clauses for customers in scope — [Ask Sales](mailto:support@faable.com?subject=NIS2)                                                                                                                                                                                                                                                    |
+| DORA (EU 2022/2554), for financial entities   | Not assessed. ICT third-party contractual terms (Art. 30) — [Ask Sales](mailto:support@faable.com?subject=DORA)                                                                                                                                                                                                                                                                             |
+| EU Data Act (EU 2023/2854), cloud switching   | Your data can leave: users with their password hashes ([export](../auth/guides/import-password-hashes.mdx#export)), apps from your own Git repository. Contract terms — [Ask Sales](mailto:support@faable.com?subject=Data%20Act)                                                                                                                                                           |
+| Digital Omnibus (EU proposal)                 | Not in force: its data part (changes to GDPR, ePrivacy, NIS2 and DORA) is [still being negotiated](https://www.europarl.europa.eu/legislative-train/theme-a-new-plan-for-europe-s-sustainable-prosperity-and-competitiveness/file-digital-package). We will adapt when it is adopted; nothing on this page depends on it — [Ask Sales](mailto:support@faable.com?subject=Digital%20Omnibus) |
+| EUCS (EU Cloud Services certification scheme) | Not held — the scheme has not been adopted by the EU yet — [Ask Sales](mailto:support@faable.com?subject=EUCS)                                                                                                                                                                                                                                                                              |
+
+**National schemes**
+
+| Scheme                                                   | Status                                                                |
+| -------------------------------------------------------- | --------------------------------------------------------------------- |
+| ENS — Esquema Nacional de Seguridad (Spain, RD 311/2022) | Not certified — [Ask Sales](mailto:support@faable.com?subject=ENS)    |
+| BSI C5 (Germany)                                         | Not held — [Ask Sales](mailto:support@faable.com?subject=BSI%20C5)    |
+| SecNumCloud (France)                                     | Not held — [Ask Sales](mailto:support@faable.com?subject=SecNumCloud) |
+
 ### GDPR
 
 Faable is built for GDPR compliance rather than retrofitted to it: European company, European infrastructure, European supervisory authority. Concretely, we:
