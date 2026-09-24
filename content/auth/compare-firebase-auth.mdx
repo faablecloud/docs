@@ -104,12 +104,11 @@ Faable Auth runs on **our own hardware in a European datacenter**, operated by a
 
 ## Migrating from Firebase
 
-`firebase auth:export` gives you users with their password hashes in Firebase's modified scrypt. Faable can't import password hashes, so:
+`firebase auth:export` gives you users with their password hashes in Firebase's modified scrypt, and Faable imports them as they are, so users keep their passwords:
 
-1. Create each user over the Management API, keeping `email_verified`.
-2. For Google, Apple or GitHub users, create their identity (`POST /identity`) with the provider's user id, so their next social login lands on the same account.
-3. Password users sign in with an emailed code ([passwordless](passwordless.mdx), Hobby and up) or use **Forgot password**, which works as "set your password" for an imported user.
-4. Replace Firebase ID-token verification in your backend with standard [access-token validation](validate-access-tokens.mdx).
+1. Export with `firebase auth:export users.json --format=json`, and copy the project's **password hash parameters** from the Firebase console (Authentication → Users → ⋮).
+2. Import with `faable auth users import users.json --from firebase --hash-key … --salt-separator … --rounds … --mem-cost …`. Google, Apple and GitHub users come with their identities, so their next social login lands on the same account. Each password is upgraded to Argon2id on first sign-in. See [Import and export password hashes](guides/import-password-hashes.mdx).
+3. Replace Firebase ID-token verification in your backend with standard [access-token validation](validate-access-tokens.mdx).
 
 Phone-only and anonymous users have no equivalent in Faable and need a new sign-in method.
 

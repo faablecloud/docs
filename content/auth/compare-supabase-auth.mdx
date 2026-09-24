@@ -101,11 +101,11 @@ Faable Auth runs on **our own hardware in a European datacenter**, operated by a
 
 ## Migrating from Supabase
 
-You own the `auth.users` table, so exporting is a SQL query. Faable can't import the bcrypt hashes in it, so:
+You own the `auth.users` table, so exporting is a SQL query, and Faable imports the bcrypt hashes in it as they are, so users keep their passwords:
 
-1. Create each user over the Management API.
-2. For social users, create their identity (`POST /identity`) from `auth.identities`, so their next Google or GitHub login lands on the same account.
-3. Password users sign in with an emailed code ([passwordless](passwordless.mdx), Hobby and up) or use **Forgot password**, which works as "set your password" for an imported user.
+1. Export `email, encrypted_password, email_confirmed_at, raw_user_meta_data` from `auth.users` as CSV.
+2. Import with `faable auth users import users.csv --from supabase`. Each password is upgraded to Argon2id on first sign-in. See [Import and export password hashes](guides/import-password-hashes.mdx).
+3. For social users, create their identity (`POST /identity`) from `auth.identities`, so their next Google or GitHub login lands on the same account.
 4. RLS policies that read `auth.uid()` need the Faable user id instead — the step that takes the most thought if your data stays in Supabase.
 
 ## When Faable Auth is the better fit

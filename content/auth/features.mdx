@@ -145,7 +145,7 @@ No. Access tokens are JWTs signed with RS256, so your backend verifies them offl
 
 ### How do I migrate from another identity provider?
 
-There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx), plus comparisons for [Firebase Authentication](compare-firebase-auth.mdx), [Supabase Auth](compare-supabase-auth.mdx), [AWS Cognito](compare-aws-cognito.mdx) and [Authelia](compare-authelia.mdx). In every case you export users from the old provider and create them over the Management API. Two things to plan for: **password hashes cannot be imported** — a migrated user signs in with an emailed code or sets a new password through the reset flow — and **social users keep their account only if you import their identity** (`POST /identity` with the provider's user id), otherwise their first social login creates a new user.
+There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx), plus comparisons for [Firebase Authentication](compare-firebase-auth.mdx), [Supabase Auth](compare-supabase-auth.mdx), [AWS Cognito](compare-aws-cognito.mdx) and [Authelia](compare-authelia.mdx). In every case you export users from the old provider and create them over the Management API. **Password hashes import as they are** (bcrypt, scrypt, PBKDF2, Argon2id, on every plan), so users keep their passwords, and social identities in the export are linked so those users keep their account too. See [Import and export password hashes](guides/import-password-hashes.mdx).
 
 ## Start building
 

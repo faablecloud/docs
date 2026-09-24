@@ -12,34 +12,34 @@ rank: high
 
 ## At a glance
 
-| Capability                             | Faable Auth                                                                      | AWS Cognito (user pools)                                         |
-| -------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| **Pricing model**                      | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU)     | Per MAU by feature plan, plus per M2M token                      |
-| **Free tier**                          | 50 MAU                                                                           | 10,000 MAU (Lite and Essentials); none on Plus                   |
-| OAuth 2.0 / OIDC provider              | ✅                                                                               | ✅                                                               |
-| Authorization code + PKCE, refresh     | ✅                                                                               | ✅                                                               |
-| Client credentials (M2M)               | ✅ no per-token charge                                                           | ✅ $0.00225 per token issued                                     |
-| Device code (RFC 8628)                 | ✅                                                                               | ❌ (AWS blog builds it with Lambda + DynamoDB)                   |
-| Token exchange (RFC 8693)              | ✅ e.g. keyless GitHub Actions                                                   | ❌                                                               |
-| Dynamic client registration (RFC 7591) | ✅ what MCP clients expect                                                       | ❌ clients are created through the API or IaC                    |
-| Social login                           | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                        | Google, Facebook, Apple, Amazon + generic OIDC/SAML (no GitHub)  |
-| Sign in with Apple                     | ❌ not yet                                                                       | ✅                                                               |
-| Passwordless by email                  | ✅ magic link or 6-digit code                                                    | Code only (Essentials); no magic links                           |
-| Passwordless by SMS                    | ❌ (SMS is used for recovery)                                                    | ✅ SMS code (Essentials)                                         |
-| Passkeys                               | ✅ as sign-in method (Pro) and as second factor (Hobby)                          | ✅ as sign-in method (Essentials); not after a password          |
-| MFA                                    | Authenticator app, security keys, passkeys                                       | TOTP, SMS, email (Essentials); adaptive (Plus)                   |
-| Enterprise SSO / SAML                  | ❌ OIDC only — SAML coming on Pro                                                | ✅ SAML and OIDC (50 federated MAU free, then $0.015 each)       |
-| Hosted login pages                     | ✅ [every screen](#hosted-login-pages), all plans                                | ✅ managed login (Essentials) or classic hosted UI (Lite)        |
-| Self-service security page for users   | ✅                                                                               | ❌                                                               |
-| Custom login domain                    | ✅ DNS records, certificate issued for you (Pro)                                 | ✅ requires an ACM certificate in us-east-1                      |
-| Custom code in the login               | [Actions](extensibility/actions.md) — JavaScript, edited in the dashboard or CLI | Lambda triggers (5-second timeout)                               |
-| Admin CLI                              | ✅ [`faable auth`](#cli-and-automation)                                          | ✅ `aws cognito-idp`                                             |
-| Infrastructure as code                 | Management API                                                                   | ✅ CloudFormation, CDK                                           |
-| Authentication logs                    | ✅ queryable in dashboard, API and CLI (Pro)                                     | CloudTrail on every plan; per-user activity logs need Plus       |
-| Where identities live                  | Faable's own hardware in Europe, EU company                                      | The AWS region you choose (8 in Europe), US company              |
-| Export password hashes                 | ❌ not through the API                                                           | ❌ not possible                                                  |
-| Import password hashes                 | ❌                                                                               | ✅ bcrypt, scrypt, Argon2id, PBKDF2 (next-generation pools only) |
-| SOC 2 / ISO 27001 / HIPAA              | ❌ [not certified](../platform/security-compliance.md)                           | ✅ in AWS compliance scope                                       |
+| Capability                             | Faable Auth                                                                           | AWS Cognito (user pools)                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Pricing model**                      | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU)          | Per MAU by feature plan, plus per M2M token                      |
+| **Free tier**                          | 50 MAU                                                                                | 10,000 MAU (Lite and Essentials); none on Plus                   |
+| OAuth 2.0 / OIDC provider              | ✅                                                                                    | ✅                                                               |
+| Authorization code + PKCE, refresh     | ✅                                                                                    | ✅                                                               |
+| Client credentials (M2M)               | ✅ no per-token charge                                                                | ✅ $0.00225 per token issued                                     |
+| Device code (RFC 8628)                 | ✅                                                                                    | ❌ (AWS blog builds it with Lambda + DynamoDB)                   |
+| Token exchange (RFC 8693)              | ✅ e.g. keyless GitHub Actions                                                        | ❌                                                               |
+| Dynamic client registration (RFC 7591) | ✅ what MCP clients expect                                                            | ❌ clients are created through the API or IaC                    |
+| Social login                           | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                             | Google, Facebook, Apple, Amazon + generic OIDC/SAML (no GitHub)  |
+| Sign in with Apple                     | ❌ not yet                                                                            | ✅                                                               |
+| Passwordless by email                  | ✅ magic link or 6-digit code                                                         | Code only (Essentials); no magic links                           |
+| Passwordless by SMS                    | ❌ (SMS is used for recovery)                                                         | ✅ SMS code (Essentials)                                         |
+| Passkeys                               | ✅ as sign-in method (Pro) and as second factor (Hobby)                               | ✅ as sign-in method (Essentials); not after a password          |
+| MFA                                    | Authenticator app, security keys, passkeys                                            | TOTP, SMS, email (Essentials); adaptive (Plus)                   |
+| Enterprise SSO / SAML                  | ❌ OIDC only — SAML coming on Pro                                                     | ✅ SAML and OIDC (50 federated MAU free, then $0.015 each)       |
+| Hosted login pages                     | ✅ [every screen](#hosted-login-pages), all plans                                     | ✅ managed login (Essentials) or classic hosted UI (Lite)        |
+| Self-service security page for users   | ✅                                                                                    | ❌                                                               |
+| Custom login domain                    | ✅ DNS records, certificate issued for you (Pro)                                      | ✅ requires an ACM certificate in us-east-1                      |
+| Custom code in the login               | [Actions](extensibility/actions.md) — JavaScript, edited in the dashboard or CLI      | Lambda triggers (5-second timeout)                               |
+| Admin CLI                              | ✅ [`faable auth`](#cli-and-automation)                                               | ✅ `aws cognito-idp`                                             |
+| Infrastructure as code                 | Management API                                                                        | ✅ CloudFormation, CDK                                           |
+| Authentication logs                    | ✅ queryable in dashboard, API and CLI (Pro)                                          | CloudTrail on every plan; per-user activity logs need Plus       |
+| Where identities live                  | Faable's own hardware in Europe, EU company                                           | The AWS region you choose (8 in Europe), US company              |
+| Export password hashes                 | ✅ [`faable auth users export`](guides/import-password-hashes.mdx#export), every plan | ❌ not possible                                                  |
+| Import password hashes                 | ✅ [bcrypt, scrypt, Argon2id, PBKDF2](guides/import-password-hashes.mdx), every plan  | ✅ bcrypt, scrypt, Argon2id, PBKDF2 (next-generation pools only) |
+| SOC 2 / ISO 27001 / HIPAA              | ❌ [not certified](../platform/security-compliance.md)                                | ✅ in AWS compliance scope                                       |
 
 ## Pricing, worked through
 
@@ -123,9 +123,9 @@ Faable Auth runs on **our own hardware in a European datacenter**, operated by a
 
 **Leaving Cognito** is the hard part of any Cognito decision: AWS does not let you export password hashes. Every migration off Cognito ends with users setting a new password, or with a period where your app checks passwords against Cognito and re-creates them elsewhere.
 
-**From Cognito to Faable:** create users over the Management API, and let them in with an emailed code ([passwordless](passwordless.mdx), Hobby and up) or a password reset — a user created over the API gets a credential without a password, so **Forgot password** works as "set your password". Federated users keep their account if you also create their identity (`POST /identity` with the provider's user id). Faable can't import password hashes either, so the reset step is the same whichever tool you move to.
+**From Cognito to Faable:** create users over the Management API, and let them in with an emailed code ([passwordless](passwordless.mdx), Hobby and up) or a password reset — a user created over the API gets a credential without a password, so **Forgot password** works as "set your password". Federated users keep their account if you also create their identity (`POST /identity` with the provider's user id). Because Cognito does not release the hashes, the reset step is unavoidable when leaving Cognito, whichever tool you move to.
 
-**From Faable to Cognito**, or anywhere else: users, identities, roles and teams export over the Management API. Password hashes are not exposed there, so leaving Faable also ends in a password reset — plan for it the same way.
+**From Faable to Cognito**, or anywhere else: `faable auth users export --include-hashes` exports users, identities and their password hashes (Argon2id), which Cognito's next-generation pools can import, so leaving Faable does not force a password reset. See [Import and export password hashes](guides/import-password-hashes.mdx#export).
 
 ## When Faable Auth is the better fit
 

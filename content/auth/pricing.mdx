@@ -30,23 +30,24 @@ There is no per-user line on any invoice: the plan fee is the price. If a Free o
 
 ## Feature gating
 
-| Feature                                 | Free |               Hobby               |                Pro                |
-| --------------------------------------- | :--: | :-------------------------------: | :-------------------------------: |
-| Hosted login pages                      |  ✅  |                ✅                 |                ✅                 |
-| Database (username/password) connection |  ✅  |                ✅                 |                ✅                 |
-| Social login                            |  ✅  |                ✅                 |                ✅                 |
-| RBAC, Teams                             |  ✅  |                ✅                 |                ✅                 |
-| Two-step verification (MFA)             |  —   |                ✅                 |                ✅                 |
-| Passwordless (OTP / Magic Link)         |  —   |                ✅                 |                ✅                 |
-| Custom [login flows](login-flows.md)    |  —   |                ✅                 |                ✅                 |
-| [Actions](extensibility/actions.md)     |  —   |                ✅                 |                ✅                 |
-| Webhooks                                |  —   |                ✅                 |                ✅                 |
-| Password recovery by SMS                |  —   | 20 SMS/mo incl. · €0.20/SMS after | 20 SMS/mo incl. · €0.18/SMS after |
-| [Custom Domain](custom-domain.md)       |  —   |                 —                 |                ✅                 |
-| Passkeys as the sign-in method          |  —   |                 —                 |                ✅                 |
-| Audit logs                              |  —   |                 —                 |                ✅                 |
-| Multiple auth accounts                  |  —   |                 —                 |                ✅                 |
-| Enterprise SSO / SAML                   |  —   |                 —                 |            coming soon            |
+| Feature                                                            | Free |               Hobby               |                Pro                |
+| ------------------------------------------------------------------ | :--: | :-------------------------------: | :-------------------------------: |
+| Hosted login pages                                                 |  ✅  |                ✅                 |                ✅                 |
+| Database (username/password) connection                            |  ✅  |                ✅                 |                ✅                 |
+| Social login                                                       |  ✅  |                ✅                 |                ✅                 |
+| RBAC, Teams                                                        |  ✅  |                ✅                 |                ✅                 |
+| [Password hash import & export](guides/import-password-hashes.mdx) |  ✅  |                ✅                 |                ✅                 |
+| Two-step verification (MFA)                                        |  —   |                ✅                 |                ✅                 |
+| Passwordless (OTP / Magic Link)                                    |  —   |                ✅                 |                ✅                 |
+| Custom [login flows](login-flows.md)                               |  —   |                ✅                 |                ✅                 |
+| [Actions](extensibility/actions.md)                                |  —   |                ✅                 |                ✅                 |
+| Webhooks                                                           |  —   |                ✅                 |                ✅                 |
+| Password recovery by SMS                                           |  —   | 20 SMS/mo incl. · €0.20/SMS after | 20 SMS/mo incl. · €0.18/SMS after |
+| [Custom Domain](custom-domain.md)                                  |  —   |                 —                 |                ✅                 |
+| Passkeys as the sign-in method                                     |  —   |                 —                 |                ✅                 |
+| Audit logs                                                         |  —   |                 —                 |                ✅                 |
+| Multiple auth accounts                                             |  —   |                 —                 |                ✅                 |
+| Enterprise SSO / SAML                                              |  —   |                 —                 |            coming soon            |
 
 A passkey used as a **second factor** is part of two-step verification, so it is on Hobby. **Passkeys as the sign-in method** — Touch ID or Face ID instead of a password, see [Login Experience](login-experience.md#sign-in-with-a-passkey) — is Pro.
 

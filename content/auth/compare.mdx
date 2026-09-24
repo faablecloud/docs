@@ -84,7 +84,7 @@ There's no Terraform provider or declarative config export for Faable Auth yet; 
 
 There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx). The concepts map closely — Auth0 tenant → Faable account, application → client, API → API, Action → Action.
 
-One thing to plan for: **Faable can't import password hashes**. Imported users sign in with an emailed code or set a new password through the reset flow; social users keep their account if you import their identity. Getting the hashes out is its own hurdle at the source anyway: Auth0 only exports them through a support ticket, and not on the Free tier.
+**Users keep their passwords:** Faable imports bcrypt, scrypt, PBKDF2 and Argon2id hashes on every plan, with `faable auth users import` — see [Import and export password hashes](guides/import-password-hashes.mdx). Getting the hashes out is its own hurdle at the source: Auth0 only exports them through a support ticket, and not on its Free tier.
 
 ## When Faable Auth is the better fit
 
