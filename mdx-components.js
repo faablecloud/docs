@@ -1,6 +1,7 @@
 import { useMDXComponents as getThemeComponents } from 'nextra-theme-docs'
 // nextra-theme-blog or your custom theme
 import { PricingCta } from './components/PricingCta'
+import { ScreenshotPair } from './components/ScreenshotPair'
 import { TennantDomain } from './components/TennantDomain'
 
 // Get the default MDX components
@@ -12,6 +13,7 @@ export function useMDXComponents(components) {
     ...themeComponents,
     ...components,
     TennantDomain,
-    PricingCta
+    PricingCta,
+    ScreenshotPair
   }
 }

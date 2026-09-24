@@ -3,6 +3,8 @@ title: Hosted Login UI
 description: You do not have to build login, signup, password reset, two-factor or passkey screens for your project. Faable Auth hosts them on your auth domain, branded as yours; your app redirects to /authorize and gets the user back signed in.
 ---
 
+import { Callout } from 'nextra/components'
+
 # Hosted Login UI
 
 **You do not have to build the authentication screens for your project.** Sign-in, sign-up, password reset, two-step verification, passkey enrolment, device authorisation — Faable Auth serves all of them on your auth domain, with your logo, and you never write a login form.
@@ -23,22 +25,72 @@ This is not about saving you an afternoon of HTML. Four things only work from th
 
 ## The screens
 
-All of them live under `/flow` on your auth domain (`https://<your-account>.auth.faable.link`, or your [custom domain](custom-domain.md)).
+All of them live under `/flow` on your auth domain (`https://<your-account>.auth.faable.link`, or your [custom domain](custom-domain.md)). A user reaching one of these without a session is sent through the login and brought back where they were.
 
-| Screen                | Path                         | What it is for                                                |
-| --------------------- | ---------------------------- | ------------------------------------------------------------- |
-| Sign in               | `/flow/login`                | The methods this client offers, in the order you chose        |
-| Email first           | `/flow/identify`             | Asks for the address before showing a method                  |
-| Two-step verification | `/flow/mfa/challenge`        | Authenticator app, security key or passkey as a second factor |
-| Add a second factor   | `/flow/mfa/enroll`           | Enrolling an authenticator app, with its recovery codes       |
-| Passkey offer         | `/flow/passkey/offer`        | Shown right after a login, inviting the user to create one    |
-| Forgot password       | `/flow/forgot-password`      | Requests the reset email                                      |
-| Reset password        | `/flow/reset-password`       | Sets the new one, against the tenant's password policy        |
-| Security methods      | `/flow/account/security`     | Where a signed-in user manages their own factors              |
-| Device activation     | `/flow/device-code/activate` | Enters the code a CLI or a TV app is showing                  |
-| Device confirmation   | `/flow/device-code/confirm`  | Names the device and asks the user to authorise it            |
+Every screen adapts to the device: a card on a desktop browser, full width on a phone. The captures below come from Faable's own tenant, so they carry our logo; yours carry the logo you set in **Branding**.
 
-A user reaching one of these without a session is sent through the login and brought back where they were.
+### Sign in
+
+`/flow/login` — the methods this client offers, in the order you chose: here a one-time code by email, email and password, then GitHub and Google.
+
+<ScreenshotPair name="login" alt="The sign-in screen" />
+
+### Email first
+
+`/flow/identify` — asks only for the address before showing a method, then continues with the one that fits that user.
+
+<ScreenshotPair name="identify" alt="The email-first screen" />
+
+### Two-step verification
+
+`/flow/mfa/challenge` — asks for the second factor: an authenticator app, a security key or a passkey. The user's default comes first, and a recovery code is the way out when they have none of them at hand.
+
+<ScreenshotPair name="mfa-challenge" alt="The two-step verification screen" />
+
+### Add a second factor
+
+`/flow/mfa/enroll` — enrols an authenticator app: a QR code, a fallback for when the camera can't scan it, and a first code to confirm it works — followed by the recovery codes.
+
+<ScreenshotPair
+  name="mfa-enroll"
+  alt="The screen to set up an authenticator app"
+/>
+
+### Passkey offer
+
+`/flow/passkey/offer` — shown right after a login, on browsers that support passkeys, inviting the user to create one. **Not now** carries on to your application.
+
+<ScreenshotPair name="passkey-offer" alt="The offer to create a passkey" />
+
+### Forgot password
+
+`/flow/forgot-password` — requests the reset instructions. If the user has a phone on file, it also asks where to send them.
+
+<ScreenshotPair name="forgot-password" alt="The forgot-password screen" />
+
+### Reset password
+
+`/flow/reset-password` — sets the new password. The requirements under the field come from the tenant's password policy, and are checked before the form is sent.
+
+<ScreenshotPair name="reset-password" alt="The reset-password screen" />
+
+### Security methods
+
+`/flow/account/security` — where a signed-in user manages their own authenticator apps and passkeys. It is the one screen your users reach on their own — [see below](#the-one-screen-your-users-go-to-on-their-own).
+
+<ScreenshotPair name="account-security" alt="The security methods screen" />
+
+### Device activation
+
+`/flow/device-code/activate` — where the user types the code a CLI or a TV app is showing.
+
+<ScreenshotPair name="device-activate" alt="The device activation screen" />
+
+### Device confirmation
+
+`/flow/device-code/confirm` — names the device and repeats the code, so the user can check it matches before authorising it.
+
+<ScreenshotPair name="device-confirm" alt="The device confirmation screen" />
 
 ## What your application does
 
@@ -70,8 +122,8 @@ Or, without the SDK, any OAuth 2.0 / OIDC library pointed at `/authorize` — th
 
 <Callout type="info">
   Because a passkey is bound to its origin, move to a custom domain **before**
-  users start enrolling — or set a WebAuthn Relying Party ID you own. See
-  [Login Experience](login-experience.md#sign-in-with-a-passkey).
+  users start enrolling — or set a WebAuthn Relying Party ID you own. See [Login
+  Experience](login-experience.md#sign-in-with-a-passkey).
 </Callout>
 
 ## The one screen your users go to on their own
