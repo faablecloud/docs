@@ -6,7 +6,7 @@ rank: low
 
 # Terms of Service
 
-**Last updated:** 13 August 2026
+**Last updated:** 24 September 2026
 
 These Terms of Service (this "Agreement") govern your access to and use of the Faable cloud platform — including our websites, dashboard, APIs, CLI, Faable Deploy, Faable Auth, and any related services (together, the "Services") — provided by **Faable Cloud SLU** ("Faable", "we", "us", "our").
 
@@ -30,13 +30,13 @@ The Services are organised into teams and projects. The team owner controls memb
 
 Plans, prices, entitlements, and support tiers are described on the [Pricing](pricing.md) page, which forms part of this Agreement.
 
-- **Model.** A flat monthly fee per plan, covering the entitlements that plan includes. The only metered resource is egress above the plan's monthly allowance, and only on the Pro plan. Plans apply **per project**.
-- **Cycle.** Monthly. The plan fee is charged **in advance** at the start of each billing period; metered egress on Pro, where it applies, is billed **in arrears** with the following period's invoice.
+- **Model.** A fixed monthly fee per plan, covering the entitlements that plan includes. Usage above what a plan includes is metered only for: egress on the Pro plan; recovery SMS on the Hobby and Pro plans; and machine-to-machine tokens (successful OAuth 2.0 client credentials responses) above the monthly allowance on Hobby and Pro plans purchased on or after 24 September 2026. On the Free plan, machine-to-machine tokens above the allowance are refused, not charged. Plans apply **per project**.
+- **Cycle.** Monthly. The plan fee is charged **in advance** at the start of each billing period; metered usage, where it applies, is billed **in arrears** with the following period's invoice.
 - **Currency and taxes.** All prices are in **EUR** and exclude VAT and any other applicable taxes, which are added where required. You are responsible for providing a valid tax ID where relevant.
 - **Payment.** You authorise us to charge the payment method on file for all amounts due. Payment is processed by our payment provider; we do not store your card details.
 - **Non-payment.** If an invoice remains unpaid, we may suspend the affected projects after notifying you. Continued non-payment may lead to termination and deletion of the associated data under section 11.
 - **Changes in price.** We may change prices with at least **30 days'** notice by email or in the dashboard. The change takes effect on your next billing cycle; if you disagree, you may downgrade or terminate before it applies.
-- **Refunds.** Fees already incurred are non-refundable except where mandatory law requires otherwise. Metered egress already consumed is always payable.
+- **Refunds.** Fees already incurred are non-refundable except where mandatory law requires otherwise. Metered usage already consumed is always payable.
 - **Free plan.** The Free plan may be modified, limited, or withdrawn at any time, and inactive Free projects may be suspended or deleted after notice.
 
 ## 4. Your content
