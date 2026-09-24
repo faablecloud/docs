@@ -14,10 +14,11 @@ rank: high
 
 | Capability                               | Faable Auth                                                                           | Supabase Auth                                                                      |
 | ---------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| **Pricing model**                        | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU)          | Included in the platform: Free 50,000 MAU, Pro from $25 with 100,000, then per MAU |
+| **Pricing model**                        | Plan fee: Free (15,000 MAU), Hobby 15 € and Pro 99 € (unlimited MAU)                  | Included in the platform: Free 50,000 MAU, Pro from $25 with 100,000, then per MAU |
+| Credit card to start                     | No                                                                                    | No                                                                                 |
 | Standalone, any backend                  | ✅                                                                                    | Possible, but always backed by a Supabase project and its Postgres                 |
 | OAuth 2.0 / OIDC provider for other apps | ✅                                                                                    | Beta — authorization code + PKCE and refresh only                                  |
-| Machine-to-machine (client credentials)  | ✅                                                                                    | ❌ not supported                                                                   |
+| Machine-to-machine (client credentials)  | ✅ 100/month free, then €2.25 per 1,000                                               | ❌ not supported                                                                   |
 | Device code, token exchange              | ✅                                                                                    | ❌                                                                                 |
 | Dynamic client registration              | ✅                                                                                    | ✅ (beta)                                                                          |
 | Email + password                         | ✅                                                                                    | ✅                                                                                 |
@@ -46,11 +47,12 @@ Supabase Auth has no price of its own: it comes with the Supabase plan, which al
 
 | Monthly active users | Faable Auth  | Supabase (auth part of the bill)      |
 | -------------------- | ------------ | ------------------------------------- |
-| 200                  | 15 € (Hobby) | $0 on Free — project pauses when idle |
-| 50,000               | 99 € (Pro)   | $25 (Pro base)                        |
-| 250,000              | 99 € (Pro)   | $25 + 150,000 × $0.00325 = $512.50    |
+| 200                  | 0 € (Free)   | $0 on Free — project pauses when idle |
+| 15,000               | 0 € (Free)   | $0 on Free — project pauses when idle |
+| 50,000               | 15 € (Hobby) | $25 (Pro base)                        |
+| 250,000              | 15 € (Hobby) | $25 + 150,000 × $0.00325 = $512.50    |
 
-Add-ons that matter for auth: custom domain $10/month, phone MFA $75/month, SAML users $0.015 each after 50. On Faable the plan includes the custom domain (Pro) and MFA (Hobby and up).
+Add-ons that matter for auth: custom domain $10/month, phone MFA $75/month, SAML users $0.015 each after 50. On Faable the plan includes the custom domain (Pro) and MFA (Hobby and up), and a Free project never pauses.
 
 **The honest reading:** if you're already paying for Supabase for the database, its auth is effectively free well past 100,000 users. Faable is the cheaper option only when you'd otherwise be paying Supabase _just_ for auth at scale — the reasons to pick it are mostly the ones below.
 

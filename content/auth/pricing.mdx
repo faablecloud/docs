@@ -1,6 +1,6 @@
 ---
 title: Auth pricing
-description: What each Faable plan includes for Faable Auth — MAU allowances, auth accounts, custom domains, audit logs, and per-feature gating.
+description: What each Faable plan includes for Faable Auth — 15,000 MAU on Free with no credit card, unlimited MAU on Hobby and Pro, machine-to-machine tokens, custom domains, audit logs, and per-feature gating.
 rank: high
 ---
 
@@ -14,40 +14,41 @@ Faable Auth is part of the unified Faable subscription — and it is **included 
 
 | Plan      | Auth entitlements                                                                                                                                                         |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | [Hosted login](hosted-login.mdx), users and sessions · database and social connections · RBAC and teams · **up to 50 MAU**                                                |
-| **Hobby** | Everything in Free · **up to 250 MAU** · two-step verification (MFA) · passwordless magic link and code login · custom login flows · Actions · webhooks · recovery by SMS |
+| **Free**  | [Hosted login](hosted-login.mdx), users and sessions · database and social connections · RBAC and teams · **up to 15,000 MAU**, no credit card · 100 M2M tokens a month   |
+| **Hobby** | Everything in Free · **unlimited MAU** · two-step verification (MFA) · passwordless magic link and code login · custom login flows · Actions · webhooks · recovery by SMS |
 | **Pro**   | Everything in Hobby · **unlimited MAU** · custom domain for your login · biometric passkey login (Touch ID, Face ID) · audit logs · multiple auth accounts                |
 
 ## Monthly Active Users (MAU)
 
 A **Monthly Active User** is any unique user who completes at least one successful login during a calendar month. The same user logging in from multiple devices in the same month counts once.
 
-- **Free** includes up to **50 MAU** — enough to build and test with real people.
-- **Hobby** includes up to **250 MAU**.
+- **Free** includes up to **15,000 MAU**, forever, with no credit card — enough to launch, not just to test.
+- **Hobby** has **no MAU limit**.
 - **Pro** has **no MAU limit**, across every auth account on the subscription.
 
-There is no per-user line on any invoice: the plan fee is the price. If a Free or Hobby project grows past its allowance, we'll get in touch before anything changes.
+There is no per-user line on any invoice. If a Free project grows past 15,000, we'll get in touch before anything changes.
 
 ## Feature gating
 
-| Feature                                                            | Free |               Hobby               |                Pro                |
-| ------------------------------------------------------------------ | :--: | :-------------------------------: | :-------------------------------: |
-| Hosted login pages                                                 |  ✅  |                ✅                 |                ✅                 |
-| Database (username/password) connection                            |  ✅  |                ✅                 |                ✅                 |
-| Social login                                                       |  ✅  |                ✅                 |                ✅                 |
-| RBAC, Teams                                                        |  ✅  |                ✅                 |                ✅                 |
-| [Password hash import & export](guides/import-password-hashes.mdx) |  ✅  |                ✅                 |                ✅                 |
-| Two-step verification (MFA)                                        |  —   |                ✅                 |                ✅                 |
-| Passwordless (OTP / Magic Link)                                    |  —   |                ✅                 |                ✅                 |
-| Custom [login flows](login-flows.md)                               |  —   |                ✅                 |                ✅                 |
-| [Actions](extensibility/actions.md)                                |  —   |                ✅                 |                ✅                 |
-| Webhooks                                                           |  —   |                ✅                 |                ✅                 |
-| Password recovery by SMS                                           |  —   | 20 SMS/mo incl. · €0.20/SMS after | 20 SMS/mo incl. · €0.18/SMS after |
-| [Custom Domain](custom-domain.md)                                  |  —   |                 —                 |                ✅                 |
-| Passkeys as the sign-in method                                     |  —   |                 —                 |                ✅                 |
-| Audit logs                                                         |  —   |                 —                 |                ✅                 |
-| Multiple auth accounts                                             |  —   |                 —                 |                ✅                 |
-| Enterprise SSO / SAML                                              |  —   |                 —                 |            coming soon            |
+| Feature                                                            |  Free  |                Hobby                 |                 Pro                  |
+| ------------------------------------------------------------------ | :----: | :----------------------------------: | :----------------------------------: |
+| Hosted login pages                                                 |   ✅   |                  ✅                  |                  ✅                  |
+| Database (username/password) connection                            |   ✅   |                  ✅                  |                  ✅                  |
+| Social login                                                       |   ✅   |                  ✅                  |                  ✅                  |
+| RBAC, Teams                                                        |   ✅   |                  ✅                  |                  ✅                  |
+| [Password hash import & export](guides/import-password-hashes.mdx) |   ✅   |                  ✅                  |                  ✅                  |
+| Two-step verification (MFA)                                        |   —    |                  ✅                  |                  ✅                  |
+| Passwordless (OTP / Magic Link)                                    |   —    |                  ✅                  |                  ✅                  |
+| Custom [login flows](login-flows.md)                               |   —    |                  ✅                  |                  ✅                  |
+| [Actions](extensibility/actions.md)                                |   —    |                  ✅                  |                  ✅                  |
+| Webhooks                                                           |   —    |                  ✅                  |                  ✅                  |
+| Password recovery by SMS                                           |   —    |  20 SMS/mo incl. · €0.20/SMS after   |  20 SMS/mo incl. · €0.18/SMS after   |
+| [Machine-to-machine tokens](#machine-to-machine-tokens)            | 100/mo | 100/mo incl. · €2.25 per 1,000 after | 100/mo incl. · €2.25 per 1,000 after |
+| [Custom Domain](custom-domain.md)                                  |   —    |                  —                   |                  ✅                  |
+| Passkeys as the sign-in method                                     |   —    |                  —                   |                  ✅                  |
+| Audit logs                                                         |   —    |                  —                   |                  ✅                  |
+| Multiple auth accounts                                             |   —    |                  —                   |                  ✅                  |
+| Enterprise SSO / SAML                                              |   —    |                  —                   |             coming soon              |
 
 A passkey used as a **second factor** is part of two-step verification, so it is on Hobby. **Passkeys as the sign-in method** — Touch ID or Face ID instead of a password, see [Login Experience](login-experience.md#sign-in-with-a-passkey) — is Pro.
 
@@ -58,6 +59,17 @@ Plan limits apply when you **turn a feature on**, never to what is already runni
 ### SMS
 
 Password recovery and phone verification can go out as a 6-digit code by SMS to a user's verified mobile — for the university, hospital and corporate mailboxes that quarantine automated mail. Hobby and Pro include **20 SMS per month**; every SMS above that is invoiced at the tier's per-message price (€0.20 on Hobby, €0.18 on Pro). Free is email only. When a plan cannot send — allowance used up on a plan that does not meter, or billing unreachable — recovery falls back to email; nobody is left without a way in. See [Phone verification](phone-verification.md).
+
+### Machine-to-machine tokens
+
+Every plan includes **100 machine-to-machine tokens a month** per project: successful responses to the [Client Credentials](oauth-flows/client-credentials.mdx) grant, including a token served again from the cache.
+
+- **Hobby and Pro:** above 100, tokens are billed at **€0.00225 each, in blocks of 1,000** (€2.25 per block started), per billing period. Nothing is cut off.
+- **Free:** the 100 are a cap. The 101st request of the month is refused with `402` and `error_code: m2m_quota_exceeded` until the next month, or until you upgrade. Free never needs a credit card.
+
+Tokens issued between Faable's own services are not counted. Plans purchased before 24 September 2026 keep machine-to-machine tokens unmetered.
+
+**Keep the count low:** a token is valid for its `expires_in`. Cache it in your service and request a new one only when it is about to expire, instead of one per call.
 
 ## Related
 

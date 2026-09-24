@@ -6,7 +6,7 @@ rank: high
 
 # Faable Auth vs Auth0, Clerk & Keycloak
 
-**Short answer:** Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect — the same category as Auth0, a standards-first alternative to Clerk, and a way to get Keycloak's protocol coverage **without running Keycloak**. What sets it apart: **flat plan pricing** instead of per-user, per-organization and per-token add-ons; **hosted login pages** on every plan; identities held **by a European company on its own hardware in Europe**; and the **same subscription as [Faable Deploy](../deploy/get-started.md)**.
+**Short answer:** Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect — the same category as Auth0, a standards-first alternative to Clerk, and a way to get Keycloak's protocol coverage **without running Keycloak**. What sets it apart: **no per-user pricing** — 15,000 MAU free with no credit card, unlimited MAU on every paid plan — instead of per-user and per-organization add-ons; **hosted login pages** on every plan; identities held **by a European company on its own hardware in Europe**; and the **same subscription as [Faable Deploy](../deploy/get-started.md)**.
 
 Each option below is a strong identity solution; this page helps you pick by priorities.
 
@@ -16,10 +16,11 @@ Each option below is a strong identity solution; this page helps you pick by pri
 
 | Capability                  | Faable Auth                                                                        | Auth0                                        | Clerk                                               | Keycloak                              |
 | --------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------- | --------------------------------------------------- | ------------------------------------- |
-| **Pricing model**           | Flat: Free, Hobby 15 €, Pro 99 €                                                   | Per MAU by tier, B2C and B2B price lists     | Per retained user, plus add-ons                     | Free software — you pay infra and ops |
-| Free tier                   | 50 MAU                                                                             | 25,000 MAU                                   | 50,000 retained users per app                       | —                                     |
+| **Pricing model**           | Plan fee: Free, Hobby 15 €, Pro 99 € — no per-user charge                          | Per MAU by tier, B2C and B2B price lists     | Per retained user, plus add-ons                     | Free software — you pay infra and ops |
+| Free tier                   | 15,000 MAU                                                                         | 25,000 MAU                                   | 50,000 retained users per app                       | —                                     |
+| Credit card to start        | No                                                                                 | No                                           | No                                                  | — your own servers                    |
 | OAuth 2.0 / OIDC provider   | ✅                                                                                 | ✅                                           | ✅ ("OAuth applications")                           | ✅ OpenID Certified                   |
-| Machine-to-machine          | ✅ client credentials, not metered                                                 | ✅ 1,000 tokens/month free, paid tiers above | ✅ own M2M tokens (not client credentials), metered | ✅ service accounts                   |
+| Machine-to-machine          | ✅ client credentials, 100/month free, then €2.25 per 1,000                        | ✅ 1,000 tokens/month free, paid tiers above | ✅ own M2M tokens (not client credentials), metered | ✅ service accounts                   |
 | Device code, token exchange | ✅                                                                                 | Device code ✅                               | —                                                   | ✅                                    |
 | Dynamic client registration | ✅                                                                                 | ✅                                           | —                                                   | ✅                                    |
 | Social login                | Google, GitHub, Microsoft, Figma + custom OAuth 2.0                                | ✅ broad catalogue                           | ✅ broad catalogue                                  | ✅ brokering                          |
@@ -44,9 +45,9 @@ The three managed products price in very different shapes, so the fair compariso
 - **Auth0** is free up to 25,000 MAU with most features in reduced quantities (5 organizations, 1 enterprise connection, 1,000 M2M tokens a month, 5 Actions, one day of logs). Paid tiers start at $35/month for consumer apps and **$150/month for B2B**, rise with MAU, and Professional starts at $240 / $800. Enterprise connections are $100/month each, and more M2M tokens are a separate add-on.
 - **Clerk** is free up to 50,000 retained users per app, then $25/month on Pro with **$0.02 per retained user** above 50,000. Organizations beyond 100 need the $100/month B2B add-on and a per-organization price; M2M tokens and API keys are metered per creation and per verification.
 - **Keycloak** has no license fee. You pay for the servers, a PostgreSQL database, the upgrades — 26.x has shipped a minor version every few months — and the people who know how to run it.
-- **Faable Auth** is the plan fee: **Free** up to 50 MAU, **Hobby 15 €** up to 250, **Pro 99 €** with no MAU limit, and M2M tokens are never metered. See [Auth pricing](pricing.mdx).
+- **Faable Auth** never charges per user: **Free** up to 15,000 MAU with no credit card, **Hobby 15 €** and **Pro 99 €** with no MAU limit. Machine-to-machine tokens: 100 a month included, then €2.25 per 1,000 on Hobby and Pro. See [Auth pricing](pricing.mdx).
 
-**The honest reading:** for a consumer app with tens of thousands of users and simple needs, the free tiers of Auth0 and Clerk cost nothing and Faable costs 99 €. Faable pulls ahead when you're B2B (organizations, machine tokens and SSO are where the others charge), when you're past their free tiers, or when a predictable bill matters more than a zero one.
+**The reading:** up to 15,000 monthly users, Faable costs nothing and asks for no card. Past that, Hobby is 15 € with no user limit — where Auth0's paid tiers rise with every user and Clerk charges $0.02 per user above 50,000. Faable pulls ahead when you're B2B (organizations and SSO are where the others charge), when you're past their free tiers, or when a predictable bill matters more than a per-user one.
 
 ## Hosted login pages
 
@@ -89,7 +90,7 @@ There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk
 ## When Faable Auth is the better fit
 
 - **You need European data sovereignty** from the company, not just the region.
-- **You're building B2B** and don't want organizations, M2M tokens and SSO priced as separate meters.
+- **You're building B2B** and don't want users, organizations and SSO priced as separate meters.
 - **You don't want to operate auth infrastructure** — the main cost of self-hosting Keycloak.
 - **You want hosted pages that cover the whole lifecycle**, including a security page and a passkey nudge, without building a theme.
 - **You want auth and hosting together.** [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.mdx).

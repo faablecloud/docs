@@ -16,7 +16,7 @@ const INTRO = `# Faable
 
 > Faable is a European cloud platform that converges zero-ops application hosting (Faable Deploy) and a multi-tenant identity server (Faable Auth) into a single abstraction layer. Ship apps and AI agents straight from a Git repository — automatic deployments, free SSL, a built-in WAF and turnkey authentication — with no servers, pipelines or infrastructure to manage. Hosting is 100% European with full GDPR data sovereignty, and support comes from the engineers who build the platform.
 
-One subscription covers both products: Free (0 €), Hobby (15 €/month) and Pro (99 €/month), each a flat monthly fee.
+One subscription covers both products: Free (0 €, no credit card, Faable Auth up to 15,000 MAU), Hobby (15 €/month) and Pro (99 €/month), each a fixed monthly fee with no per-user charge.
 
 **What Faable Deploy is for**
 

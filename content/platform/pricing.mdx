@@ -1,6 +1,6 @@
 ---
 title: Pricing
-description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Free 0 €, Hobby 15 €/month, Pro 99 €/month), each a flat monthly fee.
+description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Free 0 €, Hobby 15 €/month, Pro 99 €/month), each a fixed monthly fee.
 rank: entry
 ---
 
@@ -8,9 +8,13 @@ rank: entry
 
 Faable is sold as a **single subscription that covers every product** — both Faable Deploy (compute) and Faable Auth (identity). Pick the platform tier that matches the stage you're at, and you're done.
 
-The model is **flat**: each tier is a fixed monthly fee that unlocks features and entitlements, and everything the tier includes — instances, deployments, MAU, egress — comes with the fee. You know what a project costs before you deploy it.
+Each tier is a **fixed monthly fee** that unlocks features and entitlements, and everything the tier includes — instances, deployments, users, egress — comes with the fee. There is never a per-user charge.
 
-**Exactly one resource on the platform is metered: egress above the allowance, on Pro.** Free and Hobby are flat with no exception — their allowance is what the tier includes (10 GB and 50 GB), and no per-GB line can appear on their invoice. Pro includes 100 GB and meters traffic beyond it at 0.18 €/GB. See [Deploy pricing](../deploy/pricing.md#bandwidth).
+**Three things are metered, only above what the plan includes:**
+
+- **Egress, on Pro:** 100 GB included, then 0.18 €/GB. Free and Hobby are not metered — their allowance (10 GB and 50 GB) is what the tier includes, and no per-GB line can appear on their invoice. See [Deploy pricing](../deploy/pricing.md#bandwidth).
+- **Recovery SMS, on Hobby and Pro:** 20 a month included, then per message. See [Auth pricing](../auth/pricing.mdx#sms).
+- **Machine-to-machine tokens, on Hobby and Pro:** 100 a month included, then €2.25 per 1,000. Free is capped at 100 and never needs a card. See [Auth pricing](../auth/pricing.mdx#machine-to-machine-tokens).
 
 Plans apply **per project**: each project has its own plan, starting on Free. An account can keep
 **up to 3 projects on Free** — 2 during its first 48 hours — and moving any one of them to Hobby
@@ -20,13 +24,13 @@ frees a slot for another.
 
 ## Plans
 
-| Plan      | Monthly fee | What you get                                                                                                                                                                                                |
-| --------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | 0 €         | Try Faable end-to-end. Up to 3 projects per account, 1 free instance, up to 10 successful deployments per day, build artifacts up to 512 MB, 10 GB egress / month, Faable Auth included, community support. |
-| **Hobby** | 15 €        | Production-ready for a single product. Full instance catalog, unlimited deployments, build artifacts up to 2 GB, 50 GB egress / month, custom domains, email support.                                       |
-| **Pro**   | 99 €        | Unlimited MAU, custom domain for your login, multiple auth accounts, 100 GB egress / month plus metered traffic beyond it, audit logs, 99.9 % uptime SLA.                                                   |
+| Plan      | Monthly fee | What you get                                                                                                                                                                                                                             |
+| --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | 0 €         | Try Faable end-to-end, no credit card. Up to 3 projects per account, 1 free instance, up to 10 successful deployments per day, build artifacts up to 512 MB, 10 GB egress / month, Faable Auth with up to 15,000 MAU, community support. |
+| **Hobby** | 15 €        | Production-ready for a single product. Unlimited MAU, full instance catalog, unlimited deployments, build artifacts up to 2 GB, 50 GB egress / month, custom domains, email support.                                                     |
+| **Pro**   | 99 €        | Unlimited MAU, custom domain for your login, multiple auth accounts, 100 GB egress / month plus metered traffic beyond it, audit logs, 99.9 % uptime SLA.                                                                                |
 
-The fee unlocks the tier, and the tier is the whole price. The deep-dives below break down exactly what each plan includes per product.
+The fee unlocks the tier; the metered lines above are the only thing that can be added to it. The deep-dives below break down exactly what each plan includes per product.
 
 ## What's covered by your plan
 

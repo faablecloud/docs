@@ -12,29 +12,30 @@ rank: high
 
 ## At a glance
 
-| Capability                               | Faable Auth                                                                           | Firebase Authentication                                                       |
-| ---------------------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| **Pricing model**                        | Flat plan fee: Free (50 MAU), Hobby 15 € (250 MAU), Pro 99 € (unlimited MAU)          | 50,000 MAU free, then per MAU (Identity Platform); SMS per message            |
-| OAuth 2.0 / OIDC provider for your apps  | ✅ discovery, JWKS, UserInfo, logout                                                  | ❌ issues Firebase ID tokens for its own SDKs                                 |
-| Third-party apps "Sign in with your app" | ✅ any OIDC client, [dynamic registration](clients.md#dynamic-client-registration)    | ❌                                                                            |
-| Machine-to-machine tokens                | ✅ [client credentials](oauth-flows/client-credentials.mdx)                           | ❌ service accounts and the Admin SDK instead                                 |
-| Device code for CLIs and TVs             | ✅                                                                                    | ❌                                                                            |
-| Email + password                         | ✅                                                                                    | ✅                                                                            |
-| Email magic link / code                  | ✅ both (Hobby and up)                                                                | Link only — 5 emails a day on the free Spark plan                             |
-| Phone number sign-in                     | ❌ (SMS is used for recovery)                                                         | ✅ Blaze plan only                                                            |
-| Social login                             | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                             | Google, Apple, Facebook, GitHub, Microsoft, X, Yahoo, Play Games, Game Center |
-| Passkeys                                 | ✅ as sign-in method (Pro) and as second factor (Hobby)                               | ❌ not documented for production                                              |
-| MFA                                      | Authenticator app, security keys, passkeys                                            | SMS and TOTP (Identity Platform)                                              |
-| Enterprise SSO / SAML                    | ❌ OIDC only — SAML coming on Pro                                                     | ✅ SAML and OIDC (Identity Platform; 50 MAU free, then $0.015 each)           |
-| Hosted login pages                       | ✅ [every screen](#hosted-login-pages)                                                | ❌ FirebaseUI is a library you host                                           |
-| Custom code in the login                 | [Actions](extensibility/actions.md) — JavaScript in the flow                          | Blocking functions on Cloud Functions (Identity Platform)                     |
-| Multi-tenancy                            | Every auth account is a tenant                                                        | Tenants (Identity Platform)                                                   |
-| Admin CLI                                | ✅ [`faable auth`](#cli-and-automation)                                               | Export and import only                                                        |
-| Authentication logs                      | ✅ dashboard, API and CLI (Pro)                                                       | Cloud Logging, off by default (Identity Platform)                             |
-| Where identities are processed           | Faable's own hardware in Europe, EU company                                           | United States only                                                            |
-| Export password hashes                   | ✅ [`faable auth users export`](guides/import-password-hashes.mdx#export), every plan | ✅ `firebase auth:export` (modified scrypt)                                   |
-| Import password hashes                   | ✅ [bcrypt, scrypt, Argon2id, PBKDF2](guides/import-password-hashes.mdx), every plan  | ✅ scrypt, bcrypt, PBKDF2, others (Admin SDK `importUsers`)                   |
-| SOC 2 / ISO 27001                        | [See Faable compliance scope](../platform/security-compliance.md#compliance-scope)    | ✅                                                                            |
+| Capability                               | Faable Auth                                                                                       | Firebase Authentication                                                       |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **Pricing model**                        | Plan fee: Free (15,000 MAU), Hobby 15 € and Pro 99 € (unlimited MAU)                              | 50,000 MAU free, then per MAU (Identity Platform); SMS per message            |
+| Credit card to start                     | No                                                                                                | No — but phone sign-in needs the Blaze plan with billing                      |
+| OAuth 2.0 / OIDC provider for your apps  | ✅ discovery, JWKS, UserInfo, logout                                                              | ❌ issues Firebase ID tokens for its own SDKs                                 |
+| Third-party apps "Sign in with your app" | ✅ any OIDC client, [dynamic registration](clients.md#dynamic-client-registration)                | ❌                                                                            |
+| Machine-to-machine tokens                | ✅ [client credentials](oauth-flows/client-credentials.mdx), 100/month free, then €2.25 per 1,000 | ❌ service accounts and the Admin SDK instead                                 |
+| Device code for CLIs and TVs             | ✅                                                                                                | ❌                                                                            |
+| Email + password                         | ✅                                                                                                | ✅                                                                            |
+| Email magic link / code                  | ✅ both (Hobby and up)                                                                            | Link only — 5 emails a day on the free Spark plan                             |
+| Phone number sign-in                     | ❌ (SMS is used for recovery)                                                                     | ✅ Blaze plan only                                                            |
+| Social login                             | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                                         | Google, Apple, Facebook, GitHub, Microsoft, X, Yahoo, Play Games, Game Center |
+| Passkeys                                 | ✅ as sign-in method (Pro) and as second factor (Hobby)                                           | ❌ not documented for production                                              |
+| MFA                                      | Authenticator app, security keys, passkeys                                                        | SMS and TOTP (Identity Platform)                                              |
+| Enterprise SSO / SAML                    | ❌ OIDC only — SAML coming on Pro                                                                 | ✅ SAML and OIDC (Identity Platform; 50 MAU free, then $0.015 each)           |
+| Hosted login pages                       | ✅ [every screen](#hosted-login-pages)                                                            | ❌ FirebaseUI is a library you host                                           |
+| Custom code in the login                 | [Actions](extensibility/actions.md) — JavaScript in the flow                                      | Blocking functions on Cloud Functions (Identity Platform)                     |
+| Multi-tenancy                            | Every auth account is a tenant                                                                    | Tenants (Identity Platform)                                                   |
+| Admin CLI                                | ✅ [`faable auth`](#cli-and-automation)                                                           | Export and import only                                                        |
+| Authentication logs                      | ✅ dashboard, API and CLI (Pro)                                                                   | Cloud Logging, off by default (Identity Platform)                             |
+| Where identities are processed           | Faable's own hardware in Europe, EU company                                                       | United States only                                                            |
+| Export password hashes                   | ✅ [`faable auth users export`](guides/import-password-hashes.mdx#export), every plan             | ✅ `firebase auth:export` (modified scrypt)                                   |
+| Import password hashes                   | ✅ [bcrypt, scrypt, Argon2id, PBKDF2](guides/import-password-hashes.mdx), every plan              | ✅ scrypt, bcrypt, PBKDF2, others (Admin SDK `importUsers`)                   |
+| SOC 2 / ISO 27001                        | [See Faable compliance scope](../platform/security-compliance.md#compliance-scope)                | ✅                                                                            |
 
 ## Pricing, worked through
 
@@ -42,14 +43,15 @@ Firebase's free tier is its strongest argument: 50,000 monthly active users with
 
 | Monthly active users | Faable Auth  | Firebase (with Identity Platform) |
 | -------------------- | ------------ | --------------------------------- |
-| 200                  | 15 € (Hobby) | $0                                |
-| 50,000               | 99 € (Pro)   | $0                                |
-| 100,000              | 99 € (Pro)   | $275                              |
-| 250,000              | 99 € (Pro)   | $965                              |
+| 200                  | 0 € (Free)   | $0                                |
+| 15,000               | 0 € (Free)   | $0                                |
+| 50,000               | 15 € (Hobby) | $0                                |
+| 100,000              | 15 € (Hobby) | $275                              |
+| 250,000              | 15 € (Hobby) | $965                              |
 
 Enterprise SSO users are billed separately ($0.015 each after 50), and SMS is billed per message by country — $0.04 to Spain and the UK, $0.10 to Germany, up to $0.47 elsewhere.
 
-**The honest reading:** below roughly 70,000 users Firebase is cheaper, and for a consumer app below 50,000 it is free. Faable makes sense on price above that, or when the reasons below matter more than the bill.
+**The reading:** both are free up to 15,000 users. Between 15,000 and roughly 53,000, Firebase is free and Faable is 15 €; above that, Firebase grows per user and Faable stays at 15 €.
 
 Faable figures are the plan fees from [Auth pricing](pricing.mdx), in euros, VAT excluded. Firebase figures are Google's list prices in US dollars.
 
@@ -118,7 +120,7 @@ Phone-only and anonymous users have no equivalent in Faable and need a new sign-
 - **You have backend services** that need their own tokens, without service-account keys.
 - **You want hosted login pages** rather than building and hosting sign-in, MFA and account-security screens.
 - **Your users' identities need to stay in Europe.**
-- **You're past ~70,000 MAU** and want a flat bill.
+- **You're past ~53,000 MAU** and want a bill that doesn't grow with every user.
 
 ## When Firebase Authentication might fit better
 
