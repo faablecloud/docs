@@ -35,6 +35,15 @@ Every screen adapts to the device: a card on a desktop browser, full width on a 
 
 <ScreenshotPair name="login" alt="The sign-in screen" />
 
+### Sign in with an email code
+
+`/flow/login` — after **Send me a code**, the same screen asks for the 6-digit code emailed to the user. The code lasts 5 minutes; the user can ask for another once the countdown ends, or go back and use another address. See [Passwordless](passwordless.mdx#what-the-user-sees) for the email itself.
+
+<ScreenshotPair
+  name="login-code"
+  alt="The sign-in screen asking for the emailed code"
+/>
+
 ### Email first
 
 `/flow/identify` — asks only for the address before showing a method, then continues with the one that fits that user.
