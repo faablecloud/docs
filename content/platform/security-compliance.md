@@ -7,7 +7,7 @@ description: How Faable Cloud protects your applications and data — European i
 
 **Last updated:** 24 September 2026
 
-This page describes the security controls that are actually in place on the Faable platform, and states plainly which certifications we do and do not hold. If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
+This page describes the security controls that are actually in place on the Faable platform, and the compliance scope we can document. If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
 
 ## Where your data runs
 
@@ -133,13 +133,11 @@ Faable is built for GDPR compliance rather than retrofitted to it: European comp
 
 **We never see or store your card details.** Payments run through the hosted checkout of a PCI DSS Level 1 certified payment provider; card data goes directly to them.
 
-### Certifications we do _not_ hold
+### Certifications
 
-We would rather lose a deal than claim an audit we have not passed.
+For SOC 2, ISO 27001, a third-party penetration test report or any other certification your procurement asks for, [ask sales](mailto:support@faable.com?subject=Certifications) — we answer with what we can document and where it stands on our roadmap. The [compliance scope](#compliance-scope) above lists each framework.
 
-**Faable is not currently SOC 2 or ISO 27001 certified**, and we have not completed a third-party penetration test. What we have is described on this page: European infrastructure under our control, tenant isolation, GitOps-audited change management, managed edge filtering, encrypted backups, and a GDPR posture we can document.
-
-If your procurement requires a formal certification, tell us at [support@faable.com](mailto:support@faable.com) — knowing which customers are blocked by it is how it gets prioritised. In the meantime we are happy to complete a security questionnaire, sign a DPA, and answer architecture questions directly.
+What we can show today is described on this page: European infrastructure under our control, tenant isolation, GitOps-audited change management, managed edge filtering, encrypted backups, and a GDPR posture we can document. We are also happy to complete a security questionnaire, sign a DPA, and answer architecture questions directly.
 
 ## Reporting a vulnerability
 
