@@ -115,6 +115,8 @@ Every setting on this page is a tenant default that a client can override for it
 
 That is enough for the common split: the consumer app offers passwords and Google with a passkey invitation; the admin app offers only the corporate connection and [requires two-step verification](mfa.md#turning-it-on). For anything beyond flipping settings — different screens, conditions on who sees what — see [Login Flows](login-flows.md).
 
+To show fewer methods for one particular login without changing the client — only the emailed code on a checkout page, say — pass `login_methods` to `/authorize`. See [Showing only some methods](hosted-login.mdx#showing-only-some-methods).
+
 ## Related
 
 - [Two-Step Verification](mfa.md) — authenticator apps, security keys and passkeys as a second factor.

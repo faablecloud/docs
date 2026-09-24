@@ -37,7 +37,7 @@ Every screen adapts to the device: a card on a desktop browser, full width on a 
 
 ### Sign in with an email code
 
-`/flow/login` — after **Send me a code**, the same screen asks for the 6-digit code emailed to the user. The code lasts 5 minutes; the user can ask for another once the countdown ends, or go back and use another address. See [Passwordless](passwordless.mdx#what-the-user-sees) for the email itself.
+`/flow/login` — after **Send me a code**, the same screen asks for the 6-digit code emailed to the user, one box per digit. It signs in as soon as the sixth digit is in — typed, pasted, or filled in by the phone from the email — with no button to press. The code lasts 5 minutes; the user can ask for another once the countdown ends, or go back and use another address. See [Passwordless](passwordless.mdx#what-the-user-sees) for the email itself.
 
 <ScreenshotPair
   name="login-code"
@@ -119,12 +119,38 @@ await auth.authorize()
 
 Or, without the SDK, any OAuth 2.0 / OIDC library pointed at `/authorize` — the screens are the same either way. See [OAuth 2.0 Flows](oauth-flows).
 
+## Showing only some methods
+
+A client can offer several ways to sign in — a password, an emailed code, GitHub, Google — and one part of your application may want only some of them. Say which with `login_methods` on `/authorize`: connection ids or names, separated by commas, plus `passkey`.
+
+```ts
+// @faable/auth-js 2.10 or later. The same client, but this login shows only
+// the emailed code ('email' is that connection's name; its id works too).
+auth.authorize({ response_type: 'code', loginMethods: ['email'] })
+```
+
+```
+https://<your-auth-domain>/authorize?client_id=<your-client-id>&login_methods=email&…
+```
+
+Two parameters do different things, and they cannot be used together:
+
+| Parameter             | What the user sees                                                              |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `connection=<id>`     | **No screen**: they go straight to that connection (GitHub, Google, your IdP)   |
+| `login_methods=<ids>` | **The screen, with only those methods**, in the order configured for the client |
+
+Each method in `login_methods` must be one the client already offers — anything else is refused with `invalid_connection` — so the parameter can narrow a client's screen, never widen it. A list with a single social connection behaves like `connection` and skips the screen.
+
+`login_methods` changes what the screen shows. It does not stop someone from using another method the client offers by calling the API directly: to take a method away for good, remove it from the client in [Login Experience](login-experience.md#per-client-overrides).
+
 ## Making them yours
 
 | What                                             | Where                                                                     |
 | ------------------------------------------------ | ------------------------------------------------------------------------- |
 | Logo and icon                                    | **Branding** in the dashboard — used as the header of every screen        |
 | Which methods, in what order, passkeys on or off | [Login Experience](login-experience.md), per account and per client       |
+| Fewer methods for one particular login           | [`login_methods` on `/authorize`](#showing-only-some-methods)             |
 | The order the screens run in                     | [Login Flows](login-flows.md)                                             |
 | Your own domain in the address bar               | [Custom Domain](custom-domain.md)                                         |
 | Language                                         | Served in English or Spanish, chosen from the browser's `Accept-Language` |
