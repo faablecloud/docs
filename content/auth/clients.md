@@ -64,7 +64,7 @@ Optional fields, mostly consumed by consent screens and by tooling: `client_uri`
 
 ### Front-Channel Logout
 
-A client may register a `frontchannel_logout_uri`: Faable loads it in a hidden iframe when the user logs out of the OP, so your application can clear its own session. Set `frontchannel_logout_session_required` to `true` and Faable includes `iss` and `sid` on that call, letting you scope the cleanup to the exact session. See [Logout](oidc/logout.md).
+A client may register a `frontchannel_logout_uri`: Faable loads it in a hidden iframe when the user logs out of the OP, so your application can clear its own session. Set `frontchannel_logout_session_required` to `true` and Faable includes `iss` and `sid` on that call, letting you scope the cleanup to the exact session. See [Logout](oidc/logout.md). A client may also register a `backchannel_logout_uri`: when the session ends, Faable POSTs a signed `logout_token` there from its own servers — no browser involved — so your application's server-side session ends too. See [Back-channel logout](oidc/logout.md#back-channel-logout).
 
 ## Dynamic Client Registration
 
