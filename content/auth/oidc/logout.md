@@ -17,15 +17,15 @@ Faable Auth implements both [OpenID Connect RP-Initiated Logout 1.0](https://ope
 GET /logout?id_token_hint=<id_token>&post_logout_redirect_uri=<url>&state=<opaque>
 ```
 
-| Parameter                  | Description                                                                                                                                                                                                 |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id_token_hint`            | The ID Token previously issued to the user. RECOMMENDED (per spec §3): it lets Faable identify the client and session being ended. Decoded without signature verification — it's a hint, not an authorizer. |
-| `client_id`                | OAuth client identifier. Inferred from `id_token_hint.aud` when omitted.                                                                                                                                    |
-| `post_logout_redirect_uri` | Where to send the user after logout. **Must be pre-registered** in the client's `logout_urls` (exact match). This is what prevents open-redirect abuse.                                                     |
-| `state`                    | Opaque value echoed back as `?state=…` on the post-logout redirect. Use it for CSRF protection.                                                                                                             |
-| `logout_hint`              | Optional hint about the user being logged out (session id, email). Provider-specific.                                                                                                                       |
-| `ui_locales`               | Space-separated preferred languages for any UI shown during logout.                                                                                                                                         |
-| `returnTo`                 | Deprecated alias for `post_logout_redirect_uri`. Kept for backwards compatibility.                                                                                                                          |
+| Parameter                  | Description                                                                                                                                                                                                                                                                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id_token_hint`            | The ID Token previously issued to the user. RECOMMENDED (per spec §3): it lets Faable identify the client and session being ended, and is **verified** against the tenant's signing keys (its expiry is ignored — an expired ID Token is still a valid hint). A token that fails verification is treated the same as a missing one. |
+| `client_id`                | OAuth client identifier. Inferred from `id_token_hint.aud` when omitted.                                                                                                                                                                                                                                                            |
+| `post_logout_redirect_uri` | Where to send the user after logout. **Must be pre-registered** in the client's `logout_urls` (exact match). This is what prevents open-redirect abuse.                                                                                                                                                                             |
+| `state`                    | Opaque value echoed back as `?state=…` on the post-logout redirect. Use it for CSRF protection.                                                                                                                                                                                                                                     |
+| `logout_hint`              | Optional hint about the user being logged out (session id, email). Provider-specific.                                                                                                                                                                                                                                               |
+| `ui_locales`               | Space-separated preferred languages for any UI shown during logout.                                                                                                                                                                                                                                                                 |
+| `returnTo`                 | Deprecated alias for `post_logout_redirect_uri`. Kept for backwards compatibility.                                                                                                                                                                                                                                                  |
 
 ## What happens
 
@@ -81,9 +81,17 @@ export async function GET(req: Request) {
 }
 ```
 
+## Requiring confirmation before logout
+
+By default `/logout` ends the session as soon as it's called — which, since the session cookie must be sent cross-site for front-channel logout to work, means **any page can trigger it** with no gesture from the user (a bare `<img src="…/logout">` is enough). If the request carries a verified `id_token_hint`, that's a strong enough signal on its own; without one, you may want a real confirmation step.
+
+Set `logout_confirm_required: true` on the account (via the [Management API](../academy/05-server-and-management-api.md), `POST /account/:account_id`) to require it: a `/logout` call with no verified `id_token_hint` — and an active session to protect — is parked on a confirmation screen instead of ending the session outright. Confirming calls `POST /logout/confirm` with the parked `state`, which finishes exactly as the direct call would have. A request with no active session is unaffected — there's nothing to confirm.
+
+Turn this on once your client sends `id_token_hint` on every sign-out (see the full example below) — otherwise every ordinary sign-out shows the confirmation screen.
+
 ## Per-RP session tracking
 
-Internally, Faable maintains one session record per (browser session, client) pair. It's created during the Authorization Code flow at `/authorize` and removed at `/logout`. You don't interact with these records directly — they exist so the `id_token` can carry a stable `sid` claim and so front-channel logout knows exactly which RPs to notify. There is no public API to list or revoke them.
+Internally, Faable maintains one session record per (browser session, client) pair. It's created during the Authorization Code flow at `/authorize` and removed at `/logout`. They exist so the `id_token` can carry a stable `sid` claim and so front-channel logout knows exactly which RPs to notify — and, since they're also how [Sessions](../sessions.md) tracks a user's devices, you can list and revoke them from there.
 
 ## A full example
 
