@@ -9,6 +9,12 @@ const withNextra = nextra({
 export default withNextra({
   // ... Add regular Next.js options here
   basePath: '/docs',
+  // One static-generation worker. Faable's builder adds `output: 'standalone'`
+  // and runs the build in a 4 GiB Job; with several workers the build was
+  // OOM-killed while generating pages (2026-09-28, BUILD_ERROR reported as an
+  // infrastructure failure). Reproduced in a 4 GiB container: several workers
+  // → killed, one worker → passes, and pages generate in ~5 s instead of ~55.
+  experimental: { cpus: 1 },
   async headers() {
     // Fastly purges by Surrogate-Key (this app's id) on every deployment
     // promote, so a long s-maxage never serves a stale release. Browsers get
