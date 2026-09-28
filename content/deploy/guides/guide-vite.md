@@ -6,7 +6,7 @@ rank: high
 
 # Deploy a Vite App
 
-**Push your Vite project to GitHub and Faable builds and serves it — no Dockerfile, no YAML.** The builder detects Vite from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` from Faable's shared static runtime behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
+**Push your Vite project to GitHub and Faable builds and serves it — no Dockerfile, no YAML, no server.** The builder detects Vite from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
 
 It works the same whether your Vite app is React, Vue, Svelte, Solid or Preact — detection keys on the `vite` dependency, not on the UI framework.
 
@@ -17,36 +17,17 @@ Nothing to configure. The builder:
 1. Detects `vite` in your `dependencies` **or** `devDependencies`.
 2. Installs your dependencies (including dev ones — `vite` itself lives there).
 3. Runs your `build` script.
-4. Ships **only `dist/`** to the static runtime: no Node.js process boots, nothing is installed at runtime, and the deploy is over in seconds.
-5. Turns on **SPA fallback** — unknown paths rewrite to `index.html`, so React Router, Vue Router and friends work on a hard refresh.
+4. Serves **only `dist/`**, directly and with no container: no Node.js process boots, there is no cold start, files are compressed, and fingerprinted assets are cached for a year.
+5. Turns on **SPA fallback** — a page route that isn't a file (`/settings/profile`) returns `index.html`, so React Router, Vue Router and friends work on a hard refresh. A missing file (`/assets/old.js`) still returns 404.
 
-## Do not add a `start` script
+## You don't need a server
 
-This is the one thing that changes the outcome.
+A Vite app is a folder of files once it is built, and serving that folder — with the SPA fallback — is what Faable does for you. So:
 
-**A `start` script disables static serving entirely.** The builder trusts it: if `package.json` defines one, Faable stops generating a serve command and runs `npm run start` in a Node.js container instead. That is correct for a project that ships a real server — and wrong for a Vite SPA, where `start` is almost always just the preview server:
+- **Don't write an Express server to serve `dist/`.** A `server.js` with `express.static('dist')` and a catch-all that sends `index.html` does exactly what Faable already does, and turns your site into a Node.js process that has to start before it answers.
+- **You don't need a `start` script either.** Without one, Faable serves `dist/` statically. A `start` that only serves the build output — `vite preview`, `serve -s dist` — is recognized and served statically anyway.
 
-```json
-{
-  "scripts": {
-    "build": "vite build",
-    "start": "vite preview" // ← binds 127.0.0.1:4173
-  }
-}
-```
-
-`vite preview` with no flags listens on **localhost, port 4173**. Inside a container nothing outside can reach it, the health check never passes, and the deployment fails as a startup crash — after a build that went perfectly green.
-
-Pick one:
-
-- **Recommended — delete the `start` script.** Faable serves `dist/` statically, which is what a Vite SPA wants.
-- Or, if you want to keep it, make it honour the platform contract:
-
-  ```json
-  { "scripts": { "start": "vite preview --host 0.0.0.0 --port $PORT" } }
-  ```
-
-  This works, but you pay for a Node.js process to serve static files.
+A `start` script that runs your own code is a different thing: Faable runs it in a Node.js container, which is what you want when the app has a real backend next to the frontend (an Express API in the same repo, server-side rendering). If the backend is a separate app, keep the frontend static and call the API from the browser.
 
 See [Start command precedence](../build-requirements.mdx#-nodejs-projects) for the full rule.
 

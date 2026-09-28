@@ -293,7 +293,7 @@
   },
   "content/deploy/build-requirements.mdx": {
     "published": "2026-07-04T11:38:43+02:00",
-    "modified": "2026-08-31T19:01:56.182Z"
+    "modified": "2026-09-28T19:04:28.084Z"
   },
   "content/deploy/compare-fly-io.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
@@ -357,7 +357,7 @@
   },
   "content/deploy/guides/guide-astro.md": {
     "published": "2026-09-08T08:38:28.546Z",
-    "modified": "2026-09-15T18:25:27.649Z"
+    "modified": "2026-09-28T19:04:28.084Z"
   },
   "content/deploy/guides/guide-discord-bot.md": {
     "published": "2026-09-03T09:22:01.059Z",
@@ -413,7 +413,7 @@
   },
   "content/deploy/guides/guide-vite.md": {
     "published": "2026-09-08T08:38:28.546Z",
-    "modified": "2026-09-15T18:25:27.649Z"
+    "modified": "2026-09-28T19:04:28.084Z"
   },
   "content/deploy/guides/guide-whatsapp-bot.md": {
     "published": "2026-08-24T15:57:55.247Z",

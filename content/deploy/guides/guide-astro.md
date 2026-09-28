@@ -6,7 +6,7 @@ rank: high
 
 # Deploy an Astro Site
 
-**Push your Astro project to GitHub and Faable builds and serves it — no Dockerfile, no YAML.** The builder detects Astro from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` from Faable's shared static runtime behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
+**Push your Astro project to GitHub and Faable builds and serves it — no Dockerfile, no YAML.** The builder detects Astro from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
 
 Astro has two output modes, and **they deploy differently**. Which one you are on decides everything below, so check `astro.config.mjs` first.
 
@@ -15,7 +15,7 @@ Astro has two output modes, and **they deploy differently**. Which one you are o
 If your config has no `output` (or `output: 'static'`), `astro build` writes real HTML files per page into `dist/`. That is the zero-config path:
 
 1. The builder detects `astro` in your `dependencies` or `devDependencies`.
-2. It installs, runs your `build` script, and ships **only `dist/`** to the static runtime — no Node.js process boots.
+2. It installs, runs your `build` script, and serves **only `dist/`**, directly and with no container — no Node.js process boots and there is no cold start.
 3. **SPA fallback stays off.** Astro builds a real file per route, so an unknown path 404s instead of rewriting to `index.html`. That is the correct behaviour for a multi-page site; it is not a bug.
 
 Nothing else to do. Push and it is live.
@@ -44,7 +44,7 @@ Add a `start` script so the builder runs your server instead of serving files:
 }
 ```
 
-A `start` script switches the app to a Node.js container and disables static serving — which is exactly what you want here.
+A `start` script that runs your own server switches the app to a Node.js container — which is exactly what you want here.
 
 ### Bind to `0.0.0.0`
 

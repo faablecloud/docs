@@ -20,7 +20,7 @@ Deploys are built by **buildpacks** (Heroku/CNB-style): each one checks for its 
 | 4        | `Dockerfile`                                                         | **Docker** — your Dockerfile, built verbatim · **Hobby or Pro** ([why](pricing.md#docker-and-bring-your-own-image))                        |
 | 5        | `index.php`, or any `.php` file in the root or `public/` (fallback)  | **PHP** without dependency install (see below)                                                                                             |
 | 5        | `main.py`, `app.py`, or `wsgi.py` (fallback, no manifest at all)     | **Python** without dependency install (see below)                                                                                          |
-| 6        | `index.html` in the root, `public/`, `dist/`, `build/` or `_site/`   | **Static** — the files are the site, served by nginx (see below)                                                                           |
+| 6        | `index.html` in the root, `public/`, `dist/`, `build/` or `_site/`   | **Static** — the files are the site, served directly by Faable with no container (see below)                                               |
 | —        | None of the above                                                    | ❌ Deploy fails with a diagnostic listing what was looked for, what your repo contains, and any config from another platform it recognizes |
 
 > [!IMPORTANT]
@@ -71,28 +71,33 @@ What each piece means to the builder:
 | `name`          | **Yes**  | Deploy fails at detection with `Missing name in package.json` without it.                                                                                                                                    |
 | `engines.node`  | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). Supported majors: **20, 22, 24**. If omitted, the builder uses its own current Node version, which changes as the platform upgrades — pin it. |
 | `scripts.build` | No       | If present, the builder runs `npm run build` before packaging, with your app's environment variables available to the build.                                                                                 |
-| `scripts.start` | No       | The app runs `npm run start` by default. If absent and a static framework is detected, a static serve command is generated instead.                                                                          |
+| `scripts.start` | No       | The app runs `npm run start` by default. When a static framework is detected and there is no `start` — or it only serves the build output — the build is served as a static site instead, with no container. |
 
 **Dependencies** are installed by the builder when no `node_modules` is present in the uploaded sources (for a monorepo, a `node_modules` at the workspace root counts). The lockfile picks the tool: `package-lock.json`/`npm-shrinkwrap.json` → `npm ci`, `yarn.lock` → `yarn install --frozen-lockfile`, `pnpm-lock.yaml` → `pnpm install --frozen-lockfile`, no lockfile → `npm install`. Dev dependencies are always included (build tools live there). If a frozen install fails — e.g. a stale lockfile — the builder retries with a plain `npm install` rather than failing the deploy.
 
-**Start command precedence**: `startCommand` in `faable.json` → framework-detected static serve → `npm run start`.
+**Start command precedence**: `startCommand` in `faable.json` → static site (a detected static framework with no `start`, or a `start` that only serves its build output) → `npm run start`.
 
 ### Static Frontends
 
-If `package.json` has **no `start` script**, the builder looks at your dependencies (including `devDependencies`, and hoisted monorepo dependencies) to detect a static framework and serves its build output automatically:
+The builder looks at your dependencies (including `devDependencies`, and hoisted monorepo dependencies) to detect a static framework, runs your build, and **serves the build output directly — there is no container and no server process**. The files are compressed (Brotli or gzip), fingerprinted assets are cached for a year, and there is no cold start: the first visitor gets the site as fast as the hundredth.
 
-| Framework detected                 | Build output             | Served with                  |
-| :--------------------------------- | :----------------------- | :--------------------------- |
-| Astro                              | `dist/`                  | `astro preview`              |
-| Gatsby                             | `public/`                | `gatsby serve`               |
-| Create React App (`react-scripts`) | `build/`                 | static server, SPA fallback  |
-| Vue CLI (`@vue/cli-service`)       | `dist/`                  | static server, SPA fallback  |
-| Angular                            | read from `angular.json` | static server, SPA fallback  |
-| Vite                               | `dist/`                  | `vite preview`, SPA fallback |
+| Framework detected                 | Build output             | SPA fallback |
+| :--------------------------------- | :----------------------- | :----------- |
+| Vite                               | `dist/`                  | Yes          |
+| Create React App (`react-scripts`) | `build/`                 | Yes          |
+| Vue CLI (`@vue/cli-service`)       | `dist/`                  | Yes          |
+| Angular                            | read from `angular.json` | Yes          |
+| Astro (static output)              | `dist/`                  | No           |
+| Gatsby                             | `public/`                | No           |
 
-For Angular, the output path comes from `angular.json` (`architect.build.options.outputPath`), with the `browser/` subfolder handled automatically for Angular 17+ builders. SPA fallback means unknown routes rewrite to `index.html` — Astro and Gatsby build real per-page files, so they 404 instead.
+For Angular, the output path comes from `angular.json` (`architect.build.options.outputPath`), with the `browser/` subfolder handled automatically for Angular 17+ builders. SPA fallback means a page route the build doesn't contain (`/dashboard/settings`) returns `index.html`, so client-side routers work on a hard refresh; a missing file (`/assets/old.js`) still returns 404. Astro and Gatsby build a real file per page, so an unknown route 404s instead — with your `404.html` if the build has one.
 
-Next.js is the exception: it always runs as a server (never static), with a persistent cache for `.next/cache` managed by the platform. When your start script is the stock `next start`, the builder ships Next's compact standalone output automatically; a custom start command (or `"next": { "standalone": false }` in `faable.json`) opts out and ships the full workspace. And remember — defining a `start` script disables static serving entirely; the builder trusts your script.
+> [!TIP]
+> **You don't need your own server for a single-page app.** A small Express server with `express.static('dist')` and a catch-all that returns `index.html` is exactly what Faable already does for you — writing it only turns your site into a Node.js process that has to start before it can answer. Delete the `start` script and let the builder serve `dist/`.
+
+A `start` script is taken at its word: if it runs your own code (`node server.js`, an Express or Fastify app), Faable runs it in a Node.js container, which is what a real backend needs. A `start` that only serves the build output — `vite preview`, `serve -s dist`, `http-server dist` — is recognized as a static server and the site is served statically anyway.
+
+Next.js is the exception: it always runs as a server (never static), with a persistent cache for `.next/cache` managed by the platform. When your start script is the stock `next start`, the builder ships Next's compact standalone output automatically; a custom start command (or `"next": { "standalone": false }` in `faable.json`) opts out and ships the full workspace.
 
 ### Monorepos (Root Directory)
 
@@ -260,7 +265,7 @@ my-site/
 └── assets/
 ```
 
-That deploys as it is. Your files are served by **nginx** on Faable's shared static runtime: no language runtime boots, nothing is installed, and the deploy is over in seconds. It is the same site you would open with `file://`, on a URL.
+That deploys as it is. Your files are served **directly by Faable, with no container**: no language runtime boots, nothing is installed, there is no cold start, and the deploy is over in seconds. It is the same site you would open with `file://`, on a URL.
 
 This is the **last** buildpack detection tries, and deliberately so: an `index.html` is the weakest signal in the repository — every framework ships one. Any manifest (`package.json`, `requirements.txt`, `composer.json`) or a `Dockerfile` claims the repo first, so a React project keeps building as React and only a repo nothing else can build lands here.
 
@@ -292,7 +297,7 @@ You rarely need this: a React, Vue or Angular repo has a `package.json`, so it b
 
 ### What You Don't Get
 
-There is no server, so there is nothing to run server-side code with: no PHP, no API routes, no `$PORT` to listen on, no environment variables reaching your pages (a static file is served byte-for-byte, so a secret in your JavaScript is a public secret). Assets are cached hard for 30 days by their URL — hash your filenames if you need instant invalidation. If your site needs any of that, it needs a real runtime: add a `package.json`, a Python manifest, or a `Dockerfile`.
+There is no server, so there is nothing to run server-side code with: no PHP, no API routes, no `$PORT` to listen on, no environment variables reaching your pages (a static file is served byte-for-byte, so a secret in your JavaScript is a public secret). Files with a content hash in their name (`app.3f9a2c1d.js`) are cached for a year; HTML and every other file are revalidated on each visit, so a change you deploy shows up immediately. If your site needs any of that, it needs a real runtime: add a `package.json`, a Python manifest, or a `Dockerfile`.
 
 ---
 
@@ -372,7 +377,11 @@ Not yet, and the deploy says so instead of shipping a broken site: WordPress nee
 
 ### Can I deploy a plain HTML site with no framework and no package.json?
 
-Yes. A repository that is an `index.html` plus its CSS, JavaScript and images deploys as it is — the static buildpack picks it up and nginx serves the files, with no build step and no manifest to add. That covers a portfolio, a landing page, a CV, a course project, or a site built by hand or by an AI tool. If the site lives in a subdirectory, point `rootDir` at it. See [Static Sites](#-static-sites).
+Yes. A repository that is an `index.html` plus its CSS, JavaScript and images deploys as it is — the static buildpack picks it up and Faable serves the files directly, with no build step, no manifest to add and no container. That covers a portfolio, a landing page, a CV, a course project, or a site built by hand or by an AI tool. If the site lives in a subdirectory, point `rootDir` at it. See [Static Sites](#-static-sites).
+
+### Do I need a server (Express, `serve`) to deploy my React or Vite app?
+
+No. For a single-page app built with Vite, Create React App, Vue or Angular, Faable serves the build output itself, with SPA fallback and no container — see [Static Frontends](#static-frontends). If your repo has a `server.js` whose only job is `express.static('dist')` plus returning `index.html`, delete it and the `start` script that runs it: the site gets faster (no process to boot) and nothing changes for your routes. Keep a server only when it does real work — an API, server-side rendering, auth.
 
 ### Why is my static site 404ing on every route except the homepage?
 
