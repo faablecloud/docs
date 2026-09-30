@@ -272,8 +272,8 @@
     "published": "2026-07-07T11:04:18+02:00"
   },
   "content/auth/team-invitations.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-05-16T11:42:20+02:00"
+    "published": "2026-05-16T11:42:20+02:00",
+    "modified": "2026-09-30T12:05:49.351Z"
   },
   "content/auth/validate-access-tokens.mdx": {
     "published": "2026-07-04T11:32:47+02:00",
@@ -438,6 +438,10 @@
   "content/deploy/images.md": {
     "published": "2026-09-17T13:55:17.775Z",
     "modified": "2026-09-17T15:39:15.913Z"
+  },
+  "content/deploy/members.md": {
+    "published": "2026-09-30T12:05:49.351Z",
+    "modified": "2026-09-30T12:05:49.351Z"
   },
   "content/deploy/pricing.md": {
     "published": "2026-03-31T11:42:44+02:00",

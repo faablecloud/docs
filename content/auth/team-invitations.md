@@ -1,137 +1,144 @@
 ---
-title: Team Invitations
-description: Invite users to a team in Faable Auth by email. Existing tenant users are added directly; unknown emails get a verification link that creates the account on first click.
+title: Teams, Invitations and Members
+description: Invite people to a team in Faable Auth by email, let them accept on your own page or from a notice inside your app, and manage members and roles — with every change in the tenant's log and in your webhooks.
 ---
 
-# Team Invitations
+# Teams, Invitations and Members
 
-Teams in Faable Auth group users so you can grant permissions and roles collectively. The **Team Invitations** flow lets an authenticated user (typically an admin) add somebody to a team by email — no matter if the recipient already has an account in the tenant or not.
+Teams in Faable Auth group users so you can grant roles collectively. This page covers the whole membership lifecycle: inviting someone by email, accepting (from the email link, on your own page, or from a "pending invitation" notice in your app), declining, changing roles and removing members.
 
-The flow handles three cases out of the box:
-
-1. **The email already maps to a tenant user** → add them to the team immediately.
-2. **The email is unknown** → email an invitation; when the recipient clicks, Faable creates the user (with `email_verified = true`, since the click proves ownership) and adds them to the team.
-3. **The admin wants to notify the user even though they exist** → force-send an invitation email anyway.
+All endpoints here are part of the **Management API**: call them from your backend with a token of a client that holds the `…:teammembers` scopes. The only public endpoint is `/invite-verify`, the default target of the email link.
 
 ## Endpoints
 
-| Method   | Path                               | Purpose                                                  |
-| -------- | ---------------------------------- | -------------------------------------------------------- |
-| `POST`   | `/team/:team_id/invite`            | Create an invitation (or add directly).                  |
-| `GET`    | `/team/:team_id/invite`            | List pending invitations for a team.                     |
-| `DELETE` | `/team/:team_id/invite/:ticket_id` | Revoke a pending invitation.                             |
-| `GET`    | `/invite-verify?ticket=…`          | Public entry point for the link in the invitation email. |
+| Method   | Path                               | Scope                | Purpose                                               |
+| -------- | ---------------------------------- | -------------------- | ----------------------------------------------------- |
+| `POST`   | `/team/:team_id/invite`            | `create:teammembers` | Invite by email (or add an existing user directly).   |
+| `GET`    | `/team/:team_id/invite`            | `read:teammembers`   | List a team's pending invitations.                    |
+| `DELETE` | `/team/:team_id/invite/:invite_id` | `delete:teammembers` | Revoke a pending invitation.                          |
+| `POST`   | `/team/invite/accept`              | `create:teammembers` | Accept for a signed-in user (by link token or by id). |
+| `POST`   | `/team/invite/decline`             | `create:teammembers` | Decline for a signed-in user.                         |
+| `GET`    | `/user/:user_id/team-invites`      | `read:teammembers`   | A user's own pending invitations, across teams.       |
+| `POST`   | `/team/:team_id/member/:user_id`   | `update:teammembers` | Replace a member's roles.                             |
+| `DELETE` | `/team/:team_id/member/:user_id`   | `delete:teammembers` | Remove a member.                                      |
+| `GET`    | `/invite-verify?token=…`           | public               | Default target of the email link.                     |
 
-The first three require an account session (Bearer or cookie). `/invite-verify` is public — the ticket is proof of ownership. It's rate-limited to **5 requests per 10 seconds** per IP.
-
-## Creating an invitation
+## Inviting
 
 ```http
 POST /team/team_42/invite
-Authorization: Bearer <access_token>
+Authorization: Bearer <management_token>
 Content-Type: application/json
 
 {
   "email": "new.member@example.com",
   "roles": ["role_editor"],
-  "mode": "auto",
-  "redirect_uri": "https://app.example.com/welcome"
+  "mode": "invite",
+  "accept_url": "https://app.example.com/invite",
+  "redirect_uri": "https://app.example.com/projects/42",
+  "inviter_user_id": "user_…"
 }
 ```
 
-| Field          | Required | Default  | Description                                                                          |
-| -------------- | -------- | -------- | ------------------------------------------------------------------------------------ |
-| `email`        | yes      | —        | The address to invite.                                                               |
-| `roles`        | no       | `[]`     | Role IDs to attach to the new team membership.                                       |
-| `mode`         | no       | `"auto"` | `auto` adds existing users directly and emails unknown ones; `invite` always emails. |
-| `redirect_uri` | no       | —        | Where to send the invitee after they accept. `?status=accepted` is appended.         |
+| Field             | Required | Default  | Description                                                                                                                            |
+| ----------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `email`           | yes      | —        | The address to invite.                                                                                                                 |
+| `roles`           | no       | `[]`     | Role ids the membership will hold. They must be roles of the same tenant (`invalid_role` otherwise).                                   |
+| `mode`            | no       | `"auto"` | `auto` adds an existing user of the tenant directly and emails anyone else; `invite` always emails and waits for the person to accept. |
+| `accept_url`      | no       | —        | Your page for accepting. The email link becomes `accept_url#<token>` (see [Accepting on your own page](#accepting-on-your-own-page)).  |
+| `redirect_uri`    | no       | —        | Where the person lands once in. It is also the button of the "you were added" email.                                                   |
+| `inviter_user_id` | no       | caller   | The person inviting, when your backend calls with a machine token. The email names them. Must be a user of the tenant.                 |
 
-### Response — user existed and was added (mode `auto`)
+`accept_url` and `redirect_uri` must be on one of the tenant's own origins (the callback hosts of its clients); anything else is `invalid_invite_url`.
 
-```json
-{
-  "status": "added",
-  "member": {
-    "id": "tm_…",
-    "user": "usr_…",
-    "team": "team_42",
-    "roles": ["role_editor"]
-  }
-}
-```
+The response is `{ "status": "added", "member": … }` when an existing user was added directly, or `{ "status": "invited", "ticket_id": "…" }` when an invitation went out. An invitation lasts **7 days**. Inviting the same address to the same team again replaces the pending one: the old link stops working.
 
-No email is sent in this branch — the user simply gets a `team.member.added` notification (see [below](#notification-emails)).
+## Accepting
 
-### Response — invitation was emailed
+There are three ways in. In all of them, a membership is created **only for the invited address**.
 
-```json
-{
-  "status": "invited",
-  "ticket_id": "tkt_…"
-}
-```
+### From the email link (default)
 
-A ticket of type `team_invite` is created (TTL **7 days**) and an invitation email goes out. Re-inviting the same address to the same team revokes any earlier pending ticket.
+Without `accept_url`, the email links to `GET /invite-verify?token=…` on the auth host. Faable consumes the invitation, **creates the user** if nobody has that email yet (with `email_verified = true`, since the click proves the inbox), adds them to the team and redirects to `redirect_uri` with `?status=accepted`, or to `/flow/team-invite-done` when there is none. It is idempotent for someone who is already a member, and rate-limited to 10 requests per 10 seconds per IP.
 
-## Invitation modes
+### Accepting on your own page
 
-### `auto` (default)
-
-- If the email already belongs to a user in the same tenant → add immediately to the team (`status: "added"`).
-- Otherwise → issue a ticket and email the invitee (`status: "invited"`).
-
-### `invite`
-
-Always issue a ticket and email — even when the user already exists. Useful when you want the user to receive a formal notification (e.g. linking them to a specific landing page) rather than being added silently.
-
-## Accepting an invitation
-
-When the invitee clicks the link in the email, their browser hits `GET /invite-verify?ticket=…`. Faable then:
-
-1. Validates and consumes the ticket.
-2. **Creates the user** if no user exists for that email yet. The user is created with `email_verified = true` (the click proves they own the inbox).
-3. If the user existed but their email wasn't verified, marks it verified.
-4. Adds the user to the team with the roles attached to the invitation.
-5. Emits a `team.member.added` event (which triggers the welcome email — see below).
-6. Redirects to the `redirect_uri` from the original invite request with `?status=accepted` appended. If no `redirect_uri` was provided, falls back to `/flow/team-invite-done` on the auth host.
-
-The endpoint is **idempotent**: if the user is already a member of the team, it just redirects without error.
-
-## Listing pending invitations
+With `accept_url`, the link opens your page with the token in the URL **fragment** (`#…`), so it never reaches a server log, a `Referer` or an analytics pageview. Your page signs the person in — with any method — and your backend accepts for them:
 
 ```http
-GET /team/team_42/invite?expand=team,inviter,roles
+POST /team/invite/accept
+Authorization: Bearer <management_token>
+Content-Type: application/json
+
+{ "token": "<from the fragment>", "user_id": "user_…" }
 ```
 
-Returns pending (non-expired) invitations for the team. You can filter using [FaableQL](logs.md#filtering) on the `email` field:
+This path **never creates a user and never verifies an email**. The user must already exist in the tenant and have the invited email, **verified**. Otherwise:
 
-```
-GET /team/team_42/invite?query=email:new.member@example.com
-```
+| Error code                | Meaning                                                                                                      |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `invite_email_mismatch`   | Signed in as someone else. `details.invited_email` carries the invited address, masked (`n•••@example.com`). |
+| `invite_email_unverified` | The address matches but isn't verified yet.                                                                  |
+| `ticket_expired`          | Older than 7 days.                                                                                           |
+| `ticket_used`             | Already accepted, declined or revoked.                                                                       |
+| `invalid_ticket`          | No such invitation.                                                                                          |
 
-By default, `team`, `inviter`, and `roles` are returned as IDs. Use `?expand=` to inline the full objects.
+The answer is `{ status: "accepted" | "already_member", team_id, user_id, roles }`. Strip the fragment from the URL before any analytics or error-tracking script loads.
 
-## Revoking an invitation
+### From a notice inside your app
+
+A person who already has an account shouldn't depend on finding the email. List their invitations when they sign in and let them answer in place:
 
 ```http
-DELETE /team/team_42/invite/tkt_abc
-
-→ 200 OK
-{ "status": "revoked" }
+GET /user/user_…/team-invites
+→ { "email_verified": true, "data": [ { "id": "ticket_…", "team": "team_42", "roles": [...], "inviter": "user_…", "expires_at": "…" } ] }
 ```
 
-Already-consumed or unknown tickets return an error.
+Invitations are listed only when the user's email is **verified** — an unverified address could be anybody's — otherwise the answer is `email_verified: false` and an empty list. Then accept or decline by id:
+
+```http
+POST /team/invite/accept    { "invite_id": "ticket_…", "user_id": "user_…" }
+POST /team/invite/decline   { "invite_id": "ticket_…", "user_id": "user_…" }
+```
+
+Both apply the same check as the token (verified email equal to the invited one) and the same error codes. Declining spends the invitation: its link stops working and it leaves the team's pending list.
+
+## Managing members
+
+```http
+POST /team/team_42/member/user_…
+{ "roles": ["role_viewer"], "actor_user_id": "user_…" }
+
+DELETE /team/team_42/member/user_…?actor_user_id=user_…
+```
+
+Changing roles replaces the whole list (`[]` leaves the member with none). `actor_user_id` is optional: when your backend acts on behalf of a person with a machine token, name them and the tenant's log will say who did it instead of your backend. It must be a user of the tenant, or the call fails with `404` before changing anything.
+
+A user is a member of a team **at most once**; adding someone who already is returns `already_member`.
+
+## Events and webhooks
+
+Every change emits an event you can receive through a [notification subscription](logs.md) webhook. Team events are **notices, not state**: they carry ids and roles, and your receiver reads whatever else it needs.
+
+| Event                  | When                                                                                           |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| `team.member.added`    | Someone joined. `method`: `direct`, `invite_auto` or `invite_accepted`.                        |
+| `team.member.updated`  | Roles changed. Carries `roles` and `previous_roles`.                                           |
+| `team.member.removed`  | Someone was removed or left.                                                                   |
+| `team.invite.created`  | An invitation went out.                                                                        |
+| `team.invite.accepted` | An invitation was accepted.                                                                    |
+| `team.invite.revoked`  | An invitation stopped being valid. `reason`: `revoked`, `replaced` (re-invited) or `declined`. |
+
+The same changes are written to the tenant's [log](logs.md), filterable by team: `GET /log?query=team:team_42 origin:team`.
 
 ## Notification emails
 
-Two emails are involved in this flow:
+- **`team_invite`** — to the invitee whenever an invitation is created. Names the inviter when there is one, and links to `accept_url#<token>` or to `/invite-verify`.
+- **`team.member.added`** — to the person once they are in, however they got there. Its button opens `redirect_uri` when the invitation had one.
 
-- **`team_invite`** — sent to the invitee whenever a ticket is created (i.e. every invite except the "auto + existing user" fast path). Contains the team name, the inviter's name, and the acceptance link.
-- **`team.member.added`** — sent to the newly-added user any time they end up in a team, whether through direct add or ticket acceptance. Includes a link to your application.
-
-Both emails are localized (currently English and Spanish) and can be overridden per tenant from the dashboard.
+Both are localized (English and Spanish) and can be overridden per tenant from the dashboard.
 
 ## Next steps
 
-- [Clients](clients.md) — register your application before driving any auth flow.
-- [Logs](logs.md) — inspect invitation deliveries and acceptance events.
+- [Clients](clients.md) — register the backend client that calls the Management API.
+- [Logs](logs.md) — inspect invitations, acceptances and membership changes.

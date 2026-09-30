@@ -3,6 +3,7 @@ export default {
   'how-it-works': 'How deployment works',
   guides: 'Guides & Migrations',
   domains: 'Custom Domains',
+  members: 'Members & Roles',
   runtime: 'Runtime',
   http3: 'HTTP/3',
   images: 'Image Optimization',
