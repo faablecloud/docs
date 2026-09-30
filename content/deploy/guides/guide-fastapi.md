@@ -121,7 +121,7 @@ Only do this on an instance with enough CPU and RAM for the extra processes.
 
 ## Choosing the Python version
 
-The default is Python 3.11. Supported minors are **3.10, 3.11, 3.12 and 3.13** — pin one with a `runtime.txt`:
+Without a pin, Faable uses the newest supported minor — Python 3.13 today. Supported minors are **3.10, 3.11, 3.12 and 3.13** — pin one with a `runtime.txt`:
 
 ```txt
 python-3.12
@@ -153,7 +153,7 @@ Yes — set `startCommand` in `faable.json` with `--workers N`. The default is a
 
 ### Which Python versions does Faable support for FastAPI?
 
-3.10, 3.11, 3.12 and 3.13. The default is 3.11; pin your choice with `runtime.txt` (`python-3.13`), `.python-version`, or `requires-python` in `pyproject.toml`.
+3.10, 3.11, 3.12 and 3.13. Without a pin you get the newest one (3.13 today); pin your choice with `runtime.txt` (`python-3.13`), `.python-version`, or `requires-python` in `pyproject.toml`.
 
 ### Does the built-in WAF interfere with API clients?
 

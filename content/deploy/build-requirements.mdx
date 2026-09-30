@@ -148,7 +148,7 @@ A `buildCommand` in `faable.json` replaces the manifest install entirely — use
 2. `.python-version`
 3. The manifest's own version (e.g. `python_version` in `cerebrium.toml`)
 4. `requires-python` in `pyproject.toml`
-5. Default: `3.11`
+5. Default: the newest supported minor (`3.13` today)
 
 Supported Python minors: **3.10, 3.11, 3.12 and 3.13** — the app runs on Faable's shared runtime image for the resolved minor.
 

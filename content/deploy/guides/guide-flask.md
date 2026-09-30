@@ -222,7 +222,7 @@ Size the worker count to the [instance](../pricing.md#compute-catalog) you picke
 
 ## Choosing the Python version
 
-The default is Python 3.11. Supported minors are **3.10, 3.11, 3.12 and 3.13** — pin one with a `runtime.txt`:
+Without a pin, Faable uses the newest supported minor — Python 3.13 today. Supported minors are **3.10, 3.11, 3.12 and 3.13** — pin one with a `runtime.txt`:
 
 ```txt
 python-3.12
@@ -258,7 +258,7 @@ One by default. Increase it with `startCommand` only if your workload is CPU-bou
 
 ### Which Python versions does Faable support for Flask?
 
-3.10, 3.11, 3.12 and 3.13. The default is 3.11; pin your choice with `runtime.txt` (`python-3.13`), `.python-version`, or `requires-python` in `pyproject.toml`.
+3.10, 3.11, 3.12 and 3.13. Without a pin you get the newest one (3.13 today); pin your choice with `runtime.txt` (`python-3.13`), `.python-version`, or `requires-python` in `pyproject.toml`.
 
 ## Related
 
