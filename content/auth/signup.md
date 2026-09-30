@@ -1,15 +1,22 @@
 ---
 title: Signup
-description: Register users with email + password from a fully client-side form, and detect brand-new accounts on the OAuth callback so you can trigger onboarding.
+description: Register users by email or username from a fully client-side form, with or without signing them in, and detect brand-new accounts on the OAuth callback so you can trigger onboarding.
 ---
 
 # Signup
 
-Faable Auth lets you build a **self-service signup** for database (email + password) connections without standing up a backend of your own. A browser-only app can create the account and sign the user in with a single SDK call. For social logins, the callback tells you when an account was just created so you can branch into onboarding.
+Faable Auth lets you build a **self-service signup** for database connections without standing up a backend of your own. A browser-only app can create the account — and, if you want, sign the user in — with a single SDK call. For social logins, the callback tells you when an account was just created so you can branch into onboarding.
 
-## Client-side email + password signup
+## Client-side signup
 
-Use [`@faable/auth-js`](quickstart/nextjs.mdx) `signUp()` from a plain client-side form. It creates the user and its password against your tenant's database connection, then signs them in:
+[`@faable/auth-js`](quickstart/nextjs.mdx) has two methods, named after their Auth0 counterparts:
+
+| Method             | What it does                                              |
+| ------------------ | --------------------------------------------------------- |
+| `signup()`         | Creates the user and returns it. No login, no navigation. |
+| `signupAndLogin()` | Creates the user, then signs them in through a redirect.  |
+
+### Create the user and sign in
 
 ```ts
 import { createClient } from '@faable/auth-js'
@@ -19,7 +26,7 @@ const auth = createClient({
   clientId: '<your_client_id>'
 })
 
-const { error } = await auth.signUp({
+const { error } = await auth.signupAndLogin({
   email: 'user@example.com',
   password: '••••••••',
   name: 'Ada Lovelace',
@@ -27,27 +34,62 @@ const { error } = await auth.signUp({
 })
 
 if (error) {
-  // e.g. error.code === 'signup_disabled' | 'email_exists'
+  // e.g. error.code === 'signup_disabled' | 'email_exists' | 'weak_password'
   showError(error.message)
 }
 // On success the browser is already navigating to complete the login.
 ```
 
 > [!IMPORTANT]
-> **`signUp()` logs the user in through a redirect.** Just like every interactive username/password login in the SDK, the sign-in step submits a form that round-trips through the auth server. On success the browser navigates to your `redirectTo`, where [`initialize()`](quickstart/nextjs.mdx) delivers the live session and fires a `SIGNED_IN` event. `signUp()` only returns synchronously when signup itself fails.
+> **`signupAndLogin()` logs the user in through a redirect.** Just like every interactive username/password login in the SDK, the sign-in step submits a form that round-trips through the auth server. On success the browser navigates to your `redirectTo`, where [`initialize()`](quickstart/nextjs.mdx) delivers the live session and fires a `SIGNED_IN` event. It only returns when the signup or the login fails.
+
+### Only create the user
+
+`signup()` stops after creating the user, so the page stays where it is. Use it for forms that register people who won't log in right away — a contact form, a waitlist, an admin inviting someone:
+
+```ts
+const { data, error } = await auth.signup({
+  email: 'user@example.com',
+  name: 'Ada Lovelace',
+  user_metadata: { source: 'contact-form' }
+})
+
+if (error?.code === 'email_exists') showAlreadyRegistered()
+else if (error) showError(error.message)
+else console.log('created', data.user_id)
+```
+
+**The password is optional.** Without one, the user is created with no password at all — not a random or empty one — and nothing can sign in with a password until they set it through the password reset email ([Forgot password](hosted-login.mdx#forgot-password) on the hosted login). That is why a signup without a password needs an `email`. (Auth0 takes the other route and rejects a signup without a password.)
+
+### Email or username
+
+Which identifier a signup needs follows the database connection's **login identifier** (see [What users sign in with](connections.md#what-users-sign-in-with)):
+
+| Login identifier    | Signup needs                       |
+| ------------------- | ---------------------------------- |
+| `email`             | `email`. A `username` is rejected. |
+| `username`          | `username`. `email` is optional.   |
+| `email_or_username` | Either one, or both.               |
+
+A username is stored exactly as typed (case-sensitive) and can't contain `@` or whitespace. `signupAndLogin()` signs in with the email when there is one, and with the username otherwise.
 
 The new user is created with `email_verified: false`. Whether a verification or welcome email goes out is controlled by your tenant's account settings (`verify_email_auto_send`, `welcome_email_enabled`) — see [Welcome email](#welcome-email) below.
 
 ### Parameters
 
-| Field                               | Required | Description                                                                                                           |
-| ----------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
-| `email`                             | yes      | The login identifier for the new account.                                                                             |
-| `password`                          | yes      | Validated against the connection's password policy, hashed server-side.                                               |
-| `name`, `given_name`, `family_name` | no       | Optional profile fields stored on the user.                                                                           |
-| `user_metadata`                     | no       | Arbitrary key/value metadata stored on the user.                                                                      |
-| `connection`                        | no       | Connection name, when the tenant has more than one database connection. Defaults to the tenant's database connection. |
-| `redirectTo`                        | no       | Where the auto-login lands after the redirect. Defaults to `config.redirectUri` / the current origin.                 |
+| Field                               | Required                | Description                                                                                                           |
+| ----------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `email`                             | see above               | Email identifier. Required on an `email` connection, and whenever `password` is omitted.                              |
+| `username`                          | see above               | Username identifier. Required on a `username` connection.                                                             |
+| `password`                          | `signupAndLogin()` only | Validated against the connection's password policy, hashed server-side. Optional in `signup()`.                       |
+| `name`, `given_name`, `family_name` | no                      | Optional profile fields stored on the user.                                                                           |
+| `user_metadata`                     | no                      | Arbitrary key/value metadata stored on the user.                                                                      |
+| `connection`                        | no                      | Connection name, when the tenant has more than one database connection. Defaults to the tenant's database connection. |
+| `redirectTo`                        | no (`signupAndLogin()`) | Where the login lands after the redirect. Defaults to `config.redirectUri` / the current origin.                      |
+
+### `signUp()`
+
+Earlier versions of the SDK had a single `signUp()` that created the user and signed them in. It still works the same way: it behaves like `signupAndLogin()` by default, and like `signup()` when you pass `signIn: false`. New code should call one of the two methods above.
 
 ## Welcome email
 
@@ -78,19 +120,20 @@ The subject, greeting and signature stay localised (`Welcome to <account>` / `Bi
 
 ## The signup endpoint
 
-Under the hood `signUp()` calls a public, account-scoped endpoint. You can call it directly (for example from a non-JS client):
+Under the hood both methods call a public, account-scoped endpoint. You can call it directly (for example from a non-JS client):
 
 ```http
 POST /dbconnections/signup
 Content-Type: application/json
 
 {
-  "client_id": "<your_client_id>",
   "email": "user@example.com",
   "password": "••••••••",
   "name": "Ada Lovelace"
 }
 ```
+
+`email`, `username` and `password` follow the same rules as in the SDK: the identifier depends on the connection's login identifier, and `password` can be left out when there is an `email`.
 
 Response:
 
@@ -102,7 +145,7 @@ Response:
 }
 ```
 
-It creates the user and the database credential in one step. It does **not** establish a session — sign the user in afterwards (the `signUp()` helper does this for you).
+It creates the user and the database credential in one step. It does **not** establish a session — sign the user in afterwards (`signupAndLogin()` does this for you).
 
 ### Authentication & limits
 
@@ -111,13 +154,16 @@ It creates the user and the database credential in one step. It does **not** est
 
 ### Errors
 
-| HTTP | `message`            | Meaning                                                                |
-| ---- | -------------------- | ---------------------------------------------------------------------- |
-| 400  | password policy text | The password fails the connection's [password policy](connections.md). |
-| 403  | `signup_disabled`    | Public signup is turned off for this connection (see below).           |
-| 409  | `email_taken`        | A credential with that email already exists in the connection.         |
+| HTTP | `error_code`        | Meaning                                                                                                           |
+| ---- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 400  | `bad_request`       | A required identifier is missing for this connection, or there is no password and no email. `message` says which. |
+| 400  | `invalid_username`  | The username is empty or contains `@` or whitespace, or the connection signs in by email only.                    |
+| 400  | `password_too_weak` | The password fails the connection's [password policy](connections.md). `message` lists what is missing.           |
+| 403  | `signup_disabled`   | Public signup is turned off for this connection (see below).                                                      |
+| 409  | `email_taken`       | A credential with that email already exists in the connection.                                                    |
+| 409  | `username_taken`    | A credential with that username already exists in the connection.                                                 |
 
-In `@faable/auth-js` these surface as an `AuthApiError` with a stable `code` (`signup_disabled`, `email_exists`).
+In `@faable/auth-js` these surface as an `AuthApiError` with a stable `code`: `signup_disabled`, `email_exists`, `username_exists`, `weak_password`, or `validation_failed` for the other 400s.
 
 ### Disabling signup
 
