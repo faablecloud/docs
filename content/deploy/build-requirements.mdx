@@ -66,12 +66,12 @@ my-app/
 
 What each piece means to the builder:
 
-| Field           | Required | What the builder does with it                                                                                                                                                                                |
-| :-------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`          | **Yes**  | Deploy fails at detection with `Missing name in package.json` without it.                                                                                                                                    |
-| `engines.node`  | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). Supported majors: **20, 22, 24**. If omitted, the builder uses its own current Node version, which changes as the platform upgrades — pin it. |
-| `scripts.build` | No       | If present, the builder runs `npm run build` before packaging, with your app's environment variables available to the build.                                                                                 |
-| `scripts.start` | No       | The app runs `npm run start` by default. When a static framework is detected and there is no `start` — or it only serves the build output — the build is served as a static site instead, with no container. |
+| Field           | Required | What the builder does with it                                                                                                                                                                                                                           |
+| :-------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`          | **Yes**  | Deploy fails at detection with `Missing name in package.json` without it.                                                                                                                                                                               |
+| `engines.node`  | No       | Resolved to a concrete Node release (e.g. `22.x` → latest 22). Supported majors: **20, 22, 24 and 26**. If omitted, a new app gets the newest LTS (**24** today) and keeps that major from its first successful deploy on — it never changes under you. |
+| `scripts.build` | No       | If present, the builder runs `npm run build` before packaging, with your app's environment variables available to the build.                                                                                                                            |
+| `scripts.start` | No       | The app runs `npm run start` by default. When a static framework is detected and there is no `start` — or it only serves the build output — the build is served as a static site instead, with no container.                                            |
 
 **Dependencies** are installed by the builder when no `node_modules` is present in the uploaded sources (for a monorepo, a `node_modules` at the workspace root counts). The lockfile picks the tool: `package-lock.json`/`npm-shrinkwrap.json` → `npm ci`, `yarn.lock` → `yarn install --frozen-lockfile`, `pnpm-lock.yaml` → `pnpm install --frozen-lockfile`, no lockfile → `npm install`. Dev dependencies are always included (build tools live there). If a frozen install fails — e.g. a stale lockfile — the builder retries with a plain `npm install` rather than failing the deploy.
 
@@ -148,9 +148,11 @@ A `buildCommand` in `faable.json` replaces the manifest install entirely — use
 2. `.python-version`
 3. The manifest's own version (e.g. `python_version` in `cerebrium.toml`)
 4. `requires-python` in `pyproject.toml`
-5. Default: `3.11`
+5. Default: the newest supported minor (**3.14** today) for a new app. An app that has deployed keeps the minor of its first successful deploy — it never changes under you; pin one of the versions below to move.
 
-Supported Python minors: **3.10, 3.11, 3.12 and 3.13** — the app runs on Faable's shared runtime image for the resolved minor.
+A `requires-python` floor like `>=3.11` resolves to the newest supported minor that satisfies it (an app that has already deployed keeps its minor while it satisfies the floor).
+
+Supported Python minors: **3.10, 3.11, 3.12, 3.13 and 3.14** — the app runs on Faable's shared runtime image for the resolved minor.
 
 **Start command**, first match wins:
 
@@ -224,7 +226,7 @@ First match wins:
 1. `.php-version`
 2. `config.platform.php` in `composer.json`
 3. `require.php` in `composer.json` — the platform default is used whenever the constraint allows it, otherwise the highest supported version that satisfies it
-4. Default: `8.3`
+4. Default: `8.4` for a new app; an app that has deployed keeps the minor of its first successful deploy.
 
 Supported PHP versions: **8.2, 8.3 and 8.4**. A pin outside that list fails at detection with the supported list, rather than building an app nothing can run.
 
