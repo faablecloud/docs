@@ -312,6 +312,31 @@ No `package.json`, no Python manifests, but a `Dockerfile`? The builder runs it 
 
 ---
 
+## 🔢 Runtime Versions
+
+Node.js, Python and PHP apps run on a version Faable resolves at build time. Three rules decide it:
+
+1. **A version pinned in your repository always wins**: `engines.node` in `package.json`, `runtime.txt` or `.python-version`, `.php-version` or `config.platform.php` in `composer.json`.
+2. **Otherwise, your app keeps the version of its first successful deploy.** It never changes under you when Faable adds a newer one.
+3. **A brand-new app gets the newest supported version** (Node.js: the newest LTS).
+
+Security patches within that version still arrive with each platform update — only the minor (Python, PHP) or major (Node.js) stays fixed.
+
+### Updating to a newer version
+
+When a newer version is available, the app page shows it next to the runtime with an **Update** button. Updating rebuilds your current deployment from the same source on the new version:
+
+- The deployment that is live **keeps serving until the new build is ready** — nothing goes down while it builds.
+- **If the build fails, your app stays on its previous version**, for this deploy and the next ones, and the page tells you the update failed. The failed build's log is in your deployment list.
+
+If your repository pins the version, the button is disabled and the page names the file that pins it: change the version there and push instead.
+
+### Things worth knowing
+
+- **Removing a version pin from your repository does not move you to the newest version.** Your app goes back to the version Faable keeps for it — the one of its first deploy, which is often the version you had pinned. Use **Update** after removing the pin to move.
+- **The newest version is not always the right one.** Dependencies pinned to an exact version may not ship ready-made builds for a Python release that is only a few months old — `pydantic==2.11.7`, for example, has none for Python 3.14 and fails to install there, while 3.13 works. If an update fails, pick the previous version, or upgrade those dependencies first.
+- **Old versions are retired with notice.** When a version reaches its end of life, every owner of an app still on it gets an email 90 days before the date and a reminder 30 days before, and the app page shows the date. On that day the version stops building; **apps that are already running keep running**.
+
 ## 🔌 The Port Contract
 
 Whatever the stack, your app must listen on **`0.0.0.0`** at the port given by the **`$PORT`** environment variable (the platform sets it to `80`):
@@ -401,7 +426,7 @@ On the Free plan, add the manifest for your stack at the repository root and the
 
 ### Which Node version does my app run on?
 
-The version from `engines.node` in `package.json`, resolved to the latest release of that major (supported majors: 20, 22, 24). Without it, the builder uses its own current Node version, which changes as the platform upgrades — pin `engines.node` so your app's runtime is deterministic.
+The version from `engines.node` in `package.json`, resolved to the latest release of that major (supported majors: 20, 22, 24 and 26). Without it, your app keeps the major of its first successful deploy, and a new app starts on the newest LTS (24 today). See [Runtime Versions](#-runtime-versions) for how to move to a newer one.
 
 ### How do I deploy a single app from a monorepo?
 
