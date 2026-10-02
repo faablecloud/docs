@@ -678,12 +678,11 @@ claude mcp add --transport http faable https://mcp.faable.com/mcp \
   --header "Authorization: Bearer <your API key>"
 ```
 
-- `https://mcp.faable.com/mcp/<project>` keeps every call in one project (id, name or slug).
 - `?mode=write` adds the reversible writes; `?readonly=1` leaves only the reads.
 - The tool catalog is published at [`mcp.faable.com/tools.json`](https://mcp.faable.com/tools.json) and [`mcp.faable.com/llms.txt`](https://mcp.faable.com/llms.txt).
 
-> [!WARNING]
-> An API key acts with **its owner's access** — every project the owner belongs to, not only the one it was created in. Use `/mcp/<project>` to keep a client in one project, and treat the key like a password: anyone holding it can act as you.
+> [!NOTE]
+> An API key belongs to the project it was created in and only works there — it never reaches your other projects. Treat it like a password all the same: anyone holding it can act on that project. Revoke it in the dashboard and it stops working within 30 seconds.
 
 By default the server exposes **reads plus one deploy**:
 
