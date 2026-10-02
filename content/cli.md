@@ -55,6 +55,21 @@ Clear your local credentials and end the session:
 faable logout
 ```
 
+## Projects
+
+Apps, domains and Faable Auth tenants live in a **project**. Commands that act on a whole project — listing apps, `apps create`, `usage`, `quota`, `faable auth` — use the active one:
+
+```bash
+faable project list                  # your projects (--mine: only the ones you own)
+faable project use                   # pick one from a list (type to filter)
+faable project use "My project"      # by name, slug or id
+faable project use -                 # back to the previous one
+faable project                       # which one is active, and why
+faable project clear
+```
+
+For a single command, pass `--project` (`-p`) or set `FAABLE_PROJECT` — both take an id, name or slug and win over the stored one. Commands about one app always use that app's own project.
+
 ## Project Setup
 
 ### Link
@@ -175,6 +190,7 @@ Runtime logs of the app (last 24 hours), or the **build output** of a deployment
 faable deploy logs             # runtime logs of whatever is serving now
 faable deploy logs --build     # build output of the latest deployment
 faable deploy logs --build --follow          # tail the build that is running right now
+faable deploy logs --build -n 100            # only the last 100 lines — where a failure says why
 
 faable deploy logs -d deployment_a1b2c3          # runtime logs of THAT deployment
 faable deploy logs --build -d deployment_a1b2c3  # its build output
@@ -236,13 +252,24 @@ The deployment id comes from `faable deploy deployments`, from a deploy that jus
 
 The suggested commands always name the app with `-a`, so you can copy any of them into any terminal — they do not depend on being run inside the app's repository.
 
-### List
+### Traffic
 
-All your apps at a glance:
+What the edge served for the app: status codes, the busiest paths and the failing ones. Edge data trails reality by up to 15 minutes.
 
 ```bash
-faable deploy list
+faable deploy traffic                 # last 24 hours
+faable deploy traffic --since 7d      # 30m, 24h, 7d…
+faable deploy traffic -d deployment_a1b2c3   # only what one deployment served
 ```
+
+### Usage and quota
+
+```bash
+faable deploy usage     # this billing period: plan, apps, domains, deployments, egress
+faable deploy quota     # today's deploy allowance, and builds held waiting for it
+```
+
+A build held by the daily quota is waiting, not failing: it rolls out when the allowance resets.
 
 ### Open
 
@@ -252,6 +279,37 @@ Jump to the live app (or its dashboard page) in the browser:
 faable deploy open
 faable deploy open --dashboard
 ```
+
+## Apps
+
+```bash
+faable deploy apps list                    # the apps of the active project
+faable deploy apps get --app shop-api      # one app: what is live, latest deployment, stack
+```
+
+`--app` takes an app **id, name or slug**. A name or slug is looked up among the apps of the active project and must match exactly one.
+
+### Create an app from a repository
+
+```bash
+faable deploy apps create --repo acme/shop-api
+faable deploy apps create --repo acme/monorepo --name api --branch release
+```
+
+This is the dashboard's **Create & connect**: it creates the app in the active project, links the GitHub repository and starts the first deploy. `--repo` takes `owner/repo` or the repository URL; the name defaults to the repository's. Pass `--no-deploy` to only link.
+
+Linking needs the **Faable GitHub App** installed on the repository. If the link fails, the app the command just created is removed again, and the error says why — install the app, then run the same command again.
+
+### Change how an app deploys
+
+```bash
+faable deploy apps set --branch release           # deploy from another branch
+faable deploy apps set --root-dir apps/web        # a monorepo app
+faable deploy apps set --root-dir ""              # back to faable.json's rootDir
+faable deploy apps set --mode push                # push | ci | workflow
+```
+
+`push` deploys every push, `ci` deploys once your CI tags a release, `workflow` leaves deploying to your own GitHub workflow. The new settings apply to the next deploy — start one with `faable deploy trigger`.
 
 ## Secrets
 
@@ -315,6 +373,16 @@ faable deploy secrets set -f .env NODE_ENV=production
 
 > [!NOTE]
 > A `.env` usually holds your **local** values. Check it before uploading — or keep a separate `.env.production` for the app.
+
+### Set from stdin
+
+`-f -` reads the variables from standard input, so the values never appear on the command line (where `ps` and shell history can see them):
+
+```bash
+op read op://vault/shop-api/env | faable deploy secrets set -f -
+```
+
+Use the short `-f`: on Node.js 22 and later, `--env-file` followed by a path that does not exist is intercepted by Node itself before the CLI runs.
 
 ### List
 
@@ -504,7 +572,7 @@ Some patterns cannot be ruled on, and the CLI tells you why instead of accepting
 
 ## Faable Auth
 
-Manage a Faable Auth tenant from the terminal: `faable auth <users|actions|clients|logs>`. Commands reuse your `faable login` session. Every subcommand accepts `--auth-url https://<account>.auth.faable.link` (env `FAABLE_AUTH_URL`) to target your tenant, and read commands accept `--json` for a machine-clean output you can pipe to `jq`.
+Manage a Faable Auth tenant from the terminal: `faable auth <users|actions|clients|logs>`. Commands reuse your `faable login` session and act on the tenant of the [active project](#projects); with several, `faable auth accounts list` shows them and `faable auth use <account>` picks one. To target a tenant directly, pass `--account <id>` or `--auth-url https://<account>.auth.faable.link` (env `FAABLE_AUTH_ACCOUNT` / `FAABLE_AUTH_URL`). Every command accepts `--json`.
 
 ### Users
 
@@ -530,7 +598,7 @@ faable auth users suspend user_a user_b user_c -y -r "abuse wave"
 
 # Bulk: pipe ids from a filtered listing
 faable auth users list --query email_verified:false --json \
-  | jq -r '.[].id' \
+  | jq -r '.data[].id' \
   | faable auth users suspend -y -r "unverified batch"
 ```
 
@@ -546,7 +614,7 @@ faable auth users reinstate user_a user_b -y
 
 # Bulk: pipe ids from a filtered listing
 faable auth users list --suspended --json \
-  | jq -r '.[].id' \
+  | jq -r '.data[].id' \
   | faable auth users reinstate -y
 ```
 
@@ -591,6 +659,38 @@ faable auth logs get log_xyz                       # full entry, including its d
 
 `--since`/`--until` take unix-millis or `YYYY-MM-DD` dates. `--origin` matches a subsystem prefix (`oauth` matches every `oauth.*` event), `-q` searches the log message text.
 
+## Scripting and agents
+
+The CLI is built to be driven by scripts, CI and AI agents. Data goes to **stdout** and messages to **stderr**, and every command accepts `--json`:
+
+- **Listings** return `{"object": "list", "data": [...], "has_more": bool, "next_cursor": string | null}`. Page with `--limit` (1-200) and `--starting-after <next_cursor>`, or fetch everything with `--all`.
+- **Writes** return what they changed — the new deployment, the domain with the CNAME to create, the secret names that were added or updated (never their values). A write with nothing to do returns `{"result": "noop", "reason": "..."}`.
+- **Failures** exit with status 1 and print `{"error": {"message", "code", "status", "action"}}` on stderr.
+
+| `code` | Meaning |
+| :-- | :-- |
+| `not_logged_in` | No credentials — run `faable login` (or set `FAABLE_TOKEN`) |
+| `session_expired` | The session is no longer valid — run `faable login` |
+| `account_suspended` | The account cannot sign in |
+| `apikey_session` | The command needs a browser session, not an API key |
+| `forbidden` / `not_found` | No access to that resource, or it does not exist |
+| `confirmation_required` | A destructive command ran without `--yes` and nobody could confirm it |
+| `app_required` | The command needs `--app` |
+| `usage` | The command line itself is wrong |
+
+Any other `code` comes from the Faable API (for example `repository_already_linked`) and is stable too.
+
+### Non-interactive mode
+
+Set `FAABLE_NONINTERACTIVE=1` (or pass `--non-interactive`) whenever a program runs the CLI:
+
+- nothing prompts: a command that would ask for confirmation fails with `confirmation_required` unless it has `--yes`;
+- the app is never guessed from the working directory — pass `--app`;
+- `faable deploy launch` needs `--app`, `--workdir` and `--yes`, so an agent cannot upload the wrong directory to the wrong app;
+- errors are JSON, as with `--json`.
+
+CI keeps working without it: in GitHub Actions `faable deploy` authenticates with OIDC and deploys unattended as before.
+
 ## Command Reference
 
 | Command                       | Description                                                                           |
@@ -598,20 +698,27 @@ faable auth logs get log_xyz                       # full entry, including its d
 | `faable login`                | Authenticate with Faable                                                              |
 | `faable whoami`               | Show current user                                                                     |
 | `faable logout`               | End the local session                                                                 |
+| `faable project`              | Show, list, pick (`use`) or clear the active project                                  |
 | `faable deploy`               | Deploy project to production (alias of `faable deploy launch`)                        |
 | `faable deploy launch`        | The deploy itself — `--app` to target another app, `--workdir` to deploy elsewhere    |
 | `faable deploy trigger`       | Build the repo HEAD server-side (no upload)                                           |
 | `faable deploy redeploy`      | Retry a failed deployment from its source                                             |
 | `faable deploy cancel`        | Stop a deployment that is still queued or building                                    |
 | `faable deploy status`        | What is live: phase, URL, stack, latest deploy                                        |
+| `faable deploy traffic`       | Status codes, top and failing paths (`--since 7d`)                                    |
+| `faable deploy usage`         | This billing period's usage of the project                                            |
+| `faable deploy quota`         | Today's deploy allowance and held builds                                              |
 | `faable deploy logs`          | Runtime logs (`--build` for build output, `--build --follow` to tail a running build) |
 | `faable deploy deployments`   | Recent deployments with phases and commits                                            |
 | `faable deploy inspect`       | Full record of one deployment by id (`--json` for the raw one)                        |
-| `faable deploy list`          | List your apps                                                                        |
+| `faable deploy apps list`     | List the apps of the active project                                                   |
+| `faable deploy apps get`      | One app: what is live, latest deployment, stack                                       |
+| `faable deploy apps create`   | Create an app from a GitHub repository and start its first deploy                     |
+| `faable deploy apps set`      | Change the deploy branch, root directory or deploy mode                               |
 | `faable deploy open`          | Open the live app (`--dashboard` for the console)                                     |
 | `faable deploy link`          | Link directory to a Faable app                                                        |
 | `faable deploy secrets list`  | List app secrets (masked, `--show`)                                                   |
-| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs, or a whole file with `--env-file`                   |
+| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs, a whole file with `--env-file`, or stdin (`-f -`)   |
 | `faable deploy secrets rm`    | Remove a secret by name                                                               |
 | `faable deploy domains list`  | List custom domains and their DNS state                                               |
 | `faable deploy domains add`   | Add a domain (prints the CNAME to set)                                                |
