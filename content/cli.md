@@ -659,6 +659,36 @@ faable auth logs get log_xyz                       # full entry, including its d
 
 `--since`/`--until` take unix-millis or `YYYY-MM-DD` dates. `--origin` matches a subsystem prefix (`oauth` matches every `oauth.*` event), `-q` searches the log message text.
 
+## MCP server
+
+`faable mcp` runs the CLI as an [MCP](https://modelcontextprotocol.io) server over stdio, so an AI agent in your editor — Claude Code, Cursor, VS Code or any MCP client — can see your apps, read why a deploy failed, and deploy, without you pasting logs into the chat. It acts with your `faable login` session.
+
+```bash
+claude mcp add faable -- npx -y @faable/faable mcp
+```
+
+For other clients, add a stdio server that runs `npx -y @faable/faable mcp`.
+
+By default the server exposes **reads plus one deploy**:
+
+| Tool | What the agent can do |
+| :-- | :-- |
+| `whoami`, `list_projects`, `list_apps`, `get_app` | Find the app you mean, see what is live |
+| `list_deployments`, `get_deployment`, `get_build_logs`, `get_runtime_logs` | Find out why a deploy failed or an app crashes |
+| `get_app_traffic`, `get_usage`, `get_quota` | Traffic, this period's usage, today's deploy allowance |
+| `list_domains`, `check_domain` | Custom domains and why one is not verified yet |
+| `list_secrets` | Which environment variables are set — names only |
+| `deploy_app` | Build and deploy the latest commit of the deploy branch, server-side |
+
+`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment` and `configure_repo`. Nothing destructive is exposed — deleting apps, domains or secrets stays in the CLI and the dashboard.
+
+What the server guarantees:
+
+- **Secret values never reach the agent.** `list_secrets` returns names; `set_secrets` sends values to Faable on stdin and returns only which names changed.
+- **Logs are data, not instructions.** Build output, runtime logs, commit messages and failure reasons are written by whoever deployed the code, so they come back explicitly marked as untrusted content.
+- **Nothing is guessed from your working directory.** Every tool names its app and project; the server never deploys "whatever is in this folder".
+- **Errors say what to do next** — for example, to run `faable login` when the session has expired.
+
 ## Scripting and agents
 
 The CLI is built to be driven by scripts, CI and AI agents. Data goes to **stdout** and messages to **stderr**, and every command accepts `--json`:
@@ -698,6 +728,7 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 | `faable login`                | Authenticate with Faable                                                              |
 | `faable whoami`               | Show current user                                                                     |
 | `faable logout`               | End the local session                                                                 |
+| `faable mcp`                  | Run the Faable MCP server over stdio (`--writes` for the reversible writes)           |
 | `faable project`              | Show, list, pick (`use`) or clear the active project                                  |
 | `faable deploy`               | Deploy project to production (alias of `faable deploy launch`)                        |
 | `faable deploy launch`        | The deploy itself — `--app` to target another app, `--workdir` to deploy elsewhere    |
