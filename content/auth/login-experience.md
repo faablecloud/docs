@@ -109,6 +109,21 @@ The checkbox only shortens or extends the session cookie on your auth domain. It
 
 Over the API the setting is `login_methods.remember_me` (`off` or `optional`) and `remember_me_days`; the forms send `remember_me: true|false` when the box is shown.
 
+## Light and dark
+
+The hosted screens come in light and dark. By default (**System**) they follow the visitor's device, and a small switch in the footer lets the visitor change it — the choice is remembered on that browser, for your auth domain.
+
+If your application's own pages are only light or only dark, the login should match them. Under **Login Experience → Theme of the login screens**, pick **Light** or **Dark** to force it: the screens always use that theme and the switch is hidden, since it could not change anything. Over the API it is `login_methods.theme`: `system` (the default), `light` or `dark`.
+
+A single login can force it too, with `theme=light` or `theme=dark` on `/authorize` — see [Forcing light or dark](hosted-login.mdx#forcing-light-or-dark). When more than one says something, the strongest wins:
+
+1. `theme` on `/authorize`, for that login;
+2. the client's `login_methods.theme`, else the account's;
+3. the visitor's choice with the switch;
+4. the visitor's device.
+
+In dark, your logo is shown on a white pill, because most logos are drawn for a white background.
+
 ## Per-client overrides
 
 Every setting on this page is a tenant default that a client can override for its own login screen — the method order, whether passkeys are offered, whether users are invited to create one. Open the client under **Clients → Login experience**; a client that sets nothing inherits what the account says, field by field.

@@ -144,16 +144,32 @@ Each method in `login_methods` must be one the client already offers — anythin
 
 `login_methods` changes what the screen shows. It does not stop someone from using another method the client offers by calling the API directly: to take a method away for good, remove it from the client in [Login Experience](login-experience.md#per-client-overrides).
 
+## Forcing light or dark
+
+The screens follow the visitor's light or dark preference unless you [set a theme](login-experience.md#light-and-dark) for the account or the client. To force one for a particular login — a page of your app that is always dark, say — pass `theme` to `/authorize`:
+
+```ts
+// The same client; this login always shows the dark screens.
+auth.authorize({ response_type: 'code', queryParams: { theme: 'dark' } })
+```
+
+```
+https://<your-auth-domain>/authorize?client_id=<your-client-id>&theme=dark&…
+```
+
+`theme` takes `light` or `dark`; anything else is refused with `400`. It applies to every screen of that login — the email, the password, the second factor — not only the first, and it hides the visitor's light/dark switch. It is not sent on to a social provider such as Google or GitHub.
+
 ## Making them yours
 
-| What                                             | Where                                                                     |
-| ------------------------------------------------ | ------------------------------------------------------------------------- |
-| Logo and icon                                    | **Branding** in the dashboard — used as the header of every screen        |
-| Which methods, in what order, passkeys on or off | [Login Experience](login-experience.md), per account and per client       |
-| Fewer methods for one particular login           | [`login_methods` on `/authorize`](#showing-only-some-methods)             |
-| The order the screens run in                     | [Login Flows](login-flows.md)                                             |
-| Your own domain in the address bar               | [Custom Domain](custom-domain.md)                                         |
-| Language                                         | Served in English or Spanish, chosen from the browser's `Accept-Language` |
+| What                                             | Where                                                                                                                      |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| Logo and icon                                    | **Branding** in the dashboard — used as the header of every screen                                                         |
+| Which methods, in what order, passkeys on or off | [Login Experience](login-experience.md), per account and per client                                                        |
+| Fewer methods for one particular login           | [`login_methods` on `/authorize`](#showing-only-some-methods)                                                              |
+| Light or dark                                    | [Login Experience](login-experience.md#light-and-dark), or [`theme` on `/authorize`](#forcing-light-or-dark) for one login |
+| The order the screens run in                     | [Login Flows](login-flows.md)                                                                                              |
+| Your own domain in the address bar               | [Custom Domain](custom-domain.md)                                                                                          |
+| Language                                         | Served in English or Spanish, chosen from the browser's `Accept-Language`                                                  |
 
 <Callout type="info">
   Because a passkey is bound to its origin, move to a custom domain **before**
