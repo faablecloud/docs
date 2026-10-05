@@ -4,6 +4,7 @@ export default {
   guides: 'Guides & Migrations',
   domains: 'Custom Domains',
   members: 'Members & Roles',
+  organizations: 'Organizations & SSO',
   runtime: 'Runtime',
   http3: 'HTTP/3',
   images: 'Image Optimization',

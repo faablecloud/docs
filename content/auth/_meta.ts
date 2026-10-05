@@ -22,6 +22,7 @@ export default {
   'email-sending': 'Email Sending',
   'phone-verification': 'Phone Verification',
   'team-invitations': 'Team Invitations',
+  organizations: 'Organizations & Enterprise SSO',
   'suspend-users': 'Suspend Users',
   sessions: 'Sessions',
   mfa: 'Two-Step Verification',

@@ -175,6 +175,10 @@
     "modified": "2026-07-16T12:45:45+02:00",
     "published": "2026-05-16T11:42:20+02:00"
   },
+  "content/auth/organizations.md": {
+    "published": "2026-10-05T15:43:47.492Z",
+    "modified": "2026-10-05T15:43:47.492Z"
+  },
   "content/auth/passwordless.mdx": {
     "published": "2026-04-08T20:16:59+02:00",
     "modified": "2026-09-24T13:08:34.514Z"
@@ -442,6 +446,10 @@
   "content/deploy/members.md": {
     "published": "2026-09-30T12:05:49.351Z",
     "modified": "2026-09-30T12:05:49.351Z"
+  },
+  "content/deploy/organizations.md": {
+    "published": "2026-10-05T15:43:47.492Z",
+    "modified": "2026-10-05T15:43:47.492Z"
   },
   "content/deploy/pricing.md": {
     "published": "2026-03-31T11:42:44+02:00",
