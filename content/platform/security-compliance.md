@@ -5,7 +5,7 @@ description: How Faable Cloud protects your applications and data — European i
 
 # Security and Compliance
 
-**Last updated:** 24 September 2026
+**Last updated:** 6 October 2026
 
 This page describes the security controls that are actually in place on the Faable platform, and the compliance scope we can document. If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
 
@@ -85,59 +85,7 @@ Backups are compressed, encrypted in transit, and stored in a separate account f
 
 ## Compliance
 
-### Compliance scope
-
-What Faable holds today, and what it does not. For anything marked **Ask Sales**, write to [support@faable.com](mailto:support@faable.com): tell us what your procurement needs and we will answer with what we can document, or where it stands on our roadmap.
-
-| Framework / assurance        | Status                                                                                                         |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| GDPR (EU processor, DPA)     | ✅ Compliant — [details below](#gdpr)                                                                          |
-| EU data residency            | ✅ All workloads and identities stay in Europe — [where your data runs](#where-your-data-runs)                 |
-| Data Processing Agreement    | ✅ [Section 10 of the Privacy Policy](privacy-policy.md#10-data-you-process-through-faable-our-processor-role) |
-| PCI DSS (card payments)      | ✅ Out of scope: card data goes to a PCI DSS Level 1 provider, never to Faable                                 |
-| Security questionnaires      | ✅ On request — [Ask Sales](mailto:support@faable.com?subject=Security%20questionnaire)                        |
-| SOC 2                        | [Ask Sales](mailto:support@faable.com?subject=SOC%202)                                                         |
-| ISO 27001                    | [Ask Sales](mailto:support@faable.com?subject=ISO%2027001)                                                     |
-| HIPAA (BAA)                  | [Ask Sales](mailto:support@faable.com?subject=HIPAA%20BAA)                                                     |
-| Third-party penetration test | [Ask Sales](mailto:support@faable.com?subject=Penetration%20test)                                              |
-
-**European frameworks**
-
-| Framework                                     | Status                                                                                                                                                                                                                                                                                                                                                                                      |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NIS2 Directive (EU 2022/2555)                 | No certificate exists under NIS2. Supplier security clauses for customers in scope — [Ask Sales](mailto:support@faable.com?subject=NIS2)                                                                                                                                                                                                                                                    |
-| DORA (EU 2022/2554), for financial entities   | ICT third-party contractual terms (Art. 30) — [Ask Sales](mailto:support@faable.com?subject=DORA)                                                                                                                                                                                                                                                                                           |
-| EU Data Act (EU 2023/2854), cloud switching   | Your data can leave: users with their password hashes ([export](../auth/guides/import-password-hashes.mdx#export)), apps from your own Git repository. Contract terms — [Ask Sales](mailto:support@faable.com?subject=Data%20Act)                                                                                                                                                           |
-| Digital Omnibus (EU proposal)                 | Not in force: its data part (changes to GDPR, ePrivacy, NIS2 and DORA) is [still being negotiated](https://www.europarl.europa.eu/legislative-train/theme-a-new-plan-for-europe-s-sustainable-prosperity-and-competitiveness/file-digital-package). We will adapt when it is adopted; nothing on this page depends on it — [Ask Sales](mailto:support@faable.com?subject=Digital%20Omnibus) |
-| EUCS (EU Cloud Services certification scheme) | [Ask Sales](mailto:support@faable.com?subject=EUCS)                                                                                                                                                                                                                                                                                                                                         |
-
-**National schemes**
-
-| Scheme                                                   | Status                                                     |
-| -------------------------------------------------------- | ---------------------------------------------------------- |
-| ENS — Esquema Nacional de Seguridad (Spain, RD 311/2022) | [Ask Sales](mailto:support@faable.com?subject=ENS)         |
-| BSI C5 (Germany)                                         | [Ask Sales](mailto:support@faable.com?subject=BSI%20C5)    |
-| SecNumCloud (France)                                     | [Ask Sales](mailto:support@faable.com?subject=SecNumCloud) |
-
-### GDPR
-
-Faable is built for GDPR compliance rather than retrofitted to it: European company, European infrastructure, European supervisory authority. Concretely, we:
-
-- process customer data as a **processor** on your documented instructions, under the DPA in [section 10 of the Privacy Policy](privacy-policy.md#10-data-you-process-through-faable-our-processor-role);
-- publish a [sub-processor list](privacy-policy.md#7-sub-processors) and the safeguards for any transfer outside the EEA;
-- notify you **without undue delay** of a personal data breach affecting your data;
-- assist you with access, erasure, and portability requests from your own users;
-- apply the technical and organisational measures described on this page.
-
-### Payment card data
-
-**We never see or store your card details.** Payments run through the hosted checkout of a PCI DSS Level 1 certified payment provider; card data goes directly to them.
-
-### Certifications
-
-For SOC 2, ISO 27001, a third-party penetration test report or any other certification your procurement asks for, [ask sales](mailto:support@faable.com?subject=Certifications) — we answer with what we can document and where it stands on our roadmap. The [compliance scope](#compliance-scope) above lists each framework.
-
-What we can show today is described on this page: European infrastructure under our control, tenant isolation, GitOps-audited change management, managed edge filtering, encrypted backups, and a GDPR posture we can document. We are also happy to complete a security questionnaire, sign a DPA, and answer architecture questions directly.
+Faable is GDPR-compliant on every plan, with a DPA and all workloads and identities kept in Europe. Compliance support — security questionnaires, documentation and the supplier terms for SOC 2, ISO 27001, NIS2, DORA, ENS and other frameworks — is **included in the Pro plan**. The full scope, framework by framework, is on the [Compliance](compliance.md) page.
 
 ## Reporting a vulnerability
 
@@ -168,6 +116,7 @@ If an incident affects the confidentiality, integrity, or availability of your d
 
 ## Related
 
+- [Compliance](compliance.md) — GDPR, the DPA, and the frameworks included in Pro
 - [Privacy Policy](privacy-policy.md) — what we collect, why, and for how long
 - [Terms of Service](terms-of-service.md) — acceptable use, liability, termination
 - [Web Application Firewall](../deploy/security-waf.md) — how edge filtering works and how to tune it
