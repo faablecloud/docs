@@ -1,42 +1,66 @@
 ---
 title: Faable Deploy vs Fly.io
-description: How Faable Deploy compares to Fly.io for deploying containerized apps. Faable is a zero-config, 100% European, GDPR-compliant platform with a built-in WAF and bundled authentication, focused on simplicity over low-level infrastructure control.
+description: How Faable Deploy compares to Fly.io. Push to Git and ship with zero config — no fly.toml or machine sizing — plus a permanent free plan, a built-in WAF, bundled authentication, a fixed monthly fee in EUR and 100% European hosting under GDPR.
 rank: high
 ---
 
 # Faable Deploy vs Fly.io
 
-**Short answer:** Faable Deploy and Fly.io both run apps in containers close to your users, but they sit at different levels of abstraction. Fly.io gives you fine-grained control over machines, regions, and networking — powerful, but more to manage. Faable Deploy is **zero-config**: push to Git and it builds and serves your app, with a **built-in Web Application Firewall**, **100% European hosting under GDPR**, **EUR pricing**, and **bundled [Faable Auth](../auth/get-started.md)** — trading low-level control for simplicity.
+**Short answer:** Fly.io is infrastructure you configure; Faable Deploy is a platform that configures itself. On Fly.io you write a `fly.toml`, size machines, pick regions and pay for each of them by the second. On Faable you push to GitHub and your app is live — built, served over SSL, behind a **Web Application Firewall**, with **[Faable Auth](../auth/get-started.md) in the same subscription**, on a **permanent free plan** or a **fixed monthly fee in EUR**, and **100% hosted in Europe under GDPR**.
 
 ## Quick comparison
 
-| Capability                                  | Faable Deploy                     | Fly.io                          |
-| ------------------------------------------- | --------------------------------- | ------------------------------- |
-| Deploy from Git, zero config                | ✅                                | Config-driven (`fly.toml`, CLI) |
-| Frontend & backend (Linux containers)       | ✅                                | ✅ (Firecracker microVMs)       |
-| Free automatic SSL                          | ✅                                | ✅                              |
-| Built-in Web Application Firewall (WAF)     | ✅ OWASP CRS, included            | ❌ (DIY)                        |
-| Autoscaling                                 | ✅                                | ✅ (configurable)               |
-| Low-level infra control (regions, machines) | Abstracted away                   | ✅ Fine-grained                 |
-| 100% European hosting + GDPR sovereignty    | ✅                                | US-based; EU regions available  |
-| Bundled identity / auth                     | ✅ Faable Auth, same subscription | ❌                              |
-| Pricing currency                            | EUR                               | USD                             |
+|                                                                | **Faable Deploy**                                         | Fly.io                                       |
+| -------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------- |
+| Getting an app live                                            | Push to GitHub — zero config                              | `fly launch`, `fly.toml`, CLI deploys        |
+| Language detection                                             | ✅ Node.js, Python, PHP; Dockerfile on Hobby+             | Dockerfile or generated config               |
+| Permanent free plan                                            | ✅ no card, no expiry                                     | ❌ time-limited trial                        |
+| Pricing model                                                  | **Fixed fee per project**: 0 €, 15 €, 99 €/month          | Pay-as-you-go per machine, volume, IP and GB |
+| Traffic billing                                                | Included; only Pro meters beyond 100 GB                   | Egress billed per GB                         |
+| Scale to zero and wake on request                              | ✅ automatic                                              | ✅ configurable                              |
+| Free automatic SSL                                             | ✅                                                        | ✅                                           |
+| Built-in Web Application Firewall                              | ✅ OWASP CRS, every plan                                  | ❌ bring your own                            |
+| Bundled identity / auth (OAuth 2.0, OIDC)                      | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free | ❌                                           |
+| Support                                                        | Email from platform engineers on Hobby and Pro            | Community; paid support plans from $29/month |
+| Low-level control (regions, machine types, private networking) | Abstracted away                                           | ✅ fine-grained                              |
+| Company and infrastructure                                     | 🇪🇺 European                                               | US company, EU regions available             |
+| Currency                                                       | EUR                                                       | USD                                          |
 
-> Competitor capabilities change frequently — always confirm current details on each vendor's own pricing and docs.
+> Competitor figures checked against Fly.io's official pricing and docs in late September 2026. They change often — confirm on their pages before you decide.
 
-## When Faable Deploy is the better fit
+## Why teams pick Faable Deploy over Fly.io
 
-- **You want simplicity over control.** Push to deploy, no `fly.toml`, machine sizing, or region orchestration to manage.
-- **You need European data sovereignty** under GDPR with EUR billing.
-- **You want security and auth included** — a [built-in WAF](security-waf.md) and [Faable Auth](../auth/get-started.md) in one [subscription](pricing.md).
-- **You ship standard web apps and AI agents** and don't need microVM-level tuning.
+### Nothing to configure
+
+There is no `fly.toml`, no machine size to choose and no region list to maintain. Faable detects Django, FastAPI, Flask, Express, Fastify, NestJS, Next.js, Astro, Vite, Laravel and plain PHP from your repository, builds them, and serves the result at `https://<app>.faable.link` — see [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx). Every push to your deploy branch ships the same way, from the GitHub integration, [your own CI](github-actions.md) or the [CLI](../cli.md).
+
+### A bill you know in advance
+
+Fly.io bills every running machine, volume, dedicated IPv4 address and gigabyte of egress, in USD. That is fair for infrastructure, but it means your invoice depends on how you sized things last month. Faable charges a **fixed monthly fee per project, never per user** — 15 €/month on Hobby with unlimited deployments, 50 GB of egress and Faable Auth with unlimited monthly active users. Free and Hobby never bill per GB. See [Deploy pricing](pricing.mdx).
+
+### A free plan that does not expire
+
+Fly.io replaced its free allowance with a short trial. Faable's [Free plan](pricing.mdx) is permanent and needs no credit card: up to 3 projects, an instance per project, custom domains, 50 deployments a day and 10 GB of egress a month. Idle apps sleep after 30 minutes and wake on the next request in a few seconds; static sites are served with no container and no cold start at all.
+
+### Security and identity included
+
+Every app is protected by a [managed Web Application Firewall](security-waf.md) running the OWASP Core Rule Set — no proxy to deploy in front of your app. When you need sign-in, [Faable Auth](../auth/get-started.md) gives you hosted login, social and passwordless login, MFA, passkeys and machine-to-machine tokens in the same account.
+
+### European company, European infrastructure
+
+Fly.io runs machines in European regions, but it is a US company. Faable is European end to end: **hosting is 100% European with full GDPR data sovereignty**, and your hosting and identity data sit with one European provider under one data-processing agreement. Support on Hobby and Pro comes directly from the engineers who build the platform — no support plan to buy.
+
+### Ready for AI apps and agents
+
+Streaming responses can run for minutes — the only limit is 60 seconds to the first byte — and [HTTP/3](http3.md) is on by default. See [Hosting AI agents in Europe](ai-agents.mdx), and let your coding agent manage deploys through the [Faable MCP server](../cli.md#mcp-server).
 
 ## When Fly.io might fit better
 
-- You want **granular control** over regions, machine sizes, and networking, and you're comfortable managing configuration.
-- You need specific low-level capabilities (custom Firecracker setups, advanced multi-region orchestration).
+- You need to place workloads in **specific regions around the world** and route between them yourself.
+- You run **persistent volumes, long-running workers or custom networking** and want to manage machines directly.
 
 ## Related
 
 - [Faable Deploy vs Vercel, Render & Railway](compare.mdx) · [Faable Deploy vs Heroku](compare-heroku.mdx)
-- [Get Started with Faable Deploy](get-started.md) · [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx)
+- [European alternatives to Vercel, Render and Railway](european-alternatives.mdx)
+- [Get Started with Faable Deploy](get-started.md) · [Deploy pricing](pricing.mdx)
