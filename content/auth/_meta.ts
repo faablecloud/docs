@@ -15,6 +15,7 @@ export default {
   protocolSeparator: { type: 'separator', title: 'Protocol' },
   'oauth-flows': 'OAuth 2.0 Flows',
   oidc: 'OpenID Connect',
+  saml: 'SAML for Your Apps',
   'validate-access-tokens': 'Validate Access Tokens',
   usersSeparator: { type: 'separator', title: 'Users & Sessions' },
   signup: 'Signup',

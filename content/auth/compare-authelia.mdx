@@ -31,7 +31,7 @@ If you're protecting Grafana, Sonarr or an internal dashboard behind Traefik, Au
 | Passwordless by email                    | ✅ magic link or code (Hobby and up)                                           | ❌                                                               |
 | Passkeys as the sign-in method           | ✅ (Pro)                                                                       | ✅ counts as a single factor                                     |
 | MFA                                      | Authenticator app, security keys, passkeys                                     | TOTP, WebAuthn/passkeys, Duo push                                |
-| SAML                                     | ❌ not yet — enterprise SSO over OIDC on Pro                                   | ❌ (in planning)                                                 |
+| SAML                                     | ✅ as IdP for your apps (Pro); inbound SAML not yet — enterprise SSO over OIDC | ❌ (in planning)                                                 |
 | Multi-tenant by design                   | ✅                                                                             | ❌ one instance, one directory                                   |
 | Extensibility in the login flow          | ✅ [Actions](extensibility/actions.md) + [Webhooks](extensibility/webhooks.md) | Configuration-driven rules                                       |
 | Hosted login pages                       | ✅ [managed and branded](#login-pages)                                         | ✅ the portal you host                                           |

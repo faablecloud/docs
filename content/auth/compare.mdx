@@ -28,7 +28,7 @@ Each option below is a strong identity solution; this page helps you pick by pri
 | SMS sign-in                 | ❌                                                                                                | ✅                                           | ✅ paid plans                                       | Via extensions                        |
 | Passkeys                    | ✅ sign-in (Pro) and second factor (Hobby)                                                        | ✅                                           | ✅ paid plans                                       | ✅ built in since 26.4                |
 | MFA                         | Authenticator app, security keys, passkeys                                                        | ✅ tiered: basic → adaptive                  | TOTP, SMS, backup codes (Pro)                       | TOTP, WebAuthn, recovery codes        |
-| Enterprise SSO / SAML       | ✅ OIDC on Pro — 50 federated MAU free, then €0.0010 each; no SAML yet                            | ✅ 1 connection free, $100/month each above  | ✅ 1 per app on Pro, $75/month each above           | ✅ as IdP and SP                      |
+| Enterprise SSO / SAML       | ✅ OIDC on Pro — 50 federated MAU free, then €0.0010 each; SAML as IdP, no inbound SAML yet       | ✅ 1 connection free, $100/month each above  | ✅ 1 per app on Pro, $75/month each above           | ✅ as IdP and SP                      |
 | B2B organizations           | [Organizations](organizations.md) with verified domains, SSO and auto-join (Pro); teams and roles | 5 free, unlimited on B2B tiers               | 100 free, then per org with the B2B add-on          | Realms; Organizations since 26        |
 | Custom code in the login    | [Actions](extensibility/actions.md) + webhooks                                                    | Actions (5–30 by tier)                       | Webhooks                                            | Java SPIs                             |
 | Hosted login pages          | ✅ [all plans](#hosted-login-pages)                                                               | ✅ Universal Login                           | ✅ Account Portal + components                      | ✅ themes you build                   |
@@ -100,7 +100,7 @@ There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk
 - **Auth0** has the deepest feature surface and tooling (Terraform, Deploy CLI, adaptive MFA, SAML as IdP) — a fit for enterprises already standardized on Okta.
 - **Clerk** has excellent React components for teams that want to design the auth UI inside their app and are happy with US hosting.
 - **Keycloak** is the choice when you want open-source identity on your own infrastructure and have the team to operate it.
-- **You need SAML, SMS login or Sign in with Apple today.** All three have them; Faable Auth doesn't yet.
+- **You need inbound SAML connections, SMS login or Sign in with Apple today.** All three have them; Faable Auth doesn't yet.
 
 ## Other alternatives at a glance
 

@@ -117,7 +117,7 @@ Your users' identities live on **our own hardware in a European datacenter** —
 
 Being explicit beats discovering it mid-integration:
 
-- **SAML.** Enterprise SSO works over OpenID Connect — Okta, Entra ID and Google Workspace all speak it. See [Organizations and Enterprise SSO](organizations.md).
+- **Inbound SAML connections.** A company's identity provider connects over OpenID Connect — Okta, Entra ID and Google Workspace all speak it. See [Organizations and Enterprise SSO](organizations.md). The other direction works: your tenant can be the [SAML identity provider of your apps](saml.md).
 - **Signing in with an SMS code.** Passwordless _login_ is email only. SMS is used for password recovery and phone verification on Hobby and Pro — see [Phone verification](phone-verification.md).
 - **Sign in with Apple**, which requires a client secret signed as an ES256 JWT — not supported through custom OAuth connections yet.
 
@@ -129,7 +129,7 @@ Yes — Faable Auth is included in every plan, starting on **Free**: hosted logi
 
 ### Does Faable Auth support MFA, SSO or SAML?
 
-MFA and enterprise SSO yes, SAML not yet. [Enterprise SSO](organizations.md) connects each customer company's identity provider over OpenID Connect, found by email domain, on Pro: 50 federated MAU a month included, then €0.0010 each. [Two-step verification](mfa.md) is built in — authenticator app codes, security keys and passkeys — with a hosted enrolment and challenge, and a policy you set per account or per client. Passkeys can also replace the password entirely, and the hosted login can [invite users to create one](login-experience.md#inviting-users-to-create-a-passkey) right after they sign in. There is still no SAML connector; an enterprise IdP that speaks OIDC connects fine.
+MFA and enterprise SSO yes, and SAML as the identity provider of your apps. [Enterprise SSO](organizations.md) connects each customer company's identity provider over OpenID Connect, found by email domain, on Pro: 50 federated MAU a month included, then €0.0010 each. [Two-step verification](mfa.md) is built in — authenticator app codes, security keys and passkeys — with a hosted enrolment and challenge, and a policy you set per account or per client. Passkeys can also replace the password entirely, and the hosted login can [invite users to create one](login-experience.md#inviting-users-to-create-a-passkey) right after they sign in. On Pro your tenant can also be the [SAML identity provider](saml.md) of applications that only accept SAML, such as Slack or Notion. There is still no inbound SAML connector; an enterprise IdP that speaks OIDC connects fine.
 
 ### Can I use Faable Auth without Faable Deploy?
 
