@@ -43,7 +43,7 @@ This is the most important distinction in this document, because Faable handles 
 | **Product analytics**               | Pages viewed, features used, pseudonymous device/session identifier                                                   | Understand which parts of the product and documentation work                                        | Consent (see [Cookies](#12-cookies-and-similar-technologies))        |
 | **Marketing analytics**             | Campaign source, landing page, conversion events on our public websites                                               | Measure which acquisition channels bring people to Faable                                           | Consent                                                              |
 
-**We never receive your full card number.** Payments run through our payment provider's hosted checkout; card data goes directly to them and never touches Faable's systems (see [Security & Compliance](security-compliance.md)).
+**We never receive your full card number.** Payments run through our payment provider's hosted checkout; card data goes directly to them and never touches Faable's systems (see [Security](security-compliance.md)).
 
 ## 4. What we do _not_ do
 
@@ -124,7 +124,7 @@ When you use Faable Auth to authenticate your own users, or deploy an applicatio
 
 - We act only on your documented instructions, including for international transfers.
 - Our staff are bound by confidentiality.
-- We apply the technical and organisational measures described in [Security & Compliance](security-compliance.md).
+- We apply the technical and organisational measures described in [Security](security-compliance.md).
 - We use only the sub-processors listed in section 7, under equivalent contractual obligations.
 - We assist you with end-user rights requests, with data protection impact assessments, and with breach notifications.
 - We notify you **without undue delay** after becoming aware of a personal data breach affecting your data.
@@ -136,7 +136,7 @@ When you use Faable Auth to authenticate your own users, or deploy an applicatio
 
 ## 11. Security
 
-We run European infrastructure under our own control, keep customer workloads on a separate cluster from the platform control plane, encrypt data in transit and at rest, take hourly database backups retained for 30 days in encrypted European storage, filter hostile traffic at the edge, and apply least-privilege access controls internally. The full description — including the certifications we do **not** hold — is in [Security & Compliance](security-compliance.md).
+We run European infrastructure under our own control, keep customer workloads on a separate cluster from the platform control plane, encrypt data in transit and at rest, take hourly database backups retained for 30 days in encrypted European storage, filter hostile traffic at the edge, and apply least-privilege access controls internally. The full description — including the certifications we do **not** hold — is in [Security](security-compliance.md).
 
 No system is perfectly secure. If you discover a vulnerability, report it to [support@faable.com](mailto:support@faable.com) and we will work with you on it.
 
@@ -166,4 +166,4 @@ We may update this Policy as the Services evolve. Material changes will be annou
 Questions about this Policy, or about how your data is handled:
 **[privacy@faable.com](mailto:privacy@faable.com)**
 
-See also: [Terms of Service](terms-of-service.md) · [Security & Compliance](security-compliance.md)
+See also: [Terms of Service](terms-of-service.md) · [Security](security-compliance.md) · [Compliance](compliance.md)

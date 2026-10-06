@@ -160,4 +160,4 @@ Questions about this Agreement: **[support@faable.com](mailto:support@faable.com
 Data protection questions: **[privacy@faable.com](mailto:privacy@faable.com)**
 Reporting abuse hosted on Faable: **[abuse@faable.com](mailto:abuse@faable.com)** — see [how to report abuse](security-compliance.md)
 
-See also: [Privacy Policy](privacy-policy.md) · [Security & Compliance](security-compliance.md) · [Pricing](pricing.md)
+See also: [Privacy Policy](privacy-policy.md) · [Security](security-compliance.md) · [Compliance](compliance.md) · [Pricing](pricing.md)

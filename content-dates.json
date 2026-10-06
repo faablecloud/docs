@@ -89,7 +89,7 @@
   },
   "content/auth/features.mdx": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-09-24T13:08:34.514Z"
+    "modified": "2026-10-06T09:44:56.755Z"
   },
   "content/auth/get-started.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -497,11 +497,11 @@
   },
   "content/platform/privacy-policy.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-09-15T18:25:27.649Z"
+    "modified": "2026-10-06T09:44:56.755Z"
   },
   "content/platform/security-compliance.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-10-06T09:40:54.998Z"
+    "modified": "2026-10-06T09:44:56.755Z"
   },
   "content/platform/sla.md": {
     "published": "2026-10-06T09:36:28.761Z",
@@ -509,6 +509,6 @@
   },
   "content/platform/terms-of-service.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-10-06T09:36:28.761Z"
+    "modified": "2026-10-06T09:44:56.755Z"
   }
 }

@@ -1,13 +1,13 @@
 ---
-title: Security and Compliance
-description: How Faable Cloud protects your applications and data — European infrastructure, tenant isolation, edge filtering, encryption, backups, and our honest compliance posture.
+title: Security
+description: How Faable Cloud protects your applications and data — European infrastructure, tenant isolation, edge filtering, encryption, backups, change management, and how to report a vulnerability or abuse.
 ---
 
-# Security and Compliance
+# Security
 
 **Last updated:** 6 October 2026
 
-This page describes the security controls that are actually in place on the Faable platform, and the compliance scope we can document. If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
+This page describes the security controls that are actually in place on the Faable platform. For GDPR, the DPA and the frameworks your procurement may ask about, see [Compliance](compliance.md). If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
 
 ## Where your data runs
 
@@ -82,10 +82,6 @@ Backups are compressed, encrypted in transit, and stored in a separate account f
 | Managed WAF                                                 | [Faable Deploy](../deploy/security-waf.md)           | All plans    |
 | Automatic TLS certificates on custom domains                | [Custom domains](../deploy/domains/custom-domain.md) | All plans    |
 | Per-app secrets, injected at runtime                        | Faable Deploy                                        | All plans    |
-
-## Compliance
-
-Faable is GDPR-compliant on every plan, with a DPA and all workloads and identities kept in Europe. Compliance support — security questionnaires, documentation and the supplier terms for SOC 2, ISO 27001, NIS2, DORA, ENS and other frameworks — is **included in the Pro plan**. The full scope, framework by framework, is on the [Compliance](compliance.md) page.
 
 ## Reporting a vulnerability
 
