@@ -6,7 +6,7 @@ rank: low
 
 # Terms of Service
 
-**Last updated:** 24 September 2026
+**Last updated:** 6 October 2026
 
 These Terms of Service (this "Agreement") govern your access to and use of the Faable cloud platform — including our websites, dashboard, APIs, CLI, Faable Deploy, Faable Auth, and any related services (together, the "Services") — provided by **Faable Cloud SLU** ("Faable", "we", "us", "our").
 
@@ -72,7 +72,7 @@ The Services connect to third-party platforms — source control providers, iden
 
 ## 7. Availability, support, and beta features
 
-- **Uptime.** A **99.9 % uptime SLA applies only to the Pro plan**. It is the sole remedy for unavailability, and is provided as service credits under the terms published on the [Pricing](pricing.md) page.
+- **Uptime.** A **99.9 % uptime SLA applies only to the Pro plan**. It is the sole remedy for unavailability, and is provided as service credits under the [Service Level Agreement](sla.md).
 - **Support.** Support is included in your plan as described on the [Pricing](pricing.md) page: community support on Free, email support on Hobby and Pro. We do not guarantee a response time unless we have agreed one with you in writing.
 - **Maintenance.** We may perform maintenance that briefly interrupts the Services, and will give notice where reasonably practicable.
 - **Beta features.** Features marked beta, preview, or experimental are provided **as is**, may change or be withdrawn at any time, and carry no availability commitment or liability whatsoever.
