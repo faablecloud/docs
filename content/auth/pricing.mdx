@@ -12,11 +12,11 @@ Faable Auth is part of the unified Faable subscription — and it is **included 
 
 ## What each plan includes for Auth
 
-| Plan      | Auth entitlements                                                                                                                                                         |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | [Hosted login](hosted-login.mdx), users and sessions · database and social connections · RBAC and teams · **up to 15,000 MAU**, no credit card · 100 M2M tokens a month   |
-| **Hobby** | Everything in Free · **unlimited MAU** · two-step verification (MFA) · passwordless magic link and code login · custom login flows · Actions · webhooks · recovery by SMS |
-| **Pro**   | Everything in Hobby · **unlimited MAU** · custom domain for your login · biometric passkey login (Touch ID, Face ID) · audit logs · multiple auth accounts                |
+| Plan      | Auth entitlements                                                                                                                                                           |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | [Hosted login](hosted-login.mdx), users and sessions · database and social connections · RBAC and teams · **up to 15,000 MAU**, no credit card · 100 M2M tokens a month     |
+| **Hobby** | Everything in Free · **unlimited MAU** · two-step verification (MFA) · passwordless magic link and code login · custom login flows · Actions · webhooks · recovery by SMS   |
+| **Pro**   | Everything in Hobby · **unlimited MAU** · custom domain for your login · biometric passkey login (Touch ID, Face ID) · audit logs · multiple auth accounts · enterprise SSO |
 
 ## Monthly Active Users (MAU)
 
@@ -26,29 +26,29 @@ A **Monthly Active User** is any unique user who completes at least one successf
 - **Hobby** has **no MAU limit**.
 - **Pro** has **no MAU limit**, across every auth account on the subscription.
 
-There is no per-user line on any invoice. If a Free project grows past 15,000, we'll get in touch before anything changes.
+There is no per-user line on any invoice, with one exception on Pro: users who sign in through [enterprise SSO](#enterprise-sso) beyond the 50 included. If a Free project grows past 15,000, we'll get in touch before anything changes.
 
 ## Feature gating
 
-| Feature                                                            |  Free  |                Hobby                 |                 Pro                  |
-| ------------------------------------------------------------------ | :----: | :----------------------------------: | :----------------------------------: |
-| Hosted login pages                                                 |   ✅   |                  ✅                  |                  ✅                  |
-| Database (username/password) connection                            |   ✅   |                  ✅                  |                  ✅                  |
-| Social login                                                       |   ✅   |                  ✅                  |                  ✅                  |
-| RBAC, Teams                                                        |   ✅   |                  ✅                  |                  ✅                  |
-| [Password hash import & export](guides/import-password-hashes.mdx) |   ✅   |                  ✅                  |                  ✅                  |
-| Two-step verification (MFA)                                        |   —    |                  ✅                  |                  ✅                  |
-| Passwordless (OTP / Magic Link)                                    |   —    |                  ✅                  |                  ✅                  |
-| Custom [login flows](login-flows.md)                               |   —    |                  ✅                  |                  ✅                  |
-| [Actions](extensibility/actions.md)                                |   —    |                  ✅                  |                  ✅                  |
-| Webhooks                                                           |   —    |                  ✅                  |                  ✅                  |
-| Password recovery by SMS                                           |   —    |  20 SMS/mo incl. · €0.20/SMS after   |  20 SMS/mo incl. · €0.18/SMS after   |
-| [Machine-to-machine tokens](#machine-to-machine-tokens)            | 100/mo | 100/mo incl. · €2.25 per 1,000 after | 100/mo incl. · €2.25 per 1,000 after |
-| [Custom Domain](custom-domain.md)                                  |   —    |                  —                   |                  ✅                  |
-| Passkeys as the sign-in method                                     |   —    |                  —                   |                  ✅                  |
-| Audit logs                                                         |   —    |                  —                   |                  ✅                  |
-| Multiple auth accounts                                             |   —    |                  —                   |                  ✅                  |
-| Enterprise SSO / SAML                                              |   —    |                  —                   |             coming soon              |
+| Feature                                                            |  Free  |                Hobby                 |                    Pro                    |
+| ------------------------------------------------------------------ | :----: | :----------------------------------: | :---------------------------------------: |
+| Hosted login pages                                                 |   ✅   |                  ✅                  |                    ✅                     |
+| Database (username/password) connection                            |   ✅   |                  ✅                  |                    ✅                     |
+| Social login                                                       |   ✅   |                  ✅                  |                    ✅                     |
+| RBAC, Teams                                                        |   ✅   |                  ✅                  |                    ✅                     |
+| [Password hash import & export](guides/import-password-hashes.mdx) |   ✅   |                  ✅                  |                    ✅                     |
+| Two-step verification (MFA)                                        |   —    |                  ✅                  |                    ✅                     |
+| Passwordless (OTP / Magic Link)                                    |   —    |                  ✅                  |                    ✅                     |
+| Custom [login flows](login-flows.md)                               |   —    |                  ✅                  |                    ✅                     |
+| [Actions](extensibility/actions.md)                                |   —    |                  ✅                  |                    ✅                     |
+| Webhooks                                                           |   —    |                  ✅                  |                    ✅                     |
+| Password recovery by SMS                                           |   —    |  20 SMS/mo incl. · €0.20/SMS after   |     20 SMS/mo incl. · €0.18/SMS after     |
+| [Machine-to-machine tokens](#machine-to-machine-tokens)            | 100/mo | 100/mo incl. · €2.25 per 1,000 after |   100/mo incl. · €2.25 per 1,000 after    |
+| [Custom Domain](custom-domain.md)                                  |   —    |                  —                   |                    ✅                     |
+| Passkeys as the sign-in method                                     |   —    |                  —                   |                    ✅                     |
+| Audit logs                                                         |   —    |                  —                   |                    ✅                     |
+| Multiple auth accounts                                             |   —    |                  —                   |                    ✅                     |
+| [Enterprise SSO](#enterprise-sso) (OIDC)                           |   —    |                  —                   | 50 federated MAU/mo incl. · €0.0010 after |
 
 A passkey used as a **second factor** is part of two-step verification, so it is on Hobby. **Passkeys as the sign-in method** — Touch ID or Face ID instead of a password, see [Login Experience](login-experience.md#sign-in-with-a-passkey) — is Pro.
 
@@ -70,6 +70,14 @@ Every plan includes **100 machine-to-machine tokens a month** per project: succe
 Tokens issued between Faable's own services are not counted. Plans purchased before 24 September 2026 keep machine-to-machine tokens unmetered.
 
 **Keep the count low:** a token is valid for its `expires_in`. Cache it in your service and request a new one only when it is about to expire, instead of one per call.
+
+### Enterprise SSO
+
+On Pro, each of your B2B customers can sign in with its own identity provider — Okta, Entra ID, Google Workspace or any OpenID Connect provider — through an [organization](organizations.md) with verified email domains.
+
+- A **federated MAU** is a user who signs in at least once in a calendar month through an organization's identity provider. Social logins (Google, GitHub…) are not federated MAU.
+- Every Pro project includes **50 federated MAU a month**. Above that, each one costs **€0.0010**, per billing period. Nothing is cut off.
+- SAML is not available yet.
 
 ## Related
 

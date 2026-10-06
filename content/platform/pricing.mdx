@@ -10,10 +10,11 @@ Faable is sold as a **single subscription that covers every product** — both F
 
 Each tier is a **fixed monthly fee** that unlocks features and entitlements, and everything the tier includes — instances, deployments, users, egress — comes with the fee. There is never a per-user charge.
 
-**Three things are metered, only above what the plan includes:**
+**Four things are metered, only above what the plan includes:**
 
 - **Egress, on Pro:** 100 GB included, then 0.18 €/GB. Free and Hobby are not metered — their allowance (10 GB and 50 GB) is what the tier includes, and no per-GB line can appear on their invoice. See [Deploy pricing](../deploy/pricing.md#bandwidth).
 - **Recovery SMS, on Hobby and Pro:** 20 a month included, then per message. See [Auth pricing](../auth/pricing.mdx#sms).
+- **Enterprise SSO users, on Pro:** 50 federated MAU a month included, then €0.0010 each. See [Auth pricing](../auth/pricing.mdx#enterprise-sso).
 - **Machine-to-machine tokens, on Hobby and Pro:** 100 a month included, then €2.25 per 1,000. Free is capped at 100 and never needs a card. See [Auth pricing](../auth/pricing.mdx#machine-to-machine-tokens).
 
 Plans apply **per project**: each project has its own plan, starting on Free. An account can keep
@@ -28,7 +29,7 @@ frees a slot for another.
 | --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Free**  | 0 €         | Try Faable end-to-end, no credit card. Up to 3 projects per account, 1 free instance, up to 50 successful deployments per day, build artifacts up to 512 MB, 10 GB egress / month, Faable Auth with up to 15,000 MAU, community support. |
 | **Hobby** | 15 €        | Production-ready for a single product. Unlimited MAU, full instance catalog, unlimited deployments, build artifacts up to 2 GB, 50 GB egress / month, custom domains, email support.                                                     |
-| **Pro**   | 99 €        | Unlimited MAU, custom domain for your login, multiple auth accounts, 100 GB egress / month plus metered traffic beyond it, audit logs, 99.9 % uptime SLA.                                                                                |
+| **Pro**   | 99 €        | Unlimited MAU, enterprise SSO, custom domain for your login, multiple auth accounts, 100 GB egress / month plus metered traffic beyond it, audit logs, 99.9 % uptime SLA.                                                                |
 
 The fee unlocks the tier; the metered lines above are the only thing that can be added to it. The deep-dives below break down exactly what each plan includes per product.
 

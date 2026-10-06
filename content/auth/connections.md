@@ -26,7 +26,7 @@ Every connection has a `connection_type`. These are all of them:
 
 Those four **categories** (`database`, `social`, `passwordless`, `oidc`) are what the dashboard sidebar and the API filter on: `GET /connections?category=social`.
 
-> **Not available yet:** SMS one-time codes, SAML, and any pre-built enterprise SSO connector (Okta, Entra ID as an _enterprise_ connection rather than a social one). For an OIDC-compliant corporate IdP, a `custom` connection covers browser login today, as long as its userinfo endpoint returns `id`, `name` and `email`.
+> **Enterprise SSO:** a company's Okta, Entra ID or Google Workspace connects as an `oidc` connection bound to an [organization](organizations.md), found by email domain on the login screen (Pro). **Not available yet:** SMS one-time codes and SAML.
 
 ## What users sign in with
 
