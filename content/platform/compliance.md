@@ -24,28 +24,28 @@ Included in Pro describes what we give you, not a certificate we hold: where a f
 | PCI DSS (card payments)      | ✅ Out of scope: card data goes to a PCI DSS Level 1 provider, never to Faable — [details below](#payment-card-data)       |
 | Uptime commitment            | ✅ Pro — [99.9 % SLA with service credits](sla.md)                                                                         |
 | Security questionnaires      | ✅ Included in Pro                                                                                                         |
-| SOC 2                        | Included in Pro                                                                                                            |
-| ISO 27001                    | Included in Pro                                                                                                            |
-| HIPAA (BAA)                  | Included in Pro                                                                                                            |
-| Third-party penetration test | Included in Pro                                                                                                            |
+| SOC 2                        | ✅ Included in Pro                                                                                                         |
+| ISO 27001                    | ✅ Included in Pro                                                                                                         |
+| HIPAA (BAA)                  | ✅ Included in Pro                                                                                                         |
+| Third-party penetration test | ✅ Included in Pro                                                                                                         |
 
 ### European frameworks
 
 | Framework                                     | Status                                                                                                                                                                                                                                                                                                                   |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| NIS2 Directive (EU 2022/2555)                 | No certificate exists under NIS2. Supplier security clauses for customers in scope — included in Pro                                                                                                                                                                                                                     |
-| DORA (EU 2022/2554), for financial entities   | ICT third-party contractual terms (Art. 30) — included in Pro                                                                                                                                                                                                                                                            |
-| EU Data Act (EU 2023/2854), cloud switching   | Your data can leave on every plan: users with their password hashes ([export](../auth/guides/import-password-hashes.mdx#export)), apps from your own Git repository. Contract terms — included in Pro                                                                                                                    |
+| NIS2 Directive (EU 2022/2555)                 | ✅ No certificate exists under NIS2. Supplier security clauses for customers in scope — included in Pro                                                                                                                                                                                                                  |
+| DORA (EU 2022/2554), for financial entities   | ✅ ICT third-party contractual terms (Art. 30) — included in Pro                                                                                                                                                                                                                                                         |
+| EU Data Act (EU 2023/2854), cloud switching   | ✅ Your data can leave on every plan: users with their password hashes ([export](../auth/guides/import-password-hashes.mdx#export)), apps from your own Git repository. Contract terms — included in Pro                                                                                                                 |
 | Digital Omnibus (EU proposal)                 | Not in force: its data part (changes to GDPR, ePrivacy, NIS2 and DORA) is [still being negotiated](https://www.europarl.europa.eu/legislative-train/theme-a-new-plan-for-europe-s-sustainable-prosperity-and-competitiveness/file-digital-package). We will adapt when it is adopted; nothing on this page depends on it |
-| EUCS (EU Cloud Services certification scheme) | Included in Pro                                                                                                                                                                                                                                                                                                          |
+| EUCS (EU Cloud Services certification scheme) | ✅ Included in Pro                                                                                                                                                                                                                                                                                                       |
 
 ### National schemes
 
-| Scheme                                                   | Status          |
-| -------------------------------------------------------- | --------------- |
-| ENS — Esquema Nacional de Seguridad (Spain, RD 311/2022) | Included in Pro |
-| BSI C5 (Germany)                                         | Included in Pro |
-| SecNumCloud (France)                                     | Included in Pro |
+| Scheme                                                   | Status             |
+| -------------------------------------------------------- | ------------------ |
+| ENS — Esquema Nacional de Seguridad (Spain, RD 311/2022) | ✅ Included in Pro |
+| BSI C5 (Germany)                                         | ✅ Included in Pro |
+| SecNumCloud (France)                                     | ✅ Included in Pro |
 
 ## GDPR
 
