@@ -45,27 +45,27 @@
   },
   "content/auth/compare-authelia.mdx": {
     "published": "2026-07-27T13:52:25+02:00",
-    "modified": "2026-10-06T10:38:11.002Z"
+    "modified": "2026-10-06T12:22:09.643Z"
   },
   "content/auth/compare-aws-cognito.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-06T10:38:11.002Z"
+    "modified": "2026-10-06T12:22:09.643Z"
   },
   "content/auth/compare-firebase-auth.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-06T10:38:11.002Z"
+    "modified": "2026-10-06T12:22:09.643Z"
   },
   "content/auth/compare-supabase-auth.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-06T10:38:11.002Z"
+    "modified": "2026-10-06T12:22:09.643Z"
   },
   "content/auth/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-10-06T10:38:11.002Z"
+    "modified": "2026-10-06T12:22:09.643Z"
   },
   "content/auth/connections.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-10-06T10:04:24.247Z"
+    "modified": "2026-10-06T12:22:09.643Z"
   },
   "content/auth/custom-domain.md": {
     "published": "2026-05-08T13:04:43+02:00",
@@ -109,7 +109,7 @@
   },
   "content/auth/guides/migrate-from-keycloak.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-09-24T09:46:59.970Z"
+    "modified": "2026-10-06T12:22:09.643Z"
   },
   "content/auth/guides/nextjs-passkeys.mdx": {
     "published": "2026-09-03T23:21:07.937Z",
@@ -481,7 +481,7 @@
   },
   "content/faq.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-06T10:04:24.247Z"
+    "modified": "2026-10-06T12:22:09.643Z"
   },
   "content/index.md": {
     "published": "2026-04-09T19:12:39+02:00",

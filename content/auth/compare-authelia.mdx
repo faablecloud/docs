@@ -31,7 +31,7 @@ If you're protecting Grafana, Sonarr or an internal dashboard behind Traefik, Au
 | Passwordless by email                    | ✅ magic link or code (Hobby and up)                                           | ❌                                                               |
 | Passkeys as the sign-in method           | ✅ (Pro)                                                                       | ✅ counts as a single factor                                     |
 | MFA                                      | Authenticator app, security keys, passkeys                                     | TOTP, WebAuthn/passkeys, Duo push                                |
-| SAML                                     | ✅ as IdP for your apps (Pro); inbound SAML not yet — enterprise SSO over OIDC | ❌ (in planning)                                                 |
+| SAML                                     | ✅ SAML 2.0 identity provider for your apps (Pro)                              | ❌ (in planning)                                                 |
 | Multi-tenant by design                   | ✅                                                                             | ❌ one instance, one directory                                   |
 | Extensibility in the login flow          | ✅ [Actions](extensibility/actions.md) + [Webhooks](extensibility/webhooks.md) | Configuration-driven rules                                       |
 | Hosted login pages                       | ✅ [managed and branded](#login-pages)                                         | ✅ the portal you host                                           |
@@ -65,6 +65,7 @@ faable auth logs list --user user_abc123 --since 2026-09-01
 - **You're building a product with its own users.** Sign-up, email verification, password reset, social login and a user API come with it; Authelia expects users to already exist in LDAP or a config file.
 - **You're multi-tenant.** Each Faable [account](what-is-a-multi-tenant-identity-server.mdx) is an isolated tenant with its own clients, users and signing keys. Authelia is one instance, one directory.
 - **You don't want to run identity infrastructure.** No container, no Redis, no session store, no upgrade window, no database to back up.
+- **An app only accepts SAML.** Your tenant is its [SAML 2.0 identity provider](saml.md); Authelia has no SAML.
 - **Other apps need a full OIDC provider** — dynamic registration for MCP clients, token exchange for keyless CI, logout across applications.
 - **You need European hosting** without operating the servers yourself.
 

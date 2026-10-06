@@ -26,7 +26,7 @@ Every connection has a `connection_type`. These are all of them:
 
 Those four **categories** (`database`, `social`, `passwordless`, `oidc`) are what the dashboard sidebar and the API filter on: `GET /connections?category=social`.
 
-> **Enterprise SSO:** a company's Okta, Entra ID or Google Workspace connects as an `oidc` connection bound to an [organization](organizations.md), found by email domain on the login screen (Pro). **Not available yet:** SMS one-time codes and SAML.
+> **Enterprise SSO:** a company's Okta, Entra ID or Google Workspace connects as an `oidc` connection bound to an [organization](organizations.md), found by email domain on the login screen (Pro). To sign your users in to an application that only accepts SAML, use [SAML for your apps](saml.md) instead — that is a client setting, not a connection. **Not available yet:** SMS one-time codes and SAML identity providers as connections.
 
 ## What users sign in with
 
