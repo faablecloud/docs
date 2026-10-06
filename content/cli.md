@@ -112,7 +112,10 @@ A bare `faable deploy` is an alias of `faable deploy launch` — deploying is a 
 
 ```bash
 faable deploy launch --app <app_id> --workdir ./apps/web
+faable deploy launch --create my-site --workdir ./dist --yes --json   # a new app, deployed from this folder
 ```
+
+`--create <name>` makes a new app in the active project first and deploys the directory to it. `--json` prints the outcome — app, deployment, `outcome` (`live`, `failed`, `superseded`, `timeout`) and the URL; a failed deploy still exits with status 1.
 
 Run it where no app can be resolved — a directory with no linked repository — and `deploy` lists its subcommands instead, the way `faable auth` does.
 
@@ -140,7 +143,10 @@ For an app with push-to-deploy, build the current head of the deploy branch **wi
 
 ```bash
 faable deploy trigger
+faable deploy trigger --wait               # wait until live, print the URL — or why it failed
 ```
+
+With `--wait` (default `--timeout 900` seconds) the command returns once the deploy is live, with the app's URL, or failed, with the reason and whether it is on your side (your code, config or repository) or on Faable's. A timeout is not a failure: the build goes on.
 
 ### Redeploy — retry a failed deployment
 
@@ -296,9 +302,14 @@ faable deploy apps create --repo acme/shop-api
 faable deploy apps create --repo acme/monorepo --name api --branch release
 ```
 
-This is the dashboard's **Create & connect**: it creates the app in the active project, links the GitHub repository and starts the first deploy. `--repo` takes `owner/repo` or the repository URL; the name defaults to the repository's. Pass `--no-deploy` to only link.
+This is the dashboard's **Create & connect**: it creates the app in the active project, links the GitHub repository and starts the first deploy. `--repo` takes `owner/repo` or the repository URL; the name defaults to the repository's. Pass `--no-deploy` to only link, or `--wait` to stay until the first deploy is live and get its URL.
 
-Linking needs the **Faable GitHub App** installed on the repository. If the link fails, the app the command just created is removed again, and the error says why — install the app, then run the same command again.
+Linking needs the **Faable GitHub App** installed on the repository. If the link fails, the app the command just created is removed again, and the error says why — install the app, then run the same command again. To see which repositories Faable can deploy:
+
+```bash
+faable deploy github repos              # where the Faable GitHub App is installed
+faable deploy github repos -q shop      # filter by name
+```
 
 ### Change how an app deploys
 
@@ -572,7 +583,7 @@ Some patterns cannot be ruled on, and the CLI tells you why instead of accepting
 
 ## Faable Auth
 
-Manage a Faable Auth tenant from the terminal: `faable auth <users|actions|clients|logs>`. Commands reuse your `faable login` session and act on the tenant of the [active project](#projects); with several, `faable auth accounts list` shows them and `faable auth use <account>` picks one. To target a tenant directly, pass `--account <id>` or `--auth-url https://<account>.auth.faable.link` (env `FAABLE_AUTH_ACCOUNT` / `FAABLE_AUTH_URL`). Every command accepts `--json`.
+Manage a Faable Auth tenant from the terminal: `faable auth <users|sessions|connections|actions|clients|logs>`. Commands reuse your `faable login` session and act on the tenant of the [active project](#projects); with several, `faable auth accounts list` shows them and `faable auth use <account>` picks one. To target a tenant directly, pass `--account <id>` or `--auth-url https://<account>.auth.faable.link` (env `FAABLE_AUTH_ACCOUNT` / `FAABLE_AUTH_URL`). Every command accepts `--json`.
 
 ### Users
 
@@ -581,8 +592,21 @@ faable auth users list                             # list users
 faable auth users list --suspended                 # only suspended users
 faable auth users list --query email_verified:false --limit 50
 faable auth users list -q alice                    # full-text over name/email/phone
+faable auth users list --email alice@example.com   # exact email
+faable auth users list --sort=-last_login -n 20    # the 20 most recent logins
 faable auth users get user_abc123
+faable auth users get alice@example.com            # by email
 ```
+
+#### Count users and filter by date
+
+```bash
+faable auth users list --last-login-since 24h --count    # how many logged in today
+faable auth users list --created-since 7d --count        # sign-ups this week
+faable auth users list --suspended --count
+```
+
+`--count` prints only the number (`{"total": N}` with `--json`), counted on the server across every page. Date flags — `--last-login-since/--last-login-until`, `--created-since/--created-until` — take a relative age (`30m`, `24h`, `7d`), unix-millis or `YYYY-MM-DD`. `--sort` orders by `last_login`, `logins_count` or `createdAt` (prefix `-` for descending, written `--sort=-last_login`); sorting by `last_login` leaves out users who never logged in.
 
 `users get` prints the full user card — email and verification, creation date, last login with its IP, suspension state, and the user's **federated identities**: for each linked provider (e.g. GitHub) the provider login, profile URL, and when the provider account was created. Provider tokens are never shown. With `--json` the identities are included (sanitized) under `identities`.
 
@@ -590,9 +614,10 @@ faable auth users get user_abc123
 
 #### Suspend users
 
-Suspending blocks every login, token refresh, and session for the user:
+Suspending blocks every login, token refresh, and session for the user. Users can be named by id or by email — an email must match exactly one user, or nothing is changed:
 
 ```bash
+faable auth users suspend alice@example.com --reason "chargeback"
 faable auth users suspend user_abc123 --reason "abuse: crypto miner"
 faable auth users suspend user_a user_b user_c -y -r "abuse wave"
 
@@ -619,6 +644,33 @@ faable auth users list --suspended --json \
 ```
 
 Asks for confirmation (skip with `--yes`).
+
+#### Password setup email
+
+Send a user the email (or a code by SMS/WhatsApp) to set or reset their password — to invite a user you created by hand, or to unblock one who forgot it:
+
+```bash
+faable auth users password-setup alice@example.com
+faable auth users password-setup user_abc123 --channel sms
+```
+
+### Sessions
+
+Each login is a session: a device the user is signed in on.
+
+```bash
+faable auth sessions list --user alice@example.com --active   # their devices: IP, device, last seen
+faable auth sessions revoke --user alice@example.com          # sign them out everywhere
+faable auth sessions revoke session_abc123                    # one device
+```
+
+Revoking ends the session cookie and every refresh token issued through it; access tokens already issued live until they expire. Asks for confirmation (skip with `--yes`).
+
+### Login methods
+
+```bash
+faable auth connections list            # social, passwordless and username/password, and which are enabled
+```
 
 ### Actions
 
@@ -654,14 +706,16 @@ faable auth logs list --limit 20
 faable auth logs list --user user_abc123 --since 2026-08-01
 faable auth logs list --origin oauth --status failed
 faable auth logs list --type admin.user.updated
+faable auth logs list --type user.login --since 24h --expand-user   # who logged in today, with their email
+faable auth logs list --email alice@example.com --status failed     # why can't Alice log in?
 faable auth logs get log_xyz                       # full entry, including its data payload
 ```
 
-`--since`/`--until` take unix-millis or `YYYY-MM-DD` dates. `--origin` matches a subsystem prefix (`oauth` matches every `oauth.*` event), `-q` searches the log message text.
+`--since`/`--until` take a relative age (`30m`, `24h`, `7d`), unix-millis or `YYYY-MM-DD` dates. `--expand-user` embeds each entry's user (email, name) instead of only its id. `--origin` matches a subsystem prefix (`oauth` matches every `oauth.*` event), `-q` searches the log message text.
 
 ## MCP server
 
-`faable mcp` runs the CLI as an [MCP](https://modelcontextprotocol.io) server over stdio, so an AI agent in your editor — Claude Code, Cursor, VS Code or any MCP client — can see your apps, read why a deploy failed, and deploy, without you pasting logs into the chat. It acts with your `faable login` session.
+`faable mcp` runs the CLI as an [MCP](https://modelcontextprotocol.io) server over stdio, so an AI agent in your editor — Claude Code, Cursor, VS Code or any MCP client — can see your apps, read why a deploy failed, deploy a repository and hand you the URL — and see who logs in to your apps, count your users and suspend one — without you pasting logs into the chat. It acts with your `faable login` session.
 
 ```bash
 claude mcp add faable -- npx -y @faable/faable mcp
@@ -686,22 +740,34 @@ claude mcp add --transport http faable https://mcp.faable.com/mcp \
 
 By default the server exposes **reads plus one deploy**:
 
-| Tool | What the agent can do |
-| :-- | :-- |
-| `whoami`, `list_projects`, `list_apps`, `get_app` | Find the app you mean, see what is live |
-| `list_deployments`, `get_deployment`, `get_build_logs`, `get_runtime_logs` | Find out why a deploy failed or an app crashes |
-| `get_app_traffic`, `get_usage`, `get_quota` | Traffic, this period's usage, today's deploy allowance |
-| `list_domains`, `check_domain` | Custom domains and why one is not verified yet |
-| `list_secrets` | Which environment variables are set — names only |
-| `deploy_app` | Build and deploy the latest commit of the deploy branch, server-side |
+| Tool                                                                       | What the agent can do                                                                                                        |
+| :------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `whoami`, `list_projects`, `list_apps`, `get_app`                          | Find the app you mean, see what is live                                                                                      |
+| `list_deployments`, `get_deployment`, `get_build_logs`, `get_runtime_logs` | Find out why a deploy failed or an app crashes                                                                               |
+| `get_app_traffic`, `get_usage`, `get_quota`                                | Traffic, this period's usage, today's deploy allowance                                                                       |
+| `list_domains`, `check_domain`                                             | Custom domains and why one is not verified yet                                                                               |
+| `list_secrets`                                                             | Which environment variables are set — names only                                                                             |
+| `list_github_repos`                                                        | The GitHub repositories Faable can deploy, and the install link when one is missing                                          |
+| `deploy_app`                                                               | Build and deploy the latest commit of the deploy branch, server-side; with `wait`, until it is live (with the URL) or failed |
+| `list_auth_logins`                                                         | Who logged in to your app recently, with their email, IP and login method                                                    |
+| `count_auth_users`                                                         | How many users logged in or signed up since a time, or are suspended                                                         |
+| `list_auth_users`, `get_auth_user`                                         | Find a user by email or text; sort by last login or activity                                                                 |
+| `list_auth_logs`, `list_auth_sessions`                                     | Why someone can't log in; the devices a user is signed in on                                                                 |
+| `list_auth_tenants`, `list_auth_connections`, `list_auth_clients`          | Your Auth tenants, login methods and applications                                                                            |
 
-`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment` and `configure_repo`. Nothing destructive is exposed — deleting apps, domains or secrets stays in the CLI and the dashboard.
+When a deploy failed, `get_deployment` also says whose side it is on: `user` (your code, configuration or repository) or `platform` (Faable's).
+
+`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment` and `configure_repo`; for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions` and `send_password_setup`. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path. Nothing destructive is exposed — deleting apps, domains, secrets or users stays in the CLI and the dashboard.
+
+With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions and settings, suspend and reinstate users, end sessions and send password emails — never delete anything or change the tenant itself.
 
 What the server guarantees:
 
 - **Secret values never reach the agent.** `list_secrets` returns names; `set_secrets` sends values to Faable on stdin and returns only which names changed.
 - **Logs are data, not instructions.** Build output, runtime logs, commit messages and failure reasons are written by whoever deployed the code, so they come back explicitly marked as untrusted content.
-- **Nothing is guessed from your working directory.** Every tool names its app and project; the server never deploys "whatever is in this folder".
+- **Nothing is guessed from your working directory.** Every tool names its app and project; the server never deploys "whatever is in this folder" — `deploy_directory` takes the folder as an explicit absolute path.
+- **What your users typed is data too.** Names, log messages and device strings from Faable Auth come back marked as untrusted content, like build logs.
+- **Suspending is by one exact user.** An email that matches no user — or more than one — changes nothing.
 - **Errors say what to do next** — for example, to run `faable login` when the session has expired.
 
 ## Scripting and agents
@@ -712,16 +778,16 @@ The CLI is built to be driven by scripts, CI and AI agents. Data goes to **stdou
 - **Writes** return what they changed — the new deployment, the domain with the CNAME to create, the secret names that were added or updated (never their values). A write with nothing to do returns `{"result": "noop", "reason": "..."}`.
 - **Failures** exit with status 1 and print `{"error": {"message", "code", "status", "action"}}` on stderr.
 
-| `code` | Meaning |
-| :-- | :-- |
-| `not_logged_in` | No credentials — run `faable login` (or set `FAABLE_TOKEN`) |
-| `session_expired` | The session is no longer valid — run `faable login` |
-| `account_suspended` | The account cannot sign in |
-| `apikey_session` | The command needs a browser session, not an API key |
-| `forbidden` / `not_found` | No access to that resource, or it does not exist |
-| `confirmation_required` | A destructive command ran without `--yes` and nobody could confirm it |
-| `app_required` | The command needs `--app` |
-| `usage` | The command line itself is wrong |
+| `code`                    | Meaning                                                               |
+| :------------------------ | :-------------------------------------------------------------------- |
+| `not_logged_in`           | No credentials — run `faable login` (or set `FAABLE_TOKEN`)           |
+| `session_expired`         | The session is no longer valid — run `faable login`                   |
+| `account_suspended`       | The account cannot sign in                                            |
+| `apikey_session`          | The command needs a browser session, not an API key                   |
+| `forbidden` / `not_found` | No access to that resource, or it does not exist                      |
+| `confirmation_required`   | A destructive command ran without `--yes` and nobody could confirm it |
+| `app_required`            | The command needs `--app`                                             |
+| `usage`                   | The command line itself is wrong                                      |
 
 Any other `code` comes from the Faable API (for example `repository_already_linked`) and is stable too.
 
@@ -738,54 +804,59 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 
 ## Command Reference
 
-| Command                       | Description                                                                           |
-| :---------------------------- | :------------------------------------------------------------------------------------ |
-| `faable login`                | Authenticate with Faable                                                              |
-| `faable whoami`               | Show current user                                                                     |
-| `faable logout`               | End the local session                                                                 |
-| `faable mcp`                  | Run the Faable MCP server over stdio (`--writes` for the reversible writes)           |
-| `faable project`              | Show, list, pick (`use`) or clear the active project                                  |
-| `faable deploy`               | Deploy project to production (alias of `faable deploy launch`)                        |
-| `faable deploy launch`        | The deploy itself — `--app` to target another app, `--workdir` to deploy elsewhere    |
-| `faable deploy trigger`       | Build the repo HEAD server-side (no upload)                                           |
-| `faable deploy redeploy`      | Retry a failed deployment from its source                                             |
-| `faable deploy cancel`        | Stop a deployment that is still queued or building                                    |
-| `faable deploy status`        | What is live: phase, URL, stack, latest deploy                                        |
-| `faable deploy traffic`       | Status codes, top and failing paths (`--since 7d`)                                    |
-| `faable deploy usage`         | This billing period's usage of the project                                            |
-| `faable deploy quota`         | Today's deploy allowance and held builds                                              |
-| `faable deploy logs`          | Runtime logs (`--build` for build output, `--build --follow` to tail a running build) |
-| `faable deploy deployments`   | Recent deployments with phases and commits                                            |
-| `faable deploy inspect`       | Full record of one deployment by id (`--json` for the raw one)                        |
-| `faable deploy apps list`     | List the apps of the active project                                                   |
-| `faable deploy apps get`      | One app: what is live, latest deployment, stack                                       |
-| `faable deploy apps create`   | Create an app from a GitHub repository and start its first deploy                     |
-| `faable deploy apps set`      | Change the deploy branch, root directory or deploy mode                               |
-| `faable deploy open`          | Open the live app (`--dashboard` for the console)                                     |
-| `faable deploy link`          | Link directory to a Faable app                                                        |
-| `faable deploy secrets list`  | List app secrets (masked, `--show`)                                                   |
-| `faable deploy secrets set`   | Set secrets as `KEY=VALUE` pairs, a whole file with `--env-file`, or stdin (`-f -`)   |
-| `faable deploy secrets rm`    | Remove a secret by name                                                               |
-| `faable deploy domains list`  | List custom domains and their DNS state                                               |
-| `faable deploy domains add`   | Add a domain (prints the CNAME to set)                                                |
-| `faable deploy domains check` | DNS verification diagnostic for a domain                                              |
-| `faable deploy domains rm`    | Remove a domain (confirmation, `--yes`)                                               |
-| `faable deploy waf list`      | Show the edge rules in effect for the app                                             |
-| `faable deploy waf block`     | Refuse requests at the edge with a 403 (by path, user-agent, or both)                 |
-| `faable deploy waf sink`      | Answer requests with a 404 without waking the app                                     |
-| `faable deploy waf rm`        | Remove one of your edge rules                                                         |
-| `faable auth users list`      | List and filter users (`--query`, `-q`, `--suspended`)                                |
-| `faable auth users get`       | Show a user: suspension state, last IP and federated identities (GitHub login, etc.)  |
-| `faable auth users suspend`   | Suspend users by id — bulk via args or stdin                                          |
-| `faable auth users reinstate` | Reinstate suspended users by id — bulk via args or stdin                              |
-| `faable auth actions list`    | List login-flow actions                                                               |
-| `faable auth actions get`     | Show an action (`--code` prints the source)                                           |
-| `faable auth actions create`  | Create an action from a JS file                                                       |
-| `faable auth actions update`  | Update an action in place (`-f` code, `--name`, `--order`, `--enabled`)               |
-| `faable auth actions rm`      | Delete an action (confirmation, `--yes`)                                              |
-| `faable auth clients list`    | List OAuth clients                                                                    |
-| `faable auth clients get`     | Show a client (`--secret` reveals the secret)                                         |
-| `faable auth clients create`  | Create a client (prints id + secret once)                                             |
-| `faable auth clients rm`      | Delete a client (confirmation, `--yes`)                                               |
-| `faable auth logs list`       | Filter the audit log (type, status, origin, user, dates)                              |
-| `faable auth logs get`        | Show one audit entry with its data payload                                            |
+| Command                            | Description                                                                               |
+| :--------------------------------- | :---------------------------------------------------------------------------------------- |
+| `faable login`                     | Authenticate with Faable                                                                  |
+| `faable whoami`                    | Show current user                                                                         |
+| `faable logout`                    | End the local session                                                                     |
+| `faable mcp`                       | Run the Faable MCP server over stdio (`--writes` for the reversible writes)               |
+| `faable project`                   | Show, list, pick (`use`) or clear the active project                                      |
+| `faable deploy`                    | Deploy project to production (alias of `faable deploy launch`)                            |
+| `faable deploy launch`             | The deploy itself — `--app` to target another app, `--workdir` to deploy elsewhere        |
+| `faable deploy trigger`            | Build the repo HEAD server-side (no upload); `--wait` for the URL                         |
+| `faable deploy github repos`       | The GitHub repositories Faable can deploy                                                 |
+| `faable deploy redeploy`           | Retry a failed deployment from its source                                                 |
+| `faable deploy cancel`             | Stop a deployment that is still queued or building                                        |
+| `faable deploy status`             | What is live: phase, URL, stack, latest deploy                                            |
+| `faable deploy traffic`            | Status codes, top and failing paths (`--since 7d`)                                        |
+| `faable deploy usage`              | This billing period's usage of the project                                                |
+| `faable deploy quota`              | Today's deploy allowance and held builds                                                  |
+| `faable deploy logs`               | Runtime logs (`--build` for build output, `--build --follow` to tail a running build)     |
+| `faable deploy deployments`        | Recent deployments with phases and commits                                                |
+| `faable deploy inspect`            | Full record of one deployment by id (`--json` for the raw one)                            |
+| `faable deploy apps list`          | List the apps of the active project                                                       |
+| `faable deploy apps get`           | One app: what is live, latest deployment, stack                                           |
+| `faable deploy apps create`        | Create an app from a GitHub repository and start its first deploy                         |
+| `faable deploy apps set`           | Change the deploy branch, root directory or deploy mode                                   |
+| `faable deploy open`               | Open the live app (`--dashboard` for the console)                                         |
+| `faable deploy link`               | Link directory to a Faable app                                                            |
+| `faable deploy secrets list`       | List app secrets (masked, `--show`)                                                       |
+| `faable deploy secrets set`        | Set secrets as `KEY=VALUE` pairs, a whole file with `--env-file`, or stdin (`-f -`)       |
+| `faable deploy secrets rm`         | Remove a secret by name                                                                   |
+| `faable deploy domains list`       | List custom domains and their DNS state                                                   |
+| `faable deploy domains add`        | Add a domain (prints the CNAME to set)                                                    |
+| `faable deploy domains check`      | DNS verification diagnostic for a domain                                                  |
+| `faable deploy domains rm`         | Remove a domain (confirmation, `--yes`)                                                   |
+| `faable deploy waf list`           | Show the edge rules in effect for the app                                                 |
+| `faable deploy waf block`          | Refuse requests at the edge with a 403 (by path, user-agent, or both)                     |
+| `faable deploy waf sink`           | Answer requests with a 404 without waking the app                                         |
+| `faable deploy waf rm`             | Remove one of your edge rules                                                             |
+| `faable auth users list`           | List, filter, sort and count users (`--email`, `--sort`, `--last-login-since`, `--count`) |
+| `faable auth users get`            | Show a user: suspension state, last IP and federated identities (GitHub login, etc.)      |
+| `faable auth users suspend`        | Suspend users by id or email — bulk via args or stdin                                     |
+| `faable auth users reinstate`      | Reinstate suspended users by id or email — bulk via args or stdin                         |
+| `faable auth users password-setup` | Send a user the email (or code) to set or reset their password                            |
+| `faable auth sessions list`        | A user's sessions: devices, IP, last seen                                                 |
+| `faable auth sessions revoke`      | End sessions — one, or every active one of a user (`--user`)                              |
+| `faable auth connections list`     | The tenant's login methods                                                                |
+| `faable auth actions list`         | List login-flow actions                                                                   |
+| `faable auth actions get`          | Show an action (`--code` prints the source)                                               |
+| `faable auth actions create`       | Create an action from a JS file                                                           |
+| `faable auth actions update`       | Update an action in place (`-f` code, `--name`, `--order`, `--enabled`)                   |
+| `faable auth actions rm`           | Delete an action (confirmation, `--yes`)                                                  |
+| `faable auth clients list`         | List OAuth clients                                                                        |
+| `faable auth clients get`          | Show a client (`--secret` reveals the secret)                                             |
+| `faable auth clients create`       | Create a client (prints id + secret once)                                                 |
+| `faable auth clients rm`           | Delete a client (confirmation, `--yes`)                                                   |
+| `faable auth logs list`            | Filter the audit log (type, status, origin, user or email, dates; `--expand-user`)        |
+| `faable auth logs get`             | Show one audit entry with its data payload                                                |
