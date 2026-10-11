@@ -6,7 +6,7 @@ rank: low
 
 # Privacy Policy
 
-**Last updated:** 13 August 2026
+**Last updated:** 11 October 2026
 
 This Privacy Policy explains how **Faable Cloud SLU** ("Faable", "we", "us") handles personal data when you visit our websites, create a Faable account, and use Faable Deploy and Faable Auth (together, the "Services").
 
@@ -42,6 +42,9 @@ This is the most important distinction in this document, because Faable handles 
 | **Support data**                    | Emails, ticket contents, and anything you choose to send us                                                           | Answer you and resolve incidents                                                                    | Contract; legitimate interest                                        |
 | **Product analytics**               | Pages viewed, features used, pseudonymous device/session identifier                                                   | Understand which parts of the product and documentation work                                        | Consent (see [Cookies](#12-cookies-and-similar-technologies))        |
 | **Marketing analytics**             | Campaign source, landing page, conversion events on our public websites                                               | Measure which acquisition channels bring people to Faable                                           | Consent                                                              |
+| **Product news and offers**         | Account email address and name, plan, whether you opened or clicked a previous email                                  | Tell you about new features and offers for the Faable Services you already use                      | Legitimate interest (existing customers, similar services)           |
+
+**Product news and offers.** We only email you about Faable's own Services — never about third parties, and never to the end users of your applications. Every such email carries a one-click unsubscribe link, and you can also opt out by writing to [privacy@faable.com](mailto:privacy@faable.com). Opting out is free and does not affect the service emails your account needs: sign-in codes, deployment notifications, and billing notices.
 
 **We never receive your full card number.** Payments run through our payment provider's hosted checkout; card data goes directly to them and never touches Faable's systems (see [Security](security-compliance.md)).
 
@@ -77,15 +80,15 @@ When a retention period ends, data is deleted or irreversibly anonymised. Deleti
 
 We use a small set of specialised providers. Each is bound by a data processing agreement holding them to the same obligations we accept towards you.
 
-| Provider                    | Purpose                                                                   | Data involved                                                         | Location |
-| --------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------- |
-| **Amazon Web Services**     | Container registry and build artifact storage                             | Build outputs, container images                                       | EU       |
-| **PostHog (EU Cloud)**      | Product analytics on our websites and dashboard                           | Pseudonymous usage events                                             | EU       |
-| **Sentry**                  | Error and performance monitoring                                          | Stack traces, request metadata, account identifier                    | EU/US    |
-| **Postmark**                | Transactional email (verification, invitations, deployment notifications) | Email address, message content                                        | US       |
-| **Stripe**                  | Payment processing and invoicing                                          | Billing details, payment method (card data held by Stripe, not by us) | EU/US    |
-| **GitHub**                  | Source-control integration and deployment triggers                        | Repository metadata, commit and webhook data                          | US       |
-| **Google (Analytics, Ads)** | Marketing measurement on our public websites only                         | Pseudonymous website analytics, conversion events                     | EU/US    |
+| Provider                    | Purpose                                                                                                  | Data involved                                                         | Location |
+| --------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------- |
+| **Amazon Web Services**     | Container registry and build artifact storage                                                            | Build outputs, container images                                       | EU       |
+| **PostHog (EU Cloud)**      | Product analytics on our websites and dashboard                                                          | Pseudonymous usage events                                             | EU       |
+| **Sentry**                  | Error and performance monitoring                                                                         | Stack traces, request metadata, account identifier                    | EU/US    |
+| **Postmark**                | Account and service email (verification, invitations, deployment notifications), product news and offers | Email address, message content, delivery and open events              | US       |
+| **Stripe**                  | Payment processing and invoicing                                                                         | Billing details, payment method (card data held by Stripe, not by us) | EU/US    |
+| **GitHub**                  | Source-control integration and deployment triggers                                                       | Repository metadata, commit and webhook data                          | US       |
+| **Google (Analytics, Ads)** | Marketing measurement on our public websites only                                                        | Pseudonymous website analytics, conversion events                     | EU/US    |
 
 We will update this table before adding a new sub-processor that handles personal data. Write to [privacy@faable.com](mailto:privacy@faable.com) if you want to be notified of changes.
 
@@ -105,6 +108,7 @@ Under the GDPR you can ask us to:
 - **Restrict** or **object to** processing based on our legitimate interests.
 - **Port** your data to another provider in a structured, machine-readable format.
 - **Withdraw consent** at any time, without affecting processing already carried out.
+- **Stop product news and offers** at any time, with the unsubscribe link in any of those emails.
 
 Write to [privacy@faable.com](mailto:privacy@faable.com) from the email address associated with your account, stating which right you wish to exercise. **We will not ask you for a copy of your ID document as a matter of course** — we verify your identity through your account. Only if we have reasonable doubt about who is making the request will we ask for additional proof, and we will ask for the least intrusive proof that resolves the doubt.
 
