@@ -1,0 +1,179 @@
+---
+schema: faq
+title: Passkeys and WebAuthn — How Passkey Login Works, and How to Add It
+description: How passkey authentication works — WebAuthn and FIDO2, public-key credentials, the registration and sign-in ceremonies, the Relying Party ID, synced vs device-bound passkeys and conditional UI — and how to add passkey login to a React, Vue or any web app with Faable Auth, with no WebAuthn code.
+rank: high
+---
+
+import { Callout } from 'nextra/components'
+
+# Passkeys and WebAuthn
+
+**A passkey is a sign-in credential made of a key pair: the private key stays on the user's device or in their password manager, and the website only ever stores the public key.** To sign in, the device signs a one-time challenge after the user unlocks it with Face ID, Touch ID, Windows Hello, a PIN or a security key. There is no password to type, to reuse or to phish. Passkeys are built on **WebAuthn**, the browser API, and **FIDO2**, the standard behind it.
+
+## The terms, briefly
+
+- **WebAuthn** — the W3C browser API (`navigator.credentials.create()` and `.get()`) that creates and uses public-key credentials.
+- **FIDO2** — the FIDO Alliance standard that WebAuthn is part of, together with CTAP, the protocol between the browser and an external authenticator (a USB or NFC key, or a phone).
+- **Authenticator** — what holds the private key: the phone or laptop itself (a platform authenticator), a hardware key, or a password manager.
+- **Passkey** — the consumer name for a WebAuthn credential that can be discovered without typing a username and is usually **synced** across the user's devices.
+- **Relying Party (RP)** — the website the credential belongs to, identified by its **RP ID**, a domain such as `acme.com`.
+
+## How a passkey is created
+
+1. The site asks the browser to create a credential, sending a random **challenge**, its RP ID and the user's id.
+2. The browser asks the user to unlock their authenticator (Face ID, fingerprint, PIN).
+3. The authenticator generates a new key pair **for that RP ID only**, keeps the private key and returns the public key, signed with the challenge.
+4. The site stores the public key and a credential id against the user.
+
+## How a passkey sign-in works
+
+1. The site sends a fresh challenge.
+2. The browser shows the passkeys that exist **for this site's RP ID** — nothing else, so a look-alike domain can't ask for them.
+3. The user unlocks the authenticator, which signs the challenge with the private key.
+4. The site verifies the signature with the stored public key. The user is in.
+
+Nothing secret crosses the network and nothing reusable is stored on the server. A database breach leaks public keys; a phishing page on another domain gets no passkey at all.
+
+## Synced vs device-bound
+
+- **Synced passkeys** live in iCloud Keychain, Google Password Manager, 1Password and the like, and follow the user to their other devices. This is what most people use, and why passkeys survive a lost phone.
+- **Device-bound passkeys** never leave a hardware security key or a managed device. Organisations that need to know exactly where a credential lives require them.
+
+Both sign the same way, and both work with Faable Auth.
+
+## Conditional UI: passkeys in the email field
+
+Browsers can offer a user's passkey **from the autofill menu of the email field** as soon as it gets focus — WebAuthn's _conditional mediation_. The user taps their passkey instead of typing anything. It's how Google, GitHub and Stripe present passkeys today, and it's the single biggest factor in people actually using them.
+
+## Passkeys are bound to a domain — plan for it
+
+A passkey created for `auth.acme.com` only works on `auth.acme.com` or, if the RP ID is `acme.com`, on hosts under `acme.com`. Change the domain your login lives on and every existing passkey stops working. Two consequences:
+
+- **Pick the RP ID before anyone enrols**, and make it a domain you own.
+- **The ceremony has to run on that domain.** Your app at `app.acme.com` can't use a passkey that belongs to the login domain — the browser refuses before any code runs.
+
+That second point is why Faable Auth runs the whole WebAuthn ceremony on your **hosted login domain**, and why your app needs no WebAuthn code at all.
+
+## Add passkey login with Faable Auth
+
+The example is React with [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) and [`@faable/auth-helpers-react`](https://www.npmjs.com/package/@faable/auth-helpers-react), set up as in the [React quickstart](quickstart/react.mdx). Vue, Svelte, Angular and plain JavaScript work the same way: every step happens on the hosted screens, and your code only sends the user there. For Next.js there's a [dedicated guide](guides/nextjs-passkeys.mdx).
+
+### 1. Turn passkeys on
+
+In the [Faable Dashboard](https://dashboard.faable.com), open your auth account:
+
+1. **Security → Two-step verification → WebAuthn Relying Party ID** — set a domain you own (`acme.com`) **before** anyone enrols.
+2. **Login Experience → Passkeys** — switch on **Sign in with a passkey**, and the **offer** that invites users to create one right after they sign in with a password or a code.
+
+Passkeys as the sign-in method are on the **Pro** plan; passkeys as a second factor are part of [two-step verification](mfa.md), on **Hobby** and up. See [Auth pricing](pricing.mdx).
+
+### 2. Sign in — your button doesn't change
+
+```tsx
+// src/SignIn.tsx
+import { auth } from './auth'
+
+export function SignIn() {
+  return (
+    <button onClick={() => auth.signInWithOauthConnection({})}>Sign in</button>
+  )
+}
+```
+
+The hosted screen shows **Continue with a passkey**, and suggests the passkey from the email field on Chrome, Safari and Edge. After Face ID, the user comes back to your callback with an authorization code, exactly as after a password.
+
+### 3. Let users add a passkey
+
+Most users get their passkey from the offer right after signing in. For the rest, link to the hosted security page, where they add or remove passkeys and authenticator apps:
+
+```tsx
+// src/SecurityLink.tsx
+const AUTH_DOMAIN = 'https://your-domain.auth.faable.link'
+
+export function SecurityLink() {
+  return (
+    <a href={`${AUTH_DOMAIN}/flow/account/security`}>Passkeys and security</a>
+  )
+}
+```
+
+### 4. Know how they signed in
+
+Every access token says how the session was authenticated (`amr`, [RFC 8176](https://datatracker.ietf.org/doc/html/rfc8176)) and its assurance level. A passkey unlocked with Face ID, a fingerprint or a PIN is **two factors in one gesture**, so those sessions are already at level 2:
+
+```tsx
+// src/SignedInWith.tsx
+import { useAal, useHasAmr } from '@faable/auth-helpers-react'
+
+export function SignedInWith() {
+  const aal = useAal()
+  const passkey = useHasAmr('hwk')
+  if (aal === 0) return null
+  return (
+    <p>{passkey ? 'Signed in with a passkey' : 'Signed in with a password'}</p>
+  )
+}
+```
+
+### 5. Ask for it again before something sensitive
+
+```tsx
+// src/DeleteAccount.tsx
+import { useAal } from '@faable/auth-helpers-react'
+import { auth } from './auth'
+
+export function DeleteAccount({ onDelete }: { onDelete: () => void }) {
+  const aal = useAal()
+  return (
+    <button
+      onClick={() =>
+        aal < 2 ? auth.stepUp({ redirectTo: window.location.href }) : onDelete()
+      }
+    >
+      Delete account
+    </button>
+  )
+}
+```
+
+`stepUp()` sends the user through the hosted screen for a fresh passkey or second factor and brings them back to the same page.
+
+<Callout type="info">
+  The hooks read the token without verifying it — fine for showing a button, not
+  for authorising the action. Your API checks the `acr` claim on the validated
+  access token before it acts; see [Validate Access
+  Tokens](validate-access-tokens.mdx).
+</Callout>
+
+## FAQ
+
+### Are passkeys more secure than passwords and one-time codes?
+
+Yes, on the two attacks that matter most. A passkey can't be phished — the browser only offers it to the domain it belongs to — and a server breach leaks nothing an attacker can sign in with. SMS and email codes can be intercepted or relayed by a phishing page; passkeys can't.
+
+### What happens if a user loses their phone?
+
+With a synced passkey, nothing: it's on their other devices through their password manager. With a device-bound one, they sign in another way — a password, a code, a recovery code — and add a new passkey from the security page. Keep a second method enabled on your tenant for that case.
+
+### Do I need a WebAuthn library such as SimpleWebAuthn?
+
+Not with Faable Auth. The registration and sign-in ceremonies run on your hosted login domain, which owns the passkeys. Your app only redirects to it and reads the resulting tokens.
+
+### Is a passkey a second factor?
+
+A passkey unlocked with Face ID, a fingerprint or a PIN proves something you have (the device) and something you are or know (the unlock), so it counts as two factors on its own. A security key without user verification is one factor. Faable Auth lets passkeys be the sign-in method or the second step after a password.
+
+### Do passkeys work on every browser?
+
+On every current major browser and operating system: Chrome, Safari, Edge and Firefox, on iOS, Android, macOS, Windows and ChromeOS. Older browsers without WebAuthn fall back to the other methods on your login screen.
+
+### Can I move my login to a custom domain after users have passkeys?
+
+Only if the Relying Party ID already covers the new host. Passkeys registered under `acme.auth.faable.link` stop working on `auth.acme.com`. Set the RP ID to `acme.com` before anyone enrols and the move costs nothing — see [Custom Domain](custom-domain.md).
+
+## Related
+
+- [Next.js: Face ID & Passkeys](guides/nextjs-passkeys.mdx) · [React quickstart](quickstart/react.mdx)
+- [Login Experience](login-experience.md) · [Two-Step Verification](mfa.md) · [Passwordless](passwordless.mdx)
+- [Hosted Login UI](hosted-login.mdx) · [Validate Access Tokens](validate-access-tokens.mdx)

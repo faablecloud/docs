@@ -121,7 +121,7 @@
   },
   "content/auth/guides/nextjs-passkeys.mdx": {
     "published": "2026-09-03T23:21:07.937Z",
-    "modified": "2026-09-24T11:46:24.355Z"
+    "modified": "2026-10-11T17:28:39.480Z"
   },
   "content/auth/hosted-login.mdx": {
     "published": "2026-09-15T16:19:54.986Z",
@@ -190,6 +190,10 @@
   "content/auth/organizations.md": {
     "published": "2026-10-05T15:43:47.492Z",
     "modified": "2026-10-11T17:28:38.021Z"
+  },
+  "content/auth/passkeys.mdx": {
+    "published": "2026-10-11T17:28:39.480Z",
+    "modified": "2026-10-11T17:28:39.480Z"
   },
   "content/auth/passwordless.mdx": {
     "published": "2026-04-08T20:16:59+02:00",
