@@ -1,0 +1,101 @@
+---
+schema: faq
+title: SAML vs OIDC — What's the Difference, and Which to Use
+description: SAML 2.0 vs OpenID Connect (OIDC) for single sign-on — XML assertions vs JSON tokens, browser-only vs apps and APIs, how each flow works, which one enterprise identity providers and SaaS apps expect, and how to support both.
+rank: entry
+---
+
+# SAML vs OIDC
+
+**SAML 2.0 and OpenID Connect (OIDC) both let a user sign in once with an identity provider and reach other applications without signing in again.** SAML (2005) passes a signed **XML assertion** through the browser and was built for web single sign-on between companies. OIDC (2014) is an identity layer on top of **OAuth 2.0** that returns signed **JSON tokens** (JWTs), and works for web apps, mobile apps, SPAs, CLIs and APIs alike. For anything new, OIDC is the default; SAML is what you support because an application or a customer requires it.
+
+## The terms, briefly
+
+- **Identity provider (IdP)** — the system that authenticates the user: Okta, Microsoft Entra ID, Google Workspace, or your own [Faable Auth tenant](what-is-a-multi-tenant-identity-server.mdx). OIDC calls it the **OpenID Provider (OP)**.
+- **Service provider (SP)** — the application the user wants to reach. OIDC calls it the **Relying Party (RP)**, or simply the client.
+- **Assertion** (SAML) / **ID token** (OIDC) — the signed statement from the IdP saying who the user is and how they signed in.
+
+## At a glance
+
+|                       | SAML 2.0                                                     | OpenID Connect                                                  |
+| --------------------- | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| Published             | 2005 (OASIS)                                                 | 2014 (OpenID Foundation)                                        |
+| Built on              | XML, XML Signature                                           | OAuth 2.0, JSON, JWT                                            |
+| What the app receives | A signed XML assertion, posted by the browser                | An ID token (JWT), plus an access token for APIs                |
+| Where it works        | Browser-based web apps                                       | Web, SPAs, native and mobile apps, CLIs, APIs                   |
+| Calls your API        | No — SAML only signs the user in                             | Yes — the access token is what APIs check                       |
+| Setup                 | Exchange metadata XML: entity IDs, ACS URL, certificate      | A discovery URL, a client ID and a redirect URI                 |
+| Key rotation          | Certificate in the metadata, often updated by hand           | JWKS endpoint, rotated automatically                            |
+| Typical users         | Enterprise SaaS (Slack, Salesforce, Workday), corporate IdPs | Modern apps, "Sign in with Google", APIs and machine-to-machine |
+| Libraries             | Few, mature, XML-heavy                                       | Many, in every language                                         |
+
+## How a SAML sign-in works
+
+1. The user opens the application. It builds an `AuthnRequest` and redirects the browser to the IdP's single sign-on URL.
+2. The IdP signs the user in (or recognises their session) and builds an **assertion**: a subject (`NameID`), attributes such as email and name, how they authenticated, and a validity window of a few minutes.
+3. The IdP signs it and returns an HTML form that the browser **POSTs** to the application's **Assertion Consumer Service (ACS) URL**.
+4. The application checks the signature against the IdP's certificate, the audience and the time window, and creates its own session.
+
+The browser carries everything; the application never talks to the IdP directly. That makes SAML simple to deploy across company networks — and is why it doesn't help a mobile app or an API.
+
+## How an OIDC sign-in works
+
+1. The application redirects to the provider's `/authorize` endpoint with its client ID, a redirect URI, the scopes it wants and a PKCE challenge.
+2. The provider signs the user in and redirects back with a short-lived **authorization code**.
+3. The application exchanges the code at the `/token` endpoint — a server-to-server call — for an **ID token**, an **access token** and usually a **refresh token**.
+4. It verifies the ID token's signature against the provider's JWKS, and calls APIs with the access token.
+
+This is the [Authorization Code flow with PKCE](oauth-flows/authorization-code.mdx). Because the tokens arrive over a back channel and the same protocol issues API tokens, OIDC covers the cases SAML doesn't: SPAs, mobile apps, CLIs (with the [device flow](oauth-flows/device-code.mdx)) and [service-to-service](oauth-flows/client-credentials.mdx) calls.
+
+## Which one should you use?
+
+- **Signing users in to your own app, new code:** OIDC. Fewer moving parts, JSON instead of XML, one protocol for sign-in and for your API.
+- **Your enterprise customers want to sign in with their Okta or Entra ID:** both of those speak OIDC as well as SAML. Offer OIDC first; add SAML only for the identity providers that speak nothing else.
+- **An application you use only accepts SAML** — many SaaS tools gate their SSO behind it: you need a SAML **identity provider**, whatever your own app uses.
+- **Mobile, CLI, API or machine-to-machine:** OIDC and OAuth 2.0. SAML has no answer there.
+
+In practice most products end up supporting **both directions**: OIDC for their own apps, SAML as an IdP for the tools that require it, and some way to accept their customers' identity providers.
+
+## SAML and OIDC with Faable Auth
+
+Faable Auth is an OpenID Connect provider first, and speaks SAML where it's needed:
+
+| Direction                                                                      | Protocol                 | What it does                                                                                                                                        |
+| ------------------------------------------------------------------------------ | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Your apps sign in with your tenant                                             | **OIDC**                 | Every [client](clients.md) — web, SPA, mobile, CLI, API — on every plan                                                                             |
+| Your tenant signs users in to SAML-only apps (Slack, Notion, a corporate SaaS) | **SAML 2.0**, as the IdP | [SAML for your apps](saml.md): same login, MFA and actions as your other apps (Pro)                                                                 |
+| Your B2B customers sign in with their own identity provider                    | **OIDC**, inbound        | [Organizations and Enterprise SSO](organizations.md): home realm discovery by email domain, [just-in-time provisioning](jit-provisioning.mdx) (Pro) |
+
+Inbound SAML — accepting a customer's identity provider that speaks **only** SAML — isn't available. Okta, Entra ID and Google Workspace all speak OIDC, which covers most enterprise customers.
+
+## FAQ
+
+### Is SAML more secure than OIDC?
+
+No. Both rely on signed statements from the identity provider, and both are safe when implemented correctly. Their weak points differ: SAML's are in XML signature validation (signature-wrapping attacks have hit several libraries), OIDC's are in redirect URI and token validation, which PKCE and exact redirect matching address. Pick by what your applications need, not by security.
+
+### Is OIDC replacing SAML?
+
+For new applications, largely yes. SAML isn't going away: it's embedded in enterprise SaaS and corporate identity providers, so a product that sells to companies will meet it for years.
+
+### Can one identity provider do both SAML and OIDC?
+
+Yes, and the large ones do: Okta, Entra ID and Google Workspace act as SAML and OIDC providers. So does a Faable Auth tenant — an OIDC provider for your apps and a SAML IdP for the applications that require SAML.
+
+### What's the difference between OIDC and OAuth 2.0?
+
+OAuth 2.0 is about **authorization**: it gives an application an access token to call an API. It says nothing about who the user is. OIDC adds **authentication** on top: an ID token with the user's identity, a `userinfo` endpoint and discovery. If you need sign-in, you want OIDC.
+
+### Do SAML and OIDC handle logout?
+
+Both define single logout — SAML Single Logout, and OIDC's RP-initiated, front-channel and back-channel logout — and in both it's the least consistently implemented part. Faable Auth supports the three [OIDC logout](oidc/logout.md) mechanisms; SAML single logout isn't supported yet.
+
+### What is just-in-time provisioning?
+
+Creating the user's account, and their access, the first time they sign in through single sign-on, instead of creating it in advance. It works with both protocols. See [Just-in-time provisioning](jit-provisioning.mdx).
+
+## Related
+
+- [SAML for your apps](saml.md) · [Organizations and Enterprise SSO](organizations.md) · [Just-in-time provisioning](jit-provisioning.mdx)
+- [OpenID Connect](oidc) · [Authorization Code flow with PKCE](oauth-flows/authorization-code.mdx)
+- [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx)

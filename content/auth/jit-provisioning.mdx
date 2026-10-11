@@ -1,0 +1,114 @@
+---
+schema: faq
+title: Just-in-Time (JIT) Provisioning with Enterprise SSO
+description: Just-in-time provisioning creates a user's account and team membership the first time they sign in through their company's identity provider — no invitations, no CSV. How JIT works in Faable Auth with organizations, verified domains and auto-join, and how it differs from SCIM.
+rank: high
+---
+
+# Just-in-time (JIT) provisioning
+
+**Just-in-time provisioning creates a user's account — and gives them access — the first time they sign in, instead of someone creating it in advance.** In a B2B product it means a new employee of your customer opens your app, signs in with their company's Okta or Entra ID, and lands inside their company's workspace with the right role. Nobody sends an invitation, nobody uploads a CSV.
+
+In Faable Auth, JIT is two things working together, both on **organizations** ([Pro](pricing.mdx)):
+
+1. **The account.** A user who signs in through an organization's identity provider for the first time gets an account in your tenant. If a user with that email already exists and the provider vouches for the email, the identity is added to that user instead of creating a second one.
+2. **The access.** **Auto-join** puts anyone who signs in with a verified email of the organization's verified domains into the teams and roles you choose.
+
+## Set it up
+
+### 1. Create the organization and verify its domain
+
+```http
+POST /organization
+{ "name": "Acme Corp" }
+
+POST /organization/org_…/domain
+{ "domain": "acme.com" }
+```
+
+Publish the `verification_token` you get back as a DNS record, then verify:
+
+```
+_faable-challenge.acme.com  TXT  faable-verification=<verification_token>
+```
+
+```http
+POST /organization/org_…/domain/acme.com/verify
+```
+
+A verified domain belongs to one organization. Public email providers (gmail.com and the like) can't be claimed.
+
+### 2. Connect the company's identity provider
+
+Create an `oidc` [connection](connections.md) with `organization` set to the organization's id, using the issuer, client ID and secret the company's IT team gives you from Okta, Entra ID, Google Workspace or any OpenID Connect provider.
+
+From then on, **home realm discovery** sends anyone who types an `@acme.com` address on your login screen straight to Acme's identity provider. The connection only signs in addresses of Acme's verified domains.
+
+### 3. Choose where new people land
+
+```http
+PUT /organization/org_…/auto-join
+[
+  { "team": "team_acme", "roles": ["role_member"] }
+]
+```
+
+That's it. The first time `ana@acme.com` signs in, she has an account, she's a member of `team_acme` with `role_member`, and her access token says so.
+
+## What exactly happens on sign-in
+
+- Auto-join runs on **every interactive sign-in**, whatever the method — the company's SSO, but also a password, a magic link or a passkey — **after** the second factor.
+- Only a **verified** email of a **verified** domain counts. An unverified address never joins anyone.
+- **Existing members are never changed.** If you've promoted Ana to admin, signing in again doesn't put her back to `role_member`.
+- **It never blocks a sign-in.** If a membership can't be written, the login goes ahead and auto-join retries at the next one.
+- Each join emits a `team.member.added` event with `method: "domain"`, which you can receive through a [notification subscription](logs.md) webhook to mirror it in your own database — see [Team invitations](team-invitations.md#events-and-webhooks).
+
+## Requiring SSO for the company's users
+
+JIT gets people in; **Require SSO** makes sure they come in the company's way. With it on, your access tokens tell your API whether the session came through the organization's identity provider:
+
+| Claim                        | Value                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| `https://faable.com/org`     | The organization that owns the user's email domain                          |
+| `https://faable.com/org_sso` | `true` when this session came through that organization's identity provider |
+
+Refuse `@acme.com` users on Acme's resources when `org_sso` isn't `true`, and someone who left Acme — disabled in Acme's IdP — is refused by your API even if they still know an old password. See [Organizations and Enterprise SSO](organizations.md#require-sso-in-your-api).
+
+## JIT vs SCIM
+
+|                          | Just-in-time provisioning                                                       | SCIM                                                           |
+| ------------------------ | ------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| When the account appears | On the user's first sign-in                                                     | When IT assigns the user in the IdP, before they sign in       |
+| Removing access          | The IdP stops letting them sign in; with Require SSO, your API refuses the rest | The IdP tells your app to deactivate the user                  |
+| Setup for your customer  | An SSO connection and a domain                                                  | An SSO connection, plus a SCIM endpoint and token in their IdP |
+| In Faable Auth           | ✅                                                                              | Not available                                                  |
+
+JIT is enough when "can sign in" is what grants access. SCIM matters when your app has to know about people before they ever sign in — to assign them work, bill a seat or show them in a directory — or has to delete their data the moment they leave.
+
+## FAQ
+
+### Do users need an invitation with JIT provisioning?
+
+No. A person with a verified email of the organization's verified domain joins the teams you configured the first time they sign in. Invitations are still there for people outside that domain — a contractor with a personal address — see [Team invitations](team-invitations.md).
+
+### Does JIT provisioning work without SSO?
+
+The team membership part does: auto-join runs for every sign-in method, as long as the email is verified and its domain belongs to the organization. The point of pairing it with SSO is that the company's identity provider, not a password, decides who gets in.
+
+### What happens when someone leaves the company?
+
+Their company disables them in its identity provider, so they can no longer sign in through SSO. With Require SSO enforced in your API, a session that didn't come through the company's identity provider isn't accepted either. To cut access immediately you can also [suspend the user](suspend-users.md).
+
+### Can different domains land in different teams?
+
+An organization can verify several domains, and its auto-join rules apply to all of them. Put companies in separate organizations when they need separate teams.
+
+### What does JIT provisioning cost?
+
+Organizations, verified domains, auto-join and enterprise SSO are on the Pro plan. Users who sign in through an organization's identity provider count as federated MAU: 50 a month are included, then €0.0010 each. See [Auth pricing](pricing.mdx#enterprise-sso).
+
+## Related
+
+- [Organizations and Enterprise SSO](organizations.md) · [Connections](connections.md) · [Team invitations](team-invitations.md)
+- [SAML vs OIDC](saml-vs-oidc.mdx) · [SAML for your apps](saml.md)
+- [Faable Auth vs Clerk](compare-clerk.mdx) · [vs Auth0, Clerk & Keycloak](compare.mdx)

@@ -7,7 +7,7 @@ description: Make your Faable Auth tenant the SAML 2.0 identity provider of any 
 
 Some applications only accept single sign-on over **SAML 2.0**. With SAML on a [client](/auth/clients), your Faable Auth tenant becomes that application's **identity provider (IdP)**: your users sign in to it with the same login screen, session, [two-step verification](/auth/mfa) and [actions](/auth/extensibility/actions) as every other app of the tenant.
 
-This page is about Faable Auth **as the identity provider**. Bringing a company's own identity provider to your tenant works over OpenID Connect — see [Organizations and Enterprise SSO](/auth/organizations). Inbound SAML connections are not available.
+This page is about Faable Auth **as the identity provider**. Bringing a company's own identity provider to your tenant works over OpenID Connect — see [Organizations and Enterprise SSO](/auth/organizations). Inbound SAML connections are not available. Choosing between the two protocols: [SAML vs OIDC](/auth/saml-vs-oidc).
 
 SAML needs the **Pro** plan.
 

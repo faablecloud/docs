@@ -41,7 +41,7 @@ Create an `oidc` [connection](/auth/connections) with `organization` set to the 
 
 ## Auto-join
 
-`PUT /organization/:id/auto-join` with `[{ "team": "team_…", "roles": ["role_…"] }]`: whoever signs in with a verified email of a verified domain joins those teams. Existing members are never changed. The membership comes out as `team.member.added` with `method: "domain"`.
+`PUT /organization/:id/auto-join` with `[{ "team": "team_…", "roles": ["role_…"] }]`: whoever signs in with a verified email of a verified domain joins those teams. Existing members are never changed. The membership comes out as `team.member.added` with `method: "domain"`. See [Just-in-time provisioning](/auth/jit-provisioning) for the whole flow.
 
 ## Require SSO in your API
 
