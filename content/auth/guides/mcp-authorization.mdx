@@ -88,6 +88,17 @@ Your discovery document now advertises `registration_endpoint`. What keeps an op
 - **Refresh tokens are single-use.** Presenting one that was already rotated revokes the whole connection, so a stolen refresh token stops working for both holders.
 - **Registrations are rate-limited** per IP address.
 
+**Client ID Metadata Documents** are the other way the spec lets a client identify itself, and the one it recommends: the client's `client_id` is an HTTPS URL that serves its name and redirect URIs, so there's no registration call at all. Turn them on alongside registration — clients that support them stop registering, and the rest keep using registration:
+
+```bash
+curl -X POST "https://your-domain.auth.faable.link/account/$ACCOUNT_ID" \
+  -H "Authorization: Bearer $MANAGEMENT_TOKEN" \
+  -H 'content-type: application/json' \
+  -d '{ "client_id_metadata_documents_enabled": true }'
+```
+
+Your discovery document then advertises `client_id_metadata_document_supported`. Faable Auth fetches the document when the client first sends the user to your login and keeps it cached for between five minutes and a day; the same rules apply — consent screen, PKCE, no secret.
+
 Clients you create yourself in the dashboard keep working exactly as before: none of this applies to them.
 
 <Callout type="info">
@@ -289,7 +300,7 @@ Yes. Nothing here depends on an SDK: your server publishes one JSON document, an
 
 ### Does Faable Auth support Client ID Metadata Documents?
 
-The 2026-07-28 specification recommends them over Dynamic Client Registration. Faable Auth implements them, but they aren't available to every tenant yet; until they are, clients fall back to Dynamic Client Registration, which every major MCP client supports.
+Yes, in every tenant. The 2026-07-28 specification recommends them over Dynamic Client Registration: the client's `client_id` is an HTTPS URL that serves its metadata, so it doesn't register at all. Turn them on with `client_id_metadata_documents_enabled` — see [step 2](#2-let-mcp-clients-register-themselves). You can run both: a client that supports metadata documents uses them, and the rest fall back to Dynamic Client Registration.
 
 ### What does this cost?
 
