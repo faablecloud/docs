@@ -54,7 +54,7 @@ If continuous monitoring is the point, Hobby or Pro is the supported way to get 
 
 ## Sizing
 
-Uptime Kuma is comfortable in a small instance, but it is a real Node server with a database connection and a scheduler. The free `bi.xs` (0.5 CPU · 1 GB) runs it; if you add a lot of monitors with short intervals, move up the [instance catalog](../pricing.mdx#instances).
+Uptime Kuma is comfortable in a small instance, but it is a real Node server with a database connection and a scheduler. The free `bi.xs` (0.6 vCPU · 512 MB) runs it; if you add a lot of monitors with short intervals, Hobby moves it to 1 vCPU · 1.5 GB — see the [compute catalog](../pricing.mdx#compute-catalog).
 
 ## First run
 

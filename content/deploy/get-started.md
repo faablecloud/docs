@@ -18,7 +18,7 @@ Three concepts model the whole product:
 
 - **Account** — your billing and team boundary on Faable.
 - **Apps** — one app per repo (or one per environment, e.g. `staging` / `production`). Each app gets `<app>.faable.link` plus optional [custom domains](domains/custom-domain.md).
-- **Instances** — how much compute your app runs on. Pick a size from the [catalog](pricing.md#compute-catalog) (`bi.xs` through `bi.2xlarge`) — start small and scale up whenever you need to.
+- **Instances** — how much compute your app runs on. Each plan runs your apps on its own size from the [catalog](pricing.md#compute-catalog) — Free on `bi.xs`, Hobby on `bi.small`, Pro on `bi.base` — and upgrading moves them up automatically.
 
 ## Deploy your first app
 

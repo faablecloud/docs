@@ -65,7 +65,7 @@ What is specific to agents:
 - **Serve on `$PORT`** and answer HTTP — that is the whole contract. Any framework works; there is nothing agent-specific to configure.
 - **Idle time is free.** An agent that handles bursts of work and then waits costs nothing while waiting. Apps sleep after **30 minutes** of no requests on Free and **2 hours** on Hobby and Pro, and wake on the next one.
 - **Streaming works** — Server-Sent Events pass through unbuffered, which is what the 60-second rule above requires.
-- **Start free.** The Free plan runs a `bi.xs` instance (0.5 CPU, 1 GB) per project with the managed Node, Python and PHP buildpacks. Agents that need a bigger machine, or that ship as a Docker image, need Hobby or Pro — see [pricing](pricing.mdx).
+- **Start free.** The Free plan runs each app on a `bi.xs` instance (0.6 vCPU · 512 MB) with the managed Node, Python and PHP buildpacks. Agents that need a bigger machine, or that ship as a Docker image, need Hobby or Pro — see [pricing](pricing.mdx).
 
 **When to choose something else:** if your agent must hold a process open with no inbound traffic and the trigger genuinely cannot be inverted, a scale-to-zero platform is the wrong tool and you will fight it. Pick a host that bills for an always-running process instead.
 
