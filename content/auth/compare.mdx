@@ -10,7 +10,7 @@ rank: high
 
 Each option below is a strong identity solution; this page helps you pick by priorities.
 
-> Competitor details checked against each vendor's pricing and docs in September 2026. They change often — confirm anything decisive on their own sites.
+> Competitor details checked against each vendor's pricing and docs in September 2026 (Clerk rechecked in October 2026). They change often — confirm anything decisive on their own sites.
 
 ## At a glance
 
@@ -21,15 +21,15 @@ Each option below is a strong identity solution; this page helps you pick by pri
 | Credit card to start        | No                                                                                                          | No                                           | No                                                  | — your own servers                    |
 | OAuth 2.0 / OIDC provider   | ✅                                                                                                          | ✅                                           | ✅ ("OAuth applications")                           | ✅ OpenID Certified                   |
 | Machine-to-machine          | ✅ client credentials, 100/month free, then €2.25 per 1,000                                                 | ✅ 1,000 tokens/month free, paid tiers above | ✅ own M2M tokens (not client credentials), metered | ✅ service accounts                   |
-| Device code, token exchange | ✅                                                                                                          | Device code ✅                               | —                                                   | ✅                                    |
-| Dynamic client registration | ✅                                                                                                          | ✅                                           | —                                                   | ✅                                    |
+| Device code, token exchange | ✅                                                                                                          | Device code ✅                               | Device code ✅                                      | ✅                                    |
+| Dynamic client registration | ✅                                                                                                          | ✅                                           | ✅                                                  | ✅                                    |
 | Social login                | Google, GitHub, Microsoft, Figma + custom OAuth 2.0                                                         | ✅ broad catalogue                           | ✅ broad catalogue                                  | ✅ brokering                          |
 | Passwordless by email       | ✅ link or code (Hobby and up)                                                                              | ✅ all plans                                 | ✅                                                  | Via extensions                        |
 | SMS sign-in                 | ❌                                                                                                          | ✅                                           | ✅ paid plans                                       | Via extensions                        |
-| Passkeys                    | ✅ sign-in (Pro) and second factor (Hobby)                                                                  | ✅                                           | ✅ paid plans                                       | ✅ built in since 26.4                |
-| MFA                         | Authenticator app, security keys, passkeys                                                                  | ✅ tiered: basic → adaptive                  | TOTP, SMS, backup codes (Pro)                       | TOTP, WebAuthn, recovery codes        |
+| Passkeys                    | ✅ sign-in (Pro) and second factor (Hobby)                                                                  | ✅                                           | ✅ sign-in, paid plans                              | ✅ built in since 26.4                |
+| MFA                         | Authenticator app, security keys, passkeys                                                                  | ✅ tiered: basic → adaptive                  | TOTP, SMS, backup codes (paid plans)                | TOTP, WebAuthn, recovery codes        |
 | Enterprise SSO / SAML       | ✅ SAML 2.0 IdP for your apps + enterprise SSO over OIDC, on Pro — 50 federated MAU free, then €0.0010 each | ✅ 1 connection free, $100/month each above  | ✅ 1 per app on Pro, $75/month each above           | ✅ as IdP and SP                      |
-| B2B organizations           | [Organizations](organizations.md) with verified domains, SSO and auto-join (Pro); teams and roles           | 5 free, unlimited on B2B tiers               | 100 free, then per org with the B2B add-on          | Realms; Organizations since 26        |
+| B2B organizations           | [Organizations](organizations.md) with verified domains, SSO and auto-join (Pro); teams and roles           | 5 free, unlimited on B2B tiers               | 100 free (20 members each), then per org            | Realms; Organizations since 26        |
 | Custom code in the login    | [Actions](extensibility/actions.md) + webhooks                                                              | Actions (5–30 by tier)                       | Webhooks                                            | Java SPIs                             |
 | Hosted login pages          | ✅ [all plans](#hosted-login-pages)                                                                         | ✅ Universal Login                           | ✅ Account Portal + components                      | ✅ themes you build                   |
 | Admin CLI                   | ✅ [`faable auth`](#cli-and-config-as-code)                                                                 | ✅ `auth0`, Deploy CLI, Terraform            | ✅ `clerk` (dev-focused)                            | ✅ `kcadm.sh`, realm export/import    |
@@ -43,11 +43,11 @@ Each option below is a strong identity solution; this page helps you pick by pri
 The three managed products price in very different shapes, so the fair comparison is by what you need, not by headline rate.
 
 - **Auth0** is free up to 25,000 MAU with most features in reduced quantities (5 organizations, 1 enterprise connection, 1,000 M2M tokens a month, 5 Actions, one day of logs). Paid tiers start at $35/month for consumer apps and **$150/month for B2B**, rise with MAU, and Professional starts at $240 / $800. Enterprise connections are $100/month each, and more M2M tokens are a separate add-on.
-- **Clerk** is free up to 50,000 retained users per app, then $25/month on Pro with **$0.02 per retained user** above 50,000. Organizations beyond 100 need the $100/month B2B add-on and a per-organization price; M2M tokens and API keys are metered per creation and per verification.
+- **Clerk** is free up to 50,000 retained users per app, then $25/month on Pro with **$0.02 per retained user** from 50,001 to 100,000, falling in tiers to $0.012 above 10 million. MFA, passkeys and SMS need a paid plan. Organizations beyond 100 are priced per organization, more than 20 members per organization needs the $100/month Enhanced B2B add-on, and M2M tokens and API keys are metered per creation and per verification. Full breakdown in [Faable Auth vs Clerk](compare-clerk.mdx).
 - **Keycloak** has no license fee. You pay for the servers, a PostgreSQL database, the upgrades — 26.x has shipped a minor version every few months — and the people who know how to run it.
 - **Faable Auth** never charges per user: **Free** up to 15,000 MAU with no credit card, **Hobby 15 €** and **Pro 99 €** with no MAU limit. Machine-to-machine tokens: 100 a month included, then €2.25 per 1,000 on Hobby and Pro. See [Auth pricing](pricing.mdx).
 
-**The reading:** up to 15,000 monthly users, Faable costs nothing and asks for no card. Past that, Hobby is 15 € with no user limit — where Auth0's paid tiers rise with every user and Clerk charges $0.02 per user above 50,000. Faable pulls ahead when you're B2B (organizations and SSO are where the others charge), when you're past their free tiers, or when a predictable bill matters more than a per-user one.
+**The reading:** up to 15,000 monthly users, Faable costs nothing and asks for no card. Past that, Hobby is 15 € with no user limit — where Auth0's paid tiers rise with every user and Clerk charges from $0.02 per user above 50,000. Faable pulls ahead when you're B2B (organizations and SSO are where the others charge), when you're past their free tiers, or when a predictable bill matters more than a per-user one.
 
 ## Hosted login pages
 
@@ -98,7 +98,7 @@ There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk
 ## When another tool might fit better
 
 - **Auth0** has the deepest feature surface and tooling (Terraform, Deploy CLI, adaptive MFA) — a fit for enterprises already standardized on Okta.
-- **Clerk** has excellent React components for teams that want to design the auth UI inside their app and are happy with US hosting.
+- **Clerk** has excellent React components for teams that want to design the auth UI inside their app and are happy with US hosting. See [Faable Auth vs Clerk](compare-clerk.mdx).
 - **Keycloak** is the choice when you want open-source identity on your own infrastructure and have the team to operate it.
 - **You need SMS login or Sign in with Apple today**, or the identity provider your customers bring only speaks SAML. All three handle those; Faable Auth connects company identity providers over OpenID Connect.
 

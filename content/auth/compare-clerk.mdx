@@ -1,0 +1,120 @@
+---
+title: Faable Auth vs Clerk
+description: Faable Auth vs Clerk — pricing past 50,000 users, MFA and passkeys by plan, hosted login pages vs React components, B2B organizations and enterprise SSO, SAML, M2M tokens, MCP authorization, US-only data vs a European company, and migrating from Clerk.
+rank: high
+---
+
+# Faable Auth vs Clerk
+
+**Short answer:** Clerk is a **component-first** auth platform: drop `<SignIn />` and `<UserButton />` into a React or Next.js app and the UI is done, with a generous free tier of 50,000 monthly retained users. Faable Auth is a **standards-first OAuth 2.0 / OpenID Connect identity server**: the login is **hosted** on your auth domain and any stack integrates through standard flows. The practical differences are the price curve **after** the free tier, which features need a paid plan, where your users' data lives — Clerk is **US-only**, Faable runs on **its own hardware in Europe** as a European company — and that Faable is **one subscription with your app hosting**.
+
+> Clerk details checked against clerk.com pricing, docs and changelog in October 2026. They change often — confirm anything decisive on their own site.
+
+## At a glance
+
+| Capability                                | Faable Auth                                                                                                     | Clerk                                                                                                    |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Pricing model**                         | Plan fee: Free (15,000 MAU), Hobby 15 € and Pro 99 € (unlimited MAU)                                            | Free 50,000 retained users per app; Pro $25/month, then **$0.02 → $0.012 per retained user** in tiers    |
+| Credit card to start                      | No                                                                                                              | No                                                                                                       |
+| Two-step verification (MFA)               | Authenticator app, security keys, passkeys, recovery codes — **Hobby**                                          | SMS, authenticator app, backup codes — **paid plans**                                                    |
+| Passkeys                                  | As a second factor (Hobby) and as the sign-in method (Pro)                                                      | Sign-in only, paid plans; not enrollable as a separate MFA factor                                        |
+| Phone / SMS sign-in                       | ❌ (SMS is used for recovery)                                                                                   | ✅ paid plans, $0.01 per SMS in US/Canada                                                                |
+| Social login                              | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                                                       | ✅ broad catalogue, including Apple                                                                      |
+| Hosted login pages                        | ✅ [every screen](#hosted-pages-vs-components), on every plan                                                   | Account Portal (limited customization) + prebuilt components you embed                                   |
+| Works in production on the default domain | ✅ `your-domain.auth.faable.link`; your own domain on Pro                                                       | Production needs a domain you own (CNAME); dev instances capped at 100 users                             |
+| B2B organizations                         | [Organizations](organizations.md) with verified domains, SSO and auto-join (Pro); teams and roles on every plan | 100 retained orgs per app, up to 20 members each; Enhanced B2B add-on $100/month for more                |
+| Enterprise SSO (inbound)                  | OIDC (Okta, Entra ID, Google Workspace…), Pro — 50 federated MAU free, then €0.0010 each                        | SAML and OIDC, 1 connection per app on Pro, then $75/month each                                          |
+| Your tenant as a SAML IdP for your apps   | ✅ [SAML for your apps](saml.md), Pro                                                                           | ❌ (service provider only)                                                                               |
+| OAuth 2.0 / OIDC provider for other apps  | ✅                                                                                                              | ✅ ("OAuth applications")                                                                                |
+| Machine-to-machine                        | ✅ standard [client credentials](oauth-flows/client-credentials.mdx) — 100/month free, then €2.25 per 1,000     | ✅ Clerk M2M tokens (its own API, not client credentials) — 2,500 creations/month free, then $0.001 each |
+| Device code                               | ✅                                                                                                              | ✅ (since September 2026)                                                                                |
+| Token exchange                            | ✅ [RFC 8693](oauth-flows/token-exchange.mdx)                                                                   | Not documented                                                                                           |
+| Dynamic client registration               | ✅                                                                                                              | ✅                                                                                                       |
+| MCP server authorization                  | ✅ [guide](guides/mcp-authorization.mdx) — DCR, consent screen, per-tool permissions                            | ✅ `@clerk/mcp-tools`, DCR and Client ID Metadata Documents                                              |
+| Custom code in the login                  | [Actions](extensibility/actions.md) run inside the flow (Hobby) + [webhooks](extensibility/webhooks.md)         | Webhooks (asynchronous) + session token claims (~1.2 KB)                                                 |
+| Admin CLI                                 | ✅ [`faable auth`](../cli.md#faable-auth) — users, suspensions, Actions, logs                                   | ✅ `clerk` — setup, keys, `config pull/patch`, users, impersonation, webhook relay                       |
+| Audit logs                                | Pro                                                                                                             | Admin audit logs (August 2026)                                                                           |
+| Where identities live                     | Faable's own hardware in Europe, EU company                                                                     | United States only; "does not offer regional data residency or region selection"                         |
+| SOC 2                                     | [See Faable compliance scope](../platform/compliance.md#compliance-scope)                                       | SOC 2 Type 2; report on Business ($300/month)                                                            |
+| Bundled with app hosting                  | ✅ [Faable Deploy](../deploy/get-started.md), same subscription                                                 | ❌                                                                                                       |
+
+## Pricing, worked through
+
+The two meters count different things. Clerk bills **monthly retained users** — someone who comes back at least one day after signing up — so a sign-up who never returns is free. Faable counts **monthly active users** — anyone with a successful login in the month — but only Free has a limit.
+
+| Users per month  | Faable Auth  | Clerk                                              |
+| ---------------- | ------------ | -------------------------------------------------- |
+| 15,000           | 0 € (Free)   | $0 (Hobby) — no MFA, passkeys or SMS in production |
+| 15,000, with MFA | 15 € (Hobby) | $25 (Pro)                                          |
+| 50,000           | 15 € (Hobby) | $0, or $25 with MFA                                |
+| 100,000          | 15 € (Hobby) | $25 + 50,000 × $0.02 = **$1,025**                  |
+| 250,000          | 15 € (Hobby) | $25 + $1,000 + 150,000 × $0.018 = **$3,725**       |
+
+Then the B2B lines. On Clerk, an organization holds 20 members until you add Enhanced B2B ($100/month), each enterprise connection after the first is $75/month, and the SOC 2 report comes with Business ($300/month). On Faable Pro (99 €), organizations, enterprise SSO for every customer (50 federated users free, then €0.0010 each) and your own login domain are in the plan.
+
+**The honest reading:** below 50,000 retained users with no second factor, Clerk costs nothing and Faable's Free stops at 15,000. Past 50,000 — or as soon as you need MFA — Faable's flat fee wins, by more every month you grow. And Clerk is cheaper for machine-to-machine at volume: 2,500 tokens included and $0.001 each, against Faable's 100 and €0.00225.
+
+Faable figures are plan fees from [Auth pricing](pricing.mdx), in euros, VAT excluded; Clerk figures are its monthly list prices in US dollars (annual billing is lower).
+
+## Hosted pages vs components
+
+This is the real fork in the road.
+
+**Clerk** wants the auth UI **inside your app**. Its prebuilt React components are polished and quick to theme, and the redesigned hooks (Clerk Elements is deprecated) let you build your own. The hosted **Account Portal** exists, but its pages "cannot be customized beyond the options provided in the Clerk Dashboard". Outside React, you work with the frontend SDKs.
+
+**Faable Auth** wants the auth UI **on the auth domain**, and hosts all of it: sign-in, sign-up, reset, two-step verification and enrolment, passkey enrolment and the [offer right after login](login-experience.md#inviting-users-to-create-a-passkey), device activation for CLIs, and a [security page](hosted-login.mdx#the-one-screen-your-users-go-to-on-their-own) where users manage their factors and connected apps. You choose the logo, the methods and their order, per tenant or per client — but you can't restyle the pages pixel by pixel.
+
+What hosting buys you: **single sign-on across your apps** for free (the session is a cookie on the auth domain), **passkeys that work in every app** (they're bound to one domain), credentials that **never touch your frontend**, and the same login from React, Vue, a mobile app, a Django backend or a CLI — standard OAuth, no vendor component to keep updated.
+
+## Custom code in the login
+
+Clerk's webhooks are asynchronous: they tell your backend that something happened, after the fact. To change what's in the session you add claims to the session token, with about 1.2 KB of room in the cookie.
+
+Faable [Actions](extensibility/actions.md) run **inside** the login, after the user is authenticated and before any token exists: deny a sign-in (and keep blocking it for a while), pause it to send the user through a page of yours, or add claims to the access and ID tokens. They run on machine-to-machine requests too. [Webhooks](extensibility/webhooks.md) are there too, for the after-the-fact part.
+
+## Machine-to-machine and MCP
+
+**Machine-to-machine.** Clerk M2M tokens are created through Clerk's own API (`m2m.createToken()`), opaque or JWT. Faable uses the standard [client credentials](oauth-flows/client-credentials.mdx) grant against each registered [API](apis.md), so any OAuth library, API gateway or cloud service that speaks OAuth can get a token without a vendor SDK.
+
+**MCP servers.** Both can be the authorization server of a remote MCP server, and here Clerk got there first: `@clerk/mcp-tools` for Next.js and Express, and Client ID Metadata Documents generally available since September 2026. Faable Auth does it with Dynamic Client Registration, a consent screen your users see before any client gets a token, per-tool permissions with step-up, single-use refresh tokens and a **Connected apps** list on the security page — see [Add OAuth to your MCP server](guides/mcp-authorization.mdx). Client ID Metadata Documents are implemented but not yet open to every tenant.
+
+## Where your users' data lives
+
+Clerk says plainly that it "does not offer regional data residency or region selection": data is on US infrastructure, with EU transfers under the EU-U.S. Data Privacy Framework. An EU region is on its public roadmap without a date.
+
+Faable Auth runs on **our own hardware in a European datacenter**, operated by a European company, with no non-EU region. For SOC 2 or ISO 27001, see our [compliance scope](../platform/compliance.md#compliance-scope) — compliance support is included in the Pro plan.
+
+## Migrating from Clerk
+
+Clerk lets admins export users **with their password hashes** from the dashboard as a CSV, and Faable imports them as they are, so nobody has to reset a password:
+
+1. Export users from the Clerk Dashboard (**Settings → User exports**).
+2. Import with `faable auth users import users.csv --from clerk --dry-run`, then without `--dry-run`. bcrypt, Argon2 and PBKDF2 digests import as they are and are upgraded to Argon2id on first sign-in.
+3. Replace Clerk's components with the standard [Authorization Code + PKCE](oauth-flows/authorization-code.mdx) flow and the hosted login.
+
+The full walk-through, with the concept mapping, is in [Migrate from Clerk](guides/migrate-from-clerk.mdx).
+
+## When Faable Auth is the better fit
+
+- **You're past 50,000 users, or need MFA**, and want a bill that doesn't grow with every user.
+- **You need identities held by a European company in Europe**, not a US-only service.
+- **You want the login hosted** — one sign-in for several apps, passkeys that work everywhere, no auth components in your frontend.
+- **Your stack isn't only React**, or you want tokens any OAuth library understands, for users and for services.
+- **Your users need to sign in to SAML apps** — Slack, Notion, a corporate tool. Your tenant is their [SAML identity provider](saml.md); Clerk can only consume SAML.
+- **You want auth and hosting together**: [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.mdx).
+
+## When Clerk might fit better
+
+- **You want the auth UI inside your React or Next.js app** and to design it with components.
+- **You're under 50,000 retained users** and don't need a second factor: Clerk is free there, Faable only up to 15,000.
+- **You need phone sign-in, SMS MFA or Sign in with Apple.**
+- **Your customers' identity providers only speak SAML.** Faable Auth connects company identity providers over OpenID Connect; Okta, Entra ID and Google Workspace all speak it.
+- **You issue machine tokens at high volume**, where Clerk's per-token price is lower.
+- **You want auth settings as code today**: `clerk config pull/patch` does it; Faable's equivalent is the Management API.
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx)
+- [Migrate from Clerk](guides/migrate-from-clerk.mdx) · [Import and export password hashes](guides/import-password-hashes.mdx)
+- [Faable Auth vs Supabase Auth](compare-supabase-auth.mdx) · [vs Firebase Authentication](compare-firebase-auth.mdx) · [vs AWS Cognito](compare-aws-cognito.mdx)
+- [Faable Auth features](features.mdx) · [Auth pricing](pricing.mdx)
