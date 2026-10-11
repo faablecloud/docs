@@ -42,6 +42,7 @@ Access tokens are RS256-signed JWTs. Decoded, they look like this:
   "scope": "openid profile email read:orders",
   "permissions": "read:orders",
   "client_id": "AbC123xYz...",
+  "jti": "3f6c2a9e-7b1d-4c58-9e0a-2d4f8b6a1c37",
   "account": "acc_6612ab34cd56ef7890ab12cd",
   "aud": "https://api.myapp.com",
   "iss": "https://your-domain.auth.faable.link",
@@ -55,6 +56,7 @@ Access tokens are RS256-signed JWTs. Decoded, they look like this:
 | `sub`             | Who the token represents: a user id (`user_…`) for login flows, or the `client_id` for [machine-to-machine](oauth-flows/client-credentials.md) tokens.                                                          |
 | `scope`           | Space-separated string of granted scopes.                                                                                                                                                                       |
 | `permissions`     | Space-separated **string** (not an array) of granted API permissions. Only present when your API uses the `access_token_authz` token dialect — see [APIs](apis.md).                                             |
+| `jti`             | A unique id for this token. Log it to trace requests, or keep a short denylist of `jti`s to revoke one token before it expires.                                                                                 |
 | `client_id`       | The client that obtained the token. Useful for logging and for per-client rules.                                                                                                                                |
 | `account`         | Your tenant's id. Every token carries it; you can ignore it for validation because `iss` already pins the tenant.                                                                                               |
 | `aud`             | The `identifier` of the API the token was issued for. When no `audience` was requested it falls back to `<tenant>/userinfo` — see [Pitfalls](#pitfalls-that-cause-invalid-token).                               |

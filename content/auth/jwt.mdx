@@ -77,6 +77,7 @@ The payload:
   "scope": "openid profile email read:orders",
   "permissions": "read:orders",
   "client_id": "AbC123xYz",
+  "jti": "3f6c2a9e-7b1d-4c58-9e0a-2d4f8b6a1c37",
   "iat": 1791640000,
   "exp": 1791726400
 }
@@ -85,6 +86,7 @@ The payload:
 - `iss` is your tenant — no trailing slash; with a [custom domain](custom-domain.md), the custom domain.
 - `aud` is the `identifier` of the [API](apis.md) you registered, because the client asked for that audience.
 - `permissions` lists what the user granted, as a space-separated string, when the API uses the `access_token_authz` dialect.
+- `jti` is a unique id for this one token: log it to trace a request, or deny it to revoke just this token.
 - `exp − iat` is the API's `token_lifetime`: 24 hours by default, from 1 minute to 30 days.
 
 Get one yourself with a machine-to-machine token from the [client credentials](oauth-flows/client-credentials.mdx) flow:
@@ -126,7 +128,7 @@ A JWT is valid until its `exp`, and an API that verifies locally has no way to k
 - **Short-lived access tokens** — as short as your API can afford. Lower the API's `token_lifetime` for sensitive APIs.
 - **Refresh tokens** to get new ones, checked by the token endpoint on every use. Revoking a session, [suspending a user](suspend-users.md) or calling the tenant's `/oauth/revoke` endpoint ([RFC 7009](https://datatracker.ietf.org/doc/html/rfc7009)) stops the next refresh, so access ends when the current access token expires.
 
-If you need to cut access instantly for a single API, check `sub` against a short denylist in that API (Faable access tokens carry no `jti`) — the cost is one lookup per request, the thing JWTs were meant to avoid.
+If you need to cut access instantly for a single API, check the token's `jti` — every Faable token carries a unique one — or its `sub` against a short denylist in that API — the cost is one lookup per request, the thing JWTs were meant to avoid.
 
 ## Where to store tokens in the browser
 
