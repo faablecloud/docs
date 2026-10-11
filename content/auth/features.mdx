@@ -50,7 +50,7 @@ Faable Auth implements [OpenID Connect Core 1.0](oidc) on top of those grants:
 - **ID tokens** signed with RS256, verifiable against the tenant's rotating **JWKS**.
 - **[UserInfo](oidc/userinfo.md)** — standard profile claims, scope-gated per OIDC §5.4.
 - **[RP-Initiated Logout](oidc/logout.md)** plus **Front-Channel Logout 1.0**: one `/logout` call clears the session at the tenant and notifies every other application signed into it.
-- **[Dynamic Client Registration](clients.md#dynamic-client-registration)** (RFC 7591) — what MCP clients, IDE integrations and OAuth debuggers expect when they onboard themselves.
+- **[Dynamic Client Registration](clients.md#dynamic-client-registration)** (RFC 7591) — what MCP clients, IDE integrations and OAuth debuggers expect when they onboard themselves. Off by default; see [Add OAuth to your MCP server](guides/mcp-authorization.mdx).
 
 Because it's standards-first, anything that speaks OIDC plugs in. [Shopify Plus customer accounts](integrations/shopify.md), for instance, lets a store swap its built-in login for your tenant — configured entirely from the two dashboards, no code.
 

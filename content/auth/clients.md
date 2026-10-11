@@ -68,9 +68,18 @@ A client may register a `frontchannel_logout_uri`: Faable loads it in a hidden i
 
 ## Dynamic Client Registration
 
-Clients can be created over HTTP instead of through the dashboard, per [OIDC Dynamic Client Registration 1.0 / RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591). This is what lets a third-party tool onboard itself against your tenant — MCP clients, IDE integrations and OAuth debuggers commonly expect it.
+Clients can be created over HTTP instead of through the dashboard, per [OIDC Dynamic Client Registration 1.0 / RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591). This is what lets a third-party tool onboard itself against your tenant — MCP clients, IDE integrations and OAuth debuggers commonly expect it. For MCP servers, see [Add OAuth to your MCP server](guides/mcp-authorization.mdx).
 
-The endpoint is published in your discovery document as `registration_endpoint`:
+**It is off by default** — an open registration lets anyone create a client with their own `redirect_uri`. Turn it on per tenant with the [Management API](academy/05-server-and-management-api.md):
+
+```bash
+curl -X POST 'https://your-domain.auth.faable.link/account/<account_id>' \
+  -H 'Authorization: Bearer <management token>' \
+  -H 'content-type: application/json' \
+  -d '{ "dynamic_client_registration_enabled": true }'
+```
+
+While it's off, `POST /oidc/register` answers `403` and the discovery document doesn't list it. Once on, the endpoint is published in your discovery document as `registration_endpoint`:
 
 ```bash
 curl -X POST 'https://your-domain.auth.faable.link/oidc/register' \
@@ -106,6 +115,9 @@ Notes on behaviour:
 - **`redirect_uris` is the only required field.** Everything else defaults per spec: `grant_types` to `["authorization_code"]`, `response_types` to `["code"]`, `token_endpoint_auth_method` to `client_secret_basic`, `application_type` to `web`.
 - **Unsupported metadata is rejected**, not silently accepted. Requesting a grant type Faable doesn't implement returns `400`. Supported grants are `authorization_code`, `refresh_token`, `client_credentials`, `urn:ietf:params:oauth:grant-type:device_code`, `urn:ietf:params:oauth:grant-type:token-exchange` and Auth0's passwordless OTP grant.
 - **`client_secret_expires_at` is `0`** — issued secrets don't expire.
+- **Public clients** register with `token_endpoint_auth_method: "none"` and get no `client_secret` back; they must use PKCE.
+- **Every dynamically registered client asks for consent.** Before it gets a token the user sees its name, the host of its `redirect_uri` and the permissions it requested — even with an active session — and PKCE is mandatory. Its refresh tokens are single-use. Users can disconnect it from their security page. Clients you create in the dashboard are not affected.
+- **Registrations are rate-limited** per IP address.
 - **The client is bound to the tenant resolved from the request host**, so register against the domain you actually want it to live in.
 - **`web_origins`** is accepted as a non-standard extra, with the same rules as in the dashboard.
 - **Registration is not itself authenticated.** Anyone who can reach your auth domain can create a client in your tenant — a new client grants no access on its own, but if that's not a trade-off you want, keep an eye on `oauth.client.register` entries in your [logs](logs.md).

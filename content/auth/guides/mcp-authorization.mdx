@@ -1,0 +1,303 @@
+---
+schema: faq
+title: Add OAuth to Your MCP Server — MCP Authorization with Faable Auth
+description: Protect a remote MCP server with OAuth 2.1 the way the MCP authorization spec asks — Faable Auth as the authorization server, Dynamic Client Registration for Claude, Cursor and VS Code, a consent screen, Protected Resource Metadata, token validation and per-tool scopes, in Node.js and Python.
+rank: high
+---
+
+import { Callout } from 'nextra/components'
+
+# Add OAuth to your MCP server with Faable Auth
+
+**Short answer:** the [MCP authorization specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) makes your remote MCP server an **OAuth 2.1 resource server**. It doesn't sign anyone in itself: it points MCP clients — Claude, Cursor, VS Code, ChatGPT — at an **authorization server**, and accepts only access tokens issued **for it**. Faable Auth is that authorization server. You register your MCP server as an [API](../apis.md), turn on Dynamic Client Registration so clients can onboard themselves, and add about 40 lines to your server. Your users then click **Connect**, sign in on your hosted login page, see what the client is asking for, and press **Allow** — no API key to copy, and they can revoke it later.
+
+By the end of this guide:
+
+- a client that has never seen your server registers itself, sends the user to your login and comes back with a token;
+- your server rejects any token that wasn't issued for it;
+- each tool needs its own permission, and a client that lacks one is asked to step up;
+- your users can see and disconnect every connected client from their security page.
+
+## What you need
+
+- A Faable Auth tenant — `https://your-domain.auth.faable.link`, or your [custom domain](../custom-domain.md). Any plan.
+- A remote MCP server over Streamable HTTP, reachable at a public HTTPS URL — for example `https://mcp.example.com/mcp`. If it isn't hosted anywhere yet, [Faable Deploy](../../deploy/get-started.md) runs it from a GitHub repository; see [Host it on Faable Deploy](#host-it-on-faable-deploy).
+- A [Management API](../academy/05-server-and-management-api.md) token for your tenant, for step 2.
+
+## How the pieces fit
+
+```
+MCP client ──(1) POST /mcp, no token ───────────────────────────────▶ your MCP server
+           ◀─(2) 401  WWW-Authenticate: Bearer resource_metadata="…/.well-known/oauth-protected-resource/mcp"
+MCP client ──(3) GET protected resource metadata ───────────────────▶ your MCP server
+           ◀─    { resource, authorization_servers: [your tenant] }
+MCP client ──(4) discovery + POST /oidc/register (Dynamic Client Registration) ─▶ Faable Auth
+MCP client ──(5) /authorize?resource=https://mcp.example.com/mcp + PKCE ─▶ hosted login → consent → Allow
+           ◀─(6) access token  aud=https://mcp.example.com/mcp  permissions="tools:read"
+MCP client ──(7) POST /mcp  Authorization: Bearer … ────────────────▶ your MCP server (checks iss, aud, exp, signature)
+```
+
+Steps 3 to 6 are the client's job and Faable Auth's job. **Your server only does two things:** answer step 2 and step 3, and check the token in step 7.
+
+## 1. Register your MCP server as an API
+
+In the [Faable Dashboard](https://dashboard.faable.com), open your Auth tenant → **APIs** → **Create API**, or call the Management API:
+
+```http
+POST /apis
+Content-Type: application/json
+
+{
+  "name": "Acme MCP",
+  "identifier": "https://mcp.example.com/mcp",
+  "token_dialect": "access_token_authz",
+  "token_lifetime": 3600,
+  "enforce_policies": true,
+  "allow_offline_access": true,
+  "skip_consent": false,
+  "permissions": [
+    { "value": "tools:read",  "description": "Read your projects and their status" },
+    { "value": "tools:write", "description": "Create and change projects on your behalf" }
+  ]
+}
+```
+
+- **`identifier` is your MCP server's canonical URL, exactly** — scheme, host and path, no trailing slash. MCP clients send it as the `resource` parameter ([RFC 8707](https://datatracker.ietf.org/doc/html/rfc8707)) and Faable Auth issues the token with that `aud`. It can't be changed later.
+- **`permissions` are your scopes.** Their descriptions are what your users read on the consent screen, so write them for a person, not for a developer.
+- **`access_token_authz`** adds a `permissions` claim to the token, which is what your tools will check.
+- **`allow_offline_access`** lets the client keep the connection with a refresh token instead of sending the user through the login again every hour.
+
+See [APIs](../apis.md) for every field.
+
+## 2. Let MCP clients register themselves
+
+Claude, Cursor and VS Code don't know your tenant in advance, so they register a client with [Dynamic Client Registration](../clients.md#dynamic-client-registration) (RFC 7591) the first time they connect. It is **off by default**, because an open registration lets anyone create a client. Turn it on for your tenant through the Management API:
+
+```bash
+curl -X POST "https://your-domain.auth.faable.link/account/$ACCOUNT_ID" \
+  -H "Authorization: Bearer $MANAGEMENT_TOKEN" \
+  -H 'content-type: application/json' \
+  -d '{ "dynamic_client_registration_enabled": true }'
+```
+
+Your discovery document now advertises `registration_endpoint`. What keeps an open registration safe is what Faable Auth does with every client registered this way:
+
+- **The user always sees a consent screen** before the client gets a token — even when they're already signed in. It names the client, shows the host it will send the user back to (and warns when that's only `localhost`), and lists the permissions it asked for in your words.
+- **PKCE is mandatory.** A request without a `code_challenge` is rejected.
+- **Public clients get no secret.** MCP clients register as `token_endpoint_auth_method: none` and prove themselves with PKCE.
+- **Refresh tokens are single-use.** Presenting one that was already rotated revokes the whole connection, so a stolen refresh token stops working for both holders.
+- **Registrations are rate-limited** per IP address.
+
+Clients you create yourself in the dashboard keep working exactly as before: none of this applies to them.
+
+<Callout type="info">
+  Turning the switch off again stops new registrations. Clients that already
+  registered keep their connections until your users disconnect them.
+</Callout>
+
+## 3. Tell clients where to sign in
+
+When a request arrives with no token, or a bad one, answer `401` with a pointer to your **Protected Resource Metadata** ([RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728)), and serve that document. Both are required by the MCP spec. In Node.js with Express:
+
+```ts
+import express from 'express'
+
+const ISSUER = 'https://your-domain.auth.faable.link' // your tenant — NO trailing slash
+const RESOURCE = 'https://mcp.example.com/mcp' // the API identifier from step 1
+const METADATA_URL =
+  'https://mcp.example.com/.well-known/oauth-protected-resource/mcp'
+
+const app = express()
+
+const protectedResourceMetadata = {
+  resource: RESOURCE,
+  authorization_servers: [ISSUER],
+  scopes_supported: ['tools:read', 'tools:write'],
+  bearer_methods_supported: ['header']
+}
+// The spec's well-known path for a resource with a path, plus the root one
+// some clients try first.
+app.get('/.well-known/oauth-protected-resource/mcp', (_req, res) =>
+  res.json(protectedResourceMetadata)
+)
+app.get('/.well-known/oauth-protected-resource', (_req, res) =>
+  res.json(protectedResourceMetadata)
+)
+
+function challenge(res, status, error, scope = 'tools:read') {
+  res.set(
+    'WWW-Authenticate',
+    `Bearer resource_metadata="${METADATA_URL}", scope="${scope}"` +
+      (error ? `, error="${error}"` : '')
+  )
+  return res.status(status).json({ error: error ?? 'unauthorized' })
+}
+```
+
+Ask for the **least** you need in `scope` — usually read-only. Tools that write ask for more when they're called (step 5).
+
+## 4. Accept only tokens issued for your server
+
+Validation is local: check the signature against your tenant's JWKS, then the issuer, the audience and the expiry. **The audience check is the one that matters most here.** Without it, any valid token from your tenant — one issued to your web app, say — would be accepted by your MCP server.
+
+```ts
+import { createRemoteJWKSet, jwtVerify } from 'jose'
+
+const JWKS = createRemoteJWKSet(new URL(`${ISSUER}/.well-known/jwks.json`))
+
+async function requireToken(req, res, next) {
+  const token = req.headers.authorization?.match(/^Bearer (.+)$/i)?.[1]
+  if (!token) return challenge(res, 401)
+  try {
+    const { payload } = await jwtVerify(token, JWKS, {
+      issuer: ISSUER,
+      audience: RESOURCE,
+      algorithms: ['RS256']
+    })
+    req.auth = {
+      userId: payload.sub,
+      clientId: payload.client_id,
+      permissions: String(payload.permissions ?? '')
+        .split(' ')
+        .filter(Boolean)
+    }
+    next()
+  } catch {
+    return challenge(res, 401, 'invalid_token')
+  }
+}
+
+app.use('/mcp', express.json(), requireToken)
+// …then mount your MCP SDK's Streamable HTTP transport on /mcp as usual.
+```
+
+The same checks in Python, with [PyJWT](https://pyjwt.readthedocs.io/) in a Starlette or FastAPI middleware:
+
+```python
+import jwt
+from starlette.responses import JSONResponse
+
+ISSUER = "https://your-domain.auth.faable.link"
+RESOURCE = "https://mcp.example.com/mcp"
+METADATA_URL = "https://mcp.example.com/.well-known/oauth-protected-resource/mcp"
+jwks = jwt.PyJWKClient(f"{ISSUER}/.well-known/jwks.json")
+
+def challenge(status: int, error: str | None = None, scope: str = "tools:read"):
+    header = f'Bearer resource_metadata="{METADATA_URL}", scope="{scope}"'
+    if error:
+        header += f', error="{error}"'
+    return JSONResponse({"error": error or "unauthorized"}, status, {"WWW-Authenticate": header})
+
+async def require_token(request, call_next):
+    if not request.url.path.startswith("/mcp"):
+        return await call_next(request)
+    auth = request.headers.get("authorization", "")
+    if not auth.lower().startswith("bearer "):
+        return challenge(401)
+    token = auth[7:]
+    try:
+        key = jwks.get_signing_key_from_jwt(token)
+        claims = jwt.decode(token, key.key, algorithms=["RS256"], issuer=ISSUER, audience=RESOURCE)
+    except jwt.PyJWTError:
+        return challenge(401, "invalid_token")
+    request.state.permissions = set((claims.get("permissions") or "").split())
+    request.state.user_id = claims["sub"]
+    return await call_next(request)
+```
+
+The four checks and their usual pitfalls are covered in [Validate Access Tokens](../validate-access-tokens.mdx).
+
+## 5. One permission per tool, and step-up
+
+List and run only the tools the token allows. When a client calls a tool it has no permission for, answer `403` with `insufficient_scope` and the scope it's missing: the client sends the user back to the consent screen to approve just that, and retries.
+
+```ts
+const TOOL_PERMISSION = {
+  list_projects: 'tools:read',
+  get_project: 'tools:read',
+  create_project: 'tools:write'
+}
+
+function canCall(req, tool) {
+  return req.auth.permissions.includes(TOOL_PERMISSION[tool])
+}
+
+// In your tools/list handler: return only tools where canCall(req, name) is true.
+// In your tools/call handler, before running the tool:
+if (!canCall(req, toolName)) {
+  return challenge(
+    res,
+    403,
+    'insufficient_scope',
+    `tools:read ${TOOL_PERMISSION[toolName]}`
+  )
+}
+```
+
+Asking again doesn't create a second connection: approving more permissions widens the one the user already has.
+
+## 6. Connect a client
+
+With Claude Code:
+
+```bash
+claude mcp add --transport http acme https://mcp.example.com/mcp
+```
+
+Then run `/mcp` inside Claude Code and pick the server: a browser opens on your hosted login, then on the consent screen. Cursor, VS Code and claude.ai custom connectors do the same from their own **Add MCP server** screens — paste the URL, and the first call triggers the flow.
+
+What your user sees, in order:
+
+1. Your [hosted login page](../hosted-login.mdx), with the methods you enabled — password, passkey, social, magic link.
+2. The consent screen: the client's name, where it will send them back, and the permissions it asked for.
+3. Back in the client, connected.
+
+Next time the client connects, the user is already signed in and has already said yes: no screens at all, until they ask for more permissions or disconnect.
+
+## 7. Your users stay in control
+
+Every connection is listed under **Connected apps** on the [security page](../hosted-login.mdx#the-one-screen-your-users-go-to-on-their-own) your tenant hosts at `/flow/account/security`, with when it was last used. **Disconnect** revokes it: the client's refresh token stops working on its next use. Clients can also revoke their own tokens at your tenant's `/oauth/revoke` endpoint ([RFC 7009](https://datatracker.ietf.org/doc/html/rfc7009)), which is listed in your discovery document.
+
+## Don't pass the user's token on
+
+If your MCP tools call your own backend or a third-party API, **don't forward the token the client sent you**. The MCP spec forbids it, and for a good reason: that token was issued for your MCP server, and an API that accepts it is accepting tokens meant for someone else. Get a separate token for the downstream call — for your own services, a [machine-to-machine](../oauth-flows/client-credentials.mdx) token for that API's audience — and keep the user's identity as data (`sub`) in the request.
+
+## Host it on Faable Deploy
+
+A remote MCP server is an ordinary Node.js or Python web service, so [Faable Deploy](../../deploy/get-started.md) runs it from a GitHub repository with no Dockerfile, HTTPS on its own domain, and the same subscription as Faable Auth. Two things to know:
+
+- **Long tool calls are fine.** The 60-second limit is to the **first byte**, not the whole response: a Streamable HTTP response that starts streaming early can run for minutes. See [Streaming LLM responses](../../deploy/guides/guide-llm-streaming.md).
+- **Point a custom domain at it before you register the API.** The API `identifier` is immutable, and it has to be the URL clients will use.
+
+## FAQ
+
+### Do I need Dynamic Client Registration?
+
+For clients your users add themselves — Claude, Cursor, VS Code, claude.ai connectors — yes: they don't know your tenant in advance and register a client on first use. If only your own client will ever connect, you can create it in the dashboard instead and leave registration off.
+
+### Is it safe to leave Dynamic Client Registration on?
+
+That's what the consent screen is for. Anyone can register a client, but no client registered this way gets a token without the user seeing its name and redirect host and pressing Allow, PKCE is mandatory, and its refresh tokens are single-use. Turn it on only in the tenant that serves your MCP server.
+
+### Why does my server reject a valid token?
+
+Almost always the audience. The token's `aud` must equal your API `identifier`, which must equal the URL the client connected to, character for character. `https://mcp.example.com/mcp` and `https://mcp.example.com/mcp/` are different resources.
+
+### Does this work with an MCP server written in another language?
+
+Yes. Nothing here depends on an SDK: your server publishes one JSON document, answers `401` and `403` with a `WWW-Authenticate` header, and verifies an RS256 JWT, which every language has a library for.
+
+### Does Faable Auth support Client ID Metadata Documents?
+
+The 2026-07-28 specification recommends them over Dynamic Client Registration. Faable Auth implements them, but they aren't available to every tenant yet; until they are, clients fall back to Dynamic Client Registration, which every major MCP client supports.
+
+### What does this cost?
+
+Nothing extra. Connecting MCP clients uses the same users, logins and tokens as any other app in your tenant, priced by [plan](../pricing.mdx) rather than per user.
+
+## Related
+
+- [APIs](../apis.md) · [Clients](../clients.md) · [Validate Access Tokens](../validate-access-tokens.mdx)
+- [Authorization Code flow with PKCE](../oauth-flows/authorization-code.mdx)
+- [Hosted Login UI](../hosted-login.mdx) · [Login Experience](../login-experience.md)
+- [Faable Auth features](../features.mdx) · [Faable Auth vs Clerk](../compare-clerk.mdx)
