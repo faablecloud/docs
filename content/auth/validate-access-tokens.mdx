@@ -13,7 +13,7 @@ Your frontend or a machine-to-machine client sends requests to your backend with
 Authorization: Bearer eyJhbGciOiJSUzI1NiIs...
 ```
 
-This guide shows how to **verify that token in your API** — Node.js/Express in the examples, but the checks are the same in any stack. Validation is fully local: your API verifies the token's signature against your tenant's public keys, so there's **no call to Faable on each request**.
+New to JWTs? Start with [Understanding JSON Web Tokens](jwt.mdx). This guide shows how to **verify that token in your API** — Node.js/Express in the examples, but the checks are the same in any stack. Validation is fully local: your API verifies the token's signature against your tenant's public keys, so there's **no call to Faable on each request**.
 
 A valid token must pass four checks:
 

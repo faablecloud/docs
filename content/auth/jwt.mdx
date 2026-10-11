@@ -1,0 +1,183 @@
+---
+schema: faq
+title: Understanding JSON Web Tokens (JWT) in Modern Authentication
+description: What a JSON Web Token is and how it's used in modern authentication — header, payload and signature, claims, RS256 vs HS256, JWKS and key rotation, ID tokens vs access tokens, expiry and revocation, where to store them, and the mistakes that break JWT security — with a real Faable Auth token decoded and verified.
+rank: entry
+---
+
+import { Callout } from 'nextra/components'
+
+# Understanding JSON Web Tokens (JWT) in modern authentication
+
+**A JSON Web Token (JWT, pronounced "jot") is a compact, signed piece of JSON that says something about a user or a client — who they are, who issued the statement, who it's for, and until when it's valid.** Because it's signed, anyone with the issuer's public key can check it hasn't been tampered with, without calling the issuer. That's why OpenID Connect and OAuth 2.0 use JWTs for ID tokens and access tokens: an API can verify a request in microseconds, locally, with no database lookup.
+
+## What a JWT looks like
+
+A JWT is three base64url strings joined by dots:
+
+```
+eyJhbGciOiJSUzI1NiIsImtpZCI6ImtfMjAyNjEwIn0.eyJzdWIiOiJ1c2VyXzY2ZjEi…fQ.Sm9tX2xh…
+└──────────── header ────────────┘ └──────── payload ────────┘ └ signature ┘
+```
+
+- **Header** — how it's signed: the algorithm (`alg`) and which key (`kid`).
+- **Payload** — the **claims**: the statements the token makes.
+- **Signature** — the issuer's signature over the first two parts.
+
+The header and payload are only **encoded, not encrypted**. Anyone holding the token can read them — paste one into any JWT decoder — so never put secrets in a JWT. What nobody can do without the issuer's private key is change them.
+
+## The standard claims
+
+| Claim | Name       | Meaning                                                               |
+| ----- | ---------- | --------------------------------------------------------------------- |
+| `iss` | Issuer     | Who issued the token — for Faable Auth, your tenant URL               |
+| `sub` | Subject    | Who the token is about — a user id, or a client id for machine tokens |
+| `aud` | Audience   | Who the token is for — the API that should accept it                  |
+| `exp` | Expiration | When it stops being valid (seconds since epoch)                       |
+| `iat` | Issued at  | When it was issued                                                    |
+| `nbf` | Not before | When it starts being valid                                            |
+| `jti` | JWT ID     | A unique id, useful to detect replays or to revoke one token          |
+
+On top of these, identity providers add their own: `scope` and `permissions` for what the token allows, `email` and `name` in ID tokens, `amr` and `acr` for how the user signed in.
+
+## Signing: RS256 vs HS256
+
+- **HS256** signs with one **shared secret**. Whoever can verify the token can also mint one, so it only fits when issuer and verifier are the same service.
+- **RS256** (and ES256) signs with a **private key** and verifies with the **public key**. The issuer keeps the private key; every API gets only the public one and can't forge anything. This is what identity providers use.
+
+The public keys are published as a **JWKS** (JSON Web Key Set) at a well-known URL. The `kid` in each token's header names the key that signed it, which is how providers **rotate keys** without breaking anything: a new key appears in the JWKS before it's used, and verifiers pick it up by `kid`.
+
+## ID tokens, access tokens and refresh tokens
+
+|                    | ID token                           | Access token                         | Refresh token                              |
+| ------------------ | ---------------------------------- | ------------------------------------ | ------------------------------------------ |
+| Defined by         | OpenID Connect                     | OAuth 2.0                            | OAuth 2.0                                  |
+| For                | The **client app** — who signed in | The **API** — what the caller may do | The **token endpoint** — to get new tokens |
+| `aud`              | The client id                      | The API's identifier                 | —                                          |
+| Format             | Always a JWT                       | Often a JWT (in Faable Auth, always) | Treat it as opaque                         |
+| Send it to an API? | No                                 | Yes, as `Authorization: Bearer …`    | Never                                      |
+
+The most common mistake in this table is sending the **ID token** to an API. It says who the user is to _your app_; its audience is your client, not your API. An API should only accept access tokens issued for it.
+
+## A Faable Auth access token, decoded
+
+This is what an access token for your API looks like once decoded. The header:
+
+```json
+{ "alg": "RS256", "typ": "JWT", "kid": "k_2026_10" }
+```
+
+The payload:
+
+```json
+{
+  "iss": "https://your-domain.auth.faable.link",
+  "sub": "user_66f1a2b3c4d5e6f7a8b9c0d1",
+  "aud": "https://api.myapp.com",
+  "scope": "openid profile email read:orders",
+  "permissions": "read:orders",
+  "client_id": "AbC123xYz",
+  "iat": 1791640000,
+  "exp": 1791726400
+}
+```
+
+- `iss` is your tenant — no trailing slash; with a [custom domain](custom-domain.md), the custom domain.
+- `aud` is the `identifier` of the [API](apis.md) you registered, because the client asked for that audience.
+- `permissions` lists what the user granted, as a space-separated string, when the API uses the `access_token_authz` dialect.
+- `exp − iat` is the API's `token_lifetime`: 24 hours by default, from 1 minute to 30 days.
+
+Get one yourself with a machine-to-machine token from the [client credentials](oauth-flows/client-credentials.mdx) flow:
+
+```bash
+curl -s -X POST https://your-domain.auth.faable.link/oauth/token \
+  -d grant_type=client_credentials \
+  -d client_id=$CLIENT_ID -d client_secret=$CLIENT_SECRET \
+  -d audience=https://api.myapp.com | jq -r .access_token
+```
+
+## Verifying it in your API
+
+Four checks, all local: the **signature** against your tenant's JWKS, the **issuer**, the **audience** and the **expiry**. With [`jose`](https://www.npmjs.com/package/jose) in Node.js:
+
+```ts
+import { createRemoteJWKSet, jwtVerify } from 'jose'
+
+const ISSUER = 'https://your-domain.auth.faable.link'
+const JWKS = createRemoteJWKSet(new URL(`${ISSUER}/.well-known/jwks.json`))
+
+export async function verify(token: string) {
+  const { payload } = await jwtVerify(token, JWKS, {
+    issuer: ISSUER,
+    audience: 'https://api.myapp.com',
+    algorithms: ['RS256'] // never let the token choose its own algorithm
+  })
+  const permissions = String(payload.permissions ?? '').split(' ')
+  return { userId: payload.sub, permissions }
+}
+```
+
+`createRemoteJWKSet` caches the keys and re-fetches them when a token arrives with a `kid` it hasn't seen, so key rotation needs nothing from you. The same checks in Python, Go, Java and .NET, and an Express middleware, are in [Validate Access Tokens](validate-access-tokens.mdx).
+
+## Expiry and revocation
+
+A JWT is valid until its `exp`, and an API that verifies locally has no way to know it was revoked a minute ago. The usual answer is the one Faable Auth uses:
+
+- **Short-lived access tokens** — as short as your API can afford. Lower the API's `token_lifetime` for sensitive APIs.
+- **Refresh tokens** to get new ones, checked by the token endpoint on every use. Revoking a session, [suspending a user](suspend-users.md) or calling the tenant's `/oauth/revoke` endpoint ([RFC 7009](https://datatracker.ietf.org/doc/html/rfc7009)) stops the next refresh, so access ends when the current access token expires.
+
+If you need to cut access instantly for a single API, check `sub` against a short denylist in that API (Faable access tokens carry no `jti`) — the cost is one lookup per request, the thing JWTs were meant to avoid.
+
+## Where to store tokens in the browser
+
+- **A server-side app** (Next.js with server rendering, Django, Rails): keep tokens on the server and give the browser an encrypted, `httpOnly` session cookie. Nothing in JavaScript can read it. This is what [`@faable/auth-js/nextjs`](quickstart/nextjs-server-side.mdx) does.
+- **A single-page app** with no backend of its own: keep tokens in memory and refresh them with the [Authorization Code flow with PKCE](oauth-flows/authorization-code.mdx). The [JavaScript SDK](quickstart/javascript.mdx) handles storage, refresh and multi-tab sync.
+
+Either way, the defence that matters most is the one that keeps scripts out of your page in the first place: a strict Content Security Policy.
+
+## Mistakes that break JWT security
+
+<Callout type="warning">
+  Every item below has caused real breaches. Most JWT libraries avoid them by
+  default — as long as you pass the expected issuer, audience and algorithm.
+</Callout>
+
+- **Decoding instead of verifying.** `jwt.decode()` reads the payload without checking the signature. Use it for display only.
+- **Accepting any algorithm.** A verifier that takes `alg` from the token can be tricked with `none`, or with HS256 signed using the public key as the secret. Pin `RS256`.
+- **Skipping the audience check.** Without it, your API accepts tokens issued for any other API of the same issuer.
+- **Accepting ID tokens as access tokens.** Same problem, different token.
+- **Long-lived access tokens.** A stolen token works until `exp`. Keep them short and rely on refresh.
+- **Secrets in the payload.** It's readable by whoever holds the token.
+- **Pinning one public key.** Keys rotate. Resolve them from the JWKS by `kid`.
+
+## FAQ
+
+### Is a JWT encrypted?
+
+Usually not. A signed JWT (a JWS) protects integrity, not confidentiality: anyone with the token can read its claims. Encrypted JWTs (JWE) exist, but identity providers sign their tokens and rely on HTTPS for confidentiality.
+
+### What's the difference between a JWT and a session cookie?
+
+A session cookie holds an id that the server looks up on every request. A JWT carries the data and the proof itself, so the receiver verifies it without a lookup. They work together: many apps keep tokens on the server and give the browser a session cookie.
+
+### How long should an access token live?
+
+Minutes to hours, depending on how sensitive the API is and how quickly access must end after a revocation. Faable Auth defaults to 24 hours and lets each API set anything from 1 minute to 30 days.
+
+### Can I add my own claims to a JWT?
+
+Yes. In Faable Auth, an [Action](extensibility/actions.md) adds custom claims to the access and ID tokens at sign-in. Use a namespaced name such as `https://myapp.com/plan`, and keep tokens small: they travel on every request.
+
+### Why does my API say the token is invalid?
+
+The usual causes, in order: the audience doesn't match your API's identifier (often because no `audience` was requested), the issuer has a trailing slash, or the token is an ID token. See [Pitfalls that cause invalid token](validate-access-tokens.mdx#pitfalls-that-cause-invalid-token).
+
+### What is a JWKS?
+
+A JSON Web Key Set: the JSON document where an issuer publishes the public keys that verify its tokens. Faable Auth serves one per tenant at `/.well-known/jwks.json`, and lists it in the discovery document as `jwks_uri`.
+
+## Related
+
+- [Validate Access Tokens](validate-access-tokens.mdx) · [APIs](apis.md) · [OpenID Connect](oidc)
+- [Authorization Code flow with PKCE](oauth-flows/authorization-code.mdx) · [Client Credentials](oauth-flows/client-credentials.mdx) · [Refresh tokens](oauth-flows/refresh-token.mdx)
+- [SAML vs OIDC](saml-vs-oidc.mdx) · [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx)
