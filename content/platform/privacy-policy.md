@@ -163,7 +163,7 @@ The Services are intended for professional use and are not directed at children.
 
 ## 14. Changes to this Policy
 
-We may update this Policy as the Services evolve. Material changes will be announced by email or in the dashboard at least **30 days** before they take effect. The date at the top always reflects the current version.
+We may update this Policy as the Services evolve. Material changes will be announced by email or in the dashboard at least **10 days** before they take effect. The date at the top always reflects the current version.
 
 ## 15. Contact
 
