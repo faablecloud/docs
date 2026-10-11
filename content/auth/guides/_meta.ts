@@ -4,5 +4,6 @@ export default {
   'import-password-hashes': 'Import & export password hashes',
   'migrate-from-auth0': 'Migrate from Auth0',
   'migrate-from-clerk': 'Migrate from Clerk',
+  'migrate-from-nextauth': 'Migrate from NextAuth.js / Auth.js',
   'migrate-from-keycloak': 'Migrate from Keycloak'
 }

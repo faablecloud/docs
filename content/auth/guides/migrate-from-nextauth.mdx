@@ -1,0 +1,228 @@
+---
+schema: faq
+title: Migrate from NextAuth.js / Auth.js to Faable Auth
+description: Move a Next.js app from NextAuth.js (Auth.js) to Faable Auth — replace the route handler, auth() and the middleware, recreate your providers as connections, and import users, social accounts and password hashes from your Auth.js database so nobody has to sign up again.
+rank: high
+---
+
+import { Callout } from 'nextra/components'
+
+# Migrate from NextAuth.js / Auth.js to Faable Auth
+
+**Short answer:** Auth.js (NextAuth.js) is a library inside your Next.js app; Faable Auth is a hosted OpenID Connect identity server your app signs in against. The migration swaps four files — the route handler, `auth()`, the middleware and your sign-in links — for [`@faable/auth-js/nextjs`](../quickstart/nextjs-server-side.mdx), recreates each provider as a [connection](../connections.md), and imports your users from the Auth.js database: their **social accounts stay linked** and, if you used the Credentials provider, they **keep their passwords**. Plan an afternoon for a typical app.
+
+## Why teams are moving
+
+- **Auth.js is now looked after by Better Auth.** Since September 2025 the Better Auth team maintains it and, in their words, "will keep addressing security patches and urgent issues", while recommending that new projects start with Better Auth. NextAuth v5 has stayed in beta.
+- **Everything beyond sign-in is yours to build.** Auth.js gives you OAuth providers and sessions. Passwords are your own code (the Credentials provider "does not persist data"), WebAuthn is experimental, and two-step verification, organizations, enterprise SSO, audit logs and an admin view are not part of it.
+- **Several apps, one login.** Auth.js lives in one app. A hosted identity server gives every app, mobile client, CLI and API the same users and single sign-on.
+
+If you'd rather stay with a library, Better Auth is the path Auth.js itself points to — see [Faable Auth vs Better Auth](../compare-better-auth.mdx) for the trade-off.
+
+## Concept mapping
+
+| Auth.js / NextAuth                               | Faable Auth                                                                    |
+| ------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `NextAuth({ providers })` in `auth.ts`           | `createFaableAuth()` in `lib/faable-auth.ts`; providers live in your tenant    |
+| `app/api/auth/[...nextauth]/route.ts`            | `app/auth/[...faable]/route.ts`                                                |
+| Provider (`GitHub`, `Google`…)                   | [Connection](../connections.md), configured in the dashboard                   |
+| Credentials provider + your own password column  | The `Username-Password` database connection, hashes imported                   |
+| Email provider (magic links)                     | [Passwordless](../passwordless.mdx) — link or code (Hobby and up)              |
+| `auth()` in Server Components and Route Handlers | `faableAuth.getSession()`                                                      |
+| `export { auth as middleware }`                  | `faableAuth.middleware(req, { protect })`                                      |
+| `signIn('github')` / `signOut()`                 | `/auth/login?connection=github` / `/auth/logout`                               |
+| `jwt` / `session` callbacks to add claims        | [Actions](../extensibility/actions.md) set claims on the tokens (Hobby and up) |
+| `User` / `Account` / `Session` tables            | Users and identities in your tenant; the session is an encrypted cookie        |
+| Session cookie `authjs.session-token`            | Your app's own session cookie, plus SSO on the auth domain                     |
+
+## 1. Create the tenant and the client
+
+In the [Faable Dashboard](https://dashboard.faable.com), create an auth account and a **Client** for your app, a regular web application:
+
+- **Allowed callback URLs:** `https://app.example.com/auth/callback` and `http://localhost:3000/auth/callback`.
+- **Logout URLs:** `https://app.example.com/`.
+
+## 2. Recreate your providers as connections
+
+For each Auth.js provider, enable the matching [social connection](../social/google.md). Google and GitHub work immediately with Faable's shared credentials for development. For production, use your own OAuth app and set its callback to your tenant — the provider now redirects to Faable, not to `/api/auth/callback/<provider>` in your app.
+
+If you used the Credentials provider, the `Username-Password` database connection replaces it. If you used the Email provider for magic links, turn on [passwordless](../passwordless.mdx).
+
+Note the **connection names** (`google`, `github`): the user import in step 5 links accounts by them.
+
+## 3. Replace the Auth.js code
+
+Remove `next-auth` and install the SDK:
+
+```bash
+npm uninstall next-auth @auth/prisma-adapter
+npm install @faable/auth-js
+```
+
+```bash
+# .env
+FAABLE_AUTH_DOMAIN=your-tenant.auth.faable.link
+FAABLE_AUTH_CLIENT_ID=<client_id>
+FAABLE_AUTH_CLIENT_SECRET=<client_secret>
+FAABLE_AUTH_SECRET=<openssl rand -base64 32>
+FAABLE_AUTH_BASE_URL=https://app.example.com
+```
+
+The four files, side by side:
+
+```ts
+// Before — auth.ts
+import NextAuth from 'next-auth'
+import GitHub from 'next-auth/providers/github'
+// After — lib/faable-auth.ts
+import { createFaableAuth } from '@faable/auth-js/nextjs'
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  providers: [GitHub]
+})
+
+export const faableAuth = createFaableAuth()
+```
+
+```ts
+// Before — app/api/auth/[...nextauth]/route.ts
+import { handlers } from '@/auth'
+export const { GET, POST } = handlers
+
+// After — app/auth/[...faable]/route.ts
+import { faableAuth } from '@/lib/faable-auth'
+export const { GET, POST } = faableAuth.handlers
+```
+
+```tsx
+// Before — a Server Component
+const session = await auth()
+if (!session) redirect('/api/auth/signin')
+
+// After
+const session = await faableAuth.getSession()
+if (!session) redirect('/auth/login?returnTo=/dashboard')
+// session.user: sub, email, name, picture and your custom claims
+```
+
+```ts
+// After — middleware.ts
+import type { NextRequest } from 'next/server'
+import { faableAuth } from '@/lib/faable-auth'
+
+// Before — middleware.ts
+export { auth as middleware } from '@/auth'
+
+export const middleware = (req: NextRequest) =>
+  faableAuth.middleware(req, {
+    protect: req => req.nextUrl.pathname.startsWith('/dashboard')
+  })
+
+export const config = { matcher: ['/((?!_next|favicon.ico).*)'] }
+```
+
+Sign-in and sign-out become links: `<a href="/auth/login?connection=github">Sign in with GitHub</a>`, or `/auth/login` alone for the hosted screen with every method you enabled, and `<a href="/auth/logout">Sign out</a>`. The [Next.js server-side guide](../quickstart/nextjs-server-side.mdx) covers the rest: calling your API with `getAccessToken()`, and back-channel logout.
+
+<Callout type="info">
+  **Your user ids change.** `session.user.sub` is now the Faable user id
+  (`user_…`), not the id in your Auth.js `User` table. If your own tables
+  reference users, keep a mapping: the import in step 5 can carry your old id in
+  the user's metadata, or match on email.
+</Callout>
+
+## 4. Export your users from the Auth.js database
+
+The Auth.js adapters store users in `User` and their social logins in `Account` (`provider`, `providerAccountId`). There is no password column: if you used Credentials, the hash is in a column you added yourself. Build one NDJSON line per user in Faable's import shape. With Prisma:
+
+```ts
+// scripts/export-users.ts
+import { PrismaClient } from '@prisma/client'
+import { writeFileSync } from 'node:fs'
+
+const prisma = new PrismaClient()
+const users = await prisma.user.findMany({ include: { accounts: true } })
+
+// Faable identifies users by email: Auth.js allows users without one
+// (some providers don't share it) — list and handle those separately.
+const lines = users
+  .filter(u => u.email)
+  .map(u =>
+    JSON.stringify({
+      email: u.email,
+      email_verified: !!u.emailVerified,
+      name: u.name ?? undefined,
+      picture: u.image ?? undefined,
+      // Only if you used the Credentials provider — your own column, e.g. bcrypt "$2b$10$…"
+      password_hash: (u as any).passwordHash ?? undefined,
+      // Each Auth.js Account becomes a linked identity on the matching connection
+      identities: u.accounts
+        .filter(a => a.type === 'oauth' || a.type === 'oidc')
+        .map(a => ({
+          connection: a.provider,
+          identity_id: a.providerAccountId
+        })),
+      app_metadata: { nextauth_id: u.id }
+    })
+  )
+writeFileSync('users.ndjson', lines.join('\n') + '\n')
+```
+
+Password hashes import as they are when they're **bcrypt, scrypt, PBKDF2 or Argon2id** in a standard string format (`$2b$…`, `$argon2id$…`, `$scrypt$…`, `$pbkdf2-sha256$…`) — see [the accepted formats](import-password-hashes.mdx#import-over-the-management-api). Fast digests such as MD5 or plain SHA-256 are refused; those users use **Forgot password** once.
+
+## 5. Import them
+
+```bash
+faable auth users import users.ndjson --from faable --dry-run   # check first
+faable auth users import users.ndjson --from faable
+```
+
+The dry run reports every row that would fail, without writing anything. If a connection in your tenant has a different name from the Auth.js provider, rename it on the way in with `--map-connection github=my-github`.
+
+What each user gets:
+
+- **Social users** sign in with Google or GitHub as before, and land on the imported account: the provider's account id is already linked.
+- **Credentials users** sign in with the password they already have. On first sign-in it's re-hashed with Argon2id.
+- **Email (magic link) users** sign in with a link or a code to the same address.
+
+See [Import and export password hashes](import-password-hashes.mdx) for the full reference.
+
+## 6. Cut over
+
+Auth.js sessions don't carry over — the cookie belongs to Auth.js — so everyone signs in once after the switch, with the same method and the same account. Deploy behind a flag if you can, then remove the Auth.js tables when you no longer need the mapping.
+
+## What you get that Auth.js didn't have
+
+- [Hosted login pages](../hosted-login.mdx) for every screen, including sign-up, reset and the security page.
+- [Two-step verification](../mfa.md) and [passkeys](../passkeys.mdx), without WebAuthn code in your app.
+- [Organizations and enterprise SSO](../organizations.md) with [just-in-time provisioning](../jit-provisioning.mdx), and [SAML for your apps](../saml.md).
+- [Machine-to-machine tokens](../oauth-flows/client-credentials.mdx) for your services and [an authorization server for MCP](mcp-authorization.mdx).
+- Audit [logs](../logs.md), user suspension and the [`faable auth`](../../cli.md#faable-auth) CLI.
+- One login for every app you have — and the same subscription as [Faable Deploy](../../deploy/get-started.md).
+
+## FAQ
+
+### Do my users have to sign up again?
+
+No. Users are imported with their email, profile and linked social accounts, and with their password hash if you stored one. They sign in once after the switch, the same way as before.
+
+### Can I keep using Next.js middleware and Server Components?
+
+Yes. `faableAuth.middleware()` protects routes and keeps the session fresh, and `faableAuth.getSession()` works in Server Components, Route Handlers and Server Actions — the same places you called `auth()`.
+
+### Does Faable Auth work with the Pages Router?
+
+Yes. Use the client-side SDK from the [Next.js quickstart](../quickstart/nextjs.mdx), or the same server helpers in API routes.
+
+### What happens to the Auth.js `Session` and `VerificationToken` tables?
+
+Nothing reads them after the switch. Sessions are re-created at the first sign-in, and verification tokens were short-lived anyway. Drop them once you've cut over.
+
+### Is Auth.js deprecated?
+
+Not formally. It's maintained by the Better Auth team, which keeps addressing security patches and urgent issues and recommends Better Auth for new projects.
+
+## Related
+
+- [Next.js server-side](../quickstart/nextjs-server-side.mdx) · [Next.js quickstart](../quickstart/nextjs.mdx)
+- [Import and export password hashes](import-password-hashes.mdx) · [Connections](../connections.md)
+- [Faable Auth vs Better Auth](../compare-better-auth.mdx) · [Migrate from Clerk](migrate-from-clerk.mdx) · [Migrate from Auth0](migrate-from-auth0.mdx)

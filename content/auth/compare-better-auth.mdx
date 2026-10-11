@@ -1,0 +1,81 @@
+---
+title: Faable Auth vs Better Auth
+description: Faable Auth vs Better Auth — a hosted OpenID Connect identity server vs a TypeScript auth library in your own app and database. Hosted login pages, who patches and operates it, plugins vs built-in features, SSO, SAML and SCIM, MCP, non-TypeScript backends, pricing, and migrating between them.
+rank: high
+---
+
+# Faable Auth vs Better Auth
+
+**Short answer:** Better Auth is an open-source **TypeScript library**: you install it in your app, it writes users and sessions to **your own database**, and plugins add two-step verification, passkeys, organizations, SSO and more. Faable Auth is a **hosted OAuth 2.0 / OpenID Connect identity server**: your apps — in any language — sign in against it, the login pages are hosted, and it's operated, patched and monitored for you by a **European company on its own hardware in Europe**. Pick Better Auth for full control inside one TypeScript codebase; pick Faable when you'd rather not run identity yourself, or when more than one app, language or client needs the same login.
+
+> Better Auth details checked against better-auth.com docs and pricing in October 2026. Better Auth was acquired by Vercel in July 2026; the library remains MIT-licensed.
+
+## At a glance
+
+| Capability                           | Faable Auth                                                               | Better Auth                                                        |
+| ------------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **What it is**                       | Hosted identity server (OAuth 2.0 / OIDC)                                 | Library inside your app (TypeScript)                               |
+| Where users live                     | Your Faable tenant                                                        | Your own database (Postgres, MySQL, SQLite, MongoDB… via adapters) |
+| Who runs, patches and monitors it    | Faable                                                                    | You — it's part of your app                                        |
+| Backends it works with               | Any language: standard OIDC and JWTs                                      | TypeScript / JavaScript servers                                    |
+| Hosted login pages                   | ✅ [every screen](hosted-login.mdx)                                       | ❌ you build the screens                                           |
+| Email + password, social login       | ✅                                                                        | ✅ (37 social providers + generic OAuth)                           |
+| Magic link / email code              | ✅ (Hobby and up)                                                         | ✅ plugins                                                         |
+| Two-step verification                | ✅ authenticator, security keys, passkeys (Hobby)                         | ✅ `2fa` plugin                                                    |
+| Passkeys                             | ✅ sign-in (Pro) and second factor (Hobby)                                | ✅ `passkey` plugin                                                |
+| Organizations, teams, roles          | ✅ teams and roles on every plan; [organizations](organizations.md) (Pro) | ✅ `organization` plugin                                           |
+| Enterprise SSO (inbound)             | OIDC (Pro)                                                                | OIDC and SAML 2.0, `sso` plugin                                    |
+| SAML IdP for your apps               | ✅ [SAML for your apps](saml.md) (Pro)                                    | Not documented                                                     |
+| SCIM / directory sync                | ❌                                                                        | ✅ `scim` plugin; managed on Infrastructure                        |
+| OAuth / OIDC provider for other apps | ✅                                                                        | ✅ `oauth-provider` plugin (OAuth 2.1)                             |
+| Machine-to-machine                   | ✅ [client credentials](oauth-flows/client-credentials.mdx)               | API keys (`api-key` plugin)                                        |
+| MCP authorization                    | ✅ [guide](guides/mcp-authorization.mdx)                                  | ✅ `mcp` plugin                                                    |
+| Custom code in the login             | [Actions](extensibility/actions.md)                                       | Your own code — it's your app                                      |
+| Admin CLI, audit logs                | ✅ [`faable auth`](../cli.md#faable-auth), logs (Pro)                     | Admin plugin; dashboard and log drains on Infrastructure           |
+| Price                                | Free (15,000 MAU), Hobby 15 €, Pro 99 €                                   | Library free; Infrastructure $0 / $20 / custom                     |
+| Where it runs                        | Faable's own hardware in Europe, EU company                               | Wherever you host your app and database                            |
+
+## The real difference: a library vs a service
+
+**With Better Auth, auth is code in your app.** That's its strength: you own the schema, you can change anything, and nothing leaves your infrastructure. It's also the cost. Password hashing, session handling, rate limits, the email and SMS that verification needs, every screen, and every security update are yours: when a vulnerability is fixed, it's fixed in your app when you upgrade and redeploy. And it lives in **one** codebase — a second app, a Python service or a mobile client either goes through that app or integrates with it as an OAuth provider you run.
+
+**With Faable Auth, auth is a service your apps use.** Every app — Next.js, a Django backend, a mobile app, a CLI — signs in with standard OpenID Connect and verifies the same JWTs, and users get [single sign-on](what-is-a-multi-tenant-identity-server.mdx) across them. The trade is control: you configure the login rather than coding it, and you can't restyle the hosted pages pixel by pixel.
+
+## Hosted pages vs building every screen
+
+Better Auth has no hosted login: sign-in, sign-up, reset, two-step enrolment and challenge, passkey enrolment, the "manage your security" page and any consent screen are components you build and maintain.
+
+Faable Auth hosts all of them on your auth domain, including a [security page](hosted-login.mdx#the-one-screen-your-users-go-to-on-their-own) where users manage their factors and connected apps, and the [offer to create a passkey](login-experience.md#inviting-users-to-create-a-passkey) right after sign-in. Because passkeys are bound to a domain, running them on one auth domain is also what lets the same passkey work in every one of your apps — see [Passkeys](passkeys.mdx).
+
+## Pricing
+
+The Better Auth library is free. **Better Auth Infrastructure** is a separate paid service for the parts a library can't do on its own — a dashboard, abuse protection, email and SMS delivery, managed SSO and directory sync, log drains: Starter $0, Pro $20/month with one SSO and one directory-sync connection ($50/month each after that, email $0.001 and SMS $0.09 per message), Enterprise on request. The rest of the bill is your own servers and database, and the time to run them.
+
+Faable Auth is a plan fee with no per-user charge: **Free** up to 15,000 monthly active users, **Hobby 15 €** and **Pro 99 €** with unlimited users, in the same subscription as [Faable Deploy](../deploy/get-started.md). See [Auth pricing](pricing.mdx).
+
+## Migrating
+
+- **From Better Auth to Faable:** export your `user` and `account` tables. Social accounts become linked identities. Better Auth hashes passwords with **scrypt** by default, and Faable imports scrypt hashes given as their parts — `{ algorithm, hash, salt, params }` — so users can keep their passwords: send a few users with `--dry-run` first to confirm the parameters match. Build the NDJSON as in [Migrate from NextAuth.js / Auth.js](guides/migrate-from-nextauth.mdx#4-export-your-users-from-the-authjs-database) and import it with `faable auth users import --from faable`. See [Import and export password hashes](guides/import-password-hashes.mdx).
+- **From Auth.js:** Auth.js is now maintained by the Better Auth team, which recommends Better Auth for new projects. If you'd rather move to a hosted server, see [Migrate from NextAuth.js / Auth.js](guides/migrate-from-nextauth.mdx).
+- **From Faable to anything else:** `faable auth users export` gives you every user with their password hash, on every plan.
+
+## When Faable Auth is the better fit
+
+- **You don't want to run and patch auth inside your app.**
+- **More than one app, language or client** needs the same users and single sign-on.
+- **You want the login pages hosted**, with passkeys that work across your apps.
+- **You need identities held by a European company in Europe**, and auth and [hosting](../deploy/get-started.md) on one invoice.
+- **Your users need to sign in to SAML apps** — Slack, Notion, a corporate tool. Your tenant is their [SAML identity provider](saml.md).
+
+## When Better Auth might fit better
+
+- **Your whole product is one TypeScript app** and you want users in your own database, next to your data.
+- **You want to design and code every screen and rule yourself.**
+- **You need SCIM**, or inbound SAML from customers whose identity provider speaks nothing else.
+- **You want no external dependency at all** for sign-in — the library works offline and self-hosted.
+
+## Related
+
+- [Migrate from NextAuth.js / Auth.js](guides/migrate-from-nextauth.mdx) · [Import and export password hashes](guides/import-password-hashes.mdx)
+- [Faable Auth vs Clerk](compare-clerk.mdx) · [vs Auth0, Clerk & Keycloak](compare.mdx) · [vs Supabase Auth](compare-supabase-auth.mdx)
+- [Hosted Login UI](hosted-login.mdx) · [Passkeys](passkeys.mdx) · [Auth pricing](pricing.mdx)
