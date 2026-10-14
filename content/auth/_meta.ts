@@ -21,6 +21,7 @@ export default {
   usersSeparator: { type: 'separator', title: 'Users & Sessions' },
   signup: 'Signup',
   'change-email': 'Change Email',
+  'self-service-account': 'Self-Service Account',
   'email-sending': 'Email Sending',
   'phone-verification': 'Phone Verification',
   'team-invitations': 'Team Invitations',

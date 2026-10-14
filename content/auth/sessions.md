@@ -13,14 +13,14 @@ Sessions let you answer "where is this user signed in?" and act on it: revoke a 
 
 A user signs in to Faable Auth **once** on your auth domain; the applications they then use each get their own tokens from that sign-in. The Session is the object behind it:
 
-| Field              | Meaning                                                                                                      |
-| ------------------ | ------------------------------------------------------------------------------------------------------------ |
-| `status`           | `active` or `revoked`. An active session whose `expires_at` has passed has expired: nothing can refresh it.  |
-| `sid`              | The OpenID Connect session id. Every `id_token` minted for this session carries it as the `sid` claim.       |
-| `client`           | The application the user signed in to.                                                                       |
-| `ip`, `user_agent` | Where the sign-in came from, as seen at the last authentication.                                             |
-| `last_seen_at`     | The last authentication or token refresh. Each refresh slides `expires_at` 30 days from here.                |
-| `revoked_reason`   | `admin` (Management API or dashboard), `logout` (the user signed out), `user` (revoked from another device). |
+| Field              | Meaning                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `status`           | `active` or `revoked`. An active session whose `expires_at` has passed has expired: nothing can refresh it.                                                              |
+| `sid`              | The OpenID Connect session id. Every `id_token` minted for this session carries it as the `sid` claim.                                                                   |
+| `client`           | The application the user signed in to.                                                                                                                                   |
+| `ip`, `user_agent` | Where the sign-in came from, as seen at the last authentication.                                                                                                         |
+| `last_seen_at`     | The last authentication or token refresh. Each refresh slides `expires_at` 30 days from here.                                                                            |
+| `revoked_reason`   | `admin` (Management API or dashboard), `logout` (the user signed out), `user` (revoked from another device), `password_change` (the user set or changed their password). |
 
 A sign-in on a browser that already holds a session **re-uses** its row rather than adding one: a device is one session, however many times it signs in. A direct grant (passwordless code, password) has no browser cookie and gets one session per grant.
 
@@ -75,6 +75,8 @@ Two endpoints work with the user's own session cookie or a bearer access token, 
 | `POST` | `/me/sessions/revoke-others` | Sign the user out everywhere else. Returns how many were revoked. |
 
 This is what a "sign out of all other devices" button calls. The session the request came through is never revoked by it.
+
+Setting or changing the password with [`POST /me/password`](self-service-account.md#setting-or-changing-the-password) does the same thing: every other session of the user is revoked, with `revoked_reason: password_change`.
 
 ## Tokens and sessions
 
