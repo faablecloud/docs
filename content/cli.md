@@ -692,10 +692,24 @@ faable auth actions rm action_xyz
 faable auth clients list
 faable auth clients get <client_id> --secret       # accepts the OAuth client_id or the resource id
 faable auth clients create -n my-app --callback https://app.example.com/callback
+faable auth clients update <client_id> --add-callback https://app.example.com/cb2
 faable auth clients rm <client_id>
 ```
 
 `create` prints the generated client id and secret — store the secret right away and treat it like a password.
+
+`update` edits a client in place: `--name`, `--description`, and `--add-*` / `--remove-*` for `callback`, `logout-url` and `web-origin`. Adding a URL keeps the ones the client already has.
+
+It also declares the client's [profile fields](auth/self-service-account.md#custom-profile-fields), the custom fields its users may write on themselves with `updateProfile`:
+
+```bash
+faable auth clients update my-app --add-field profile:enum:student,teacher
+faable auth clients update my-app --add-field school:string:120   # max length
+faable auth clients update my-app --remove-field school
+faable auth clients update my-app --inherit-fields                 # use the tenant's list again
+```
+
+A field is `key`, `key:string[:max_length]` or `key:enum:a,b,c`, and adding a key that is already declared replaces it. `--fields-json '[…]'` sets the whole list at once. A client's own list replaces the tenant's for that app. `faable auth clients get` shows which fields apply.
 
 ### Audit logs
 
@@ -768,7 +782,7 @@ By default the server exposes **reads plus one deploy**:
 
 When a deploy failed, `get_deployment` also says whose side it is on: `user` (your code, configuration or repository) or `platform` (Faable's).
 
-`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment` and `configure_repo`; for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions` and `send_password_setup`. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path. Nothing destructive is exposed — deleting apps, domains, secrets or users stays in the CLI and the dashboard.
+`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment` and `configure_repo`; for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path. Nothing destructive is exposed — deleting apps, domains, secrets or users stays in the CLI and the dashboard.
 
 With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions and settings, suspend and reinstate users, end sessions and send password emails — never delete anything or change the tenant itself.
 
@@ -868,6 +882,7 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 | `faable auth clients list`         | List OAuth clients                                                                        |
 | `faable auth clients get`          | Show a client (`--secret` reveals the secret)                                             |
 | `faable auth clients create`       | Create a client (prints id + secret once)                                                 |
+| `faable auth clients update`       | Update a client: name, URLs, profile fields (`--add-field`, `--remove-field`)             |
 | `faable auth clients rm`           | Delete a client (confirmation, `--yes`)                                                   |
 | `faable auth logs list`            | Filter the audit log (type, status, origin, user or email, dates; `--expand-user`)        |
 | `faable auth logs get`             | Show one audit entry with its data payload                                                |
