@@ -82,7 +82,7 @@ Everything that happens to an identity after (and before) the first login is a s
 ## Extensibility
 
 - **[Actions](extensibility/actions.md)** run your own JavaScript inside the flow, sandboxed. The `post-login` trigger fires after authentication and **before** tokens are issued, so an Action can enrich the token, deny access with `api.access.deny()`, or send the user through your own UI — terms of service, an MFA step, whatever the rule is — and pick the flow back up on the `continue` trigger.
-- **[Webhooks](extensibility/webhooks.md)** deliver `user.created`, `user.updated`, `user.deleted` and `auth.login` as signed HTTPS POSTs, with HMAC-SHA256 signatures and a timestamp for replay protection.
+- **[Webhooks](extensibility/webhooks.md)** deliver user, login, team, organization and credential-export events as signed HTTPS POSTs, with HMAC-SHA256 signatures, replay protection and retries; `@faable/auth-sdk` verifies them and types the events.
 
 ## Running the tenant
 

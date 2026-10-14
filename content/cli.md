@@ -711,6 +711,27 @@ faable auth clients update my-app --inherit-fields                 # use the ten
 
 A field is `key`, `key:string[:max_length]` or `key:enum:a,b,c`, and adding a key that is already declared replaces it. `--fields-json '[…]'` sets the whole list at once. A client's own list replaces the tenant's for that app. `faable auth clients get` shows which fields apply.
 
+### Webhooks
+
+Signed HTTPS notifications of tenant events (`user.created`, `team.member.added`…) to your server. See [Webhooks](auth/extensibility/webhooks.md) for the events and how to verify them.
+
+```bash
+faable auth webhooks create --url https://api.example.com/hooks/faable -e user.created
+faable auth webhooks test <webhook_id>            # signed ping; exits 1 if the endpoint does not answer 2xx
+faable auth webhooks list
+faable auth webhooks update <webhook_id> --no-enabled
+faable auth webhooks rotate-secret <webhook_id>   # the previous secret stays valid 24 h
+faable auth webhooks rm <webhook_id>
+```
+
+`create` and `rotate-secret` print the signing secret once. To hand it to a Faable app without it showing anywhere:
+
+```bash
+faable auth webhooks create --url https://… -e user.created --json \
+  | jq -r '"FAABLEAUTH_WEBHOOK_SECRET=" + .secret' \
+  | faable deploy secrets set -a my-app -f -
+```
+
 ### Audit logs
 
 Read-only trail of everything that happens in the tenant (logins, token grants, admin changes):
@@ -829,60 +850,66 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 
 ## Command Reference
 
-| Command                            | Description                                                                               |
-| :--------------------------------- | :---------------------------------------------------------------------------------------- |
-| `faable login`                     | Authenticate with Faable                                                                  |
-| `faable whoami`                    | Show current user                                                                         |
-| `faable logout`                    | End the local session                                                                     |
-| `faable mcp`                       | Run the Faable MCP server over stdio (`--writes` for the reversible writes)               |
-| `faable project`                   | Show, list, pick (`use`) or clear the active project                                      |
-| `faable deploy`                    | Deploy project to production (alias of `faable deploy launch`)                            |
-| `faable deploy launch`             | The deploy itself — `--app` to target another app, `--workdir` to deploy elsewhere        |
-| `faable deploy trigger`            | Build the repo HEAD server-side (no upload); `--wait` for the URL                         |
-| `faable deploy github repos`       | The GitHub repositories Faable can deploy                                                 |
-| `faable deploy redeploy`           | Retry a failed deployment from its source                                                 |
-| `faable deploy cancel`             | Stop a deployment that is still queued or building                                        |
-| `faable deploy status`             | What is live: phase, URL, stack, latest deploy                                            |
-| `faable deploy traffic`            | Status codes, top and failing paths (`--since 7d`)                                        |
-| `faable deploy usage`              | This billing period's usage of the project                                                |
-| `faable deploy quota`              | Today's deploy allowance and held builds                                                  |
-| `faable deploy logs`               | Runtime logs (`--build` for build output, `--build --follow` to tail a running build)     |
-| `faable deploy deployments`        | Recent deployments with phases and commits                                                |
-| `faable deploy inspect`            | Full record of one deployment by id (`--json` for the raw one)                            |
-| `faable deploy apps list`          | List the apps of the active project                                                       |
-| `faable deploy apps get`           | One app: what is live, latest deployment, stack                                           |
-| `faable deploy apps create`        | Create an app from a GitHub repository and start its first deploy                         |
-| `faable deploy apps set`           | Change the deploy branch, root directory or deploy mode                                   |
-| `faable deploy open`               | Open the live app (`--dashboard` for the console)                                         |
-| `faable deploy link`               | Link directory to a Faable app                                                            |
-| `faable deploy secrets list`       | List app secrets (masked, `--show`)                                                       |
-| `faable deploy secrets set`        | Set secrets as `KEY=VALUE` pairs, a whole file with `--env-file`, or stdin (`-f -`)       |
-| `faable deploy secrets rm`         | Remove a secret by name                                                                   |
-| `faable deploy domains list`       | List custom domains and their DNS state                                                   |
-| `faable deploy domains add`        | Add a domain (prints the CNAME to set)                                                    |
-| `faable deploy domains check`      | DNS verification diagnostic for a domain                                                  |
-| `faable deploy domains rm`         | Remove a domain (confirmation, `--yes`)                                                   |
-| `faable deploy waf list`           | Show the edge rules in effect for the app                                                 |
-| `faable deploy waf block`          | Refuse requests at the edge with a 403 (by path, user-agent, or both)                     |
-| `faable deploy waf sink`           | Answer requests with a 404 without waking the app                                         |
-| `faable deploy waf rm`             | Remove one of your edge rules                                                             |
-| `faable auth users list`           | List, filter, sort and count users (`--email`, `--sort`, `--last-login-since`, `--count`) |
-| `faable auth users get`            | Show a user: suspension state, last IP and federated identities (GitHub login, etc.)      |
-| `faable auth users suspend`        | Suspend users by id or email — bulk via args or stdin                                     |
-| `faable auth users reinstate`      | Reinstate suspended users by id or email — bulk via args or stdin                         |
-| `faable auth users password-setup` | Send a user the email (or code) to set or reset their password                            |
-| `faable auth sessions list`        | A user's sessions: devices, IP, last seen                                                 |
-| `faable auth sessions revoke`      | End sessions — one, or every active one of a user (`--user`)                              |
-| `faable auth connections list`     | The tenant's login methods                                                                |
-| `faable auth actions list`         | List login-flow actions                                                                   |
-| `faable auth actions get`          | Show an action (`--code` prints the source)                                               |
-| `faable auth actions create`       | Create an action from a JS file                                                           |
-| `faable auth actions update`       | Update an action in place (`-f` code, `--name`, `--order`, `--enabled`)                   |
-| `faable auth actions rm`           | Delete an action (confirmation, `--yes`)                                                  |
-| `faable auth clients list`         | List OAuth clients                                                                        |
-| `faable auth clients get`          | Show a client (`--secret` reveals the secret)                                             |
-| `faable auth clients create`       | Create a client (prints id + secret once)                                                 |
-| `faable auth clients update`       | Update a client: name, URLs, profile fields (`--add-field`, `--remove-field`)             |
-| `faable auth clients rm`           | Delete a client (confirmation, `--yes`)                                                   |
-| `faable auth logs list`            | Filter the audit log (type, status, origin, user or email, dates; `--expand-user`)        |
-| `faable auth logs get`             | Show one audit entry with its data payload                                                |
+| Command                              | Description                                                                               |
+| :----------------------------------- | :---------------------------------------------------------------------------------------- |
+| `faable login`                       | Authenticate with Faable                                                                  |
+| `faable whoami`                      | Show current user                                                                         |
+| `faable logout`                      | End the local session                                                                     |
+| `faable mcp`                         | Run the Faable MCP server over stdio (`--writes` for the reversible writes)               |
+| `faable project`                     | Show, list, pick (`use`) or clear the active project                                      |
+| `faable deploy`                      | Deploy project to production (alias of `faable deploy launch`)                            |
+| `faable deploy launch`               | The deploy itself — `--app` to target another app, `--workdir` to deploy elsewhere        |
+| `faable deploy trigger`              | Build the repo HEAD server-side (no upload); `--wait` for the URL                         |
+| `faable deploy github repos`         | The GitHub repositories Faable can deploy                                                 |
+| `faable deploy redeploy`             | Retry a failed deployment from its source                                                 |
+| `faable deploy cancel`               | Stop a deployment that is still queued or building                                        |
+| `faable deploy status`               | What is live: phase, URL, stack, latest deploy                                            |
+| `faable deploy traffic`              | Status codes, top and failing paths (`--since 7d`)                                        |
+| `faable deploy usage`                | This billing period's usage of the project                                                |
+| `faable deploy quota`                | Today's deploy allowance and held builds                                                  |
+| `faable deploy logs`                 | Runtime logs (`--build` for build output, `--build --follow` to tail a running build)     |
+| `faable deploy deployments`          | Recent deployments with phases and commits                                                |
+| `faable deploy inspect`              | Full record of one deployment by id (`--json` for the raw one)                            |
+| `faable deploy apps list`            | List the apps of the active project                                                       |
+| `faable deploy apps get`             | One app: what is live, latest deployment, stack                                           |
+| `faable deploy apps create`          | Create an app from a GitHub repository and start its first deploy                         |
+| `faable deploy apps set`             | Change the deploy branch, root directory or deploy mode                                   |
+| `faable deploy open`                 | Open the live app (`--dashboard` for the console)                                         |
+| `faable deploy link`                 | Link directory to a Faable app                                                            |
+| `faable deploy secrets list`         | List app secrets (masked, `--show`)                                                       |
+| `faable deploy secrets set`          | Set secrets as `KEY=VALUE` pairs, a whole file with `--env-file`, or stdin (`-f -`)       |
+| `faable deploy secrets rm`           | Remove a secret by name                                                                   |
+| `faable deploy domains list`         | List custom domains and their DNS state                                                   |
+| `faable deploy domains add`          | Add a domain (prints the CNAME to set)                                                    |
+| `faable deploy domains check`        | DNS verification diagnostic for a domain                                                  |
+| `faable deploy domains rm`           | Remove a domain (confirmation, `--yes`)                                                   |
+| `faable deploy waf list`             | Show the edge rules in effect for the app                                                 |
+| `faable deploy waf block`            | Refuse requests at the edge with a 403 (by path, user-agent, or both)                     |
+| `faable deploy waf sink`             | Answer requests with a 404 without waking the app                                         |
+| `faable deploy waf rm`               | Remove one of your edge rules                                                             |
+| `faable auth users list`             | List, filter, sort and count users (`--email`, `--sort`, `--last-login-since`, `--count`) |
+| `faable auth users get`              | Show a user: suspension state, last IP and federated identities (GitHub login, etc.)      |
+| `faable auth users suspend`          | Suspend users by id or email — bulk via args or stdin                                     |
+| `faable auth users reinstate`        | Reinstate suspended users by id or email — bulk via args or stdin                         |
+| `faable auth users password-setup`   | Send a user the email (or code) to set or reset their password                            |
+| `faable auth sessions list`          | A user's sessions: devices, IP, last seen                                                 |
+| `faable auth sessions revoke`        | End sessions — one, or every active one of a user (`--user`)                              |
+| `faable auth connections list`       | The tenant's login methods                                                                |
+| `faable auth actions list`           | List login-flow actions                                                                   |
+| `faable auth actions get`            | Show an action (`--code` prints the source)                                               |
+| `faable auth actions create`         | Create an action from a JS file                                                           |
+| `faable auth actions update`         | Update an action in place (`-f` code, `--name`, `--order`, `--enabled`)                   |
+| `faable auth actions rm`             | Delete an action (confirmation, `--yes`)                                                  |
+| `faable auth clients list`           | List OAuth clients                                                                        |
+| `faable auth clients get`            | Show a client (`--secret` reveals the secret)                                             |
+| `faable auth clients create`         | Create a client (prints id + secret once)                                                 |
+| `faable auth clients update`         | Update a client: name, URLs, profile fields (`--add-field`, `--remove-field`)             |
+| `faable auth webhooks list`          | List webhooks with their status                                                           |
+| `faable auth webhooks create`        | Create a webhook (prints its signing secret once)                                         |
+| `faable auth webhooks test`          | Send a signed `ping` and show what the endpoint answered                                  |
+| `faable auth webhooks update`        | Change URL or events, pause or resume (`--no-enabled`)                                    |
+| `faable auth webhooks rotate-secret` | New signing secret; the previous one stays valid 24 h                                     |
+| `faable auth webhooks rm`            | Delete a webhook (confirmation, `--yes`)                                                  |
+| `faable auth clients rm`             | Delete a client (confirmation, `--yes`)                                                   |
+| `faable auth logs list`              | Filter the audit log (type, status, origin, user or email, dates; `--expand-user`)        |
+| `faable auth logs get`               | Show one audit entry with its data payload                                                |
