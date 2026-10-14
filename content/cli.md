@@ -784,7 +784,7 @@ When a deploy failed, `get_deployment` also says whose side it is on: `user` (yo
 
 `faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment` and `configure_repo`; for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path. Nothing destructive is exposed — deleting apps, domains, secrets or users stays in the CLI and the dashboard.
 
-With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions and settings, suspend and reinstate users, end sessions and send password emails — never delete anything or change the tenant itself.
+With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions and settings, suspend and reinstate users, end sessions, send password emails and update an application's settings (the MCP only sets its profile fields) — never delete anything or change the tenant itself.
 
 What the server guarantees:
 
