@@ -67,7 +67,7 @@ Once a user can sign in, Faable Auth gives you the building blocks for the rest 
 | **[Team Invitations](team-invitations.md)** | Invite users by email; existing users are added directly, unknowns get a magic link that creates their account on click. |
 | **[Passwordless](passwordless.md)**         | Magic link or OTP login, no password to remember.                                                                        |
 | **[Actions](extensibility/actions.md)**     | Run JavaScript in the auth flow to enforce rules or redirect through custom UI.                                          |
-| **[Webhooks](extensibility/webhooks.md)**   | Signed HTTPS callbacks for `user.created`, `user.updated`, `user.deleted`, `auth.login`.                                 |
+| **[Webhooks](extensibility/webhooks.md)**   | Signed, retried HTTPS callbacks for user, login, team and organization events.                                           |
 | **[APIs](apis.md)**                         | Register backend resource servers and define scoped permissions.                                                         |
 | **[Logs](logs.md)**                         | Audit email deliveries, webhook calls, and authentication events.                                                        |
 | **[Custom Domain](custom-domain.md)**       | Serve the login UI under your own branded domain with auto-renewed SSL.                                                  |
