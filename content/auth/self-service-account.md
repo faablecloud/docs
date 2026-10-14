@@ -99,7 +99,17 @@ Your app can save a few fields of its own on the user, such as the profile a use
 
 ### Declare the fields
 
-Only the keys you declare can be written by users. Declare them on the tenant, or per app on the client, with the Management API:
+Only the keys you declare can be written by users. Declare them per app with the [Faable CLI](../cli.md):
+
+```bash
+faable auth clients update <client_id> --add-field profile:enum:student,teacher
+faable auth clients update <client_id> --add-field school:string:120
+faable auth clients get <client_id>      # shows the fields that apply
+```
+
+A field is `key`, `key:string[:max_length]` or `key:enum:a,b,c`. `--remove-field <key>` stops accepting one, and `--inherit-fields` drops the app's own list so it uses the tenant's again. AI agents can do the same through the MCP tool `update_auth_client_fields`.
+
+Or with the Management API, on the client (`POST /client/:id`) or on the tenant (`POST /account/:id`):
 
 ```bash
 curl -X POST https://<your-auth-domain>/client/<client_id> \
