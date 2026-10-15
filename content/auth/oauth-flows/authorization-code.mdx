@@ -1,11 +1,11 @@
 ---
 schema: faq
-title: Authorization Code Flow with PKCE — Secure User Login
-description: Implement secure user login with the OAuth 2.0 Authorization Code flow with PKCE in Faable Auth. Step-by-step guide with SDK and raw HTTP examples for SPAs, mobile, and web apps — every parameter, the real error messages, and the fixes.
+title: 'Authorization Code Flow with PKCE: How It Works + Example'
+description: 'How the OAuth 2.0 Authorization Code flow with PKCE works: code_verifier, S256 code_challenge, the token exchange, and a working example for SPAs and mobile.'
 rank: high
 ---
 
-# Authorization Code Flow with PKCE 🔐
+# Authorization Code Flow with PKCE
 
 The **OAuth 2.0 Authorization Code flow with PKCE** (Proof Key for Code Exchange) is the standard way to **log users in**. The user authenticates on your Faable Auth domain, your app receives a one-time code, and exchanges it for tokens — an **access token** to call your APIs, an **ID token** with the user's identity, and a **refresh token** to keep the session alive.
 
@@ -19,7 +19,7 @@ For backend services calling APIs **without a user**, use the [Client Credential
 
 ---
 
-## 🔑 What is PKCE, and how does it work?
+## What is PKCE, and how does it work?
 
 **PKCE (Proof Key for Code Exchange, [RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636) — pronounced "pixy")** is an extension to the OAuth 2.0 Authorization Code flow that makes it safe for clients that **cannot keep a secret** — single-page apps, mobile, and native apps whose code ships to the user's device.
 
@@ -40,11 +40,13 @@ A stolen `code` is worthless without the `code_verifier`, which never left your 
 | CLI or device without a browser                                   | [Device Code](device-code.md)               |
 | Renewing an access token without re-login                         | [Refresh Token](refresh-token.md)           |
 
+**Authorization Code vs PKCE** is not a choice between two flows: PKCE is an extension that adds the `code_verifier` / `code_challenge` pair to the Authorization Code flow. With Faable you always use both together.
+
 > The older **Implicit flow** (tokens returned in the URL fragment) is deprecated — never put tokens in URLs. Authorization Code + PKCE replaces it for public clients.
 
 ---
 
-## 📸 How It Works
+## How the PKCE Flow Works (Diagram)
 
 ```mermaid
 sequenceDiagram
@@ -64,7 +66,7 @@ The `code` is single-use and short-lived. Even if it's intercepted, it's useless
 
 ---
 
-## ✅ Prerequisites
+## Prerequisites
 
 From the [Faable Dashboard](https://dashboard.faable.com):
 
@@ -74,7 +76,7 @@ From the [Faable Dashboard](https://dashboard.faable.com):
 
 ---
 
-## 🚀 Quick Start with `@faable/auth-js`
+## Quick Start with `@faable/auth-js`
 
 The fastest path: our SDK generates the PKCE verifier, handles the redirect, exchanges the code, stores the session, and auto-refreshes tokens.
 
@@ -117,7 +119,7 @@ That's it — the SDK also refreshes the access token transparently when it expi
 
 ---
 
-## 🧩 How to Generate the `code_verifier` and `code_challenge`
+## How to Generate the `code_verifier` and `code_challenge`
 
 If you use `@faable/auth-js`, **skip this** — the SDK generates, stores, and sends these for you. Rolling your own? Here's the exact PKCE pair generation.
 
@@ -161,7 +163,7 @@ Keep the `code_verifier` until the callback — it must survive the redirect (e.
 
 ---
 
-## 🛠️ Step-by-Step over HTTP
+## PKCE Example: Step-by-Step over HTTP
 
 Implementing it yourself, or curious what the SDK does under the hood? The whole flow is two requests.
 
@@ -271,7 +273,7 @@ No `client_secret` is needed: PKCE is the proof. Calling from the browser? The r
 
 ---
 
-## 🎛️ Controlling the Prompt
+## Controlling the Prompt
 
 The optional `prompt` parameter on `/authorize` controls whether the user sees the login UI. It accepts a space-separated list:
 
@@ -286,7 +288,7 @@ Unknown prompt values are accepted silently. Most applications can leave `prompt
 
 ---
 
-## ⚠️ Common Errors
+## Common Errors
 
 Errors on `/authorize` are returned to your `redirect_uri` as `?error=...&error_description=...` query parameters, except for malformed requests, which get a `400` before any redirect. Errors on the token exchange return an OAuth 2.0 error body (`{ "error": "...", "error_description": "..." }`). These are the messages the server actually returns:
 
@@ -306,7 +308,7 @@ Errors on `/authorize` are returned to your `redirect_uri` as `?error=...&error_
 
 ---
 
-## 🔒 Security Best Practices
+## Security Best Practices
 
 - **Always use PKCE**, even in server-side apps. It's the current OAuth 2.0 best practice for every client type.
 - **Always send and verify `state`.** It's your CSRF protection on the callback.
@@ -317,7 +319,7 @@ Errors on `/authorize` are returned to your `redirect_uri` as `?error=...&error_
 
 ---
 
-## ❓ FAQ
+## FAQ
 
 ### Do I need a `client_secret` for this flow?
 
@@ -334,6 +336,10 @@ Yes, always — you don't need to request an `offline_access` scope. Use it with
 ### How do users actually log in?
 
 With whatever [connections](../connections.md) you enable on the client: email/password, passkeys, passwordless OTP, Google, GitHub, or custom OIDC providers. The screens they go through — email first, second factor, remember me — are configured per tenant in [Login Flows](../login-flows.md). The OAuth flow your app implements is identical for all of them.
+
+### Is this the OpenID Connect (OIDC) flow with PKCE?
+
+Yes. OpenID Connect logs users in on top of this same flow — the `id_token` in the token response is the OIDC part, and `scope=openid profile email` on `/authorize` decides which identity claims it carries. There is no separate "OIDC PKCE flow" to implement. See [OpenID Connect](../oidc) for discovery, UserInfo and logout.
 
 ### When should I use Client Credentials instead?
 
@@ -361,7 +367,7 @@ Yes — pass `connection=google` (or the connection's id) on `/authorize`, or `c
 
 ---
 
-## 🔗 Related
+## Related
 
 - **[@faable/auth-js](https://www.npmjs.com/package/@faable/auth-js)** — official JavaScript/TypeScript SDK; PKCE handled for you.
 - **[Validate Access Tokens](../validate-access-tokens.md)** — what your API does with the token this flow returns.

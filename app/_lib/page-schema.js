@@ -13,8 +13,15 @@ const publisher = {
 
 const urlForRoute = route => `${SITE_URL}${route === '/' ? '' : route}`
 
+// Slug words that are acronyms or brand-cased, so "oauth-flows" reads
+// "OAuth Flows" and not "Oauth Flows".
+const SLUG_WORDS = { oauth: 'OAuth', oidc: 'OIDC' }
+
 function humanize(slug) {
-  return slug.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+  return slug
+    .split(/[-_]/)
+    .map(w => SLUG_WORDS[w] ?? w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
 }
 
 // schema.org BreadcrumbList from the page path. The leaf uses the real page
@@ -96,7 +103,11 @@ function parseFaq(body) {
   const faqs = []
   const matches = [...body.matchAll(/^###?\s+(.+?)\s*$/gm)]
   for (let i = 0; i < matches.length; i++) {
-    const question = matches[i][1].trim()
+    // Headings carry decorative emoji and inline code; the schema question is
+    // what search shows as text, so keep only the words.
+    const question = stripInlineMarkdown(
+      matches[i][1].replace(/[\p{Extended_Pictographic}\uFE0F]/gu, '')
+    )
     if (!question.endsWith('?')) continue
     const start = matches[i].index + matches[i][0].length
     const end = i + 1 < matches.length ? matches[i + 1].index : body.length
