@@ -491,12 +491,14 @@ specific to your app: on a scale-to-zero app, every one of those requests **star
 container** just to answer a 404.
 
 `faable deploy waf` lets you handle those paths at the edge, so they never reach your
-app. Two rules, depending on what the caller should get back:
+app. Two rules, depending on what the caller should get back — and a third for the
+opposite case, a path Faable blocks that your app really serves:
 
-| Command | Answer | Use it when                                                                                        |
-| ------- | ------ | -------------------------------------------------------------------------------------------------- |
-| `block` | `403`  | You want the request refused — a scanner probe, an admin path that should not be public            |
-| `sink`  | `404`  | Your app does not serve that path anyway. Faable replies with the same 404, without the cold start |
+| Command | Answer     | Use it when                                                                                        |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------- |
+| `block` | `403`      | You want the request refused — a scanner probe, an admin path that should not be public            |
+| `sink`  | `404`      | Your app does not serve that path anyway. Faable replies with the same 404, without the cold start |
+| `allow` | your app's | Faable blocks that path for every app (a `.zip`, a dotfile) and your app really serves it          |
 
 A rule selects requests by **path**, by **user-agent**, or by both at once:
 
@@ -537,6 +539,34 @@ faable deploy waf sink '^/robots\.txt$'
 Use `sink` for paths your app 404s anyway. A 404 on `robots.txt` means "no crawling
 restrictions", which is exactly what your app was already replying — the only difference
 is that Faable answers it and your container stays asleep.
+
+### Allow a path Faable blocks for every app
+
+Some paths are refused for every app before they reach it, because scanners request
+them by the thousand: **archives** (`.zip`, `.7z`, `.rar`, `.tar`, `.tar.gz`, `.gz`,
+`.sql`, `.bak`…), **dotfiles** (`/.env`, `/.git/`, `/.bashrc`… — `/.well-known/` stays
+open) and **configuration files** (`Dockerfile`, `appsettings.*.json`, `auth.json`). They
+get a `403` without waking your app. If your app really serves one of them — a download
+behind `/downloads/` — allow exactly that path:
+
+```bash
+faable deploy waf allow '^/downloads/.*\.zip$'
+```
+
+```
+🔓 requests for ^/downloads/.*\.zip$ → reaches your app
+   for shop-api (app_a1b2c3), even where Faable blocks it for every app
+   (archives like .zip or .tar.gz, dotfiles, config files).
+
+Your own block and sink rules still win over it, and certificate checks,
+/.faable/* and /_next/* are never affected.
+```
+
+Keep the pattern as narrow as your downloads: everything it matches stops being
+filtered for your app. An allow is a **path** rule only — no `--user-agent` and no
+`--query`, which anyone could send to get past the filter — and your own `block` and
+`sink` rules still win over it. Remove it like any other rule:
+`faable deploy waf rm '^/downloads/.*\.zip$' --action allow`.
 
 ### Block a crawler
 
@@ -597,7 +627,9 @@ Some patterns cannot be ruled on, and the CLI tells you why instead of accepting
   browser — both would take the whole app offline;
 - a user-agent pattern matching Faable's own platform traffic, which would break
   certificate renewal for the app;
-- lookahead and backreference syntax, which the edge's regex engine does not support.
+- lookahead and backreference syntax, which the edge's regex engine does not support;
+- an `allow` pattern that would also match `/`, `/.well-known/acme-challenge/`, `/.faable/`
+  or `/_next/` — those paths belong to the platform.
 
 ## Faable Auth
 
