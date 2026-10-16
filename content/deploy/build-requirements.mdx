@@ -287,6 +287,16 @@ A build output directory wins over the repository root, so a repo carrying a com
 
 `docs/` is **not** a document root: it is GitHub Pages' convention, but it is also where most repositories keep documentation for a project that is not a website. Point `rootDir` at it if that is what you want to publish.
 
+### Files Without a Page
+
+A folder of images, downloads or other files with no `index.html` at all — say, the contents of a storage bucket you are moving to Faable — deploys too, but only when you ask for it, since without an `index.html` nothing marks it as a site:
+
+```json
+{ "buildpack": "static" }
+```
+
+Every file is served at its path (`/blog/photo.png`), and `/` answers **404**. The served directory follows the table above minus the `index.html`: the first of `public/`, `dist/`, `build/` or `_site/` that exists, else the repository root. `spa: true` still needs an `index.html` — it is what unknown paths rewrite to.
+
 ### Single-Page Apps
 
 By default an unknown path returns **404** — correct for a multi-page site, wrong for a client-side router. Turn on the rewrite-to-`index.html` fallback in `faable.json`:
