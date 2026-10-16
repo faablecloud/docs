@@ -60,6 +60,27 @@ Compute is part of the plan: each plan runs your apps on its own instance size, 
 
 The figures are the most your app can use: CPU above it is throttled, and memory above it restarts the app with an out-of-memory error. On Pro, the larger sizes are set up on request — [contact us](mailto:support@faable.com) with the app you want to move.
 
+## Request rate limit
+
+Each instance also sets how many requests **one visitor** — one IP address — can make to your app, measured per minute with room for bursts:
+
+| Instance             | Requests per minute, per visitor | Burst |
+| -------------------- | -------------------------------- | ----- |
+| `bi.xs`              | 600                              | 1,000 |
+| `bi.small`           | 1,200                            | 2,000 |
+| `bi.base` and larger | 6,000                            | 6,000 |
+
+The limit is **per visitor, not per app**: a popular app with many visitors is never throttled as a whole, and a page that loads dozens of images and scripts fits comfortably in the burst. What it stops is a single source flooding your app — most often a page that reloads itself in a loop, or a script calling an endpoint as fast as it can.
+
+Requests over the limit are answered at the edge with **`429 Too Many Requests`**. They **never reach your app**: they do not use its CPU, do not wake it if it is asleep and do not keep it awake. Everyone else keeps being served normally.
+
+**If your app is being rate limited, we tell you.** When an app answers a few hundred `429`s within an hour, the members of its project get an email — at most once a day per app — with the address involved (partly masked) and the paths it was requesting, which is usually enough to find the loop.
+
+> [!TIP]
+> **Running a load test?** A test from one machine is one visitor, so it will see `429`s once it passes the limit — that is the limit working, not your app failing. Spread the test over several machines, or [contact us](mailto:support@faable.com) before a large one.
+
+If you put your own CDN or proxy in front of your app, the limit applies to each of its addresses. CDNs spread traffic over many addresses, so this rarely matters; [tell us](mailto:support@faable.com) if it does.
+
 ## Deployments per day (Free plan)
 
 On the Free plan each project can promote up to **50 successful deployments per calendar day (UTC)**. Once the quota is spent, nothing is dropped: your latest push is queued and rolls out automatically at 00:00 UTC when the counter resets, or immediately if you upgrade. Hobby and Pro have no deployment limits.

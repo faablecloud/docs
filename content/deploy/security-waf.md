@@ -28,7 +28,8 @@ WAF events are available in the [Faable Dashboard](https://dashboard.faable.com)
 
 - Confirm real attacks are being stopped.
 - Identify **false positives** — legitimate requests that match a rule (common with rich form payloads, file uploads, or API clients sending unusual headers).
-- Spot traffic patterns worth rate-limiting upstream.
+- Spot traffic patterns worth rate-limiting. Every app already has a per-visitor
+  [request rate limit](pricing.mdx#request-rate-limit) set by its instance.
 
 ## Tuning false positives
 

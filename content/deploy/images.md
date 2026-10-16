@@ -103,6 +103,11 @@ module.exports = {
 - **SVG is passed through untouched**, with a restrictive `Content-Security-Policy`.
 - **Animated images (GIF, animated WebP) are passed through untouched.**
 - Sources above 25 MB or 50 megapixels are served as they are.
+- **New sizes are capped per visitor.** One visitor can trigger up to 300 new
+  resizes a minute; past that, they get your original image, unchanged, until
+  the minute passes. Sizes that are already cached never count, so real pages
+  never get near it — it stops a script asking for a different width on every
+  request.
 
 ## Caching
 
