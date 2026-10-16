@@ -82,6 +82,14 @@ faable deploy link
 
 This mirrors the dashboard's **Link repository** action. Linking requires the **Faable GitHub App** to be installed on the repository; if it isn't, the CLI tells you how to install it. Once linked, `faable deploy` and GitHub Actions resolve the app automatically.
 
+Name the app to skip the list — this is what a script or an agent runs:
+
+```bash
+faable deploy link --app web --repo acme/web --json
+```
+
+`--repo` defaults to the origin remote of the current directory (in non-interactive mode it has to be given). Linking starts no deploy: what is live keeps serving until the next push.
+
 > [!NOTE]
 > The old top-level `faable link` still works as a deprecated alias and will be removed in a future release.
 
@@ -115,7 +123,9 @@ faable deploy launch --app <app_id> --workdir ./apps/web
 faable deploy launch --create my-site --workdir ./dist --yes --json   # a new app, deployed from this folder
 ```
 
-`--create <name>` makes a new app in the active project first and deploys the directory to it. `--json` prints the outcome — app, deployment, `outcome` (`live`, `failed`, `superseded`, `timeout`) and the URL; a failed deploy still exits with status 1.
+`--create <name>` makes a new app in the active project first and deploys the directory to it. The source is checked before the app is created, a name already used in the project is refused with `name_taken` (deploy to that app with `--app` instead), and if the deploy cannot start the new app is removed again — retrying never leaves empty apps behind. `--json` prints the outcome — app, deployment, `outcome` (`live`, `failed`, `superseded`, `timeout`) and the URL, alone on stdout (the build log goes to stderr); a failed deploy still exits with status 1.
+
+The directory does not have to be a git repository. In a repository, what git tracks plus untracked files that are not ignored is uploaded; in a plain folder, every file is, except what its `.gitignore` files exclude and `node_modules/`, `.env`, `.env.*` and `.DS_Store`. Nothing is written to the folder.
 
 Run it where no app can be resolved — a directory with no linked repository — and `deploy` lists its subcommands instead, the way `faable auth` does.
 
@@ -321,6 +331,14 @@ faable deploy apps set --mode push                # push | ci | workflow
 ```
 
 `push` deploys every push, `ci` deploys once your CI tags a release, `workflow` leaves deploying to your own GitHub workflow. The new settings apply to the next deploy — start one with `faable deploy trigger`.
+
+### Delete an app
+
+```bash
+faable deploy apps rm --app app_a1b2c3
+```
+
+Deletes the app with its deployments, domains and secrets, the same as **Delete app** in the dashboard. The app is always named with `--app` — never taken from the current directory — and the command asks first (`--yes` to skip; in non-interactive mode it is required).
 
 ## Secrets
 
@@ -803,7 +821,7 @@ By default the server exposes **reads plus one deploy**:
 
 When a deploy failed, `get_deployment` also says whose side it is on: `user` (your code, configuration or repository) or `platform` (Faable's).
 
-`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment` and `configure_repo`; for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path. Nothing destructive is exposed — deleting apps, domains, secrets or users stays in the CLI and the dashboard.
+`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path. Nothing destructive is exposed — deleting apps, domains, secrets or users stays in the CLI and the dashboard.
 
 With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions and settings, suspend and reinstate users, end sessions, send password emails and update an application's settings (the MCP only sets its profile fields) — never delete anything or change the tenant itself.
 
@@ -833,6 +851,7 @@ The CLI is built to be driven by scripts, CI and AI agents. Data goes to **stdou
 | `forbidden` / `not_found` | No access to that resource, or it does not exist                      |
 | `confirmation_required`   | A destructive command ran without `--yes` and nobody could confirm it |
 | `app_required`            | The command needs `--app`                                             |
+| `name_taken`              | A new app would repeat the name of one already in the project         |
 | `usage`                   | The command line itself is wrong                                      |
 
 Any other `code` comes from the Faable API (for example `repository_already_linked`) and is stable too.
@@ -874,8 +893,9 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 | `faable deploy apps get`             | One app: what is live, latest deployment, stack                                           |
 | `faable deploy apps create`          | Create an app from a GitHub repository and start its first deploy                         |
 | `faable deploy apps set`             | Change the deploy branch, root directory or deploy mode                                   |
+| `faable deploy apps rm`              | Delete an app (`--app` always explicit; asks first)                                       |
 | `faable deploy open`                 | Open the live app (`--dashboard` for the console)                                         |
-| `faable deploy link`                 | Link directory to a Faable app                                                            |
+| `faable deploy link`                 | Link a repository to a Faable app (`--app` to skip the picker)                            |
 | `faable deploy secrets list`         | List app secrets (masked, `--show`)                                                       |
 | `faable deploy secrets set`          | Set secrets as `KEY=VALUE` pairs, a whole file with `--env-file`, or stdin (`-f -`)       |
 | `faable deploy secrets rm`           | Remove a secret by name                                                                   |
