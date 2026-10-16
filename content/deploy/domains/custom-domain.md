@@ -27,6 +27,22 @@ If your domain is an apex (root) domain such as `example.com`, create an `ALIAS`
 
 Check with your DNS provider that it supports `ALIAS` (sometimes called `ANAME` or "CNAME flattening") at the apex — it is not universally available. Providers that support it include Cloudflare, Route 53, DNSimple and Namecheap. GoDaddy does not. If yours does not, use an `A` record or serve on `www` and redirect the root — all three options, and how to choose, are in [Apex domains](apex.md).
 
+## Moving a live domain without downtime
+
+If the domain already serves your site somewhere else, switching its record to Faable first would leave a short window — usually a minute or two — in which visitors reach Faable before its certificate exists and see an HTTPS error. Avoid it by letting Faable issue the certificate **before** any traffic moves:
+
+1. Add the domain in the dashboard, but **don't** change its `CNAME`/`ALIAS` yet.
+2. Create this extra record (the exact target is on the domain's page, under **Moving a domain that is already live somewhere else?**):
+
+   ```txt
+   _acme-challenge.www    IN      CNAME      <domain_id>.acme.faable.com.
+   ```
+
+3. Wait until the domain's page says the record is **in place** (or `faable deploy domains check www.example.com` shows `Pre-validation … ✅`). Faable issues the certificate within a couple of minutes, while your current host keeps serving.
+4. Now switch the `CNAME`/`ALIAS` to `<domain_id>.faable.link.` — the certificate is already there, so HTTPS works from the first request.
+
+Keep the `_acme-challenge` record afterwards: Faable renews the certificate through it. If you remove it, renewal falls back to the usual check over HTTP once the domain points at Faable. On Cloudflare, create it as **DNS only** (grey cloud) — a proxied record hides it.
+
 ## Verification and propagation
 
 - After creating the record, Faable verifies the domain and provisions the certificate. This usually completes within minutes once DNS is correct.

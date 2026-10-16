@@ -48,7 +48,8 @@ Paste the contents of each file directly into the corresponding input. The certi
 
 ## Troubleshooting
 
-- **"Not secure" / certificate not provisioned:** the domain must be verified first. Confirm the [custom domain](custom-domain.md) DNS record is correct — SSL can't be issued until verification succeeds.
+- **"Not secure" / certificate not provisioned:** the domain must be verified first. Confirm the [custom domain](custom-domain.md) DNS record is correct — SSL can't be issued until verification succeeds, unless you pre-validated it.
+- **Moving a domain that is live elsewhere:** create the `_acme-challenge` record first so the certificate exists before traffic moves — see [Moving a live domain without downtime](custom-domain.md#moving-a-live-domain-without-downtime).
 - **Browser certificate warning after upload:** the chain is incomplete. Re-upload including the CA root/intermediate certificate.
 - **Wildcard not matching a host:** a more specific certificate takes precedence; check whether an explicit-subdomain certificate is also installed.
 - **Certificate "expired":** managed certificates renew automatically; for uploaded custom certificates, you are responsible for replacing them before expiry.
