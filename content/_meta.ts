@@ -8,6 +8,10 @@
 // the platform pages (CLI, policies, FAQ) from the footer
 // (app/(site)/layout.jsx), so they are hidden here — Platform through CSS.
 export default {
+  // No "Last updated" from Nextra: the page renders its own (app/(site)/
+  // [[...mdxPath]]/page.jsx), from the same dates as the structured data, and
+  // the two disagreed. `*` is the fallback every entry and its children inherit.
+  '*': { theme: { timestamp: false } },
   index: {
     type: 'page',
     title: 'Overview',
