@@ -4,3 +4,12 @@
 @import 'nextra-theme-docs/style.css'; /* or nextra-theme-blog/style.css */
 
 @variant dark (&:where(.dark *));
+
+/* Platform & Policies keeps its own sidebar inside /platform, but it is not a
+   product: the navbar only switches between Deploy and Auth, and the platform
+   pages are linked from the footer. Nextra cannot give a folder a sidebar
+   without a navbar tab (`display: 'hidden'` drops both), so the tab — which
+   links to the folder's first page — is hidden here (content/_meta.ts). */
+.nextra-navbar a[href='/docs/platform/pricing'] {
+  display: none;
+}

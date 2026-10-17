@@ -6,7 +6,7 @@
 //
 // The navbar only switches product. The home (/) is reached from the logo and
 // the platform pages (CLI, policies, FAQ) from the footer
-// (app/(site)/layout.jsx), so they are hidden here.
+// (app/(site)/layout.jsx), so they are hidden here — Platform through CSS.
 export default {
   index: {
     type: 'page',
@@ -22,12 +22,9 @@ export default {
     display: 'hidden',
     theme: { sidebar: false }
   },
-  platform: {
-    type: 'page',
-    title: 'Platform & Policies',
-    display: 'hidden',
-    theme: { sidebar: false }
-  },
+  // Not `display: 'hidden'`: Nextra drops the sidebar of a hidden folder, and
+  // the policies keep theirs. Its navbar tab is hidden in globals.css instead.
+  platform: { type: 'page', title: 'Platform & Policies' },
   faq: {
     type: 'page',
     title: 'FAQ',

@@ -74,19 +74,25 @@ function ProductIcon({ product }) {
   )
 }
 
+const EMBLEM = (
+  <img
+    src="https://faable.com/assets/logo/Emblem.png"
+    width="35"
+    height="35"
+    alt="Faable"
+    className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+  />
+)
+
+// The Faable emblem is always there. On a product it leads, like a
+// breadcrumb: (Faable) › (product icon) Faable Deploy.
 export function NavbarLogo() {
   const product = productFor(usePathname())
 
   if (!product) {
     return (
       <div className="flex items-center gap-2 sm:gap-4">
-        <img
-          src="https://faable.com/assets/logo/Emblem.png"
-          width="35"
-          height="35"
-          alt="Faable"
-          className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
-        />
+        {EMBLEM}
         <p className="font-bold text-lg sm:text-2xl">Faable Docs</p>
       </div>
     )
@@ -94,7 +100,23 @@ export function NavbarLogo() {
 
   const { name } = PRODUCTS[product]
   return (
-    <div className="flex items-center gap-2 sm:gap-3">
+    <div className="flex items-center gap-1.5 sm:gap-3">
+      {EMBLEM}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        width="18"
+        height="18"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className="shrink-0 text-gray-400 dark:text-neutral-500"
+      >
+        <path d="m9 18 6-6-6-6" />
+      </svg>
       <ProductIcon product={product} />
       <p className="font-bold text-lg sm:text-2xl whitespace-nowrap">
         {/* Narrow screens: the navbar also carries the product tabs and the
