@@ -1,11 +1,12 @@
-// Every top-level entry is a `type: 'page'`: a tab in the navbar with its own
-// sidebar. That is what splits the docs per product — inside /deploy or /auth
-// the sidebar shows only that product. A plain `doc` entry here would show up
-// in every product's sidebar too (Nextra treats the root as under every docs
-// tree), so the platform pages are pages as well.
+// Every top-level entry is a `type: 'page'`, with its own sidebar. That is what
+// splits the docs per product — inside /deploy or /auth the sidebar shows only
+// that product. A plain `doc` entry here would show up in every product's
+// sidebar too (Nextra treats the root as under every docs tree), so the
+// platform pages are pages as well.
 //
-// The home (/) picks a product; the logo links to it, so it needs no tab.
-// Single pages have nothing to put in a sidebar.
+// The navbar only switches product. The home (/) is reached from the logo and
+// the platform pages (CLI, policies, FAQ) from the footer
+// (app/(site)/layout.jsx), so they are hidden here.
 export default {
   index: {
     type: 'page',
@@ -15,7 +16,22 @@ export default {
   },
   deploy: { type: 'page', title: 'Faable Deploy' },
   auth: { type: 'page', title: 'Faable Auth' },
-  cli: { type: 'page', title: 'CLI', theme: { sidebar: false } },
-  platform: { type: 'page', title: 'Platform & Policies' },
-  faq: { type: 'page', title: 'FAQ', theme: { sidebar: false } }
+  cli: {
+    type: 'page',
+    title: 'CLI',
+    display: 'hidden',
+    theme: { sidebar: false }
+  },
+  platform: {
+    type: 'page',
+    title: 'Platform & Policies',
+    display: 'hidden',
+    theme: { sidebar: false }
+  },
+  faq: {
+    type: 'page',
+    title: 'FAQ',
+    display: 'hidden',
+    theme: { sidebar: false }
+  }
 }

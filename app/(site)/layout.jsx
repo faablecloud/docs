@@ -1,6 +1,6 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import 'nextra-theme-docs/style.css'
-import { Head } from 'nextra/components'
+import Link from 'next/link'
 import { getPageMap } from 'nextra/page-map'
 import { NavbarLogo, ProductTheme } from '../../components/ProductBrand'
 
@@ -9,17 +9,8 @@ const navbar = (
     // Product name and icon on /deploy and /auth, "Faable Docs" elsewhere.
     logo={<NavbarLogo />}
   >
-    <a
-      href="https://dashboard.faable.com?utm_source=docs&utm_medium=referral&utm_content=navbar"
-      target="_blank"
-      rel="noopener"
-      className="nx-text-sm nx-font-medium hover:nx-opacity-75"
-    >
-      Dashboard
-    </a>
     {/* Persistent conversion CTA — docs are the paid/organic landing for many
-        readers but previously offered no signup action beyond the Dashboard
-        link. Inline-styled so it renders regardless of Tailwind availability.
+        readers. Inline-styled so it renders regardless of Tailwind availability.
         Its colour follows the product (--faable-cta, set by ProductTheme). */}
     <a
       href="https://dashboard.faable.com/account/register?utm_source=docs&utm_medium=referral&utm_content=docs_navbar_cta"
@@ -39,8 +30,29 @@ const navbar = (
     </a>
   </Navbar>
 )
+// The platform-wide pages live here and not in the navbar, which only switches
+// product (content/_meta.ts hides them there). Next's <Link> adds the /docs
+// basePath.
+const PLATFORM_LINKS = [
+  ['/cli', 'CLI'],
+  ['/platform/pricing', 'Pricing'],
+  ['/platform/security-compliance', 'Security'],
+  ['/platform/compliance', 'Compliance'],
+  ['/platform/sla', 'SLA'],
+  ['/faq', 'FAQ'],
+  ['/platform/terms-of-service', 'Terms of Service'],
+  ['/platform/privacy-policy', 'Privacy Policy']
+]
+
 const footer = (
-  <Footer>
+  <Footer className="flex-col items-start gap-4">
+    <nav aria-label="Platform" className="flex flex-wrap gap-x-6 gap-y-2">
+      {PLATFORM_LINKS.map(([href, label]) => (
+        <Link key={href} href={href} className="hover:opacity-75">
+          {label}
+        </Link>
+      ))}
+    </nav>
     <span>
       {new Date().getFullYear()} ©{' '}
       <a
@@ -61,7 +73,6 @@ const footer = (
 export default async function SiteLayout({ children }) {
   return (
     <>
-      <Head />
       <ProductTheme />
       <Layout
         navbar={navbar}

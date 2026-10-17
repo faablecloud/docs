@@ -1,4 +1,5 @@
 import '../globals.css'
+import { Head } from 'nextra/components'
 import { ProdGoogleTagManager } from './components/ProdGoogleTagManager'
 
 // llms.txt discovery for AI crawlers (llmstxt.org) — emits
@@ -85,6 +86,11 @@ export default function RootLayout({ children }) {
       // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
       suppressHydrationWarning
     >
+      {/* Nextra's <head> (theme colour variables, meta tags) belongs here,
+          between <html> and <body>. Rendered from the (site) layout it ended up
+          as a <head> inside <body>: invalid HTML and a hydration error on
+          every docs page. */}
+      <Head />
       <body>
         {children}
         {/* Same container as the landing: cookie banner + GA4 G-LF4NC4LKWN
