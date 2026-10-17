@@ -31,6 +31,10 @@ const BG = '#0f172a'
 const CYAN = '#22d3ee'
 const MAGENTA = '#c026d3'
 
+// Eyebrow colour per section: the product's -400 tone (landing palette),
+// indigo for everything else as before.
+const EYEBROW_COLOR = { deploy: '#818cf8', auth: '#34d399' }
+
 const SECTIONS = {
   deploy: 'Faable Deploy',
   auth: 'Faable Auth',
@@ -120,7 +124,7 @@ export async function GET(request, ctx) {
             fontWeight: 700,
             letterSpacing: 4,
             textTransform: 'uppercase',
-            color: '#818cf8'
+            color: EYEBROW_COLOR[segments[0]] ?? '#818cf8'
           }}
         >
           {eyebrow}

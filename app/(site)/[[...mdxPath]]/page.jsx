@@ -7,6 +7,7 @@ import {
   buildBreadcrumb,
   buildFaqPage
 } from '../../_lib/page-schema'
+import { PRODUCT_NAMES, productFor } from '../../_lib/products'
 import { LLMS_ALTERNATE_TYPES } from '../../layout'
 
 export const generateStaticParams = generateStaticParamsFor('mdxPath')
@@ -31,8 +32,18 @@ export async function generateMetadata(props, parent) {
     alt: metadata.title
   }
 
+  // Product pages carry the product in the tab and the search result title
+  // ("Clients | Faable Auth Docs"); the rest keeps the root layout's
+  // "%s | Faable Docs" template.
+  const product = productFor(params.mdxPath)
+  const title =
+    product && metadata.title
+      ? { absolute: `${metadata.title} | ${PRODUCT_NAMES[product]} Docs` }
+      : metadata.title
+
   return {
     ...pageMetadata,
+    title,
     alternates: {
       canonical: `https://faable.com/docs/${path}`,
       // Next replaces `alternates` wholesale per level: without this, the

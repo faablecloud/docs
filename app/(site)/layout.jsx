@@ -2,21 +2,12 @@ import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import 'nextra-theme-docs/style.css'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
+import { NavbarLogo, ProductTheme } from '../../components/ProductBrand'
 
 const navbar = (
   <Navbar
-    logo={
-      <div className="flex items-center gap-2 sm:gap-4">
-        <img
-          src="https://faable.com/assets/logo/Emblem.png"
-          width="35"
-          height="35"
-          alt="Faable"
-          className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
-        />
-        <p className="font-bold text-lg sm:text-2xl">Faable Docs</p>
-      </div>
-    }
+    // Product name and icon on /deploy and /auth, "Faable Docs" elsewhere.
+    logo={<NavbarLogo />}
   >
     <a
       href="https://dashboard.faable.com?utm_source=docs&utm_medium=referral&utm_content=navbar"
@@ -28,13 +19,14 @@ const navbar = (
     </a>
     {/* Persistent conversion CTA — docs are the paid/organic landing for many
         readers but previously offered no signup action beyond the Dashboard
-        link. Inline-styled so it renders regardless of Tailwind availability. */}
+        link. Inline-styled so it renders regardless of Tailwind availability.
+        Its colour follows the product (--faable-cta, set by ProductTheme). */}
     <a
       href="https://dashboard.faable.com/account/register?utm_source=docs&utm_medium=referral&utm_content=docs_navbar_cta"
       target="_blank"
       rel="noopener"
       style={{
-        background: '#2563eb',
+        background: 'var(--faable-cta, #2563eb)',
         color: '#fff',
         padding: '6px 14px',
         borderRadius: 6,
@@ -70,6 +62,7 @@ export default async function SiteLayout({ children }) {
   return (
     <>
       <Head />
+      <ProductTheme />
       <Layout
         navbar={navbar}
         pageMap={await getPageMap()}
