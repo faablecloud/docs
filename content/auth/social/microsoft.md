@@ -3,7 +3,7 @@ title: Microsoft (Entra ID) Social Login
 description: Enable Microsoft social login in Faable Auth. Register an Entra ID app, configure the redirect URI, restrict sign-in to your own directory, and understand how Faable maps the Microsoft Graph profile.
 ---
 
-## Microsoft (Entra ID) Social Login
+# Microsoft (Entra ID) Social Login
 
 The Microsoft social connection lets users sign in with a **Microsoft account** — both work/school identities from **Microsoft Entra ID** (formerly Azure AD) and personal accounts (`outlook.com`, `hotmail.com`, Xbox). Faable Auth talks to the Microsoft identity platform on the `common` authority, which accepts both, so a single connection type covers what other providers split into two.
 

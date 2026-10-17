@@ -3,7 +3,7 @@ title: Facebook Social Login
 description: Add Facebook login to Faable Auth using a Custom OAuth2 connection. Create a Facebook app, configure the redirect URI, and map the Graph API profile onto a Faable user.
 ---
 
-## Facebook Social Login
+# Facebook Social Login
 
 Facebook is **not a built-in connection type** in Faable Auth — there is no "Facebook" entry in the connection dropdown. You add it as a **Custom OAuth2** connection, supplying Facebook's endpoints yourself. Everything downstream is identical to a built-in provider: same Authorization Code flow, same user record, same tokens issued to your app.
 

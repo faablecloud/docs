@@ -3,7 +3,7 @@ title: Sign In with Apple
 description: Sign in with Apple is not yet supported by Faable Auth. Here is why the generic Custom OAuth2 path cannot cover it, and what to use in the meantime.
 ---
 
-## Sign In with Apple
+# Sign In with Apple
 
 > **Not supported yet.** Faable Auth has no Apple connection type, and — unlike [Facebook](facebook.md) — Apple **cannot** be added through a [Custom OAuth2](../social) connection either. This page explains why, so you don't spend an afternoon discovering it the hard way.
 

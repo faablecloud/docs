@@ -1,8 +1,9 @@
-import { Footer, Layout, Navbar } from 'nextra-theme-docs'
-import 'nextra-theme-docs/style.css'
 import Link from 'next/link'
+import { Footer, Navbar } from 'nextra-theme-docs'
+import 'nextra-theme-docs/style.css'
 import { getPageMap } from 'nextra/page-map'
 import { NavbarLogo, ProductTheme } from '../../components/ProductBrand'
+import { SectionLayout } from '../../components/SectionLayout'
 
 const navbar = (
   <Navbar
@@ -74,7 +75,7 @@ export default async function SiteLayout({ children }) {
   return (
     <>
       <ProductTheme />
-      <Layout
+      <SectionLayout
         navbar={navbar}
         pageMap={await getPageMap()}
         docsRepositoryBase="https://github.com/faablecloud/docs"
@@ -85,7 +86,7 @@ export default async function SiteLayout({ children }) {
         footer={footer}
       >
         {children}
-      </Layout>
+      </SectionLayout>
     </>
   )
 }

@@ -3,7 +3,7 @@ title: GitHub Social Login
 description: Enable GitHub Social Login in Faable Auth. Step-by-step guide to registering a GitHub OAuth App, configuring scopes, and mapping user profile data.
 ---
 
-## GitHub Social Login
+# GitHub Social Login
 
 The GitHub social connection allows users to log in to your application using their GitHub account. It's a popular choice for developer-facing products, since most engineers already have a GitHub identity and trust the OAuth consent screen.
 
