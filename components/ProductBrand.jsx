@@ -141,11 +141,15 @@ export function ProductTheme() {
   const product = productFor(usePathname())
   if (!product) return null
   const { light, dark } = PRODUCTS[product]
+  // The mobile menu renders the whole tree (Nextra's `directories`, not the
+  // per-product `docsDirectories` of the desktop sidebar): one top-level item
+  // per section. Inside a product, keep only the section that holds its pages.
+  const mobileNav = `.nextra-mobile-nav>ul>li:not(:has(a[href^="/docs/${product}/"])){display:none}`
   return (
     <style
       // Static values from the table above, never user input.
       dangerouslySetInnerHTML={{
-        __html: `html:root{${vars(light)}--faable-cta:hsl(${light.hue} ${light.saturation}% ${light.lightness}%);}html.dark{${vars(dark)}}`
+        __html: `html:root{${vars(light)}--faable-cta:hsl(${light.hue} ${light.saturation}% ${light.lightness}%);}html.dark{${vars(dark)}}${mobileNav}`
       }}
     />
   )

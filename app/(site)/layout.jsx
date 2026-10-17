@@ -78,6 +78,10 @@ export default async function SiteLayout({ children }) {
         navbar={navbar}
         pageMap={await getPageMap()}
         docsRepositoryBase="https://github.com/faablecloud/docs"
+        // Folders start closed (Guides & Migrations used to open on every
+        // Deploy page and push the rest of the sidebar down); the one holding
+        // the current page still opens.
+        sidebar={{ defaultMenuCollapseLevel: 1 }}
         footer={footer}
       >
         {children}
