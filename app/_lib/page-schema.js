@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { sourceFileFor } from './last-modified'
+import { PRODUCT_NAMES } from './products'
 
 const SITE_URL = 'https://faable.com/docs'
 const OG_IMAGE = 'https://faable.com/assets/brand/FaableLoginSocial.png'
@@ -11,7 +12,9 @@ const publisher = {
   logo: 'https://faable.com/assets/logo/Emblem.png'
 }
 
-const urlForRoute = route => `${SITE_URL}${route === '/' ? '' : route}`
+// The home's canonical is /docs/ (trailing slash): Google picked that form,
+// and the sitemap and the page's <link rel=canonical> advertise it.
+const urlForRoute = route => `${SITE_URL}${route === '/' ? '/' : route}`
 
 // Slug words that are acronyms or brand-cased, so "oauth-flows" reads
 // "OAuth Flows" and not "Oauth Flows".
@@ -25,19 +28,26 @@ function humanize(slug) {
 }
 
 // schema.org BreadcrumbList from the page path. The leaf uses the real page
-// title; intermediate segments are humanized from their slug.
+// title; intermediate segments are named after the product or humanized from
+// their slug. A segment with no page of its own (/auth/guides, /deploy/domains,
+// /platform…) is left out: those URLs are 302s, and a breadcrumb has to point
+// at pages.
 export function buildBreadcrumb(mdxPath, leafTitle) {
   const segments = mdxPath ?? []
   if (segments.length === 0) return null // homepage: a one-item breadcrumb is noise
 
-  const items = [{ name: 'Docs', url: SITE_URL }]
+  const items = [{ name: 'Docs', url: urlForRoute('/') }]
   let acc = ''
   segments.forEach((segment, i) => {
     acc += `/${segment}`
     const isLast = i === segments.length - 1
+    if (!isLast && !sourceFileFor(acc)) return
     items.push({
-      name: isLast && leafTitle ? leafTitle : humanize(segment),
-      url: `${SITE_URL}${acc}`
+      name:
+        isLast && leafTitle
+          ? leafTitle
+          : (PRODUCT_NAMES[segment] ?? humanize(segment)),
+      url: urlForRoute(acc)
     })
   })
 

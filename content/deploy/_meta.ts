@@ -1,4 +1,5 @@
 export default {
+  index: 'Overview',
   'get-started': 'Get Started',
   'how-it-works': 'How deployment works',
   guides: 'Guides & Migrations',

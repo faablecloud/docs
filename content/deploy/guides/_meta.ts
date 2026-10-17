@@ -1,4 +1,5 @@
 export default {
+  index: 'Overview',
   'guide-next': 'Deploy Next.js',
   'guide-express': 'Deploy Node.js Express',
   'guide-vite': 'Deploy Vite',

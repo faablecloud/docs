@@ -1,0 +1,54 @@
+---
+title: Faable Deploy documentation
+description: Faable Deploy builds and hosts apps and AI agents straight from Git, on European infrastructure — zero-config builds for Node.js, Python, PHP and Dockerfiles, custom domains with free SSL, a built-in WAF and scale to zero. Every Deploy guide, from your first push to production.
+rank: high
+---
+
+# Faable Deploy
+
+Faable Deploy builds and runs your app straight from a Git repository: push your code and Faable detects the framework, builds an image, and serves it at `<app>.faable.link` with free SSL — no Dockerfile, pipeline or server to manage. Full backends, not just static sites: long-lived Node.js, Python and PHP processes, hosted 100% in Europe.
+
+## Start here
+
+| Page                                                   | What you get                                                                     |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| [Get Started](/deploy/get-started)                     | Your first app live in minutes, from GitHub or from your laptop with the CLI.    |
+| [How deployment works](/deploy/how-it-works)           | What happens between a push and a live URL — detect, build, release, serve.      |
+| [What the Builder Expects](/deploy/build-requirements) | The files Faable reads to detect and build Node.js, Python, PHP and Dockerfiles. |
+| [Pricing](/deploy/pricing)                             | What each plan includes: instances, deployments, bandwidth and Docker builds.    |
+
+## Deploy your framework
+
+Step-by-step guides with a working example for each stack — see [all guides](/deploy/guides) for bots, webhooks, self-hosted apps and migrations.
+
+| Node.js and frontend                    | Python                                  | PHP                                       |
+| --------------------------------------- | --------------------------------------- | ----------------------------------------- |
+| [Next.js](/deploy/guides/guide-next)    | [Django](/deploy/guides/guide-django)   | [PHP & Laravel](/deploy/guides/guide-php) |
+| [Express](/deploy/guides/guide-express) | [FastAPI](/deploy/guides/guide-fastapi) |                                           |
+| [Vite](/deploy/guides/guide-vite)       | [Flask](/deploy/guides/guide-flask)     |                                           |
+| [Astro](/deploy/guides/guide-astro)     |                                         |                                           |
+
+## Bots, webhooks and AI apps
+
+Everything that has to answer an HTTP request from another service: [WhatsApp](/deploy/guides/guide-whatsapp-bot), [Telegram](/deploy/guides/guide-telegram-bot), [Discord](/deploy/guides/guide-discord-bot) and [Slack](/deploy/guides/guide-slack-bot) bots, a [GitHub App](/deploy/guides/guide-github-app), [Stripe webhooks](/deploy/guides/guide-stripe-webhooks), and [LLM apps with streaming](/deploy/guides/guide-llm-streaming). For agents in production, see [Hosting AI agents in Europe](/deploy/ai-agents).
+
+## Configure your app
+
+- **[Custom Domains](/deploy/domains/custom-domain)** — your own domain with a managed [SSL certificate](/deploy/domains/ssl-certificates), apex domains and per-registrar steps.
+- **[Environment & Releases](/deploy/environment)** — the variables Faable injects into every deployment, `PORT` and `FAABLE_RELEASE` included.
+- **[Runtime](/deploy/runtime)** — supported Node.js versions, environment variables and how Faable keeps your app running.
+- **[Databases & SQLite](/deploy/guides/databases)** — why the filesystem is ephemeral and where to keep your data.
+- **[Web Application Firewall](/deploy/security-waf)**, **[HTTP/3](/deploy/http3)** and **[Image Optimization](/deploy/images)** — on by default, at the edge of your app.
+
+## Teams and automation
+
+- **[Members & Roles](/deploy/members)** and **[Organizations & SSO](/deploy/organizations)** — who can see and change each project.
+- **[Faable CLI](/cli)** — deploy, logs, secrets and domains from the terminal.
+- **[Deploy from your own CI](/deploy/github-actions)** and the **[Deploy SDK](/deploy/sdk)** — drive Faable from GitHub Actions or Node.js.
+- **[Error Codes](/deploy/errors)** — every `error_code` the Deploy API returns.
+
+## Coming from another platform
+
+Step-by-step migrations from [Vercel](/deploy/guides/migrate-from-vercel) and [Netlify](/deploy/guides/migrate-from-netlify), and how Faable Deploy compares to [Vercel, Render & Railway](/deploy/compare), [Heroku](/deploy/compare-heroku) and [Fly.io](/deploy/compare-fly-io). New to the idea? Read [What is zero-config CI/CD?](/deploy/what-is-zero-config-cicd) and the [European alternatives](/deploy/european-alternatives) to the US platforms.
+
+Signing users in to the app you deploy? That is [Faable Auth](/auth), in the same account.

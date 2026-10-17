@@ -34,10 +34,13 @@ export async function generateMetadata(props, parent) {
 
   // Product pages carry the product in the tab and the search result title
   // ("Clients | Faable Auth Docs"); the rest keeps the root layout's
-  // "%s | Faable Docs" template.
+  // "%s | Faable Docs" template. A title that already names the product (the
+  // hubs, the comparisons) keeps the template too, so it does not say it twice.
   const product = productFor(params.mdxPath)
   const title =
-    product && metadata.title
+    product &&
+    metadata.title &&
+    !metadata.title.startsWith(PRODUCT_NAMES[product])
       ? { absolute: `${metadata.title} | ${PRODUCT_NAMES[product]} Docs` }
       : metadata.title
 

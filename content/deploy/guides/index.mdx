@@ -1,0 +1,45 @@
+---
+title: Faable Deploy guides
+description: Step-by-step Faable Deploy guides with working code — Next.js, Express, Vite, Astro, Django, FastAPI, Flask and Laravel apps; WhatsApp, Telegram, Discord and Slack bots; Stripe and GitHub webhooks; LLM streaming; Uptime Kuma; databases; and migrations from Vercel and Netlify.
+rank: high
+---
+
+# Faable Deploy guides
+
+Every guide starts from a GitHub repository and ends at a live URL with free SSL. New to Faable Deploy? Do [Get Started](/deploy/get-started) first — it takes a few minutes.
+
+## Web apps and APIs
+
+| Guide                                           | What it covers                                                                   |
+| ----------------------------------------------- | -------------------------------------------------------------------------------- |
+| [Next.js](/deploy/guides/guide-next)            | Zero-config build and start, automatic standalone output, environment variables. |
+| [Node.js Express](/deploy/guides/guide-express) | The `$PORT` contract, zero-config builds and environment variables.              |
+| [Vite](/deploy/guides/guide-vite)               | React, Vue, Svelte, Solid or Preact as a static build, with SPA routing.         |
+| [Astro](/deploy/guides/guide-astro)             | Static builds, the SSR adapter path and `PUBLIC_` variables.                     |
+| [Django](/deploy/guides/guide-django)           | gunicorn start command, static files with WhiteNoise, migrations.                |
+| [FastAPI](/deploy/guides/guide-fastapi)         | uvicorn start command and async workers.                                         |
+| [Flask](/deploy/guides/guide-flask)             | gunicorn start command and a complete JSON API example.                          |
+| [PHP & Laravel](/deploy/guides/guide-php)       | Apache with mod_php and `.htaccess`, composer, a full Laravel walkthrough.       |
+
+## Bots and webhooks
+
+Each one in Node.js or Python, with the request signature verified before your code runs.
+
+| Guide                                                   | What it covers                                                    |
+| ------------------------------------------------------- | ----------------------------------------------------------------- |
+| [WhatsApp bot](/deploy/guides/guide-whatsapp-bot)       | Webhook setup for the WhatsApp Cloud API.                         |
+| [Telegram bot](/deploy/guides/guide-telegram-bot)       | `setWebhook` and secret-token verification.                       |
+| [Discord bot](/deploy/guides/guide-discord-bot)         | HTTP interactions with Ed25519 signatures and slash commands.     |
+| [Slack app](/deploy/guides/guide-slack-bot)             | Request URL setup and signing-secret verification.                |
+| [GitHub App](/deploy/guides/guide-github-app)           | `X-Hub-Signature-256` and the JWT to installation-token exchange. |
+| [Stripe webhooks](/deploy/guides/guide-stripe-webhooks) | Signature verification and idempotency against repeated events.   |
+
+## AI, self-hosted apps and data
+
+- **[LLM app with streaming](/deploy/guides/guide-llm-streaming)** — Server-Sent Events from the Claude API to the browser.
+- **[Uptime Kuma](/deploy/guides/guide-uptime-kuma)** — self-host it by forking the repo, no Dockerfile.
+- **[Databases & SQLite](/deploy/guides/databases)** — why the filesystem is ephemeral and where to keep your data.
+
+## Migrations
+
+Move an existing project with its environment variables and custom domains: [from Vercel](/deploy/guides/migrate-from-vercel) or [from Netlify](/deploy/guides/migrate-from-netlify). Comparing first? See [Faable Deploy vs Vercel, Render & Railway](/deploy/compare).

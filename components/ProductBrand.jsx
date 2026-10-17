@@ -158,7 +158,7 @@ export function ProductTheme() {
 const CARDS = [
   {
     product: 'deploy',
-    href: '/deploy/get-started',
+    href: '/deploy',
     tagline:
       'Zero-config hosting from Git. Push code and Faable builds, scales and serves it.',
     bullets: [
@@ -171,7 +171,7 @@ const CARDS = [
   },
   {
     product: 'auth',
-    href: '/auth/get-started',
+    href: '/auth',
     tagline:
       'Multi-tenant identity, hosted in the EU. Users, sessions and tokens, with the login screen hosted for you.',
     bullets: [

@@ -1,4 +1,5 @@
 export default {
+  index: 'Overview',
   'get-started': 'Get Started',
   quickstart: 'Quickstarts',
   features: 'Features',

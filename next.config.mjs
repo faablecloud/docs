@@ -55,13 +55,9 @@ export default withNextra({
       // in the page body (`[Hosted login](hosted-login.mdx)` → `href="hosted-login"`)
       // then resolved to `/auth/compare/hosted-login`, a 404.
       { source: '/:path+/', destination: '/:path+', permanent: false },
-      // Section roots: folders without an index page
-      { source: '/auth', destination: '/auth/get-started', permanent: false },
-      {
-        source: '/deploy',
-        destination: '/deploy/get-started',
-        permanent: false
-      },
+      // Section roots: folders without an index page. /deploy, /auth and
+      // /deploy/guides have one now (their hubs), so they are not here — a
+      // redirect would shadow the page, which is why all of these are 302s.
       {
         source: '/platform',
         destination: '/platform/pricing',
@@ -82,11 +78,6 @@ export default withNextra({
       {
         source: '/deploy/domains',
         destination: '/deploy/domains/custom-domain',
-        permanent: false
-      },
-      {
-        source: '/deploy/guides',
-        destination: '/deploy/guides/migrate-from-vercel',
         permanent: false
       },
       // Old flat URLs for pages that live under /auth/oauth-flows (indexed/linked externally)
