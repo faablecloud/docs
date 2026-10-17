@@ -41,6 +41,7 @@ export default {
   learnSeparator: { type: 'separator', title: 'Learn & Compare' },
   'what-is-a-multi-tenant-identity-server':
     'What is a multi-tenant identity server?',
+  'european-alternatives': 'European alternatives to Auth0, Clerk & Cognito',
   jwt: 'Understanding JWTs',
   'saml-vs-oidc': 'SAML vs OIDC',
   compare: 'Faable Auth vs Auth0, Clerk & Keycloak',

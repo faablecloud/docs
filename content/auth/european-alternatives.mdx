@@ -1,0 +1,142 @@
+---
+title: European alternatives to Auth0, Clerk and Cognito
+description: A guide to European identity providers for teams that need EU data residency and GDPR for their users' logins — why an EU region on a US provider is not the same claim as a European company, what the CLOUD Act changes, the three categories of alternative, the questions that separate them, and where Faable Auth fits.
+rank: high
+---
+
+# European alternatives to Auth0, Clerk and Cognito
+
+**If you are replacing Auth0, Clerk or Cognito because your users' identities have to stay in Europe, the hard part is not finding a provider with an EU region — several US providers have one. It is deciding how much of the identity stack has to be European for your requirement to actually be met: where the user records are stored, which company holds them, which sub-processors touch them, and who can be compelled to hand them over.** This page lays out the field and the questions that separate one answer from another.
+
+We build one of these products, so read this knowing that. What follows is the honest shape of the market; where Faable Auth fits is at the end, and it is not the right answer for everyone.
+
+> Vendor details checked against each vendor's own pricing, legal and documentation pages in October 2026. They change often — confirm anything decisive on their own sites.
+
+## Why identity data is a special case
+
+An identity provider holds the one dataset that touches every user you have: email addresses, password hashes, phone numbers, social profiles, MFA factors, and a log of every sign-in with its IP address and device. Under the GDPR you are the **controller** of that data and the identity provider is your **processor** (Article 28), so you need a data processing agreement with it, and its choice of sub-processors becomes yours.
+
+It is also the vendor you can least afford to change in a hurry. Moving app hosting is a weekend; moving identity means every user, every password hash and every integration. Getting the jurisdiction question right before you integrate is much cheaper than after.
+
+## First: what does "European" have to mean for you?
+
+"Hosted in Europe" is used for at least four different claims, and a requirement written as "user data must stay in the EU" rarely says which one it means:
+
+| The claim                      | What it means                                                                       | What it does not settle                                  |
+| ------------------------------ | ----------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **Storage region**             | The user database sits in an EU datacenter                                          | Who operates it, and which law can reach it              |
+| **Company jurisdiction**       | The provider you contract with is a European company                                | Where its infrastructure, backups and sub-processors are |
+| **Sub-processors**             | Email, SMS, logging, CDN and backups are also European, or listed with safeguards   | Only as good as the list you actually read               |
+| **Access from outside the EU** | Support and engineering staff who can reach the data are in the EU, or it is barred | Rarely stated publicly; ask for it in writing            |
+
+### Why "EU region" is not "European company"
+
+The US **CLOUD Act** (18 U.S.C. § 2713) requires a US provider to disclose data in its "possession, custody, or control, regardless of whether such communication, record, or other information is located within or outside of the United States." Storing your users in Frankfurt changes where the data is; it does not change which law can order the company to produce it.
+
+That is the legal background to the transfer debate. In **Schrems II** (C-311/18, 16 July 2020) the Court of Justice of the EU invalidated the EU-US Privacy Shield. Its replacement, the **EU-US Data Privacy Framework**, received an adequacy decision on 10 July 2023, and the General Court dismissed a challenge to it in _Latombe v Commission_ (T-553/23) on 3 September 2025. An appeal (C-703/25 P) was lodged on 31 October 2025.
+
+None of this makes a US provider with an EU region unlawful. Okta, Clerk and Google all state that they comply with the Data Privacy Framework, and for many organisations an EU region plus the DPF is a sound, defensible position. But it rests on a framework whose predecessor was invalidated in 2020 and which is itself under appeal — and some customers, public bodies and procurement teams will not accept it. If yours won't, the storage region is not the question to ask.
+
+## The three categories of European alternative
+
+### 1. US providers with an EU region
+
+The incumbents, with the data stored in Europe and the company in the US.
+
+- **Auth0 (Okta)** lets you create a tenant in an EU locality, which sets "the region where your data will be hosted". Okta publishes its sub-processor list, which for Auth0 includes US-located services such as DataDog, SendGrid and Twilio and states that its support team is located in Romania; Okta's privacy policy states that it complies with the EU-U.S. Data Privacy Framework.
+- **Amazon Cognito** stores each user pool's data in the AWS region where you create it, and several AWS regions are in Europe. AWS also documents Cognito in its **European Sovereign Cloud**, generally available since January 2026 in Brandenburg, Germany, with some differences — no custom domains for user pools, for example.
+- **Ory Network** is operated by Ory Corp, a US company with an affiliate in Munich. Projects get a home region chosen at creation, Europe among them, on Google Cloud.
+- **Logto Cloud** offers a Europe (Netherlands) region on Microsoft Azure; its DPA is issued by Silverhand Inc.
+
+Two of the best-known providers do not offer an EU region at all:
+
+- **Clerk** states that regional data residency is "Not offered": it is "US-hosted; EU/UK/Swiss data transferred under the DPF". See [Faable Auth vs Clerk](/auth/compare-clerk).
+- **Firebase Authentication** "processes data exclusively in the United States", according to Google's own Firebase privacy page, and Identity Platform does not appear in Google Cloud's list of services with data residency. See [Faable Auth vs Firebase Authentication](/auth/compare-firebase-auth).
+
+This category is the strongest answer when residency is the requirement and the DPF is acceptable to you: deep feature sets, mature tooling, large ecosystems.
+
+### 2. European managed identity providers
+
+An EU or Swiss company operating the identity service. Look closely here, because "European" can mean the company, the hosting, or both:
+
+- **[Hanko](https://www.hanko.io/)** is Hanko GmbH, in Kiel, Germany. Hanko Cloud is hosted in the AWS Frankfurt region, and its DPA states that customer personal data "is stored exclusively in data centers located in Germany" and that Hanko "does not permit access to Customer Personal Data from outside the European Economic Area". Its listed sub-processors include AWS's EU entity and Hetzner. Its backend is open source (AGPL-3.0).
+- **[cidaas](https://www.cidaas.com/)** is Widas ID GmbH, in Germany, and states "Hosting in Germany / EU". It is priced for enterprises — paid plans start at €699 a month.
+- **[ZITADEL](https://zitadel.com/)** is contracted through CAOS AG in St. Gallen, Switzerland, under Swiss law, and offers data residency in the EU, Switzerland, the US or Australia on Google Cloud. Its DPA and privacy policy, however, name Zitadel, Inc., in San Francisco — read both before treating it as a purely Swiss provider.
+- **Faable Auth** — see below.
+
+This is the category to look at when the requirement is about the company and its jurisdiction, not only the datacenter. Even here, check the infrastructure underneath: a European company running on a US hyperscaler's EU region has a US sub-processor holding your data, which may or may not matter for your requirement.
+
+### 3. Self-hosted open source on European infrastructure
+
+Run the identity server yourself, on servers you rent from a European provider. Your jurisdiction is whatever your hosting provider's is, and nobody else holds the data.
+
+- **[Keycloak](https://www.keycloak.org/)** (Apache 2.0, a CNCF incubating project) is the most complete: OIDC, SAML, organizations, brokering. It needs a production database such as PostgreSQL, and a typical production setup runs two or more instances sharing a distributed cache. It ships four minor releases a year, and you apply them. See [migrating from Keycloak](/auth/guides/migrate-from-keycloak).
+- **ZITADEL** self-hosted is AGPL-3.0 since v3 and runs on PostgreSQL.
+- **Ory Kratos and Hydra** are Apache 2.0; some features — B2B organizations, multi-tenancy in Kratos — need the commercial Ory Enterprise License when self-hosted.
+- **Logto** (MPL-2.0) and **Hanko** (AGPL-3.0) can also be self-hosted.
+- **[Authelia](https://www.authelia.com/)** is a different tool: an SSO and two-factor portal in front of a reverse proxy. It "has no internal registration functionality", so it fits protecting your own infrastructure, not signing up customers. See [Faable Auth vs Authelia](/auth/compare-authelia).
+
+This is maximum control and, on paper, the lowest bill. The cost is that you now operate the most security-sensitive service you run: patching within days of a CVE, database backups you have tested, high availability, key rotation, email deliverability, and the 3 a.m. page when nobody can log in. It is an excellent answer for a team with someone who owns identity, and a poor one for a team that wanted a managed provider so nobody would have to.
+
+## The questions that actually separate them
+
+Once the category is settled, these are the questions whose answers differ in ways that matter later. Ask every vendor, including us.
+
+- **Who is the contracting entity, and who is the processor in the DPA?** They are not always the same company, and not always in the same country as the marketing site suggests. Read the DPA, not the homepage.
+- **Where are backups and logs?** The primary database is usually where the vendor says it is. Backups, audit logs, observability and support tooling are where audits find the gaps.
+- **What is on the sub-processor list?** Transactional email and SMS — the codes, magic links and password resets your users receive — almost always go through a third party. So do CDNs and error monitoring. The list is where the actual answer to "is this European?" usually is.
+- **Who can access the data from outside the EU?** Support, on-call engineers and affiliates. Some vendors state it (Hanko's DPA bars it; Okta names its support location); many don't. Ask.
+- **Is the DPA available on your plan?** Some vendors publish it and incorporate it into the terms on every plan; others offer it on request or only on enterprise contracts.
+- **What do 10,000 and 50,000 users cost?** Pricing units differ — monthly active users, retained users, daily active users, registered users — so compare on your own numbers, not the headline.
+- **Can you get your password hashes out?** This decides whether you can leave without forcing every user through a password reset. Auth0 exports hashes only through a support case. Cognito cannot export them at all: AWS stores "a hash of each user's password with a user-specific salt" and "you can't retrieve existing passwords". Firebase exports its scrypt hashes with the CLI.
+
+### What 10,000 and 50,000 users cost
+
+List prices as of October 2026, before tax, for the plan a production consumer app would typically use. Units differ, so read the notes.
+
+| Provider                                    | Free tier                         | At 10,000 users                    | At 50,000 users                 |
+| ------------------------------------------- | --------------------------------- | ---------------------------------- | ------------------------------- |
+| **Faable Auth**                             | 15,000 MAU                        | 0 € (Free)                         | 15 € (Hobby, no MAU limit)      |
+| [Auth0](/auth/compare)                      | 25,000 MAU                        | $0 (Free) · $700 on B2C Essentials | $3,500 on B2C Essentials        |
+| [Clerk](/auth/compare-clerk)                | 50,000 retained users per app     | $0                                 | $0                              |
+| [Amazon Cognito](/auth/compare-aws-cognito) | 10,000 MAU                        | $0                                 | $600 (Essentials)               |
+| Google Identity Platform                    | 50,000 MAU (email, phone, social) | $0                                 | $0                              |
+| Hanko                                       | 10,000 MAU                        | $0                                 | $429 (Pro, $29 + $0.01 per MAU) |
+| ZITADEL, Ory Network                        | Priced by daily active users      | Not directly comparable            | Not directly comparable         |
+
+Two honest readings. First, at these volumes several US providers are free, so price is rarely what decides a European move — jurisdiction is. Second, free tiers differ in what they include: MFA, passwordless, custom domains and enterprise SSO are paid features on most of them, Faable included. Faable's figures are flat plan fees in euros with no per-user charge; see [Auth pricing](/auth/pricing).
+
+## Where Faable Auth fits
+
+[Faable Auth](/auth/get-started) sits in the second category: a European company running the identity service on **its own hardware in a European datacenter (Poland)**, with no non-EU region to fall back to. Your users' identities and user data stay in that datacenter. It is a managed, multi-tenant OAuth 2.0 and OpenID Connect server with [hosted login](/auth/hosted-login), social and [passwordless](/auth/passwordless) sign-in, [passkeys](/auth/passkeys), [two-step verification](/auth/mfa), B2B [organizations with enterprise SSO](/auth/organizations), and machine-to-machine tokens.
+
+What you get on the questions above, as published on our own pages:
+
+- **Processor and DPA:** you are the controller and Faable is your processor; the [DPA](/platform/privacy-policy#10-data-you-process-through-faable-our-processor-role) is incorporated into the terms on **every plan, Free included**, and a countersigned copy is available on request.
+- **Sub-processors:** [published](/platform/privacy-policy#7-sub-processors), with the transfer mechanism for each. Be aware of what is on it: container images, build artifacts and backups are stored in **AWS's Paris region**, and services that handle limited operational data — transactional email, error monitoring, payments — include US companies. If your requirement excludes every US-parented sub-processor, read that list before you decide. Details in [Security](/platform/security-compliance#where-your-data-runs).
+- **Pricing:** a flat monthly fee per plan, never per user — up to 15,000 MAU on Free with no credit card, no MAU limit on Hobby (15 €) or Pro (99 €).
+- **Leaving:** [password hash import and export](/auth/guides/import-password-hashes) — bcrypt, scrypt, PBKDF2 and Argon2id — on every plan, so you can move in without a reset and move out the same way.
+- **Certifications:** Faable is **not certified** under SOC 2, ISO 27001 or similar schemes today. Pro includes compliance support — security documentation, questionnaires and the contractual terms your framework requires; see [Compliance](/platform/compliance).
+
+And because Faable Auth is part of the same subscription as [Faable Deploy](/deploy), the app your users sign in to can be hosted by the same European provider, under one contract and one DPA — see [European alternatives to Vercel, Render and Railway](/deploy/european-alternatives).
+
+**When another option fits better:**
+
+- **You need a certificate today** — SOC 2, ISO 27001, C5 — rather than documentation. The large US providers hold them.
+- **Your requirement excludes every US-parented sub-processor**, including for backups and email. Read our list, and Hanko's, against that requirement.
+- **Your customers' identity providers only speak SAML.** Faable connects company identity providers over OpenID Connect; inbound SAML connections are not available yet.
+- **You need SMS sign-in, Sign in with Apple, multi-region failover, or a Terraform provider.** Faable Auth does not offer these yet; several providers above do.
+- **You want pixel-level control of the login UI.** Faable's hosted pages take your logo and settings, not your CSS.
+- **You have someone who genuinely wants to operate identity.** Self-hosted Keycloak on European servers will cost less than all of us.
+
+## Moving to Faable Auth
+
+There are step-by-step guides for migrating from [Auth0](/auth/guides/migrate-from-auth0), [Clerk](/auth/guides/migrate-from-clerk), [Keycloak](/auth/guides/migrate-from-keycloak) and [NextAuth](/auth/guides/migrate-from-nextauth), and users keep their passwords through [password hash import](/auth/guides/import-password-hashes). For feature-by-feature comparisons rather than the European field, see [Faable Auth vs Auth0, Clerk & Keycloak](/auth/compare), [vs AWS Cognito](/auth/compare-aws-cognito), [vs Firebase Authentication](/auth/compare-firebase-auth) and [vs Supabase Auth](/auth/compare-supabase-auth).
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](/auth/compare)
+- [What is a multi-tenant identity server?](/auth/what-is-a-multi-tenant-identity-server)
+- [Compliance](/platform/compliance) and [Security](/platform/security-compliance)
+- [European alternatives to Vercel, Render and Railway](/deploy/european-alternatives)
+- [Auth pricing](/auth/pricing)
