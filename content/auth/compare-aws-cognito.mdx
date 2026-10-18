@@ -23,7 +23,7 @@ rank: high
 | Device code (RFC 8628)                 | ✅                                                                                                                                                               | ❌ (AWS blog builds it with Lambda + DynamoDB)                   |
 | Token exchange (RFC 8693)              | ✅ e.g. keyless GitHub Actions                                                                                                                                   | ❌                                                               |
 | Dynamic client registration (RFC 7591) | ✅ what MCP clients expect                                                                                                                                       | ❌ clients are created through the API or IaC                    |
-| Social login                           | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                                                                                                        | Google, Facebook, Apple, Amazon + generic OIDC/SAML (no GitHub)  |
+| Social login                           | Google, Apple, GitHub, Microsoft, Facebook, LinkedIn, X, Discord, Slack, GitLab, Bitbucket, Twitch, Spotify, Figma + any OAuth 2.0 provider                      | Google, Facebook, Apple, Amazon + generic OIDC/SAML (no GitHub)  |
 | Passwordless by email                  | ✅ magic link or 6-digit code                                                                                                                                    | Code only (Essentials); no magic links                           |
 | Passwordless by SMS                    | ❌ (SMS is used for recovery)                                                                                                                                    | ✅ SMS code (Essentials)                                         |
 | Passkeys                               | ✅ as sign-in method (Pro) and as second factor (Hobby)                                                                                                          | ✅ as sign-in method (Essentials); not after a password          |
@@ -141,7 +141,7 @@ Faable Auth runs on **our own hardware in a European datacenter**, operated by a
 ## When AWS Cognito might fit better
 
 - **Your backend is on AWS** and you want API Gateway, ALB or AppSync to validate tokens natively, or IAM credentials for users through identity pools.
-- **You need Sign in with Apple or SMS login today**, or the identity provider your customers bring only speaks SAML — Faable Auth connects company identity providers over OpenID Connect.
+- **You need SMS login today**, or the identity provider your customers bring only speaks SAML — Faable Auth connects company identity providers over OpenID Connect.
 - **You want identity declared in CloudFormation or CDK** alongside the rest of your infrastructure.
 - **You need multi-region failover** for authentication.
 

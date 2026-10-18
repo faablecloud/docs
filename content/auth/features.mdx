@@ -15,13 +15,13 @@ New here? Start with [Get Started](get-started.md) or pick a [quickstart](quicks
 
 A [connection](connections.md) is a source of users. Enable the ones you want on a [client](clients.md); your application code is identical whichever the user picks, because Faable normalizes every result into standard OAuth 2.0 / OIDC tokens.
 
-| Connection                           | What it gives users                                                                                                                                                          |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Database** (`database`)            | Email + password, with credentials stored and hashed by Faable. Self-service [signup](signup.md) from a browser-only app.                                                    |
-| **[Passwordless](passwordless.mdx)** | Magic link or 6-digit OTP by email. The account is created on first successful verification, already `email_verified`.                                                       |
-| **[Social](social)**                 | Google, GitHub, Microsoft (Entra ID) and Figma, with endpoints preconfigured — paste credentials and go.                                                                     |
-| **Custom OAuth 2.0** (`custom`)      | Any other provider: you supply authorize, token and userinfo URLs. [Facebook](social/facebook.md) is the worked example.                                                     |
-| **External OIDC issuer** (`oidc`)    | Trust a third-party issuer's JWTs — GitHub Actions being the canonical case — for [Token Exchange](oauth-flows/token-exchange.mdx). Machine-to-machine, not a browser login. |
+| Connection                           | What it gives users                                                                                                                                                                        |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Database** (`database`)            | Email + password, with credentials stored and hashed by Faable. Self-service [signup](signup.md) from a browser-only app.                                                                  |
+| **[Passwordless](passwordless.mdx)** | Magic link or 6-digit OTP by email. The account is created on first successful verification, already `email_verified`.                                                                     |
+| **[Social](social)**                 | Google, Apple, GitHub, Microsoft (Entra ID), Facebook, LinkedIn, X, Discord, Slack, GitLab, Bitbucket, Twitch, Spotify and Figma, with endpoints preconfigured — paste credentials and go. |
+| **Custom OAuth 2.0** (`custom`)      | Any other provider: you supply authorize, token and userinfo URLs.                                                                                                                         |
+| **External OIDC issuer** (`oidc`)    | Trust a third-party issuer's JWTs — GitHub Actions being the canonical case — for [Token Exchange](oauth-flows/token-exchange.mdx). Machine-to-machine, not a browser login.               |
 
 Two details that save work:
 
@@ -119,7 +119,6 @@ Being explicit beats discovering it mid-integration:
 
 - **Inbound SAML connections.** A company's identity provider connects over OpenID Connect — Okta, Entra ID and Google Workspace all speak it. See [Organizations and Enterprise SSO](organizations.md). The other direction works: your tenant can be the [SAML identity provider of your apps](saml.md).
 - **Signing in with an SMS code.** Passwordless _login_ is email only. SMS is used for password recovery and phone verification on Hobby and Pro — see [Phone verification](phone-verification.md).
-- **Sign in with Apple**, which requires a client secret signed as an ES256 JWT — not supported through custom OAuth connections yet.
 
 ## FAQ
 

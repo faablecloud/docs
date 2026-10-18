@@ -23,7 +23,7 @@ rank: high
 | Email + password                         | ✅                                                                                                                                                               | ✅                                                                            |
 | Email magic link / code                  | ✅ both (Hobby and up)                                                                                                                                           | Link only — 5 emails a day on the free Spark plan                             |
 | Phone number sign-in                     | ❌ (SMS is used for recovery)                                                                                                                                    | ✅ Blaze plan only                                                            |
-| Social login                             | Google, GitHub, Microsoft, Figma + any OAuth 2.0 provider                                                                                                        | Google, Apple, Facebook, GitHub, Microsoft, X, Yahoo, Play Games, Game Center |
+| Social login                             | Google, Apple, GitHub, Microsoft, Facebook, LinkedIn, X, Discord, Slack, GitLab, Bitbucket, Twitch, Spotify, Figma + any OAuth 2.0 provider                      | Google, Apple, Facebook, GitHub, Microsoft, X, Yahoo, Play Games, Game Center |
 | Passkeys                                 | ✅ as sign-in method (Pro) and as second factor (Hobby)                                                                                                          | ❌ not documented for production                                              |
 | MFA                                      | Authenticator app, security keys, passkeys                                                                                                                       | SMS and TOTP (Identity Platform)                                              |
 | Enterprise SSO / SAML                    | ✅ SAML 2.0 identity provider for your apps, and enterprise SSO over OIDC (Okta, Entra ID, Google Workspace…), on Pro — 50 federated MAU free, then €0.0010 each | ✅ SAML and OIDC (Identity Platform; 50 MAU free, then $0.015 each)           |
@@ -126,7 +126,7 @@ Phone-only and anonymous users have no equivalent in Faable and need a new sign-
 ## When Firebase Authentication might fit better
 
 - **You're building on Firebase** — Firestore security rules, Cloud Functions, Firebase Hosting — and want identity that plugs straight in.
-- **You're a consumer mobile app** that needs phone-number sign-in, anonymous users or Sign in with Apple.
+- **You're a consumer mobile app** that needs phone-number sign-in or anonymous users.
 - **You have under 50,000 users** and the free tier is the point.
 - **The identity provider your customers bring only speaks SAML.** Faable Auth connects company identity providers over OpenID Connect; Okta, Entra ID and Google Workspace all speak it.
 
