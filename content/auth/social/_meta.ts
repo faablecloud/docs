@@ -3,6 +3,15 @@ export default {
   google: 'Google',
   github: 'GitHub',
   microsoft: 'Microsoft (Entra ID)',
-  facebook: 'Facebook (via Custom OAuth2)',
-  apple: 'Apple (not supported yet)'
+  apple: 'Apple',
+  facebook: 'Facebook',
+  linkedin: 'LinkedIn',
+  x: 'X (Twitter)',
+  discord: 'Discord',
+  slack: 'Slack',
+  gitlab: 'GitLab',
+  bitbucket: 'Bitbucket',
+  twitch: 'Twitch',
+  spotify: 'Spotify',
+  figma: 'Figma'
 }

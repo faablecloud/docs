@@ -1,24 +1,36 @@
 ---
 title: Social Login
-description: Add social login (Google, GitHub, Microsoft Entra ID, Figma) to your app with Faable Auth. A social connection lets users sign in with an existing provider account; any other OAuth 2.0 provider works through a Custom OAuth2 connection.
+description: Add social login (Google, GitHub, Microsoft, Apple, Facebook, LinkedIn, X, Discord, Slack, GitLab, Bitbucket, Twitch, Spotify, Figma) to your app with Faable Auth. A social connection lets users sign in with an existing provider account; any other OAuth 2.0 provider works through a Custom OAuth2 connection.
 ---
 
 # Social Login
 
-**Social login lets your users sign in with an account they already have — Google, GitHub, Microsoft — instead of creating a new password.** In Faable Auth, each provider is a [social connection](/auth/connections): you register an app with the provider, paste its client ID and secret into the [Faable Dashboard](https://dashboard.faable.com), and enable the connection on your [client](/auth/clients). Faable handles the OAuth handshake and returns standard OIDC tokens, so your app code is identical regardless of which provider the user chose.
+**Social login lets your users sign in with an account they already have — Google, Apple, GitHub, Microsoft and more — instead of creating a new password.** In Faable Auth, each provider is a [social connection](/auth/connections): you register an app with the provider, paste its client ID and secret into the [Faable Dashboard](https://dashboard.faable.com), and enable the connection on your [client](/auth/clients). Faable handles the OAuth handshake and returns standard OIDC tokens, so your app code is identical regardless of which provider the user chose.
 
 ## Built-in providers
 
 These have their upstream endpoints preconfigured — you only supply credentials.
 
-| Provider             | Connection type | Shared Faable app | Setup guide                                   |
-| -------------------- | --------------- | ----------------- | --------------------------------------------- |
-| Google               | `google_oauth2` | ✅                | [Configure Google](/auth/social/google)       |
-| GitHub               | `github`        | ✅                | [Configure GitHub](/auth/social/github)       |
-| Microsoft (Entra ID) | `microsoft`     | ✅                | [Configure Microsoft](/auth/social/microsoft) |
-| Figma                | `figma`         | —                 | Bring your own OAuth app                      |
+| Provider             | Connection type | Shared Faable app | Email verified by the provider | Setup guide                                   |
+| -------------------- | --------------- | ----------------- | ------------------------------ | --------------------------------------------- |
+| Google               | `google_oauth2` | ✅                | ✅                             | [Configure Google](/auth/social/google)       |
+| GitHub               | `github`        | ✅                | ✅                             | [Configure GitHub](/auth/social/github)       |
+| Microsoft (Entra ID) | `microsoft`     | ✅                | —                              | [Configure Microsoft](/auth/social/microsoft) |
+| Apple                | `apple`         | —                 | ✅                             | [Configure Apple](/auth/social/apple)         |
+| Facebook             | `facebook`      | —                 | —                              | [Configure Facebook](/auth/social/facebook)   |
+| LinkedIn             | `linkedin`      | —                 | ✅                             | [Configure LinkedIn](/auth/social/linkedin)   |
+| X (Twitter)          | `x`             | —                 | ✅                             | [Configure X](/auth/social/x)                 |
+| Discord              | `discord`       | —                 | ✅                             | [Configure Discord](/auth/social/discord)     |
+| Slack                | `slack`         | —                 | ✅                             | [Configure Slack](/auth/social/slack)         |
+| GitLab               | `gitlab`        | —                 | ✅                             | [Configure GitLab](/auth/social/gitlab)       |
+| Bitbucket            | `bitbucket`     | —                 | ✅                             | [Configure Bitbucket](/auth/social/bitbucket) |
+| Twitch               | `twitch`        | —                 | ✅                             | [Configure Twitch](/auth/social/twitch)       |
+| Spotify              | `spotify`       | —                 | —                              | [Configure Spotify](/auth/social/spotify)     |
+| Figma                | `figma`         | —                 | —                              | [Configure Figma](/auth/social/figma)         |
 
-**Shared Faable app** means you can switch the connection on without registering anything with the provider — useful to get moving, though the consent screen then shows Faable rather than your company. Fill in your own Client ID and Secret to take it over.
+**Shared Faable app** means you can switch the connection on without registering anything with the provider — useful to get moving, though the consent screen then shows Faable rather than your company. Fill in your own Client ID and Secret to take it over. For every other provider you register your own app; the create form in the dashboard shows the **Callback URL** to paste into the provider's console.
+
+**Email verified by the provider** decides whether a new user starts with `email_verified: true`. When the provider doesn't vouch for the address, the user is created with `email_verified: false` and can go through Faable's own email verification. Returning users are always recognised by the provider's user id plus the connection, never by email — so a social login never merges into an existing account that happens to share the email.
 
 ## Any other provider
 
@@ -26,7 +38,7 @@ For anything not in the table above, create a **Custom OAuth2** connection (`cus
 
 The one constraint: the provider's userinfo response must expose the profile under the keys `id`, `name`, `email` and `picture`, as **strings**. Custom connections use the generic mapper — there is no per-provider normalization — so a provider that returns `user_id`, or nests the avatar in an object, lands with those fields empty. `id` is the one that must be present; without it the login fails outright.
 
-Worked examples: [Facebook](/auth/social/facebook). Providers that require a non-standard client authentication scheme — notably [Sign in with Apple](/auth/social/apple), which needs the client secret to be a signed ES256 JWT — are **not** supported through this path yet.
+Providers that need more than the plain Authorization Code flow — PKCE upstream ([X](/auth/social/x)), an id_token instead of a userinfo endpoint and a signed client secret ([Apple](/auth/social/apple)) — only work as their built-in type, not through Custom OAuth2.
 
 Don't confuse this with the `oidc` connection type, which is a different thing entirely: it registers an external OIDC **issuer** whose JWTs Faable will trust in a [Token Exchange](/auth/oauth-flows/token-exchange) — GitHub Actions being the canonical case. It drives no browser login, which is why the dashboard files it under **Machine to Machine** rather than Social Login.
 

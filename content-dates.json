@@ -49,31 +49,31 @@
   },
   "content/auth/compare-aws-cognito.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-17T19:05:23.764Z"
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/compare-better-auth.mdx": {
     "modified": "2026-10-11T19:28:39+02:00",
     "published": "2026-10-11T19:28:39+02:00"
   },
   "content/auth/compare-clerk.mdx": {
-    "modified": "2026-10-11T18:11:47+02:00",
-    "published": "2026-10-11T13:11:20+02:00"
+    "published": "2026-10-11T13:11:20+02:00",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/compare-firebase-auth.mdx": {
-    "modified": "2026-10-11T13:11:20+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/compare-supabase-auth.mdx": {
-    "modified": "2026-10-11T13:11:20+02:00",
-    "published": "2026-06-27T13:49:17+02:00"
+    "published": "2026-06-27T13:49:17+02:00",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/compare.mdx": {
-    "modified": "2026-10-11T19:28:39+02:00",
-    "published": "2026-06-26T11:51:20+02:00"
+    "published": "2026-06-26T11:51:20+02:00",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/connections.md": {
-    "modified": "2026-10-06T14:22:08+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/custom-domain.md": {
     "modified": "2026-09-24T09:46:00+02:00",
@@ -89,7 +89,7 @@
   },
   "content/auth/european-alternatives.mdx": {
     "published": "2026-10-17T19:03:21.619Z",
-    "modified": "2026-10-17T19:05:23.764Z"
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/extensibility/actions.md": {
     "modified": "2026-09-24T09:46:00+02:00",
@@ -100,8 +100,8 @@
     "published": "2026-05-16T11:42:20+02:00"
   },
   "content/auth/features.mdx": {
-    "modified": "2026-10-14T22:32:09+02:00",
-    "published": "2026-08-25T11:39:10+02:00"
+    "published": "2026-08-25T11:39:10+02:00",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/get-started.md": {
     "modified": "2026-10-14T22:32:09+02:00",
@@ -141,7 +141,7 @@
   },
   "content/auth/index.mdx": {
     "published": "2026-10-17T14:48:06.267Z",
-    "modified": "2026-10-17T19:03:21.619Z"
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/integrations/shopify.md": {
     "modified": "2026-09-24T13:46:23+02:00",
@@ -297,27 +297,63 @@
   },
   "content/auth/social/apple.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-10-17T14:39:09.016Z"
+    "modified": "2026-10-18T20:05:00.662Z"
+  },
+  "content/auth/social/bitbucket.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
+  },
+  "content/auth/social/discord.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/social/facebook.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-10-17T14:39:09.016Z"
+    "modified": "2026-10-18T20:05:00.662Z"
+  },
+  "content/auth/social/figma.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/social/github.md": {
     "published": "2026-05-17T11:15:34+02:00",
     "modified": "2026-10-17T14:39:09.016Z"
+  },
+  "content/auth/social/gitlab.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/social/google.md": {
     "published": "2026-03-31T11:42:44+02:00",
     "modified": "2026-10-17T14:39:09.016Z"
   },
   "content/auth/social/index.mdx": {
-    "modified": "2026-09-24T13:46:23+02:00",
-    "published": "2026-06-27T14:01:58+02:00"
+    "published": "2026-06-27T14:01:58+02:00",
+    "modified": "2026-10-18T20:05:00.662Z"
+  },
+  "content/auth/social/linkedin.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/social/microsoft.md": {
     "published": "2026-07-27T13:52:25+02:00",
     "modified": "2026-10-17T14:39:09.016Z"
+  },
+  "content/auth/social/slack.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
+  },
+  "content/auth/social/spotify.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
+  },
+  "content/auth/social/twitch.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
+  },
+  "content/auth/social/x.md": {
+    "published": "2026-10-18T20:05:00.662Z",
+    "modified": "2026-10-18T20:05:00.662Z"
   },
   "content/auth/suspend-users.md": {
     "modified": "2026-07-16T12:45:45+02:00",
