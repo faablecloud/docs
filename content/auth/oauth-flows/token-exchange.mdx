@@ -62,14 +62,15 @@ From the [Faable Dashboard](https://dashboard.faable.com):
 - **Method:** `POST`
 - **Content-Type:** `application/x-www-form-urlencoded` or `application/json`
 
-| Parameter            | Required | Description                                                              |
-| :------------------- | :------- | :----------------------------------------------------------------------- |
-| `grant_type`         | Yes      | Must be `urn:ietf:params:oauth:grant-type:token-exchange`.               |
-| `subject_token`      | Yes      | The external JWT to exchange (e.g. the GitHub Actions OIDC token).       |
-| `subject_token_type` | Yes      | Must be `urn:ietf:params:oauth:token-type:jwt` — the only type accepted. |
-| `client_id`          | Yes      | Your application's Client ID.                                            |
+| Parameter            | Required                    | Description                                                                                                 |
+| :------------------- | :-------------------------- | :---------------------------------------------------------------------------------------------------------- |
+| `grant_type`         | Yes                         | Must be `urn:ietf:params:oauth:grant-type:token-exchange`.                                                  |
+| `subject_token`      | Yes                         | The external JWT to exchange (e.g. the GitHub Actions OIDC token).                                          |
+| `subject_token_type` | Yes                         | Must be `urn:ietf:params:oauth:token-type:jwt` — the only type accepted.                                    |
+| `client_id`          | Yes                         | Your application's Client ID.                                                                               |
+| `client_secret`      | Only for `request.*` claims | Your application's Client Secret. Required when the exchange sets claims from the request body (see below). |
 
-Extra body fields are allowed and can be lifted into the issued token via `claims_mapping` (as `request.<field>` — see below).
+Extra body fields are allowed and can be lifted into the issued token via `claims_mapping` (as `request.<field>` — see below). Those claims need client authentication.
 
 ### Response
 
@@ -112,8 +113,16 @@ The `sub` is the external token's `sub` **verbatim** — for GitHub Actions, the
 ```
 
 - `token.<claim>` — copied from the **verified** subject token.
-- `request.<field>` — copied from the exchange request's body.
+- `request.<field>` — copied from the exchange request's body. **Requires `client_secret`.**
 - `"quoted"` values — static literals.
+
+> [!IMPORTANT]
+> Only the subject token is proven. Anyone who can mint a token from the trusted issuer can call
+> the token endpoint, and any GitHub repository can mint a GitHub Actions token. A `request.*` claim
+> is whatever that caller writes, so Faable Auth only sets it when the client authenticates with its
+> `client_secret`. Without the secret, an exchange that would set a `request.*` claim fails with
+> `401 invalid_client`. Keyless exchanges (no secret in CI) work with `token.*` and static claims
+> only, and that is what your backend should authorize on.
 
 Reserved claims (`iss`, `aud`, `sub`, `exp`, `iat`, `client_id`, `client`, `account`) are stripped from mappings — they're always controlled by Faable. Your backend then authorizes on these claims (e.g. only `repository: "acme/webapp"` may deploy).
 
@@ -154,13 +163,14 @@ jobs:
 
 Errors use the standard OAuth 2.0 format: `{ "error": "..." }`.
 
-| Status | Error                                                                       | Fix                                                                                                              |
-| :----- | :-------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
-| `400`  | `Missing subject_token` / invalid JWT format / missing `iss` or `sub` claim | Send a complete, well-formed JWT as `subject_token`.                                                             |
-| `400`  | `subject_token_type must be 'urn:ietf:params:oauth:token-type:jwt'`         | Only JWT subject tokens are supported.                                                                           |
-| `403`  | `The OIDC issuer '<iss>' is not trusted by this account.`                   | Create a Connection whose `issuer` exactly matches the subject token's `iss`.                                    |
-| `401`  | `Invalid subject_token signature or audience`                               | Check the Connection's `jwks_url`, and request the subject token with `audience` = the Connection's `client_id`. |
-| `404`  | `Client not found`                                                          | The `client_id` doesn't exist in this tenant.                                                                    |
+| Status | Error                                                                                   | Fix                                                                                                              |
+| :----- | :-------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
+| `400`  | `Missing subject_token` / invalid JWT format / missing `iss` or `sub` claim             | Send a complete, well-formed JWT as `subject_token`.                                                             |
+| `400`  | `subject_token_type must be 'urn:ietf:params:oauth:token-type:jwt'`                     | Only JWT subject tokens are supported.                                                                           |
+| `403`  | `The OIDC issuer '<iss>' is not trusted by this account.`                               | Create a Connection whose `issuer` exactly matches the subject token's `iss`.                                    |
+| `401`  | `Invalid subject_token signature or audience`                                           | Check the Connection's `jwks_url`, and request the subject token with `audience` = the Connection's `client_id`. |
+| `401`  | `invalid_client` — `Client authentication is required to set <claims> from the request` | The mapping sets `request.*` claims: send `client_secret`, or map those claims from `token.*` instead.           |
+| `404`  | `Client not found`                                                                      | The `client_id` doesn't exist in this tenant.                                                                    |
 
 ---
 
