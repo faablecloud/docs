@@ -74,7 +74,7 @@ Two endpoints work with the user's own session cookie or a bearer access token, 
 | `GET`  | `/me/sessions`               | The caller's active sessions; `current_session_id` is this one.   |
 | `POST` | `/me/sessions/revoke-others` | Sign the user out everywhere else. Returns how many were revoked. |
 
-This is what a "sign out of all other devices" button calls. The session the request came through is never revoked by it.
+This is what a "sign out of all other devices" button calls. The session the request came through is never revoked by it. With [`@faable/auth-js`](self-service-account.md#client-library) they are `listSessions()` and `revokeOtherSessions()`.
 
 Setting or changing the password with [`POST /me/password`](self-service-account.md#setting-or-changing-the-password) does the same thing: every other session of the user is revoked, with `revoked_reason: password_change`.
 
