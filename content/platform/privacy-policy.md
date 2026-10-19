@@ -6,7 +6,7 @@ rank: low
 
 # Privacy Policy
 
-**Last updated:** 11 October 2026
+**Last updated:** 19 October 2026
 
 This Privacy Policy explains how **Faable Cloud SLU** ("Faable", "we", "us") handles personal data when you visit our websites, create a Faable account, and use Faable Deploy and Faable Auth (together, the "Services").
 
@@ -80,15 +80,19 @@ When a retention period ends, data is deleted or irreversibly anonymised. Deleti
 
 We use a small set of specialised providers. Each is bound by a data processing agreement holding them to the same obligations we accept towards you.
 
-| Provider                    | Purpose                                                                                                  | Data involved                                                         | Location |
-| --------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------- |
-| **Amazon Web Services**     | Container registry and build artifact storage                                                            | Build outputs, container images                                       | EU       |
-| **PostHog (EU Cloud)**      | Product analytics on our websites and dashboard                                                          | Pseudonymous usage events                                             | EU       |
-| **Sentry**                  | Error and performance monitoring                                                                         | Stack traces, request metadata, account identifier                    | EU/US    |
-| **Postmark**                | Account and service email (verification, invitations, deployment notifications), product news and offers | Email address, message content, delivery and open events              | US       |
-| **Stripe**                  | Payment processing and invoicing                                                                         | Billing details, payment method (card data held by Stripe, not by us) | EU/US    |
-| **GitHub**                  | Source-control integration and deployment triggers                                                       | Repository metadata, commit and webhook data                          | US       |
-| **Google (Analytics, Ads)** | Marketing measurement on our public websites only                                                        | Pseudonymous website analytics, conversion events                     | EU/US    |
+| Provider                    | Purpose                                                                                                  | Data involved                                                                     | Location |
+| --------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------- |
+| **Amazon Web Services**     | Container registry and DNS                                                                               | Container images of your apps, DNS lookups                                        | EU       |
+| **MongoDB Atlas**           | Managed database for the platform                                                                        | Account and project records, and the identities your apps manage with Faable Auth | EU       |
+| **Backblaze B2**            | Object storage for build artifacts and backups                                                           | Build artifacts, database backups                                                 | EU       |
+| **DigitalOcean**            | Network gateways that carry traffic into our infrastructure                                              | IP addresses; traffic passes through still encrypted and is not stored            | EU       |
+| **Fastly**                  | Content delivery for our websites and dashboard                                                          | IP addresses, request metadata                                                    | Global   |
+| **PostHog (EU Cloud)**      | Product analytics on our websites and dashboard                                                          | Pseudonymous usage events                                                         | EU       |
+| **Sentry**                  | Error and performance monitoring                                                                         | Stack traces, request metadata, account identifier                                | EU/US    |
+| **Postmark**                | Account and service email (verification, invitations, deployment notifications), product news and offers | Email address, message content, delivery and open events                          | US       |
+| **Stripe**                  | Payment processing and invoicing                                                                         | Billing details, payment method (card data held by Stripe, not by us)             | EU/US    |
+| **GitHub**                  | Source-control integration and deployment triggers                                                       | Repository metadata, commit and webhook data                                      | US       |
+| **Google (Analytics, Ads)** | Marketing measurement on our public websites only                                                        | Pseudonymous website analytics, conversion events                                 | EU/US    |
 
 We will update this table before adding a new sub-processor that handles personal data. Write to [privacy@faable.com](mailto:privacy@faable.com) if you want to be notified of changes.
 
@@ -140,7 +144,7 @@ When you use Faable Auth to authenticate your own users, or deploy an applicatio
 
 ## 11. Security
 
-We run European infrastructure under our own control, keep customer workloads on a separate cluster from the platform control plane, encrypt data in transit and at rest, take hourly database backups retained for 30 days in encrypted European storage, filter hostile traffic at the edge, and apply least-privilege access controls internally. The full description — including the certifications we do **not** hold — is in [Security](security-compliance.md).
+We run our platform on European infrastructure, keep customer workloads on our own servers and on a separate cluster from the platform control plane, encrypt data in transit and at rest, take hourly database backups retained for 30 days in encrypted European storage, filter hostile traffic at the edge, and apply least-privilege access controls internally. The full description — including the certifications we do **not** hold — is in [Security](security-compliance.md).
 
 No system is perfectly secure. If you discover a vulnerability, report it to [support@faable.com](mailto:support@faable.com) and we will work with you on it.
 
