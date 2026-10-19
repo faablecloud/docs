@@ -436,8 +436,12 @@
     "published": "2026-03-31T11:42:44+02:00"
   },
   "content/deploy/github-actions.md": {
-    "modified": "2026-09-08T19:25:01+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-10-19T10:14:33.064Z"
+  },
+  "content/deploy/gitlab-bitbucket.md": {
+    "published": "2026-10-19T10:14:33.064Z",
+    "modified": "2026-10-19T10:14:33.064Z"
   },
   "content/deploy/guides/databases.md": {
     "published": "2026-08-22T23:19:44+02:00",

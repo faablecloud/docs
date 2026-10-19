@@ -13,7 +13,8 @@ CI minutes are spent.
 
 This page is for teams that **want** to run the deploy from their own CI
 instead — for example to run custom steps before deploying, or to control
-exactly when a deploy happens.
+exactly when a deploy happens. If your code is on GitLab or Bitbucket, see
+[Deploy from GitLab CI or Bitbucket Pipelines](gitlab-bitbucket.md).
 
 > [!TIP]
 > If all you want is "run my tests before deploying", you don't need your own

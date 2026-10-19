@@ -14,6 +14,7 @@ export default {
   'build-requirements': 'What the Builder Expects',
   environment: 'Environment & Releases',
   'github-actions': 'Deploy from your own CI',
+  'gitlab-bitbucket': 'Deploy from GitLab or Bitbucket',
   sdk: 'Deploy SDK',
   errors: 'Error Codes',
   'security-waf': 'Web Application Firewall',
