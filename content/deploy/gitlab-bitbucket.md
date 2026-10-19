@@ -1,6 +1,6 @@
 ---
 title: Deploy from GitLab CI or Bitbucket Pipelines
-description: Deploy to Faable from a GitLab or Bitbucket repository by running the Faable CLI in your own pipeline, authenticated with a project API key.
+description: Deploy to Faable from a GitLab or Bitbucket repository by running the Faable CLI in your own pipeline — keyless with OIDC on gitlab.com, or with a project API key.
 ---
 
 # Deploy from GitLab CI or Bitbucket Pipelines
@@ -45,6 +45,43 @@ deploy:
 
 The `rules` line deploys only pushes to your default branch, and `$FAABLE_API_KEY`
 is available to the job because that branch is protected.
+
+### Keyless with OIDC (recommended)
+
+On **gitlab.com** you can skip the API key entirely. GitLab signs a short-lived
+token for the job, and Faable exchanges it for access to **that one app**, so
+there is no secret to store, rotate or leak.
+
+1. Copy your GitLab **Project ID**, the number shown on the project's overview
+   page (not its path).
+2. Allow that project to deploy the app. It's a one-time step from your machine,
+   with the CLI logged in:
+
+   ```sh
+   npx @faable/faable@latest deploy apps set --app app_xxxxxxxx --gitlab-project 12345678
+   ```
+
+3. Request the token in the job with `id_tokens`. The audience must be
+   `https://faable.com`:
+
+   ```yaml
+   deploy:
+     stage: deploy
+     image: node:22
+     id_tokens:
+       FAABLE_ID_TOKEN:
+         aud: https://faable.com
+     rules:
+       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+     script:
+       - npx @faable/faable@latest deploy --app app_xxxxxxxx
+   ```
+
+The trust is tied to the project's numeric ID, so renaming or moving the project
+doesn't break it. A pipeline from any other project gets `403` and deploys
+nothing. To revoke it, run `deploy apps set --app app_xxxxxxxx --gitlab-project ""`.
+It needs `@faable/faable` 4.19.0 or later. Self-managed GitLab instances aren't
+supported yet: use an API key there.
 
 ## Bitbucket Pipelines
 
