@@ -13,13 +13,14 @@ This page describes the security controls that are actually in place on the Faab
 
 Faable runs **in Europe**. This is not a US platform with an optional EU region: there is no non-EU region to fall back to, and your workloads and user identities do not leave Europe.
 
-| Component                                    | Location                                   |
-| -------------------------------------------- | ------------------------------------------ |
-| Your applications (compute, runtime)         | Our European datacenter                    |
-| Faable Auth identities and user data         | European region, managed database provider |
-| Platform databases                           | European region, managed database provider |
-| Container registry, build artifacts, backups | AWS `eu-west-3` (Paris)                    |
-| Product analytics                            | PostHog EU Cloud                           |
+| Component                            | Location                                   |
+| ------------------------------------ | ------------------------------------------ |
+| Your applications (compute, runtime) | Our European datacenter                    |
+| Faable Auth identities and user data | European region, managed database provider |
+| Platform databases                   | European region, managed database provider |
+| Container registry                   | AWS `eu-west-3` (Paris)                    |
+| Build artifacts, backups             | European region, object storage provider   |
+| Product analytics                    | PostHog EU Cloud                           |
 
 Third-party services that handle limited operational data — transactional email, error monitoring, payments — are listed in the [Privacy Policy](privacy-policy.md#7-sub-processors), together with the transfer mechanism that applies to each.
 
