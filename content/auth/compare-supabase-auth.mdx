@@ -6,7 +6,7 @@ rank: high
 
 # Faable Auth vs Supabase Auth
 
-**Short answer:** Supabase Auth is the auth layer of a Postgres backend: users live in the `auth` schema of your project database, and row-level security reads their JWT. If you're building on Supabase, that integration is hard to beat. Faable Auth is a **standalone OAuth 2.0 / OpenID Connect identity server** that sits in front of any stack, with **hosted login pages** you don't build, **machine-to-machine tokens**, a **multi-tenant model out of the box**, and identities held by a **European company on its own hardware in Europe**.
+**Short answer:** Supabase Auth is the auth layer of a Postgres backend: users live in the `auth` schema of your project database, and row-level security reads their JWT. If you're building on Supabase, that integration is hard to beat. Faable Auth is a **standalone OAuth 2.0 / OpenID Connect identity server** that sits in front of any stack, with **hosted login pages** you don't build, **machine-to-machine tokens**, a **multi-tenant model out of the box**, and identities held by a **European company, in Europe**.
 
 > Supabase details checked against supabase.com docs and pricing in September 2026. Supabase's OAuth 2.1 server and its passkeys are both in **beta** at the time of writing.
 
@@ -35,7 +35,7 @@ rank: high
 | Admin CLI for users and logs             | ✅ [`faable auth`](#cli-and-automation)                                                                                                                          | ❌ Admin API from your server                                                      |
 | Auth log retention                       | Queryable in dashboard, API and CLI (Pro)                                                                                                                        | 1 hour (Free), 7 days (Pro), 28 days (Team)                                        |
 | Idle projects                            | Never paused                                                                                                                                                     | Free projects pause after 1 week of inactivity                                     |
-| Where identities live                    | Faable's own hardware in Europe, EU company                                                                                                                      | An AWS region you pick (6 in Europe); Singapore entity, California law             |
+| Where identities live                    | In Europe, EU company                                                                                                                                            | An AWS region you pick (6 in Europe); Singapore entity, California law             |
 | Export password hashes                   | ✅ [`faable auth users export`](guides/import-password-hashes.mdx#export), every plan                                                                            | ✅ they're in your database                                                        |
 | Import password hashes                   | ✅ [bcrypt, scrypt, Argon2id, PBKDF2](guides/import-password-hashes.mdx), every plan                                                                             | ✅ bcrypt, inserted into `auth.users`                                              |
 | SOC 2 / HIPAA                            | [See Faable compliance scope](../platform/compliance.md#compliance-scope)                                                                                        | ✅ SOC 2 report on Team; HIPAA add-on                                              |
@@ -99,7 +99,7 @@ Faable issues [client-credentials](oauth-flows/client-credentials.mdx) tokens ag
 
 Supabase lets you place a project in Frankfurt, Ireland, London, Paris, Stockholm or Zurich, on AWS. The contracting entity is Supabase Pte. Ltd. in Singapore, under California law, and its privacy policy says the service is primarily provided from the United States.
 
-Faable Auth runs on **our own hardware in a European datacenter**, operated by a European company. For SOC 2 or HIPAA, see our [compliance scope](../platform/compliance.md#compliance-scope) — compliance support is included in the Pro plan.
+Faable Auth runs **in Europe**, operated by a European company. For SOC 2 or HIPAA, see our [compliance scope](../platform/compliance.md#compliance-scope) — compliance support is included in the Pro plan.
 
 ## Migrating from Supabase
 

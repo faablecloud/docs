@@ -11,12 +11,12 @@ This page describes the security controls that are actually in place on the Faab
 
 ## Where your data runs
 
-Faable runs on **our own hardware in a European datacenter (Poland)**. This is not a US platform with an optional EU region: there is no non-EU region to fall back to, and your workloads and user identities do not leave Europe.
+Faable runs **in Europe**. This is not a US platform with an optional EU region: there is no non-EU region to fall back to, and your workloads and user identities do not leave Europe.
 
 | Component                                    | Location                                   |
 | -------------------------------------------- | ------------------------------------------ |
 | Your applications (compute, runtime)         | Our European datacenter                    |
-| Faable Auth identities and user data         | Our European datacenter                    |
+| Faable Auth identities and user data         | European region, managed database provider |
 | Platform databases                           | European region, managed database provider |
 | Container registry, build artifacts, backups | AWS `eu-west-3` (Paris)                    |
 | Product analytics                            | PostHog EU Cloud                           |

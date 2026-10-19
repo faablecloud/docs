@@ -1,13 +1,13 @@
 ---
 schema: faq
 title: Deploy a Flask App
-description: Deploy a Flask app or REST API to Faable Deploy from GitHub. Zero-config gunicorn start command, a complete JSON API example, environment variables, static files, and 100% European hosting with a built-in WAF.
+description: Deploy a Flask app or REST API to Faable Deploy from GitHub. Zero-config gunicorn start command, a complete JSON API example, environment variables, static files, and European hosting with a built-in WAF.
 rank: high
 ---
 
 # Deploy a Flask App 🌶️
 
-**Push your Flask project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `gunicorn` command to write.** The builder detects Flask from your repo, installs your dependencies, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
+**Push your Flask project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `gunicorn` command to write.** The builder detects Flask from your repo, installs your dependencies, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 ## What Faable detects
 

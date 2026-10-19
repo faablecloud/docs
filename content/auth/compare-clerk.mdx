@@ -6,7 +6,7 @@ rank: high
 
 # Faable Auth vs Clerk
 
-**Short answer:** Clerk is a **component-first** auth platform: drop `<SignIn />` and `<UserButton />` into a React or Next.js app and the UI is done, with a generous free tier of 50,000 monthly retained users. Faable Auth is a **standards-first OAuth 2.0 / OpenID Connect identity server**: the login is **hosted** on your auth domain and any stack integrates through standard flows. The practical differences are the price curve **after** the free tier, which features need a paid plan, where your users' data lives — Clerk is **US-only**, Faable runs on **its own hardware in Europe** as a European company — and that Faable is **one subscription with your app hosting**.
+**Short answer:** Clerk is a **component-first** auth platform: drop `<SignIn />` and `<UserButton />` into a React or Next.js app and the UI is done, with a generous free tier of 50,000 monthly retained users. Faable Auth is a **standards-first OAuth 2.0 / OpenID Connect identity server**: the login is **hosted** on your auth domain and any stack integrates through standard flows. The practical differences are the price curve **after** the free tier, which features need a paid plan, where your users' data lives — Clerk is **US-only**, Faable runs **in Europe** as a European company — and that Faable is **one subscription with your app hosting**.
 
 > Clerk details checked against clerk.com pricing, docs and changelog in October 2026. They change often — confirm anything decisive on their own site.
 
@@ -34,7 +34,7 @@ rank: high
 | Custom code in the login                  | [Actions](extensibility/actions.md) run inside the flow (Hobby) + [webhooks](extensibility/webhooks.md)                                     | Webhooks (asynchronous) + session token claims (~1.2 KB)                                                 |
 | Admin CLI                                 | ✅ [`faable auth`](../cli.md#faable-auth) — users, suspensions, Actions, logs                                                               | ✅ `clerk` — setup, keys, `config pull/patch`, users, impersonation, webhook relay                       |
 | Audit logs                                | Pro                                                                                                                                         | Admin audit logs (August 2026)                                                                           |
-| Where identities live                     | Faable's own hardware in Europe, EU company                                                                                                 | United States only; "does not offer regional data residency or region selection"                         |
+| Where identities live                     | In Europe, EU company                                                                                                                       | United States only; "does not offer regional data residency or region selection"                         |
 | SOC 2                                     | [See Faable compliance scope](../platform/compliance.md#compliance-scope)                                                                   | SOC 2 Type 2; report on Business ($300/month)                                                            |
 | Bundled with app hosting                  | ✅ [Faable Deploy](../deploy/get-started.md), same subscription                                                                             | ❌                                                                                                       |
 
@@ -82,7 +82,7 @@ Faable [Actions](extensibility/actions.md) run **inside** the login, after the u
 
 Clerk says plainly that it "does not offer regional data residency or region selection": data is on US infrastructure, with EU transfers under the EU-U.S. Data Privacy Framework. An EU region is on its public roadmap without a date.
 
-Faable Auth runs on **our own hardware in a European datacenter**, operated by a European company, with no non-EU region. For SOC 2 or ISO 27001, see our [compliance scope](../platform/compliance.md#compliance-scope) — compliance support is included in the Pro plan.
+Faable Auth runs **in Europe**, operated by a European company, with no non-EU region. For SOC 2 or ISO 27001, see our [compliance scope](../platform/compliance.md#compliance-scope) — compliance support is included in the Pro plan.
 
 ## Migrating from Clerk
 

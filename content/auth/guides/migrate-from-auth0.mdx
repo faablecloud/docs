@@ -6,7 +6,7 @@ rank: high
 
 # Migrate from Auth0 to Faable Auth
 
-**Short answer:** Migrating from Auth0 to Faable Auth is mostly a mapping exercise, because both are standards-based OAuth 2.0 / OpenID Connect identity servers. You recreate your Auth0 _tenant_ as a Faable _Account_, your _Applications_ as _Clients_, and your _Connections_ (social, database, enterprise) one-to-one, then export your users from Auth0 and import them into Faable. Your app code changes only the issuer URL, client ID, and endpoints — the OAuth flows stay the same. The main reasons teams move are **European data sovereignty (full GDPR)**, **predictable MAU-based pricing**, and **bundling auth with [Faable Deploy](../../deploy/get-started.md) hosting** in one subscription.
+**Short answer:** Migrating from Auth0 to Faable Auth is mostly a mapping exercise, because both are standards-based OAuth 2.0 / OpenID Connect identity servers. You recreate your Auth0 _tenant_ as a Faable _Account_, your _Applications_ as _Clients_, and your _Connections_ (social, database, enterprise) one-to-one, then export your users from Auth0 and import them into Faable. Your app code changes only the issuer URL, client ID, and endpoints — the OAuth flows stay the same. The main reasons teams move are **European data sovereignty (GDPR)**, **predictable MAU-based pricing**, and **bundling auth with [Faable Deploy](../../deploy/get-started.md) hosting** in one subscription.
 
 ## Concept mapping
 

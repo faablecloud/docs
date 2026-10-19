@@ -1,12 +1,12 @@
 ---
 title: Deploy a Vite App
-description: Deploy a Vite app (React, Vue, Svelte, Solid, Preact) to Faable Deploy from GitHub. Zero-config static builds, SPA routing, VITE_ environment variables, and 100% European hosting with a built-in WAF.
+description: Deploy a Vite app (React, Vue, Svelte, Solid, Preact) to Faable Deploy from GitHub. Zero-config static builds, SPA routing, VITE_ environment variables, and European hosting with a built-in WAF.
 rank: high
 ---
 
 # Deploy a Vite App
 
-**Push your Vite project to GitHub and Faable builds and serves it — no Dockerfile, no YAML, no server.** The builder detects Vite from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
+**Push your Vite project to GitHub and Faable builds and serves it — no Dockerfile, no YAML, no server.** The builder detects Vite from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 It works the same whether your Vite app is React, Vue, Svelte, Solid or Preact — detection keys on the `vite` dependency, not on the UI framework.
 

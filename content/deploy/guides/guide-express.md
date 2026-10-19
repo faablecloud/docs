@@ -1,12 +1,12 @@
 ---
 title: Deploy a Node.js Express App
-description: Deploy a Node.js Express application to Faable Deploy from GitHub. Zero-config builds, the $PORT contract, environment variables, and 100% European hosting with a built-in WAF.
+description: Deploy a Node.js Express application to Faable Deploy from GitHub. Zero-config builds, the $PORT contract, environment variables, and European hosting with a built-in WAF.
 rank: high
 ---
 
 # Deploy a Node.js Express App
 
-**Push your Express project to GitHub and Faable builds and runs it — no Dockerfile, no YAML.** The builder detects Node.js from your `package.json`, installs your dependencies, runs your build step if you have one, and serves the app behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe. Supported Node.js versions: **20, 22 and 24**.
+**Push your Express project to GitHub and Faable builds and runs it — no Dockerfile, no YAML.** The builder detects Node.js from your `package.json`, installs your dependencies, runs your build step if you have one, and serves the app behind automatic SSL at `https://<app>.faable.link`, hosted in Europe. Supported Node.js versions: **20, 22 and 24**.
 
 ## Give your app a `start` script
 

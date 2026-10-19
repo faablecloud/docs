@@ -6,7 +6,7 @@ rank: high
 
 # Faable Auth vs Auth0, Clerk & Keycloak
 
-**Short answer:** Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect — the same category as Auth0, a standards-first alternative to Clerk, and a way to get Keycloak's protocol coverage **without running Keycloak**. What sets it apart: **no per-user pricing** — 15,000 MAU free with no credit card, unlimited MAU on every paid plan — instead of per-user and per-organization add-ons; **hosted login pages** on every plan; identities held **by a European company on its own hardware in Europe**; and the **same subscription as [Faable Deploy](../deploy/get-started.md)**.
+**Short answer:** Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and OpenID Connect — the same category as Auth0, a standards-first alternative to Clerk, and a way to get Keycloak's protocol coverage **without running Keycloak**. What sets it apart: **no per-user pricing** — 15,000 MAU free with no credit card, unlimited MAU on every paid plan — instead of per-user and per-organization add-ons; **hosted login pages** on every plan; identities held **by a European company, in Europe**; and the **same subscription as [Faable Deploy](../deploy/get-started.md)**.
 
 Each option below is a strong identity solution; this page helps you pick by priorities.
 
@@ -34,7 +34,7 @@ Each option below is a strong identity solution; this page helps you pick by pri
 | Hosted login pages          | ✅ [all plans](#hosted-login-pages)                                                                                                   | ✅ Universal Login                           | ✅ Account Portal + components                      | ✅ themes you build                   |
 | Admin CLI                   | ✅ [`faable auth`](#cli-and-config-as-code)                                                                                           | ✅ `auth0`, Deploy CLI, Terraform            | ✅ `clerk` (dev-focused)                            | ✅ `kcadm.sh`, realm export/import    |
 | Fully managed               | ✅                                                                                                                                    | ✅                                           | ✅                                                  | ❌ self-hosted                        |
-| Where identities live       | Faable's own hardware in Europe, EU company                                                                                           | Region you choose (EU available), US company | United States only                                  | Wherever you host it                  |
+| Where identities live       | In Europe, EU company                                                                                                                 | Region you choose (EU available), US company | United States only                                  | Wherever you host it                  |
 | SOC 2 / ISO 27001           | [See Faable compliance scope](../platform/compliance.md#compliance-scope)                                                             | ✅                                           | SOC 2 (report on Business)                          | Your own                              |
 | Bundled with app hosting    | ✅ Faable Deploy, same subscription                                                                                                   | ❌                                           | ❌                                                  | ❌                                    |
 
@@ -79,7 +79,7 @@ There's no Terraform provider or declarative config export for Faable Auth yet; 
 - **Auth0** offers an EU region (data in AWS Frankfurt and Dublin); it is part of Okta, a US company.
 - **Clerk** says plainly that it "does not offer regional data residency or region selection" — data is in the US, with EU transfers under the Data Privacy Framework.
 - **Keycloak** lives wherever you run it.
-- **Faable Auth** runs on **our own hardware in a European datacenter**, operated by a European company, with no non-EU region. For SOC 2 or ISO 27001, see our [compliance scope](../platform/compliance.md#compliance-scope) — compliance support is included in the Pro plan.
+- **Faable Auth** runs **in Europe**, operated by a European company, with no non-EU region. For SOC 2 or ISO 27001, see our [compliance scope](../platform/compliance.md#compliance-scope) — compliance support is included in the Pro plan.
 
 ## Migrating to Faable
 

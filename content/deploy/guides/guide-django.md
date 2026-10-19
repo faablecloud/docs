@@ -1,13 +1,13 @@
 ---
 schema: faq
 title: Deploy a Django App
-description: Deploy a Django application to Faable Deploy from GitHub. Zero-config gunicorn start command, static files with WhiteNoise, environment variables, migrations, and 100% European hosting with a built-in WAF.
+description: Deploy a Django application to Faable Deploy from GitHub. Zero-config gunicorn start command, static files with WhiteNoise, environment variables, migrations, and European hosting with a built-in WAF.
 rank: high
 ---
 
 # Deploy a Django App 🐍
 
-**Push your Django project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `gunicorn` command to write.** The builder detects Django from your repo, installs your dependencies, and starts your app behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
+**Push your Django project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `gunicorn` command to write.** The builder detects Django from your repo, installs your dependencies, and starts your app behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 ## What Faable detects
 

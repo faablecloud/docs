@@ -1,13 +1,13 @@
 ---
 schema: faq
 title: Deploy a PHP App
-description: Deploy PHP and Laravel to Faable Deploy from GitHub. Apache with mod_php and working .htaccess, composer install, PHP 8.2-8.4, a complete Laravel walkthrough with APP_KEY and a managed database, and 100% European hosting.
+description: Deploy PHP and Laravel to Faable Deploy from GitHub. Apache with mod_php and working .htaccess, composer install, PHP 8.2-8.4, a complete Laravel walkthrough with APP_KEY and a managed database, and European hosting.
 rank: high
 ---
 
 # Deploy a PHP App 🐘
 
-**Push your PHP project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no start command to write.** Your app is served by **Apache with mod_php**, so the `.htaccess` you already have keeps working, behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
+**Push your PHP project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no start command to write.** Your app is served by **Apache with mod_php**, so the `.htaccess` you already have keeps working, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 Two shapes are supported and both are zero-config: a **plain PHP** project (the `index.html` + `login.php` layout you'd drop into `htdocs`) and a **composer** project such as **Laravel** or **Symfony**, with its front controller in `public/`.
 

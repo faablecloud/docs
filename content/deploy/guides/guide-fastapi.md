@@ -1,13 +1,13 @@
 ---
 schema: faq
 title: Deploy a FastAPI App
-description: Deploy a FastAPI application to Faable Deploy from GitHub. Zero-config uvicorn start command, environment variables, async workers, and 100% European hosting with a built-in WAF.
+description: Deploy a FastAPI application to Faable Deploy from GitHub. Zero-config uvicorn start command, environment variables, async workers, and European hosting with a built-in WAF.
 rank: high
 ---
 
 # Deploy a FastAPI App ⚡
 
-**Push your FastAPI project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `uvicorn` command to write.** The builder detects FastAPI from your repo, installs your dependencies, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
+**Push your FastAPI project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `uvicorn` command to write.** The builder detects FastAPI from your repo, installs your dependencies, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 ## What Faable detects
 

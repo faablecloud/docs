@@ -30,7 +30,7 @@ SQLite stores everything in a single file next to your code — `database.db`, `
 
 On Faable, that file lives on the ephemeral disk. **The app will deploy and run fine — and then silently lose every row when the instance is replaced.** If your app registers users, takes orders, or stores anything you'd miss, move that data out of the instance before you share the URL.
 
-> We're exploring first-class persistence for SQLite apps. Today, the options below are the supported path — and they're genuinely good: both have free tiers and EU regions, matching your app's 100% European hosting.
+> We're exploring first-class persistence for SQLite apps. Today, the options below are the supported path — and they're genuinely good: both have free tiers and EU regions, matching your app's European hosting.
 
 ## Option 1: Neon — serverless Postgres (recommended)
 

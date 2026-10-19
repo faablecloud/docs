@@ -1,12 +1,12 @@
 ---
 title: Deploy an Astro Site
-description: Deploy an Astro site to Faable Deploy from GitHub. Zero-config static builds, the SSR adapter path, PUBLIC_ environment variables, and 100% European hosting with a built-in WAF.
+description: Deploy an Astro site to Faable Deploy from GitHub. Zero-config static builds, the SSR adapter path, PUBLIC_ environment variables, and European hosting with a built-in WAF.
 rank: high
 ---
 
 # Deploy an Astro Site
 
-**Push your Astro project to GitHub and Faable builds and serves it — no Dockerfile, no YAML.** The builder detects Astro from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted 100% in Europe.
+**Push your Astro project to GitHub and Faable builds and serves it — no Dockerfile, no YAML.** The builder detects Astro from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 Astro has two output modes, and **they deploy differently**. Which one you are on decides everything below, so check `astro.config.mjs` first.
 
