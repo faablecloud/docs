@@ -12,11 +12,11 @@ Faable Auth is part of the unified Faable subscription — and it is **included 
 
 ## What each plan includes for Auth
 
-| Plan      | Auth entitlements                                                                                                                                                           |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | [Hosted login](hosted-login.mdx), users and sessions · database and social connections · RBAC and teams · **up to 15,000 MAU**, no credit card · 100 M2M tokens a month     |
-| **Hobby** | Everything in Free · **unlimited MAU** · two-step verification (MFA) · passwordless magic link and code login · custom login flows · Actions · webhooks · recovery by SMS   |
-| **Pro**   | Everything in Hobby · **unlimited MAU** · custom domain for your login · biometric passkey login (Touch ID, Face ID) · audit logs · multiple auth accounts · enterprise SSO |
+| Plan      | Auth entitlements                                                                                                                                                                            |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | [Hosted login](hosted-login.mdx), users and sessions · database and social connections · RBAC and teams · custom login flows · **up to 15,000 MAU**, no credit card · 100 M2M tokens a month |
+| **Hobby** | Everything in Free · **unlimited MAU** · two-step verification (MFA) · passwordless magic link and code login · Actions · webhooks · recovery by SMS                                         |
+| **Pro**   | Everything in Hobby · **unlimited MAU** · custom domain for your login · biometric passkey login (Touch ID, Face ID) · audit logs · multiple auth accounts · enterprise SSO                  |
 
 ## Monthly Active Users (MAU)
 
@@ -39,7 +39,7 @@ There is no per-user line on any invoice, with one exception on Pro: users who s
 | [Password hash import & export](guides/import-password-hashes.mdx) |   ✅   |                  ✅                  |                    ✅                     |
 | Two-step verification (MFA)                                        |   —    |                  ✅                  |                    ✅                     |
 | Passwordless (OTP / Magic Link)                                    |   —    |                  ✅                  |                    ✅                     |
-| Custom [login flows](login-flows.md)                               |   —    |                  ✅                  |                    ✅                     |
+| Custom [login flows](login-flows.md)                               |   ✅   |                  ✅                  |                    ✅                     |
 | [Actions](extensibility/actions.md)                                |   —    |                  ✅                  |                    ✅                     |
 | Webhooks                                                           |   —    |                  ✅                  |                    ✅                     |
 | Password recovery by SMS                                           |   —    |  20 SMS/mo incl. · €0.20/SMS after   |     20 SMS/mo incl. · €0.18/SMS after     |
@@ -54,7 +54,7 @@ A passkey used as a **second factor** is part of two-step verification, so it is
 
 ### What happens on a downgrade
 
-Plan limits apply when you **turn a feature on**, never to what is already running. An Action created on Hobby keeps running, a custom login flow already published stays live, a custom domain that is already active keeps serving your login, and an MFA policy that is already on stays on. Your users are never locked out because a plan changed; you just cannot create new ones until you move back up.
+Plan limits apply when you **turn a feature on**, never to what is already running. An Action created on Hobby keeps running, a custom domain that is already active keeps serving your login, and an MFA policy that is already on stays on. Your users are never locked out because a plan changed; you just cannot create new ones until you move back up.
 
 ### SMS
 

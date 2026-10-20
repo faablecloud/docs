@@ -101,7 +101,7 @@
   },
   "content/auth/features.mdx": {
     "published": "2026-08-25T11:39:10+02:00",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-10-20T07:37:57.593Z"
   },
   "content/auth/get-started.md": {
     "modified": "2026-10-14T22:32:09+02:00",
@@ -228,8 +228,8 @@
     "published": "2026-09-16T16:20:45+02:00"
   },
   "content/auth/pricing.mdx": {
-    "modified": "2026-10-06T12:38:10+02:00",
-    "published": "2026-08-24T18:03:43+02:00"
+    "published": "2026-08-24T18:03:43+02:00",
+    "modified": "2026-10-20T07:37:57.593Z"
   },
   "content/auth/quickstart/angular.mdx": {
     "modified": "2026-09-24T13:46:23+02:00",
