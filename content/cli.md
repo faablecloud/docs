@@ -361,6 +361,16 @@ faable deploy secrets set DATABASE_URL=postgres://user:pass@host/db STRIPE_KEY=s
 ℹ️ The app is restarting to apply the changes.
 ```
 
+If nothing is running because the app's last deployment **crashed on startup** — typically a variable it needs was missing — saving a change redeploys it with the new variables instead:
+
+```
+✅ 1 secret(s) saved to app_a1b2c3.
+🔁 Redeploying shop-api with the new variables (deployment deployment_d4e5f6): its last deployment deployment_a1b2c3 had failed and nothing was running.
+Follow it with: faable deploy logs --build -d deployment_d4e5f6 -a app_a1b2c3 --follow  ·  status: faable deploy status -a app_a1b2c3
+```
+
+A deployment that failed to **build** is not relaunched: a new variable rarely fixes a build. The CLI says so and prints the `faable deploy redeploy` command to rebuild it. With `--json`, the outcome is in the `redeploy` field.
+
 ### Set from a .env file
 
 `--env-file` (`-f`) uploads a whole `.env` in one go — the fastest way to move a working local environment to your app. With no path it reads `./.env`:
@@ -430,7 +440,7 @@ Remove a secret by name. The CLI asks for confirmation; pass `--yes` to skip it 
 faable deploy secrets rm STRIPE_KEY
 ```
 
-Changes apply immediately: the app restarts with the new environment.
+Changes apply immediately: a running app restarts with the new environment, and an app whose last deployment crashed on startup is redeployed with it, as with [`set`](#set).
 
 ## Domains
 
