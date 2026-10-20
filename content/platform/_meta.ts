@@ -4,5 +4,6 @@ export default {
   'security-compliance': 'Security',
   compliance: 'Compliance',
   'terms-of-service': 'Terms of Service',
-  'privacy-policy': 'Privacy Policy'
+  'privacy-policy': 'Privacy Policy',
+  'legal-notice': 'Legal Notice'
 }
