@@ -71,6 +71,26 @@ The build could not get every file the repository references. Today this is **Gi
 
 ## The build
 
+### `dependency_install_failed`
+
+Installing your dependencies failed — `npm install`/`npm ci`, `yarn`, `pnpm`, `pip install` or `composer install` exited with an error. The last lines of its output are in the failure message; the full output is in the build logs.
+
+The usual reasons, in the order we see them:
+
+- **A package or version that does not exist** (`ETARGET`, `ENOVERSIONS`, `No matching distribution found`) — a typo, a private package, or a version that was never published.
+- **An install script in your project failed** — a `preinstall`/`postinstall` in your `package.json` (`prisma generate`, a script that only allows one package manager) or in a dependency.
+- **A dependency that needs a different runtime version** — see [`runtime_version_incompatible`](#runtime_version_incompatible) for Python; for Node.js, set `engines.node` in `package.json`.
+
+Some install problems are worked around instead of failing: a lockfile out of sync with `package.json`, and conflicting peer dependencies (`ERESOLVE`), are retried automatically and the deployment carries a [build warning](#build-warnings).
+
+**Fix:** run the same install locally from a clean checkout (`rm -rf node_modules && npm ci`, or `pip install -r requirements.txt` in a fresh virtual environment) — it fails the same way, with the same message.
+
+### `build_command_failed`
+
+Your build command exited with an error — `npm run build`, the `buildCommand` in `faable.json`, or a step of your `Dockerfile`. Dependencies installed fine; what failed is your project's own build: a TypeScript error, a missing environment variable, a test that runs as part of the build.
+
+**Fix:** run the build locally (`npm run build`). If it passes locally but not on Faable, check that every variable the build reads is set in the app's environment variables — they are available to the build — and that nothing depends on a file that is not committed.
+
 ### `static_output_missing`
 
 Your project was detected as a static site (Vite, Create React App, Vue, Angular, Astro, Gatsby) and the build ran, but **the output folder is not there** — no `dist/` (or `build/`, `public/`…) after `npm run build`.
@@ -128,6 +148,21 @@ The container started but **never became ready** within the time allowed. Almost
 ### `status_timeout` · `runtime_lost`
 
 **On our side.** The deployment never reported a status, or what was running it went away before it became ready. Redeploy.
+
+## Build warnings
+
+A deployment can succeed and still carry **warnings**: something in the repository the build worked around instead of failing on. The dashboard shows how many next to the deployment — on successful deployments too — with the full text above the build logs, and `faable deploy` prints them when it finishes. Each one is worth fixing: the workaround keeps the deploy going, but your project does not build the same way anywhere else.
+
+| Warning                     | What happened                                                                                                                                              | Fix                                                                                            |
+| :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
+| `install_lockfile_fallback` | `npm ci` (or a frozen yarn/pnpm install) failed — the lockfile is out of sync with `package.json` — and the builder installed with `npm install` instead.  | Regenerate the lockfile and commit it.                                                         |
+| `install_legacy_peer_deps`  | npm refused your dependency tree because two packages want different versions of a peer (`ERESOLVE`), and the builder installed with `--legacy-peer-deps`. | Align the versions, or add `legacy-peer-deps=true` to an `.npmrc` to make the choice explicit. |
+| `package_manager_missing`   | The repository has a `yarn.lock` or `pnpm-lock.yaml`, but that package manager is not available, so `npm install` was used and the lockfile ignored.       | Versions may differ from yours; a `package-lock.json` makes the install reproducible.          |
+| `python_deps_inferred`      | No `requirements.txt` (or `pyproject.toml`/`Pipfile`): the builder installed the well-known packages your imports name — Flask, FastAPI… — unpinned.       | Add a `requirements.txt` with every dependency (`pip freeze > requirements.txt`).              |
+| `python_no_manifest`        | No dependency manifest and nothing recognisable to install: the app was built with the standard library only.                                              | Add a `requirements.txt`.                                                                      |
+| `requirements_name_variant` | Dependencies were installed from `Requirements.txt` or `requirement.txt`.                                                                                  | Rename it to `requirements.txt`.                                                               |
+| `dockerfile_ignored`        | There is a `Dockerfile`, but a managed buildpack built the app and the `Dockerfile` did not run.                                                           | Set `"buildpack": "docker"` in `faable.json` to use it (Hobby and Pro plans).                  |
+| `runtime_fallback`          | Your dependencies failed on Faable's default Python, and the build was retried on the previous version.                                                    | Pin the version you want in `.python-version`.                                                 |
 
 ## Related
 
