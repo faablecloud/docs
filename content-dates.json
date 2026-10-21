@@ -379,9 +379,13 @@
     "published": "2026-09-12T13:03:24+02:00",
     "modified": "2026-10-19T06:55:32.936Z"
   },
+  "content/deploy/build-failures.md": {
+    "published": "2026-10-21T08:07:23.433Z",
+    "modified": "2026-10-21T08:07:23.433Z"
+  },
   "content/deploy/build-requirements.mdx": {
-    "modified": "2026-10-16T20:09:26+02:00",
-    "published": "2026-07-04T11:38:43+02:00"
+    "published": "2026-07-04T11:38:43+02:00",
+    "modified": "2026-10-21T08:07:23.433Z"
   },
   "content/deploy/compare-fly-io.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
@@ -424,8 +428,8 @@
     "published": "2026-07-24T19:27:43+02:00"
   },
   "content/deploy/errors.md": {
-    "modified": "2026-09-26T09:01:33+02:00",
-    "published": "2026-09-17T12:56:03+02:00"
+    "published": "2026-09-17T12:56:03+02:00",
+    "modified": "2026-10-21T08:07:23.433Z"
   },
   "content/deploy/european-alternatives.mdx": {
     "published": "2026-09-12T13:03:24+02:00",

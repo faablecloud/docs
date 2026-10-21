@@ -27,6 +27,8 @@ Every error response from the Deploy API has the same shape:
 
 The same contract, with its own catalogue, applies to [Faable Auth](../auth/errors.md).
 
+A deployment that started and then **failed** — a build that could not detect your project, an app that crashed on startup — carries a failure code of its own instead. Those are listed in [Why a deployment failed](build-failures.md).
+
 ## With the SDK
 
 `@faable/deploy-sdk` throws a `FaableApiError` on any non-2xx, and every generated method lists the codes it can throw in its docstring:

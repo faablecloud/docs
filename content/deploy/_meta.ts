@@ -16,6 +16,7 @@ export default {
   'github-actions': 'Deploy from your own CI',
   'gitlab-bitbucket': 'Deploy from GitLab or Bitbucket',
   sdk: 'Deploy SDK',
+  'build-failures': 'Why a Deployment Failed',
   errors: 'Error Codes',
   'security-waf': 'Web Application Firewall',
   learnSeparator: { type: 'separator', title: 'Learn & Compare' },
