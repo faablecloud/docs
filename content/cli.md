@@ -643,7 +643,7 @@ Some patterns cannot be ruled on, and the CLI tells you why instead of accepting
 
 ## Faable Auth
 
-Manage a Faable Auth tenant from the terminal: `faable auth <users|sessions|connections|actions|clients|logs>`. Commands reuse your `faable login` session and act on the tenant of the [active project](#projects); with several, `faable auth accounts list` shows them and `faable auth use <account>` picks one. To target a tenant directly, pass `--account <id>` or `--auth-url https://<account>.auth.faable.link` (env `FAABLE_AUTH_ACCOUNT` / `FAABLE_AUTH_URL`). Every command accepts `--json`.
+Manage a Faable Auth tenant from the terminal: `faable auth <users|roles|apis|sessions|connections|actions|clients|logs>`. Commands reuse your `faable login` session and act on the tenant of the [active project](#projects); with several, `faable auth accounts list` shows them and `faable auth use <account>` picks one. To target a tenant directly, pass `--account <id>` or `--auth-url https://<account>.auth.faable.link` (env `FAABLE_AUTH_ACCOUNT` / `FAABLE_AUTH_URL`). Every command accepts `--json`.
 
 ### Users
 
@@ -713,6 +713,22 @@ Send a user the email (or a code by SMS/WhatsApp) to set or reset their password
 faable auth users password-setup alice@example.com
 faable auth users password-setup user_abc123 --channel sms
 ```
+
+### Roles and permissions
+
+A role grants permissions of your APIs; a user assigned the role gets them in tokens for APIs with RBAC on, when the client requests them. Team roles grant none. See [Roles and Permissions](auth/roles-and-permissions.md).
+
+```bash
+faable auth apis create https://api.example.com --permission tickets:read --permission tickets:write --rbac
+faable auth apis update https://api.example.com --add-permission tickets:admin   # edit the catalog
+faable auth roles create support -d "Support staff"
+faable auth roles permissions support --api https://api.example.com --add tickets:read --add tickets:write
+faable auth users roles alice@example.com --add support      # assign; --rm removes
+faable auth users permissions alice@example.com              # what her roles grant, and which role gives each
+faable auth roles get support                                # its permissions and who holds it
+```
+
+A role is named by its id or its exact name, an API by its id or its identifier. Changes reach the user's next tokens, refreshes included; tokens already issued keep theirs until they expire.
 
 ### Sessions
 
@@ -846,26 +862,27 @@ claude mcp add --transport http faable https://mcp.faable.com/mcp \
 
 By default the server exposes **reads plus one deploy**:
 
-| Tool                                                                       | What the agent can do                                                                                                        |
-| :------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| `whoami`, `list_projects`, `list_apps`, `get_app`                          | Find the app you mean, see what is live                                                                                      |
-| `list_deployments`, `get_deployment`, `get_build_logs`, `get_runtime_logs` | Find out why a deploy failed or an app crashes                                                                               |
-| `get_app_traffic`, `get_usage`, `get_quota`                                | Traffic, this period's usage, today's deploy allowance                                                                       |
-| `list_domains`, `check_domain`                                             | Custom domains and why one is not verified yet                                                                               |
-| `list_secrets`                                                             | Which environment variables are set — names only                                                                             |
-| `list_github_repos`                                                        | The GitHub repositories Faable can deploy, and the install link when one is missing                                          |
-| `deploy_app`                                                               | Build and deploy the latest commit of the deploy branch, server-side; with `wait`, until it is live (with the URL) or failed |
-| `list_auth_logins`                                                         | Who logged in to your app recently, with their email, IP and login method                                                    |
-| `count_auth_users`                                                         | How many users logged in or signed up since a time, or are suspended                                                         |
-| `list_auth_users`, `get_auth_user`                                         | Find a user by email or text; sort by last login or activity                                                                 |
-| `list_auth_logs`, `list_auth_sessions`                                     | Why someone can't log in; the devices a user is signed in on                                                                 |
-| `list_auth_tenants`, `list_auth_connections`, `list_auth_clients`          | Your Auth tenants, login methods and applications                                                                            |
+| Tool                                                                         | What the agent can do                                                                                                        |
+| :--------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `whoami`, `list_projects`, `list_apps`, `get_app`                            | Find the app you mean, see what is live                                                                                      |
+| `list_deployments`, `get_deployment`, `get_build_logs`, `get_runtime_logs`   | Find out why a deploy failed or an app crashes                                                                               |
+| `get_app_traffic`, `get_usage`, `get_quota`                                  | Traffic, this period's usage, today's deploy allowance                                                                       |
+| `list_domains`, `check_domain`                                               | Custom domains and why one is not verified yet                                                                               |
+| `list_secrets`                                                               | Which environment variables are set — names only                                                                             |
+| `list_github_repos`                                                          | The GitHub repositories Faable can deploy, and the install link when one is missing                                          |
+| `deploy_app`                                                                 | Build and deploy the latest commit of the deploy branch, server-side; with `wait`, until it is live (with the URL) or failed |
+| `list_auth_logins`                                                           | Who logged in to your app recently, with their email, IP and login method                                                    |
+| `count_auth_users`                                                           | How many users logged in or signed up since a time, or are suspended                                                         |
+| `list_auth_users`, `get_auth_user`                                           | Find a user by email or text; sort by last login or activity                                                                 |
+| `list_auth_logs`, `list_auth_sessions`                                       | Why someone can't log in; the devices a user is signed in on                                                                 |
+| `list_auth_tenants`, `list_auth_connections`, `list_auth_clients`            | Your Auth tenants, login methods and applications                                                                            |
+| `list_auth_roles`, `get_auth_role`, `get_auth_user_access`, `list_auth_apis` | Roles and what each grants, what a user may do and why, your APIs and whether RBAC is on                                     |
 
 When a deploy failed, `get_deployment` also says whose side it is on: `user` (your code, configuration or repository) or `platform` (Faable's).
 
-`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path, and `delete_app`, the one destructive tool: it deletes an app with its deployments, domains and secrets, and is marked destructive so your client asks before running it. Deleting domains, secrets or users stays in the CLI and the dashboard, and the hosted server exposes nothing destructive.
+`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). The local server also has the role writes — `create_auth_role`, `update_auth_role_permissions` and `update_auth_user_roles` —, which the hosted server never exposes: assigning a role grants permissions to your users. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path, and `delete_app`, the one destructive tool: it deletes an app with its deployments, domains and secrets, and is marked destructive so your client asks before running it. Deleting domains, secrets or users stays in the CLI and the dashboard, and the hosted server exposes nothing destructive.
 
-With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions and settings, suspend and reinstate users, end sessions, send password emails and update an application's settings (the MCP only sets its profile fields) — never delete anything or change the tenant itself.
+With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions, settings, roles and APIs, suspend and reinstate users, end sessions, send password emails and update an application's settings (the MCP only sets its profile fields) — never delete anything or change the tenant itself.
 
 What the server guarantees:
 
@@ -954,6 +971,17 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 | `faable auth users suspend`          | Suspend users by id or email — bulk via args or stdin                                     |
 | `faable auth users reinstate`        | Reinstate suspended users by id or email — bulk via args or stdin                         |
 | `faable auth users password-setup`   | Send a user the email (or code) to set or reset their password                            |
+| `faable auth users roles`            | A user's roles; assign or remove them (`--add`, `--rm`)                                   |
+| `faable auth users permissions`      | What a user's roles grant, per API, and which role gives each                             |
+| `faable auth roles list`             | List roles and how many permissions each grants                                           |
+| `faable auth roles get`              | Show a role: its permissions and the users it is assigned to                              |
+| `faable auth roles create`           | Create a role                                                                             |
+| `faable auth roles permissions`      | A role's permissions; grant or revoke those of one API (`--api`, `--add`, `--rm`)         |
+| `faable auth roles rm`               | Delete a role (confirmation, `--yes`)                                                     |
+| `faable auth apis list`              | List APIs with their dialect and RBAC                                                     |
+| `faable auth apis get`               | Show an API: token settings and its permission catalog                                    |
+| `faable auth apis create`            | Create an API (`--permission`, `--rbac`)                                                  |
+| `faable auth apis update`            | Turn RBAC on or off, change the dialect, edit the catalog                                 |
 | `faable auth sessions list`          | A user's sessions: devices, IP, last seen                                                 |
 | `faable auth sessions revoke`        | End sessions — one, or every active one of a user (`--user`)                              |
 | `faable auth connections list`       | The tenant's login methods                                                                |
