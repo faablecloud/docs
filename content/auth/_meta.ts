@@ -14,6 +14,7 @@ export default {
   'hosted-login': 'Hosted Login UI',
   'login-experience': 'Login Experience',
   apis: 'APIs',
+  'roles-and-permissions': 'Roles & Permissions',
   protocolSeparator: { type: 'separator', title: 'Protocol' },
   'oauth-flows': 'OAuth 2.0 Flows',
   oidc: 'OpenID Connect',

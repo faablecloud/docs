@@ -57,19 +57,20 @@ Content-Type: application/json
 
 ### Fields
 
-| Field                  | Description                                                                                                                                                                                      |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `name`                 | Human-readable label shown in the dashboard and on consent screens.                                                                                                                              |
-| `slug`                 | URL-safe identifier, derived from `name` if omitted. Unique per account.                                                                                                                         |
-| `identifier`           | The audience URL or URN used by clients (`audience=…`) and emitted as the `aud` claim. **Immutable** after creation. Must be unique per account.                                                 |
-| `description`          | Optional free-text description.                                                                                                                                                                  |
-| `permissions`          | Array of `{ value, description? }`. The `value` is the scope string clients request (convention: `verb:resource`, e.g. `read:users`). The `description` is shown to users on the consent screen. |
-| `signing_alg`          | JWT signing algorithm. Only `RS256` is supported today.                                                                                                                                          |
-| `token_dialect`        | `access_token` (standard) or `access_token_authz` (adds a `permissions` claim listing the granted scopes).                                                                                       |
-| `token_lifetime`       | Access token TTL in seconds. Range: 60 (1 min) to 2_592_000 (30 days). Default: 86_400 (24 h).                                                                                                   |
-| `enforce_policies`     | When `true`, requested scopes are intersected with the API's `permissions` list — anything outside is dropped. When `false`, requested scopes are echoed verbatim.                               |
-| `allow_offline_access` | When `true`, clients can request `offline_access` and receive a `refresh_token` along with the access token.                                                                                     |
-| `skip_consent`         | When `true`, first-party clients skip the consent prompt for this API.                                                                                                                           |
+| Field                  | Description                                                                                                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                 | Human-readable label shown in the dashboard and on consent screens.                                                                                                                                                                         |
+| `slug`                 | URL-safe identifier, derived from `name` if omitted. Unique per account.                                                                                                                                                                    |
+| `identifier`           | The audience URL or URN used by clients (`audience=…`) and emitted as the `aud` claim. **Immutable** after creation. Must be unique per account.                                                                                            |
+| `description`          | Optional free-text description.                                                                                                                                                                                                             |
+| `permissions`          | Array of `{ value, description? }`. The `value` is the scope string clients request (convention: `verb:resource`, e.g. `read:users`). The `description` is shown to users on the consent screen.                                            |
+| `signing_alg`          | JWT signing algorithm. Only `RS256` is supported today.                                                                                                                                                                                     |
+| `token_dialect`        | `access_token` (standard) or `access_token_authz` (adds a `permissions` claim listing the granted scopes).                                                                                                                                  |
+| `token_lifetime`       | Access token TTL in seconds. Range: 60 (1 min) to 2_592_000 (30 days). Default: 86_400 (24 h).                                                                                                                                              |
+| `enforce_policies`     | When `true`, requested scopes are intersected with the API's `permissions` list — anything outside is dropped. When `false`, requested scopes are echoed verbatim.                                                                          |
+| `rbac`                 | When `true`, a token issued to a user carries only the requested permissions that the user's account-level roles grant. Machine-to-machine tokens are not affected. Default `false`. See [Roles and Permissions](roles-and-permissions.md). |
+| `allow_offline_access` | When `true`, clients can request `offline_access` and receive a `refresh_token` along with the access token.                                                                                                                                |
+| `skip_consent`         | When `true`, first-party clients skip the consent prompt for this API.                                                                                                                                                                      |
 
 ## Defining permissions
 
@@ -83,17 +84,19 @@ Permissions live inline on the API and use the same string clients pass in the `
 ]
 ```
 
-When a client requests `scope=read:projects write:projects` against this API with `enforce_policies=true`, the issued token's `scope` claim contains exactly those two values. If `token_dialect=access_token_authz`, they're also reflected in a structured `permissions` claim:
+When a client requests `scope=read:projects write:projects` against this API with `enforce_policies=true`, the issued token's `scope` claim contains exactly those two values. If `token_dialect=access_token_authz`, they're also reflected in a `permissions` claim, a space-separated string:
 
 ```json
 {
   "aud": "https://api.example.com",
   "scope": "read:projects write:projects",
-  "permissions": ["read:projects", "write:projects"]
+  "permissions": "read:projects write:projects"
 }
 ```
 
 This is what your backend authorization middleware should check.
+
+`enforce_policies` decides what a **client** may ask for; it does not look at the user. To grant permissions per user, put them in roles and enable `rbac`: see [Roles and Permissions](roles-and-permissions.md).
 
 ## Using your API from a client
 
@@ -117,6 +120,7 @@ For server-to-server calls (no end user), see [Client Credentials](oauth-flows/c
 ## Next steps
 
 - [Validate Access Tokens](validate-access-tokens.md) — verify these tokens in your backend (Express middleware included).
+- [Roles and Permissions](roles-and-permissions.md) — grant permissions per user through roles (RBAC).
 - [Clients](clients.md) — register the application that will request tokens.
 - [Client Credentials flow](oauth-flows/client-credentials.mdx) — machine-to-machine token issuance for an API.
 - [Authorization Code flow](oauth-flows/authorization-code.mdx) — user-driven token issuance.

@@ -32,8 +32,8 @@
     "published": "2026-06-23T23:48:20+02:00"
   },
   "content/auth/apis.md": {
-    "modified": "2026-07-16T12:45:45+02:00",
-    "published": "2026-05-16T11:42:20+02:00"
+    "published": "2026-05-16T11:42:20+02:00",
+    "modified": "2026-10-26T13:01:19.542Z"
   },
   "content/auth/change-email.md": {
     "modified": "2026-07-16T12:45:45+02:00",
@@ -85,7 +85,7 @@
   },
   "content/auth/errors.md": {
     "published": "2026-09-17T11:53:00+02:00",
-    "modified": "2026-10-25T21:26:19.270Z"
+    "modified": "2026-10-26T13:01:19.542Z"
   },
   "content/auth/european-alternatives.mdx": {
     "published": "2026-10-17T19:03:21.619Z",
@@ -275,6 +275,10 @@
     "modified": "2026-09-24T13:46:23+02:00",
     "published": "2026-07-07T12:06:31+02:00"
   },
+  "content/auth/roles-and-permissions.md": {
+    "published": "2026-10-26T13:01:19.542Z",
+    "modified": "2026-10-26T13:01:19.542Z"
+  },
   "content/auth/saml-vs-oidc.mdx": {
     "modified": "2026-10-11T19:28:36+02:00",
     "published": "2026-10-11T19:28:36+02:00"
@@ -360,12 +364,12 @@
     "published": "2026-07-07T11:04:18+02:00"
   },
   "content/auth/team-invitations.md": {
-    "modified": "2026-09-30T14:05:48+02:00",
-    "published": "2026-05-16T11:42:20+02:00"
+    "published": "2026-05-16T11:42:20+02:00",
+    "modified": "2026-10-26T13:01:19.542Z"
   },
   "content/auth/validate-access-tokens.mdx": {
-    "modified": "2026-10-11T20:30:23+02:00",
-    "published": "2026-07-04T11:32:47+02:00"
+    "published": "2026-07-04T11:32:47+02:00",
+    "modified": "2026-10-26T13:01:19.542Z"
   },
   "content/auth/what-is-a-multi-tenant-identity-server.mdx": {
     "published": "2026-06-26T11:51:20+02:00",

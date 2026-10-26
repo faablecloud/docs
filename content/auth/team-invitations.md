@@ -7,6 +7,8 @@ description: Invite people to a team in Faable Auth by email, let them accept on
 
 Teams in Faable Auth group users so you can grant roles collectively. This page covers the whole membership lifecycle: inviting someone by email, accepting (from the email link, on your own page, or from a "pending invitation" notice in your app), declining, changing roles and removing members.
 
+Roles held in a team are names: they appear in the `roles` claim, but they grant no API permissions. To grant permissions, assign roles at the account level. See [Roles and Permissions](roles-and-permissions.md).
+
 All endpoints here are part of the **Management API**: call them from your backend with a token of a client that holds the `…:teammembers` scopes. The only public endpoint is `/invite-verify`, the default target of the email link.
 
 ## Endpoints

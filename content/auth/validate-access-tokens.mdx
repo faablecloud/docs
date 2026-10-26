@@ -206,7 +206,7 @@ No. Verification is local — your API checks the RS256 signature against the JW
 
 ### What's the difference between `scope` and `permissions`?
 
-`scope` is what the client requested and was granted (standard OAuth). `permissions` appears when your API uses the `access_token_authz` dialect: with `enforce_policies` enabled it's the requested scopes **filtered against your API's permission catalog**, so it's the claim to trust for authorization. Without `enforce_policies` the requested scopes are echoed verbatim. See [APIs](apis.md).
+`scope` is what the client requested and was granted (standard OAuth). `permissions` appears when your API uses the `access_token_authz` dialect: with `enforce_policies` enabled it's the requested scopes **filtered against your API's permission catalog**, so it's the claim to trust for authorization. Without `enforce_policies` the requested scopes are echoed verbatim. With [RBAC](roles-and-permissions.md) enabled on the API, a user token's `permissions` also drops what the user's roles don't grant. See [APIs](apis.md).
 
 ### Why is there no `permissions` claim in my token?
 
@@ -223,6 +223,8 @@ Look at `sub`: user tokens carry a `user_…` id; [machine-to-machine](oauth-flo
 ### How do I authorize by team or role?
 
 Enable `include_teams_in_access_token` / `include_roles_in_access_token` on your API. The token then carries `teams` and `roles` as string arrays, so a route can check `req.auth.roles?.includes('admin')` with no database lookup. Membership changes show up on the next token, not the current one — keep `token_lifetime` short if that matters.
+
+To authorize by **what a user may do** rather than by role name, give roles permissions and enable RBAC on the API: the token's `permissions` then carries only what the user's roles grant. See [Roles and Permissions](roles-and-permissions.md).
 
 ### How long is an access token valid?
 
