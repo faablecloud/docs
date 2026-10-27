@@ -12,13 +12,16 @@ const DASHBOARD_URL =
 // landing's lib/dashboardSession.ts (keep them in step): the session lives in
 // dashboard.faable.com's localStorage, and dashboard/public/session-hint.html
 // answers a postMessage handshake from faable.com only. The iframe loads only
-// when the dashboard's `last-used` login cookie is on .faable.com; that cookie
-// survives sign-out, so it gates the check, it doesn't answer it.
+// when a dashboard cookie on .faable.com says it is worth asking —
+// `faable_session_hint` (written while signed in) or the older `last-used`
+// login cookie. Both can outlive the session: they gate the check, they don't
+// answer it.
 const HINT_URL =
   process.env.NEXT_PUBLIC_SESSION_HINT_URL ??
   'https://dashboard.faable.com/session-hint.html'
 const HINT_ORIGIN = new URL(HINT_URL).origin
-const LAST_USED_COOKIE = /(?:^|;\s*)faableauth-[0-9a-f-]{36}-last-used=/
+const GATE_COOKIE =
+  /(?:^|;\s*)(?:faable_session_hint=1|faableauth-[0-9a-f-]{36}-last-used=)/
 const TIMEOUT_MS = 3000
 
 // One question per full page load: the navbar remounts on client navigation.
@@ -59,7 +62,7 @@ const askDashboard = () =>
 function useDashboardSession() {
   const [session, setSession] = useState(null)
   useEffect(() => {
-    if (!LAST_USED_COOKIE.test(document.cookie)) return
+    if (!GATE_COOKIE.test(document.cookie)) return
     answer ??= askDashboard()
     let alive = true
     answer.then(value => alive && setSession(value))
