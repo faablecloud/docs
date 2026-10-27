@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Footer, Navbar } from 'nextra-theme-docs'
 import 'nextra-theme-docs/style.css'
 import { getPageMap } from 'nextra/page-map'
+import { NavbarCta } from '../../components/NavbarCta'
 import { NavbarLogo, ProductTheme } from '../../components/ProductBrand'
 import { SectionLayout } from '../../components/SectionLayout'
 
@@ -11,24 +12,8 @@ const navbar = (
     logo={<NavbarLogo />}
   >
     {/* Persistent conversion CTA — docs are the paid/organic landing for many
-        readers. Inline-styled so it renders regardless of Tailwind availability.
-        Its colour follows the product (--faable-cta, set by ProductTheme). */}
-    <a
-      href="https://dashboard.faable.com/account/register?utm_source=docs&utm_medium=referral&utm_content=docs_navbar_cta"
-      target="_blank"
-      rel="noopener"
-      style={{
-        background: 'var(--faable-cta, #2563eb)',
-        color: '#fff',
-        padding: '6px 14px',
-        borderRadius: 6,
-        fontWeight: 600,
-        fontSize: 14,
-        whiteSpace: 'nowrap'
-      }}
-    >
-      Start free
-    </a>
+        readers. A signed-in reader gets "Dashboard" with their avatar. */}
+    <NavbarCta />
   </Navbar>
 )
 // The platform-wide pages live here and not in the navbar, which only switches
