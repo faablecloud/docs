@@ -1,6 +1,6 @@
 ---
 title: Runtime
-description: Understand the Faable Deploy runtime environment. Learn about supported Node.js versions, environment variables, gunicorn and uvicorn workers and memory, and our automatic app manager.
+description: Understand the Faable Deploy runtime environment. Learn about supported Node.js versions, environment variables, the start command, gunicorn and uvicorn workers and memory, and our automatic app manager.
 ---
 
 # Runtime
@@ -40,6 +40,23 @@ To specify the version of Node.js to use on Faable, use the engines section of t
 ## Environment variables
 
 You can set environment variables for your App in the [Dashboard](https://dashboard.faable.com)
+
+## Start command and memory
+
+Your `start` script should run the compiled app and nothing else. Tools meant for development — a CLI that compiles on start, a file watcher, a TypeScript loader — stay running next to your app, so they cost memory for as long as it runs and time every time it starts. On a Free plan app, which sleeps when idle, that start time is paid on every wake.
+
+**NestJS:** `"start": "nest start"` recompiles your TypeScript on every boot and keeps the Nest CLI running as the parent of your app — around 100 MB of memory and several seconds per start. Your build already runs `nest build`, so start the compiled output instead:
+
+```json
+{
+  "scripts": {
+    "build": "nest build",
+    "start": "node dist/main"
+  }
+}
+```
+
+If `start` is exactly `nest start` and your `start:prod` script runs a file the build produced (the Nest template's `node dist/main`), Faable runs `start:prod` instead and says so in the app's runtime log, in a line that starts with `Faable:`.
 
 ## Workers and memory
 
