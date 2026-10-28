@@ -1,6 +1,6 @@
 ---
 title: Runtime
-description: Understand the Faable Deploy runtime environment. Learn about supported Node.js versions, environment variables, and our automatic app manager.
+description: Understand the Faable Deploy runtime environment. Learn about supported Node.js versions, environment variables, gunicorn and uvicorn workers and memory, and our automatic app manager.
 ---
 
 # Runtime
@@ -40,6 +40,16 @@ To specify the version of Node.js to use on Faable, use the engines section of t
 ## Environment variables
 
 You can set environment variables for your App in the [Dashboard](https://dashboard.faable.com)
+
+## Workers and memory
+
+Python apps run a single gunicorn or uvicorn worker by default, and that is the right setting: leave the worker count to the start command Faable generates rather than adding `--workers`.
+
+Every worker is a separate process that loads your whole app and its libraries. A Flask app that imports pandas, numpy and an AI SDK uses around 200 MB per worker, so two workers need twice that, and an app that outgrows its instance's memory is killed and restarted. For concurrency, use threads, which share memory (gunicorn `--threads`), or an async server such as uvicorn, where one process serves many requests at once.
+
+On the Free plan instance (`bi.xs`, 512 MB) an app runs **at most one worker**. If the start command asks for more — `--workers 2`, `-w 4` or `WEB_CONCURRENCY` — Faable reduces it to one when the app starts and moves gunicorn's concurrency to threads, so `--workers 2 --threads 4` runs as `--workers 1 --threads 8`. The app's runtime log says so in a line that starts with `Faable:`.
+
+To run more workers, upgrade to a paid plan and move the app to a larger instance from the [compute catalog](pricing.md#compute-catalog).
 
 ## App Manager
 

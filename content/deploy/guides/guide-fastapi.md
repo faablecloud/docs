@@ -109,7 +109,7 @@ Your API is live at `https://<app>.faable.link` with automatic SSL and the [WAF]
 
 ## Workers and concurrency
 
-The auto-detected command runs a single uvicorn process, and that is the right setting: FastAPI is async, so one process handles many concurrent requests. Leave the worker count to Faable and don't add `--workers` to your start command — every worker is a separate process with its own copy of your app and its libraries, so each one multiplies the memory the app needs. To scale up, pick a bigger [instance](../pricing.md#compute-catalog).
+The auto-detected command runs a single uvicorn process, and that is the right setting: FastAPI is async, so one process handles many concurrent requests. Leave the worker count to Faable and don't add `--workers` to your start command — every worker is a separate process with its own copy of your app and its libraries, so each one multiplies the memory the app needs. To scale up, pick a bigger [instance](../pricing.md#compute-catalog). On the Free plan an app runs at most one worker — see [Workers and memory](../runtime.md#workers-and-memory).
 
 ## Choosing the Python version
 

@@ -212,7 +212,7 @@ app = create_app()
 
 Leave the worker count to Faable. The generated command runs a single gunicorn worker, and that is the right setting: don't add `--workers` to your start command.
 
-Every worker is a separate process that loads your whole app and its libraries, so each one multiplies the memory the app needs — two workers of an app that imports pandas or an AI SDK can be more than a small instance holds, and the app gets killed for running out of memory. If one worker isn't enough, move to a larger [instance](../pricing.md#compute-catalog).
+Every worker is a separate process that loads your whole app and its libraries, so each one multiplies the memory the app needs — two workers of an app that imports pandas or an AI SDK can be more than a small instance holds, and the app gets killed for running out of memory. If one worker isn't enough, move to a larger [instance](../pricing.md#compute-catalog). On the Free plan an app runs at most one worker — see [Workers and memory](../runtime.md#workers-and-memory).
 
 ## Choosing the Python version
 
