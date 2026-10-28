@@ -58,6 +58,10 @@ Your `start` script should run the compiled app and nothing else. Tools meant fo
 
 If `start` is exactly `nest start` and your `start:prod` script runs a file the build produced (the Nest template's `node dist/main`), Faable runs `start:prod` instead and says so in the app's runtime log, in a line that starts with `Faable:`.
 
+**npm itself:** `npm run start` would stay running as the parent of your app, holding around 25 MB of memory (more when the script calls `npm run` or `npx` again). So Faable runs your `start` script directly, the way npm would have: with `node_modules/.bin` on the `PATH` and the `npm_package_name`, `npm_package_version` and `npm_lifecycle_event` variables set, following `npm run` chains, and calling a locally installed binary instead of `npx`. When your `package.json` has a `prestart` or `poststart` script, npm runs it as before.
+
+If your app depends on something only npm provides, set the environment variable `FAABLE_NPM_BYPASS=0` to start it through npm.
+
 ## Workers and memory
 
 Python apps run a single gunicorn or uvicorn worker by default, and that is the right setting: leave the worker count to the start command Faable generates rather than adding `--workers`.
