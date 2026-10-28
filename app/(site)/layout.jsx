@@ -65,7 +65,8 @@ export default async function SiteLayout({ children }) {
       <SectionLayout
         navbar={navbar}
         pageMap={await getPageMap()}
-        docsRepositoryBase="https://github.com/faablecloud/docs"
+        // The edit link is this + the file path: without the branch it 404'd.
+        docsRepositoryBase="https://github.com/faablecloud/docs/blob/main"
         // Folders start closed (Guides & Migrations used to open on every
         // Deploy page and push the rest of the sidebar down); the one holding
         // the current page still opens.

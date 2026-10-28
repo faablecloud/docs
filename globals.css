@@ -13,3 +13,10 @@
 .nextra-navbar a[href='/docs/platform/pricing'] {
   display: none;
 }
+
+/* The policies (terms, refunds, privacy…) are not open to edits from a pull
+   request, so they drop "Edit this page". Nextra has no per-page switch for
+   it (editLink is not a page theme option), hence the selector on its href. */
+.nextra-toc a[href*='/content/platform/'] {
+  display: none;
+}
