@@ -36,6 +36,7 @@ Faable Auth enforces **PKCE with `S256`** — it advertises no other code challe
 
 - **Allowed Callback URLs (`callbacks`)** — the whitelist of URLs Faable Auth may redirect to after login (e.g. `https://myapp.com/callback`). Prevents open-redirect abuse.
 - **Allowed Logout URLs (`logout_urls`)** — where users may be sent after [RP-Initiated Logout](oidc/logout.md).
+- **Login URL (`initiate_login_uri`)** — the page in your app that starts a login by redirecting to `/authorize` (e.g. `https://myapp.com/login`). A login link carries a one-time state that belongs to the browser that opened it, so people who bookmark it, or forward it to someone else, end up on a link that can't sign them in. When that happens, the hosted login screen sends them to this URL to start over instead of showing a form that won't work. Without it, they get a button to the home page of your registered callback origin. `https://` only (`http://` is accepted on `localhost`).
 - **Allowed Web Origins (`web_origins`)** — origins (`scheme://host[:port]`, **no path** — e.g. `http://localhost:5173`) permitted to make cross-origin calls to the token and passwordless endpoints. **When the list is empty, any origin is allowed**; fill it in to lock browser calls down to your own app. Your account's auth domain is always allowed implicitly, so you only list your application origins.
 - **Connections** — which authentication methods (Google, passwordless, database…) this specific client may use. Set on each [connection](connections.md) via its _Enabled clients_ list.
 
