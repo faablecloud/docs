@@ -210,15 +210,9 @@ app = create_app()
 
 ## Workers
 
-The default is a single gunicorn worker. Flask is synchronous, so a CPU-bound or slow-I/O app benefits from more:
+Leave the worker count to Faable. The generated command runs a single gunicorn worker, and that is the right setting: don't add `--workers` to your start command.
 
-```json
-{
-  "startCommand": "gunicorn app:app --bind 0.0.0.0:$PORT --workers 4"
-}
-```
-
-Size the worker count to the [instance](../pricing.md#compute-catalog) you picked — more workers on a small instance will make things worse, not better.
+Every worker is a separate process that loads your whole app and its libraries, so each one multiplies the memory the app needs — two workers of an app that imports pandas or an AI SDK can be more than a small instance holds, and the app gets killed for running out of memory. If one worker isn't enough, move to a larger [instance](../pricing.md#compute-catalog).
 
 ## Choosing the Python version
 
@@ -254,7 +248,7 @@ No — `app.run()` is the development server. Faable starts your app with gunico
 
 ### How many gunicorn workers should I run?
 
-One by default. Increase it with `startCommand` only if your workload is CPU-bound or blocking, and size the count to the instance you picked from the [catalog](../pricing.md#compute-catalog).
+One — leave it to the start command Faable generates rather than setting `--workers`. Each worker loads its own copy of your app, so more workers mean proportionally more memory. For more capacity, pick a larger instance from the [catalog](../pricing.md#compute-catalog).
 
 ### Which Python versions does Faable support for Flask?
 

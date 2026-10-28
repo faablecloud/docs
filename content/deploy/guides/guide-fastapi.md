@@ -109,15 +109,7 @@ Your API is live at `https://<app>.faable.link` with automatic SSL and the [WAF]
 
 ## Workers and concurrency
 
-The auto-detected command runs a single uvicorn process, which is the right default: FastAPI is async, so one process handles many concurrent requests, and scaling up is usually a matter of picking a bigger [instance](../pricing.md#compute-catalog). If your workload is CPU-bound and you want multiple workers, declare it explicitly in `faable.json`:
-
-```json
-{
-  "startCommand": "uvicorn main:app --host 0.0.0.0 --port $PORT --workers 4"
-}
-```
-
-Only do this on an instance with enough CPU and RAM for the extra processes.
+The auto-detected command runs a single uvicorn process, and that is the right setting: FastAPI is async, so one process handles many concurrent requests. Leave the worker count to Faable and don't add `--workers` to your start command — every worker is a separate process with its own copy of your app and its libraries, so each one multiplies the memory the app needs. To scale up, pick a bigger [instance](../pricing.md#compute-catalog).
 
 ## Choosing the Python version
 
@@ -149,7 +141,7 @@ It checks `main.py`, `app.py`, `asgi.py`, `wsgi.py`, `application.py`, `server.p
 
 ### Can I run FastAPI with multiple uvicorn workers?
 
-Yes — set `startCommand` in `faable.json` with `--workers N`. The default is a single process, which suits most async workloads; add workers only on an instance sized for them.
+You rarely need to. One async process serves many concurrent requests, and each extra worker loads another full copy of your app into memory. Leave the worker count to the command Faable generates, and move to a larger [instance](../pricing.md#compute-catalog) for more capacity.
 
 ### Which Python versions does Faable support for FastAPI?
 

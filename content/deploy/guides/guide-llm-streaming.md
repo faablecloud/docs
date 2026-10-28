@@ -205,7 +205,7 @@ async def healthz():
     return {"ok": True}
 ```
 
-> **If you must use Flask**, remember that the default `gunicorn` worker is synchronous: one worker holds one streaming response for its whole duration, and a second visitor waits. Give it threads with a `startCommand` in [`faable.json`](../build-requirements.mdx) — `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 8` — or use FastAPI as above.
+> **If you must use Flask**, remember that the default `gunicorn` worker is synchronous: one worker holds one streaming response for its whole duration, and a second visitor waits. Give it threads with a `startCommand` in [`faable.json`](../build-requirements.mdx) — `gunicorn app:app --bind 0.0.0.0:$PORT --threads 8` — or use FastAPI as above.
 
 ## Deploy
 
