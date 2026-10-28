@@ -158,7 +158,7 @@ To pin explicitly, add a `.php-version` file:
 
 On top of what the official PHP image includes (`curl`, `mbstring`, `openssl`, `session`, `sqlite3`/`pdo_sqlite`, `xml`…), the runtime ships:
 
-`bcmath` · `exif` · `gd` · `intl` · `mysqli` · `opcache` · `pdo_mysql` · `pdo_pgsql` · `zip`
+`bcmath` · `calendar` · `exif` · `ftp` · `gd` · `gettext` · `gmp` · `intl` · `mysqli` · `opcache` · `pcntl` · `pdo_mysql` · `pdo_pgsql` · `pgsql` · `soap` · `sockets` · `xsl` · `zip`
 
 `mod_rewrite`, `mod_headers` and `mod_expires` are enabled, so `.htaccess` works as written. Defaults worth knowing: `memory_limit` 256M, `max_execution_time` 60s, `upload_max_filesize` and `post_max_size` 32M.
 

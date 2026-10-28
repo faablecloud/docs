@@ -232,7 +232,7 @@ Supported PHP versions: **8.2, 8.3 and 8.4**. A pin outside that list fails at d
 
 ### Extensions
 
-The runtime ships `bcmath`, `exif`, `gd`, `intl`, `mysqli`, `opcache`, `pdo_mysql`, `pdo_pgsql` and `zip`, on top of what the official PHP image includes (`curl`, `mbstring`, `openssl`, `session`, `sqlite3`/`pdo_sqlite`, `xml`…). Run `php -m` in a deployed script to see the exact set. An app that needs more ships its own `Dockerfile` (Hobby or Pro).
+The runtime ships `bcmath`, `calendar`, `exif`, `ftp`, `gd`, `gettext`, `gmp`, `intl`, `mysqli`, `opcache`, `pcntl`, `pdo_mysql`, `pdo_pgsql`, `pgsql`, `soap`, `sockets`, `xsl` and `zip`, on top of what the official PHP image includes (`curl`, `mbstring`, `openssl`, `session`, `sqlite3`/`pdo_sqlite`, `xml`…). Run `php -m` in a deployed script to see the exact set. An app that needs more ships its own `Dockerfile` (Hobby or Pro).
 
 Defaults worth knowing: `memory_limit` 256M, `max_execution_time` 60s, `upload_max_filesize` and `post_max_size` 32M, and **`display_errors` is off** — errors go to the deploy logs (`faable deploy logs`), never to your visitors.
 
