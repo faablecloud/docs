@@ -592,12 +592,16 @@
     "modified": "2026-10-20T17:32:40.205Z"
   },
   "content/platform/pricing.mdx": {
-    "modified": "2026-10-11T20:08:22+02:00",
-    "published": "2026-08-24T18:03:43+02:00"
+    "published": "2026-08-24T18:03:43+02:00",
+    "modified": "2026-10-28T07:08:45.454Z"
   },
   "content/platform/privacy-policy.md": {
     "published": "2026-03-31T11:42:44+02:00",
     "modified": "2026-10-19T11:20:56.458Z"
+  },
+  "content/platform/refund-policy.md": {
+    "published": "2026-10-28T07:08:45.454Z",
+    "modified": "2026-10-28T07:08:45.454Z"
   },
   "content/platform/security-compliance.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -607,8 +611,12 @@
     "modified": "2026-10-06T11:38:39+02:00",
     "published": "2026-10-06T11:38:39+02:00"
   },
+  "content/platform/support.md": {
+    "published": "2026-10-28T07:08:45.454Z",
+    "modified": "2026-10-28T07:08:45.454Z"
+  },
   "content/platform/terms-of-service.md": {
-    "modified": "2026-10-06T11:44:55+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-10-28T07:08:45.454Z"
   }
 }

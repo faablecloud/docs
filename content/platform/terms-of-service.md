@@ -6,7 +6,7 @@ rank: low
 
 # Terms of Service
 
-**Last updated:** 6 October 2026
+**Last updated:** 28 October 2026
 
 These Terms of Service (this "Agreement") govern your access to and use of the Faable cloud platform — including our websites, dashboard, APIs, CLI, Faable Deploy, Faable Auth, and any related services (together, the "Services") — provided by **Faable Cloud SLU** ("Faable", "we", "us", "our").
 
@@ -36,7 +36,7 @@ Plans, prices, entitlements, and support tiers are described on the [Pricing](pr
 - **Payment.** You authorise us to charge the payment method on file for all amounts due. Payment is processed by our payment provider; we do not store your card details.
 - **Non-payment.** If an invoice remains unpaid, we may suspend the affected projects after notifying you. Continued non-payment may lead to termination and deletion of the associated data under section 11.
 - **Changes in price.** We may change prices with at least **30 days'** notice by email or in the dashboard. The change takes effect on your next billing cycle; if you disagree, you may downgrade or terminate before it applies.
-- **Refunds.** Fees already incurred are non-refundable except where mandatory law requires otherwise. Metered usage already consumed is always payable.
+- **Refunds.** Fees already incurred are non-refundable, except as set out in the [Refund Policy](refund-policy.md) — which includes a full refund of your first plan fee if you ask within 14 days — or where mandatory law requires otherwise. Metered usage already consumed is always payable.
 - **Free plan.** The Free plan may be modified, limited, or withdrawn at any time, and inactive Free projects may be suspended or deleted after notice.
 
 ## 4. Your content
@@ -160,4 +160,4 @@ Questions about this Agreement: **[support@faable.com](mailto:support@faable.com
 Data protection questions: **[privacy@faable.com](mailto:privacy@faable.com)**
 Reporting abuse hosted on Faable: **[abuse@faable.com](mailto:abuse@faable.com)** — see [how to report abuse](security-compliance.md)
 
-See also: [Privacy Policy](privacy-policy.md) · [Security](security-compliance.md) · [Compliance](compliance.md) · [Pricing](pricing.md)
+See also: [Refund Policy](refund-policy.md) · [Support](support.md) · [Privacy Policy](privacy-policy.md) · [Security](security-compliance.md) · [Compliance](compliance.md) · [Pricing](pricing.md)

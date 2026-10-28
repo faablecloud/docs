@@ -26,7 +26,9 @@ const PLATFORM_LINKS = [
   ['/platform/compliance', 'Compliance'],
   ['/platform/sla', 'SLA'],
   ['/faq', 'FAQ'],
+  ['/platform/support', 'Support'],
   ['/platform/terms-of-service', 'Terms of Service'],
+  ['/platform/refund-policy', 'Refund Policy'],
   ['/platform/privacy-policy', 'Privacy Policy']
 ]
 
