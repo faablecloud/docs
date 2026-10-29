@@ -25,5 +25,6 @@ export default {
   'european-alternatives': 'European alternatives to Vercel, Render & Railway',
   compare: 'Faable Deploy vs Vercel, Render & Railway',
   'compare-heroku': 'vs Heroku',
-  'compare-fly-io': 'vs Fly.io'
+  'compare-fly-io': 'vs Fly.io',
+  'compare-coolify': 'vs Coolify'
 }

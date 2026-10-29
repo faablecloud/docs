@@ -395,17 +395,21 @@
     "published": "2026-07-04T11:38:43+02:00",
     "modified": "2026-10-28T09:42:02.251Z"
   },
+  "content/deploy/compare-coolify.mdx": {
+    "published": "2026-10-29T19:13:19.774Z",
+    "modified": "2026-10-29T19:13:19.774Z"
+  },
   "content/deploy/compare-fly-io.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-10-29T19:13:19.774Z"
   },
   "content/deploy/compare-heroku.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-10-29T19:13:19.774Z"
   },
   "content/deploy/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-10-29T19:13:19.774Z"
   },
   "content/deploy/domains/apex.md": {
     "modified": "2026-09-19T12:00:03+02:00",
@@ -441,7 +445,7 @@
   },
   "content/deploy/european-alternatives.mdx": {
     "published": "2026-09-12T13:03:24+02:00",
-    "modified": "2026-10-29T07:59:35.927Z"
+    "modified": "2026-10-29T19:13:19.774Z"
   },
   "content/deploy/get-started.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -549,7 +553,7 @@
   },
   "content/deploy/index.mdx": {
     "published": "2026-10-17T14:48:06.267Z",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-10-29T19:13:19.774Z"
   },
   "content/deploy/members.md": {
     "modified": "2026-09-30T14:05:48+02:00",

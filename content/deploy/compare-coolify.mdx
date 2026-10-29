@@ -1,0 +1,65 @@
+---
+title: Faable Deploy vs Coolify
+description: Faable Deploy vs Coolify — a managed platform vs a self-hosted PaaS on servers you run. Who patches the servers, backups, the Web Application Firewall, bundled authentication, databases and persistent storage, what each really costs, and when Coolify on your own VPS is the better choice.
+rank: high
+---
+
+# Faable Deploy vs Coolify
+
+**Short answer:** Coolify is an open-source, self-hosted PaaS: you install it on servers you rent — typically a VPS from Hetzner or OVHcloud — and get a Vercel- or Heroku-like dashboard on top, including one-click databases. The software is free, but the platform isn't: **you pay for the servers or the hardware they run on, and you run them** — operating system updates, hardening, backups and uptime are yours. Faable Deploy is the managed version of the same idea: push to GitHub and your app is live, with nothing underneath to patch, a **Web Application Firewall** in front, **[Faable Auth](../auth/get-started.md) in the same subscription**, on a **permanent free plan** or a **fixed monthly fee in EUR**, operated in Europe.
+
+> Coolify details checked against coolify.io, its docs and its GitHub repository in October 2026. They change — confirm anything decisive on their own site.
+
+## Quick comparison
+
+|                                           | **Faable Deploy**                                              | Coolify                                                                                 |
+| ----------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| What it is                                | Managed platform                                               | Open-source PaaS you install on your own servers                                        |
+| Servers                                   | Ours — nothing to rent or size                                 | Yours — you rent and size them, even on Coolify Cloud                                   |
+| OS updates, hardening, server security    | Ours                                                           | **Yours** ("Server OS updates and hardening: Managed by you")                           |
+| Getting an app live                       | Push to GitHub — zero config                                   | Connect a repo in the dashboard; Nixpacks, Dockerfile or Compose                        |
+| Permanent free plan                       | ✅ no card, no expiry                                          | Self-hosted is free; you pay for the servers                                            |
+| Pricing model                             | **Fixed fee per project**: 0 €, 15 €, 99 €/month               | Your servers + Coolify Cloud ($5/month for 2 servers, $3 per extra) or free self-hosted |
+| Free automatic SSL                        | ✅                                                             | ✅                                                                                      |
+| Pull-request previews                     | ❌                                                             | ✅                                                                                      |
+| Built-in Web Application Firewall         | ✅ OWASP CRS, every plan                                       | ❌ bring your own                                                                       |
+| Bundled identity / auth (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free      | ❌                                                                                      |
+| Databases and persistent volumes          | ❌ use a managed database ([see options](guides/databases.md)) | ✅ one-click Postgres, MySQL, Redis… with persistent storage                            |
+| One-click services                        | ❌                                                             | ✅ 360+ (n8n, Plausible, Umami…)                                                        |
+| Backups of your app data                  | Nothing stateful to back up on our side                        | Yours to configure — Coolify Cloud backs up only its own control plane                  |
+| Support                                   | Email from platform engineers on Hobby and Pro                 | Community, plus limited email support on Cloud                                          |
+| Company                                   | 🇪🇺 European                                                    | coolLabs Solutions Kft.; Coolify Cloud runs on Hetzner in Germany                       |
+
+## Why teams pick Faable Deploy over Coolify
+
+### No server to run
+
+Coolify makes deploying easy, but it doesn't make the server go away. Its own docs are direct about it: on Coolify Cloud, Coolify manages the control plane, and "you still secure your servers" — OS updates, hardening, disk space, monitoring, the 3 a.m. outage. On Faable there is no server in your account at all. Push to your deploy branch and Faable builds Django, FastAPI, Flask, Express, Fastify, NestJS, Next.js, Astro, Vite, Laravel or plain PHP and serves it at `https://<app>.faable.link` — see [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx).
+
+### Security in front of every app
+
+Every Faable app sits behind a [managed Web Application Firewall](security-waf.md) running the OWASP Core Rule Set, on every plan. With Coolify, what sits in front of your app is the reverse proxy on your server; a WAF is something you add and maintain yourself.
+
+### Sign-in included
+
+When your app needs users, [Faable Auth](../auth/get-started.md) gives you hosted login, social and passwordless sign-in, MFA, passkeys and machine-to-machine tokens in the same account and subscription — 15,000 monthly active users on Free, unlimited on Hobby and Pro. On Coolify you'd deploy an identity server as one more service and run it too.
+
+### What it really costs
+
+A free license is not a free platform. Coolify Cloud starts at $5 a month and the self-hosted edition costs nothing, but neither includes the machines: you pay for the servers — rented, or your own hardware on premises, with its power, network and replacements — plus a second one if you want backups or failover, and **the hours someone spends** patching, monitoring and restoring all of it. That last line never shows up on an invoice, and it's usually the biggest. On Faable the fee is the whole bill: the [Free plan](pricing.mdx) is permanent with no credit card — up to 3 projects, custom domains, 10 GB of egress a month — and Hobby is **15 €/month** with unlimited deployments, 50 GB of egress and Faable Auth with unlimited monthly active users. Free and Hobby never bill per GB.
+
+### European company, European infrastructure
+
+Faable is a European company and your apps and data are hosted in the EU, with hosting and identity under one data-processing agreement. With Coolify, where your data lives is wherever you rent the server — which is a strength if you want to choose, and a responsibility if your customers ask for a DPA covering it.
+
+## When Coolify might fit better
+
+- **You must run on your own servers** — full control, an on-premises mandate or an air-gapped network — and have someone whose job is to operate them.
+- **You need databases or persistent volumes next to your app.** Coolify runs Postgres, MySQL, Redis and the rest with persistent storage; Faable apps are stateless and use a [managed database](guides/databases.md).
+- **You want one-click self-hosted services** like n8n, Plausible or Umami, or **pull-request preview environments**.
+
+## Related
+
+- [Faable Deploy vs Vercel, Render & Railway](compare.mdx) · [vs Heroku](compare-heroku.mdx) · [vs Fly.io](compare-fly-io.mdx)
+- [European alternatives to Vercel, Render and Railway](european-alternatives.mdx)
+- [Get Started with Faable Deploy](get-started.md) · [Deploy pricing](pricing.mdx)
