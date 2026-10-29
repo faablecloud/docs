@@ -1,0 +1,107 @@
+---
+title: Faable Auth vs ZITADEL
+description: Faable Auth vs ZITADEL — flat plan fee vs billing by the sum of daily active users, what each free tier includes, EU data residency and who you contract with, self-hosting under AGPL-3.0, B2B organizations, SAML, machine-to-machine, token exchange, MCP authorization, and migrating from ZITADEL.
+rank: high
+---
+
+# Faable Auth vs ZITADEL
+
+**Short answer:** ZITADEL and Faable Auth are both **standards-first OAuth 2.0 / OpenID Connect identity servers** with hosted login, multi-tenant organizations and machine-to-machine clients — closer to each other than either is to a component library like Clerk. The real differences are three. **How you pay**: ZITADEL Cloud bills the **sum of daily active users**, so one person who signs in on ten days counts ten times; Faable charges a **flat plan fee with unlimited MAU** on Hobby and Pro. **Whether you can run it yourself**: ZITADEL is open source (AGPL-3.0) and self-hostable; Faable Auth is managed only. And **what comes with it**: Faable Auth shares one subscription with [Faable Deploy](../deploy/get-started.md), your app hosting.
+
+> ZITADEL details checked against zitadel.com pricing, its help center and docs in October 2026. They change — confirm anything decisive on their own site.
+
+## At a glance
+
+| Capability                              | Faable Auth                                                                                                        | ZITADEL                                                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| **Pricing model**                       | Plan fee: Free (15,000 MAU), Hobby 15 € and Pro 99 € (unlimited MAU)                                               | Free (100 daily active users); Pro **US$100/month** with 25,000 DAU included, then usage; Enterprise on contract |
+| What is counted                         | Monthly active users, limited only on Free                                                                         | **Sum of daily active users**: each user counts once per day they sign in or refresh a token                     |
+| Credit card to start                    | No                                                                                                                 | No (Free)                                                                                                        |
+| Self-hosting                            | ❌ managed only                                                                                                    | ✅ AGPL-3.0, or a commercial license on Enterprise                                                               |
+| Two-step verification (MFA)             | Authenticator app, security keys, passkeys, recovery codes — **Hobby**                                             | OTP, U2F and passkeys, at no extra charge                                                                        |
+| Passkeys                                | As a second factor (Hobby) and as the sign-in method (Pro)                                                         | ✅                                                                                                               |
+| Hosted login pages                      | ✅ [every screen](hosted-login.mdx), on every plan                                                                 | ✅ customizable hosted login, or your own UI on its APIs                                                         |
+| B2B organizations                       | [Organizations](organizations.md) with verified domains, SSO and auto-join (Pro); teams and roles on every plan    | ✅ unlimited organizations, delegated administration                                                             |
+| Enterprise SSO (inbound)                | OIDC (Okta, Entra ID, Google Workspace…), Pro — 50 federated MAU free, then €0.0010 each                           | ✅ external identity providers per organization; 3 included, then US$100/month each on Pro                       |
+| Your tenant as a SAML IdP for your apps | ✅ [SAML for your apps](saml.md), Pro                                                                              | ✅                                                                                                               |
+| SCIM provisioning                       | ❌                                                                                                                 | ✅ inbound SCIM                                                                                                  |
+| Machine-to-machine                      | ✅ standard [client credentials](oauth-flows/client-credentials.mdx) — 100/month free, then €2.25 per 1,000        | ✅ service users; each counts as a daily active user on the days it authenticates                                |
+| Device code                             | ✅                                                                                                                 | ✅                                                                                                               |
+| Token exchange                          | ✅ [RFC 8693](oauth-flows/token-exchange.mdx)                                                                      | Experimental beta, enabled through the feature API                                                               |
+| Dynamic client registration             | ✅ (off by default, enabled per tenant)                                                                            | ✅ (off by default, enabled in security settings)                                                                |
+| MCP server authorization                | ✅ [guide](guides/mcp-authorization.mdx) — DCR, Client ID Metadata Documents, consent screen, per-tool permissions | DCR for MCP clients; Client ID Metadata Documents not documented                                                 |
+| Custom code in the login                | [Actions](extensibility/actions.md) run inside the flow (Hobby) + [webhooks](extensibility/webhooks.md)            | ✅ Actions                                                                                                       |
+| Audit history                           | Audit logs on Pro                                                                                                  | Event-sourced audit trail; history kept 1 day on Free, 2 weeks on Pro                                            |
+| Data regions                            | Europe, no non-EU region                                                                                           | US, EU, Switzerland or Australia, on Google Cloud                                                                |
+| Who you contract with                   | A European company                                                                                                 | CAOS AG (Switzerland); the DPA and privacy policy name Zitadel, Inc. (San Francisco)                             |
+| Bundled with app hosting                | ✅ [Faable Deploy](../deploy/get-started.md), same subscription                                                    | ❌                                                                                                               |
+
+## Pricing, worked through
+
+The two meters count different things, and that matters more than the list prices.
+
+ZITADEL bills the **sum of daily active users**: every day, each user who signs in, refreshes a token or — for a service user — authenticates counts once, and the month is the sum of the days. A user who signs in on twenty days of the month is twenty units. Pro includes **25,000** of those units for US$100/month; beyond that, usage is billed at the end of the period, along with extra identity provider connections (US$100 each after 3), custom domains (US$50 each after 1), Management API requests above 500,000 and administrators beyond 3.
+
+Faable counts **monthly active users** — anyone with a successful login in the month, once — and only Free has a limit (15,000). Hobby (15 €) and Pro (99 €) have no per-user line.
+
+What that means for a product with **2,000 users who come back every working day** (about 21 days a month):
+
+|                  | Faable Auth                                                | ZITADEL                                                          |
+| ---------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| Units counted    | 2,000 MAU                                                  | 2,000 × 21 = **42,000** daily active users                       |
+| Within the plan? | Yes — Free covers 15,000 MAU; Hobby (15 €) if you need MFA | No — 17,000 above Pro's 25,000, billed as usage on top of US$100 |
+
+**The honest reading:** ZITADEL's Free is generous on features — MFA and passkeys at no extra charge, unlimited organizations — but its 100 daily active users is a test allowance, not a launch. Its Pro is a good fit for an app people sign in to occasionally. For an app people use every day, the daily meter grows with engagement, while Faable's fee stays flat. Faable is the one that charges for MFA (Hobby) and for passkey sign-in (Pro).
+
+Faable figures are plan fees from [Auth pricing](pricing.mdx), in euros, VAT excluded; ZITADEL figures are its list prices in US dollars. ZITADEL's calculator does not state the size of a DAU billing unit, so we don't compute the overage — use their [pricing calculator](https://zitadel.com/pricing/detail).
+
+## Self-hosting
+
+This is where ZITADEL is simply different. It is open source — **AGPL-3.0** since version 3, with the SDKs and API definitions still under Apache 2.0 — and runs on PostgreSQL. Using it as your own identity platform doesn't trigger the copyleft; modifying it and offering it as a service to others does. Its Enterprise plan replaces the AGPL with a commercial license, with support and an SLA.
+
+Faable Auth is managed only: there is nothing to install, patch or back up, and no way to run it on your own servers. If running the identity server yourself is a requirement — air-gapped networks, an on-premises mandate — ZITADEL (or [Keycloak](compare.mdx)) is the option, and this page can stop here.
+
+## Where your users' data lives
+
+ZITADEL Cloud lets you pick the region when you create an instance — **United States, European Union, Switzerland or Australia**, all on Google Cloud — and keeps backups in the same region, noting that data in transit may leave it when users sign in from abroad. Contracts are with CAOS AG in St. Gallen, under Swiss law, but its DPA and privacy policy name Zitadel, Inc., in San Francisco. If your procurement asks who processes the data, read both.
+
+Faable Auth runs **in Europe**, operated by a European company, with no non-EU region to choose by mistake. See [European alternatives to Auth0, Clerk and Cognito](european-alternatives.mdx) for how the European providers compare on this point, and our [compliance scope](../platform/compliance.md#compliance-scope).
+
+## Machine-to-machine, token exchange and MCP
+
+**Machine-to-machine.** Both issue tokens to services through standard OAuth. On ZITADEL a service user counts as a daily active user on each day it authenticates — a cron job that runs every day is about 30 units a month, on top of your people. Faable meters [client credentials](oauth-flows/client-credentials.mdx) tokens separately: 100 a month on every plan, then €2.25 per 1,000 on Hobby and Pro.
+
+**Token exchange.** Faable supports [RFC 8693 token exchange](oauth-flows/token-exchange.mdx) for delegation and service-to-service calls on behalf of a user. ZITADEL documents it as an experimental beta you enable through its feature API.
+
+**MCP servers.** Both can act as the authorization server of a remote MCP server through Dynamic Client Registration, off by default on both. Faable also supports Client ID Metadata Documents — the other registration method the MCP specification allows — and adds a consent screen, per-tool permissions with step-up and a **Connected apps** list where users revoke access. See [Add OAuth to your MCP server](guides/mcp-authorization.mdx).
+
+## Migrating from ZITADEL
+
+Users move with their passwords when you can get the hashes out. ZITADEL hashes with bcrypt by default, and Faable imports bcrypt strings (`$2a$`/`$2b$`/`$2y$`) as they are, re-hashing them with Argon2id on each user's first sign-in:
+
+1. Get your users with their password hashes — from your PostgreSQL database if you self-host; on ZITADEL Cloud, ask their support for an export.
+2. Send them to the Management API's `POST /user/import` — up to 500 users per request, with `"dry_run": true` first — passing each bcrypt string as `password_hash`. See [Import and export password hashes](guides/import-password-hashes.mdx#import-over-the-management-api).
+3. Recreate your clients in Faable and point your apps at the new issuer. Because both speak standard OIDC, most apps only change the issuer URL, client ID and secret.
+
+## When Faable Auth is the better fit
+
+- **Your users sign in often** and you want a bill that doesn't grow with every day they come back.
+- **You want to launch for free**: 15,000 monthly users on Free, against 100 daily active users.
+- **You need identities held by a European company in Europe**, without having to check which entity is in the DPA.
+- **You run services or cron jobs** that shouldn't count as users.
+- **You want auth and hosting together**: [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.mdx).
+
+## When ZITADEL might fit better
+
+- **You need to self-host** the identity server, or want the option to leave the managed service and run the same code yourself.
+- **You need SCIM** to provision users from your customers' directories.
+- **You want MFA and passkeys on the free plan** and stay under 100 daily active users.
+- **You need data residency in Switzerland, the US or Australia.**
+- **Your users sign in rarely**, so the daily meter stays low.
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx) · [vs Clerk](compare-clerk.mdx) · [vs Better Auth](compare-better-auth.mdx)
+- [European alternatives to Auth0, Clerk and Cognito](european-alternatives.mdx)
+- [Import and export password hashes](guides/import-password-hashes.mdx)
+- [Faable Auth features](features.mdx) · [Auth pricing](pricing.mdx)

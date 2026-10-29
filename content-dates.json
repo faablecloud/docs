@@ -53,7 +53,7 @@
   },
   "content/auth/compare-better-auth.mdx": {
     "published": "2026-10-11T19:28:39+02:00",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-10-29T19:13:17.555Z"
   },
   "content/auth/compare-clerk.mdx": {
     "published": "2026-10-11T13:11:20+02:00",
@@ -67,9 +67,13 @@
     "published": "2026-06-27T13:49:17+02:00",
     "modified": "2026-10-19T06:55:32.936Z"
   },
+  "content/auth/compare-zitadel.mdx": {
+    "published": "2026-10-29T19:13:17.555Z",
+    "modified": "2026-10-29T19:13:17.555Z"
+  },
   "content/auth/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-10-29T19:13:17.555Z"
   },
   "content/auth/connections.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -89,7 +93,7 @@
   },
   "content/auth/european-alternatives.mdx": {
     "published": "2026-10-17T19:03:21.619Z",
-    "modified": "2026-10-19T07:33:52.245Z"
+    "modified": "2026-10-29T19:13:17.555Z"
   },
   "content/auth/extensibility/actions.md": {
     "modified": "2026-09-24T09:46:00+02:00",
@@ -141,7 +145,7 @@
   },
   "content/auth/index.mdx": {
     "published": "2026-10-17T14:48:06.267Z",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-10-29T19:13:17.555Z"
   },
   "content/auth/integrations/shopify.md": {
     "modified": "2026-09-24T13:46:23+02:00",

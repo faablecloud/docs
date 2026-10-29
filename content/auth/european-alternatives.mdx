@@ -61,7 +61,7 @@ An EU or Swiss company operating the identity service. Look closely here, becaus
 
 - **[Hanko](https://www.hanko.io/)** is Hanko GmbH, in Kiel, Germany. Hanko Cloud is hosted in the AWS Frankfurt region, and its DPA states that customer personal data "is stored exclusively in data centers located in Germany" and that Hanko "does not permit access to Customer Personal Data from outside the European Economic Area". Its listed sub-processors include AWS's EU entity and Hetzner. Its backend is open source (AGPL-3.0).
 - **[cidaas](https://www.cidaas.com/)** is Widas ID GmbH, in Germany, and states "Hosting in Germany / EU". It is priced for enterprises — paid plans start at €699 a month.
-- **[ZITADEL](https://zitadel.com/)** is contracted through CAOS AG in St. Gallen, Switzerland, under Swiss law, and offers data residency in the EU, Switzerland, the US or Australia on Google Cloud. Its DPA and privacy policy, however, name Zitadel, Inc., in San Francisco — read both before treating it as a purely Swiss provider.
+- **[ZITADEL](https://zitadel.com/)** is contracted through CAOS AG in St. Gallen, Switzerland, under Swiss law, and offers data residency in the EU, Switzerland, the US or Australia on Google Cloud. Its DPA and privacy policy, however, name Zitadel, Inc., in San Francisco — read both before treating it as a purely Swiss provider. See [Faable Auth vs ZITADEL](/auth/compare-zitadel).
 - **Faable Auth** — see below.
 
 This is the category to look at when the requirement is about the company and its jurisdiction, not only the datacenter. Even here, check the infrastructure underneath: a European company running on a US hyperscaler's EU region has a US sub-processor holding your data, which may or may not matter for your requirement.
@@ -94,15 +94,15 @@ Once the category is settled, these are the questions whose answers differ in wa
 
 List prices as of October 2026, before tax, for the plan a production consumer app would typically use. Units differ, so read the notes.
 
-| Provider                                    | Free tier                         | At 10,000 users                    | At 50,000 users                     |
-| ------------------------------------------- | --------------------------------- | ---------------------------------- | ----------------------------------- |
-| **Faable Auth**                             | 15,000 MAU                        | 0 € (Free)                         | 15 € (Hobby, no MAU limit)          |
-| [Auth0](/auth/compare)                      | 25,000 MAU                        | $0 (Free) · $700 on B2C Essentials | Not listed (slider ends at 30,000+) |
-| [Clerk](/auth/compare-clerk)                | 50,000 retained users per app     | $0                                 | $0                                  |
-| [Amazon Cognito](/auth/compare-aws-cognito) | 10,000 MAU                        | $0                                 | $600 (Essentials)                   |
-| Google Identity Platform                    | 50,000 MAU (email, phone, social) | $0                                 | $0                                  |
-| Hanko                                       | 10,000 MAU                        | $0                                 | $429 (Pro, $29 + $0.01 per MAU)     |
-| ZITADEL, Ory Network                        | Priced by daily active users      | Not directly comparable            | Not directly comparable             |
+| Provider                                      | Free tier                         | At 10,000 users                    | At 50,000 users                     |
+| --------------------------------------------- | --------------------------------- | ---------------------------------- | ----------------------------------- |
+| **Faable Auth**                               | 15,000 MAU                        | 0 € (Free)                         | 15 € (Hobby, no MAU limit)          |
+| [Auth0](/auth/compare)                        | 25,000 MAU                        | $0 (Free) · $700 on B2C Essentials | Not listed (slider ends at 30,000+) |
+| [Clerk](/auth/compare-clerk)                  | 50,000 retained users per app     | $0                                 | $0                                  |
+| [Amazon Cognito](/auth/compare-aws-cognito)   | 10,000 MAU                        | $0                                 | $600 (Essentials)                   |
+| Google Identity Platform                      | 50,000 MAU (email, phone, social) | $0                                 | $0                                  |
+| Hanko                                         | 10,000 MAU                        | $0                                 | $429 (Pro, $29 + $0.01 per MAU)     |
+| [ZITADEL](/auth/compare-zitadel), Ory Network | Priced by daily active users      | Not directly comparable            | Not directly comparable             |
 
 Two honest readings. First, at these volumes several US providers are free, so price is rarely what decides a European move — jurisdiction is. Second, free tiers differ in what they include: MFA, passwordless, custom domains and enterprise SSO are paid features on most of them, Faable included. Faable's figures are flat plan fees in euros with no per-user charge; see [Auth pricing](/auth/pricing).
 
