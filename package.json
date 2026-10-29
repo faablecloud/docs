@@ -4,7 +4,7 @@
   "dependencies": {
     "@next/third-parties": "^16.2.1",
     "@tailwindcss/postcss": "^4.2.2",
-    "next": "^16.2.3",
+    "next": "^16.4.3",
     "nextra": "^4.6.1",
     "nextra-theme-docs": "^4.6.1",
     "pagefind": "^1.4.0",
@@ -30,7 +30,7 @@
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "eslint": "^9.39.0",
-    "eslint-config-next": "^16.2.3",
+    "eslint-config-next": "^16.4.3",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.5",
     "lint-staged": "^16.2.7",
