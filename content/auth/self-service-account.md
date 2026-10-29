@@ -35,6 +35,10 @@ await auth.updateProfile({
   fields: [{ key: 'profile', value: 'teacher' }]
 })
 
+// One field at a time (null removes it), and reading it back from the session.
+await auth.updateProfileField('profile', 'teacher')
+const profile = await auth.getProfileField('profile') // 'teacher'
+
 // Unlink a Google, GitHub or GitLab account (a connection id from getCredentials).
 const { error: unlinkError } = await auth.unlinkIdentity(connection_id)
 if (unlinkError?.code === 'last_sign_in_method') {
@@ -51,7 +55,7 @@ const { data: ended } = await auth.revokeOtherSessions() // { revoked: 2 }
 await auth.deleteAccount()
 ```
 
-These methods need `@faable/auth-js` 2.19 or later.
+These methods need `@faable/auth-js` 2.19 or later; `updateProfileField()` and `getProfileField()` need 3.0. `updateProfile()` and `updateProfileField()` also update the stored session's user and fire `USER_UPDATED`, so `getSession()` and your `onAuthStateChange` handlers see the new values without waiting for a token refresh.
 
 Errors come back as an `AuthApiError` whose `code` is one of the [error codes](#errors) below.
 
@@ -59,15 +63,15 @@ Errors come back as an `AuthApiError` whose `code` is one of the [error codes](#
 
 All of them are on your auth tenant and accept either an `Authorization: Bearer <access_token>` header or the session cookie, like `GET /me`.
 
-| Method   | Path                            | auth-js                 | Purpose                                                           |
-| -------- | ------------------------------- | ----------------------- | ----------------------------------------------------------------- |
-| `GET`    | `/me/credentials`               | `getCredentials()`      | Whether the user has a password, and the connections they use.    |
-| `POST`   | `/me/password`                  | `setPassword()`         | Set or change the user's password.                                |
-| `PATCH`  | `/me`                           | `updateProfile()`       | Update the name, company, country and your app's custom `fields`. |
-| `DELETE` | `/me/identities/:connection_id` | `unlinkIdentity()`      | Unlink one of the user's social or enterprise accounts.           |
-| `GET`    | `/me/sessions`                  | `listSessions()`        | The user's active sessions. See [Sessions](sessions.md).          |
-| `POST`   | `/me/sessions/revoke-others`    | `revokeOtherSessions()` | Sign the user out everywhere else.                                |
-| `DELETE` | `/me`                           | `deleteAccount()`       | Delete the user's account.                                        |
+| Method   | Path                            | auth-js                                   | Purpose                                                           |
+| -------- | ------------------------------- | ----------------------------------------- | ----------------------------------------------------------------- |
+| `GET`    | `/me/credentials`               | `getCredentials()`                        | Whether the user has a password, and the connections they use.    |
+| `POST`   | `/me/password`                  | `setPassword()`                           | Set or change the user's password.                                |
+| `PATCH`  | `/me`                           | `updateProfile()`, `updateProfileField()` | Update the name, company, country and your app's custom `fields`. |
+| `DELETE` | `/me/identities/:connection_id` | `unlinkIdentity()`                        | Unlink one of the user's social or enterprise accounts.           |
+| `GET`    | `/me/sessions`                  | `listSessions()`                          | The user's active sessions. See [Sessions](sessions.md).          |
+| `POST`   | `/me/sessions/revoke-others`    | `revokeOtherSessions()`                   | Sign the user out everywhere else.                                |
+| `DELETE` | `/me`                           | `deleteAccount()`                         | Delete the user's account.                                        |
 
 A bearer token must be a **user** token issued by **this** tenant; a `client_credentials` token, or one from another tenant, gets `403 forbidden`. A suspended user, or a session still waiting for its second factor, is refused the same way `GET /me` refuses them.
 
@@ -191,6 +195,8 @@ curl -X PATCH https://<your-auth-domain>/me \
 - The rest of `user_metadata` is never touched. Users cannot write arbitrary metadata.
 
 The response is the updated user, and `GET /me` returns the fields under `user_metadata`.
+
+With auth-js, `updateProfileField(key, value)` writes one field (`null` removes it) and `getProfileField(key)` reads it back from the session's user, without a request (`null` when unset). See [Client library](#client-library).
 
 ## Unlinking an account
 

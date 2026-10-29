@@ -38,6 +38,8 @@ Access tokens and id tokens already issued keep working until they expire (up to
 
 Signing out through the `/logout` endpoint revokes the session the same way — a sign-out is not a cosmetic cookie clear.
 
+With [`@faable/auth-js`](self-service-account.md#client-library), `signOut()` signs the user out of **one app**: it revokes that app's refresh token (RFC 7009 `/oauth/revoke`) and clears its storage, and the session — with the user's other apps on the tenant — stays. `signOut({ scope: 'global' })` goes through `/logout` and ends the session for every app.
+
 ### From the dashboard
 
 Open the user (**Users → the user**). The **Sessions & devices** section lists the active sessions with their browser, operating system, application and IP, each with a **Revoke** button, and the recent history underneath.

@@ -99,10 +99,10 @@ The discovery document advertises `backchannel_logout_supported` and `backchanne
 
 Set two fields on the client (via [Clients](../clients.md) or `POST /clients`):
 
-| Field                                 | Description                                                                                                                                                   |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `backchannel_logout_uri`              | The HTTPS URL Faable POSTs the `logout_token` to. It must answer `200` within 5 seconds; Faable retries twice (after 0.5 s and 2 s) and records the outcome.  |
-| `backchannel_logout_session_required` | When `true`, the RP requires a `sid` in the token. Faable always includes it, so this is informational.                                                        |
+| Field                                 | Description                                                                                                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `backchannel_logout_uri`              | The HTTPS URL Faable POSTs the `logout_token` to. It must answer `200` within 5 seconds; Faable retries twice (after 0.5 s and 2 s) and records the outcome. |
+| `backchannel_logout_session_required` | When `true`, the RP requires a `sid` in the token. Faable always includes it, so this is informational.                                                      |
 
 ### What arrives
 
@@ -115,14 +115,14 @@ logout_token=eyJhbGciOiJSUzI1NiIsImtpZCI6...
 
 The `logout_token` is a JWT signed with the same key as the tenant's `id_token`s (its `jwks_uri`), with header `typ: logout+jwt` and these claims:
 
-| Claim    | Value                                                                                            |
-| -------- | ------------------------------------------------------------------------------------------------ |
-| `iss`    | The tenant issuer, identical to the `id_token`'s.                                                 |
-| `aud`    | Your `client_id`.                                                                                |
-| `sub`    | The user (`user_…`).                                                                             |
-| `sid`    | The session id — the same `sid` every `id_token` of that session carried.                        |
-| `events` | `{ "http://schemas.openid.net/event/backchannel-logout": {} }`                                   |
-| `iat`, `exp`, `jti` | Issued at, 2-minute expiry, unique id. There is never a `nonce`.                      |
+| Claim               | Value                                                                     |
+| ------------------- | ------------------------------------------------------------------------- |
+| `iss`               | The tenant issuer, identical to the `id_token`'s.                         |
+| `aud`               | Your `client_id`.                                                         |
+| `sub`               | The user (`user_…`).                                                      |
+| `sid`               | The session id — the same `sid` every `id_token` of that session carried. |
+| `events`            | `{ "http://schemas.openid.net/event/backchannel-logout": {} }`            |
+| `iat`, `exp`, `jti` | Issued at, 2-minute expiry, unique id. There is never a `nonce`.          |
 
 ### Receiving it
 
@@ -157,6 +157,8 @@ return Response.redirect(logoutUrl.toString())
 ```
 
 Make sure `https://app.example.com/logged-out` is in the client's `logout_urls`, or the redirect will be rejected.
+
+With [`@faable/auth-js`](../quickstart/javascript.mdx), `signOut({ scope: 'global', returnTo })` builds this redirect for you, with the stored `id_token` as `id_token_hint` and `returnTo` as `post_logout_redirect_uri`. `signOut()` with no scope does **not** call `/logout`: since 3.0 it signs the user out of that app only, revoking its refresh token at `/oauth/revoke`, and the tenant session and the user's other apps stay signed in.
 
 ## Next steps
 

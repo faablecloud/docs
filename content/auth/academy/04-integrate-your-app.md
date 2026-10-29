@@ -62,7 +62,8 @@ const user = session?.user // identity from the ID token
 ### Log out
 
 ```ts
-await auth.signOut() // clears the local session; see OIDC Logout for RP-initiated
+await auth.signOut() // this app only: revokes its refresh token, the SSO session stays
+await auth.signOut({ scope: 'global' }) // + the SSO session, via the tenant's /logout
 ```
 
 For logging out across every app the user signed into, see

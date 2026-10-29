@@ -75,9 +75,7 @@ Passkeys as the sign-in method are on the **Pro** plan; passkeys as a second fac
 import { auth } from './auth'
 
 export function SignIn() {
-  return (
-    <button onClick={() => auth.signInWithOauthConnection({})}>Sign in</button>
-  )
+  return <button onClick={() => auth.signIn()}>Sign in</button>
 }
 ```
 
