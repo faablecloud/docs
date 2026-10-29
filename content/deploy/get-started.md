@@ -1,6 +1,6 @@
 ---
 title: Get Started
-description: Deploy your first app on Faable Deploy in minutes — push to GitHub, run a workflow, and serve at <app>.faable.link with free SSL.
+description: Deploy your first app on Faable Deploy in minutes — push to GitHub or GitLab, or deploy from your terminal, and serve at <app>.faable.link with free SSL.
 rank: entry
 ---
 
@@ -23,7 +23,7 @@ Three concepts model the whole product:
 ## Deploy your first app
 
 1. In the **[Faable Dashboard](https://dashboard.faable.com)**, create a **Project** and an **App**.
-2. Open the app and click **Link repository**. Pick your GitHub org and repo (install the **Faable GitHub App** if prompted). Faable connects your repo and sets up automatic deploys for you.
+2. Open the app and click **Link repository**. Pick **GitHub** or **GitLab** and choose your repo: on GitHub, install the **Faable GitHub App** if prompted; on gitlab.com, connect your GitLab account ([details](gitlab-bitbucket.md)). Faable connects your repo and sets up automatic deploys for you.
 3. **Push to your release branch.** Faable detects your framework, builds your app, and takes it live at `https://<app>.faable.link`.
 
 That's it — nothing to configure, no tokens or YAML to write.

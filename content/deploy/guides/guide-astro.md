@@ -6,7 +6,7 @@ rank: high
 
 # Deploy an Astro Site
 
-**Push your Astro project to GitHub and Faable builds and serves it — no Dockerfile, no YAML.** The builder detects Astro from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
+**Push your Astro project to GitHub or GitLab and Faable builds and serves it — no Dockerfile, no YAML.** The builder detects Astro from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 Astro has two output modes, and **they deploy differently**. Which one you are on decides everything below, so check `astro.config.mjs` first.
 

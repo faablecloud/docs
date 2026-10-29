@@ -22,7 +22,7 @@ const products = [
     name: 'Faable Deploy',
     tagline: 'Zero-config CI/CD',
     description:
-      'Link a Git repository and Faable builds, deploys, and serves it on a global edge — with custom domains and free SSL out of the box.',
+      'Link a Git repository and Faable builds, deploys, and serves it — with custom domains and free SSL out of the box.',
     cta: 'Explore Deploy'
   }
 ]

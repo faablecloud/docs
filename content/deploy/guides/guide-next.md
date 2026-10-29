@@ -7,7 +7,7 @@ rank: high
 
 # Deploy a Next.js App ▲
 
-**Push your Next.js project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no server config.** The builder detects Next.js from your repo, runs `next build`, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
+**Push your Next.js project to GitHub or GitLab and Faable builds and runs it — no Dockerfile, no YAML, no server config.** The builder detects Next.js from your repo, runs `next build`, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 ## What Faable detects
 

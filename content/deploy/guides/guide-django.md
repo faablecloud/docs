@@ -7,7 +7,7 @@ rank: high
 
 # Deploy a Django App 🐍
 
-**Push your Django project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `gunicorn` command to write.** The builder detects Django from your repo, installs your dependencies, and starts your app behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
+**Push your Django project to GitHub or GitLab and Faable builds and runs it — no Dockerfile, no YAML, no `gunicorn` command to write.** The builder detects Django from your repo, installs your dependencies, and starts your app behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 ## What Faable detects
 

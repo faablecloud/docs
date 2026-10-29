@@ -1,6 +1,6 @@
 ---
 title: Hosting AI agents in Europe
-description: What it takes to run an AI agent in production on European infrastructure — which agent shapes fit a scale-to-zero platform and which do not, the 60-second time-to-first-byte limit on model calls, where agent memory has to live because the filesystem is ephemeral, and how Faable Deploy fits. European hosting, GDPR data sovereignty.
+description: What it takes to run an AI agent in production on European infrastructure — which agent shapes fit a scale-to-zero platform and which do not, the 60-second time-to-first-byte limit on model calls, where agent memory has to live because the filesystem is ephemeral, and how Faable Deploy fits. Hosted in the EU, GDPR.
 rank: high
 ---
 
@@ -58,7 +58,7 @@ If data sovereignty is why you are looking at European hosting in the first plac
 
 ## How Faable Deploy fits
 
-[Faable Deploy](get-started.md) runs an agent the same way it runs any other app: connect a GitHub repository, and it detects the stack, builds it, and serves it at `https://<app>.faable.link` with free SSL and a built-in [Web Application Firewall](security-waf.md). Hosting is **European with GDPR data sovereignty**, and the same subscription includes [Faable Auth](../auth/get-started.md) if the agent needs to know who is talking to it.
+[Faable Deploy](get-started.md) runs an agent the same way it runs any other app: connect a GitHub or GitLab repository, and it detects the stack, builds it, and serves it at `https://<app>.faable.link` with free SSL and a built-in [Web Application Firewall](security-waf.md). Apps and data are **hosted in the EU**, and the same subscription includes [Faable Auth](../auth/get-started.md) if the agent needs to know who is talking to it.
 
 What is specific to agents:
 

@@ -6,7 +6,7 @@ rank: high
 
 # Deploy a Vite App
 
-**Push your Vite project to GitHub and Faable builds and serves it — no Dockerfile, no YAML, no server.** The builder detects Vite from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
+**Push your Vite project to GitHub or GitLab and Faable builds and serves it — no Dockerfile, no YAML, no server.** The builder detects Vite from your `package.json`, installs your dependencies, runs `npm run build`, and serves the contents of `dist/` directly, with no container, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 It works the same whether your Vite app is React, Vue, Svelte, Solid or Preact — detection keys on the `vite` dependency, not on the UI framework.
 

@@ -275,7 +275,7 @@ If your MCP tools call your own backend or a third-party API, **don't forward th
 
 ## Host it on Faable Deploy
 
-A remote MCP server is an ordinary Node.js or Python web service, so [Faable Deploy](../../deploy/get-started.md) runs it from a GitHub repository with no Dockerfile, HTTPS on its own domain, and the same subscription as Faable Auth. Two things to know:
+A remote MCP server is an ordinary Node.js or Python web service, so [Faable Deploy](../../deploy/get-started.md) runs it from a GitHub or GitLab repository with no Dockerfile, HTTPS on its own domain, and the same subscription as Faable Auth. Two things to know:
 
 - **Long tool calls are fine.** The 60-second limit is to the **first byte**, not the whole response: a Streamable HTTP response that starts streaming early can run for minutes. See [Streaming LLM responses](../../deploy/guides/guide-llm-streaming.md).
 - **Point a custom domain at it before you register the API.** The API `identifier` is immutable, and it has to be the URL clients will use.

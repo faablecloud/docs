@@ -7,7 +7,7 @@ rank: high
 
 # Deploy a Flask App 🌶️
 
-**Push your Flask project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `gunicorn` command to write.** The builder detects Flask from your repo, installs your dependencies, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
+**Push your Flask project to GitHub or GitLab and Faable builds and runs it — no Dockerfile, no YAML, no `gunicorn` command to write.** The builder detects Flask from your repo, installs your dependencies, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 ## What Faable detects
 

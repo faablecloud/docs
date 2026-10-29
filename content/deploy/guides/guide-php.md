@@ -7,7 +7,7 @@ rank: high
 
 # Deploy a PHP App 🐘
 
-**Push your PHP project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no start command to write.** Your app is served by **Apache with mod_php**, so the `.htaccess` you already have keeps working, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
+**Push your PHP project to GitHub or GitLab and Faable builds and runs it — no Dockerfile, no YAML, no start command to write.** Your app is served by **Apache with mod_php**, so the `.htaccess` you already have keeps working, behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 Two shapes are supported and both are zero-config: a **plain PHP** project (the `index.html` + `login.php` layout you'd drop into `htdocs`) and a **composer** project such as **Laravel** or **Symfony**, with its front controller in `public/`.
 

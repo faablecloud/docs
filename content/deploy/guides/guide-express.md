@@ -6,7 +6,7 @@ rank: high
 
 # Deploy a Node.js Express App
 
-**Push your Express project to GitHub and Faable builds and runs it — no Dockerfile, no YAML.** The builder detects Node.js from your `package.json`, installs your dependencies, runs your build step if you have one, and serves the app behind automatic SSL at `https://<app>.faable.link`, hosted in Europe. Supported Node.js versions: **20, 22 and 24**.
+**Push your Express project to GitHub or GitLab and Faable builds and runs it — no Dockerfile, no YAML.** The builder detects Node.js from your `package.json`, installs your dependencies, runs your build step if you have one, and serves the app behind automatic SSL at `https://<app>.faable.link`, hosted in Europe. Supported Node.js versions: **20, 22 and 24**.
 
 ## Give your app a `start` script
 

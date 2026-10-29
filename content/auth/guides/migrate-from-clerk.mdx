@@ -6,7 +6,7 @@ rank: high
 
 # Migrate from Clerk to Faable Auth
 
-**Short answer:** Migrating from Clerk to Faable Auth means moving from Clerk's component-first model to a standards-based OAuth 2.0 / OpenID Connect identity server. You recreate your Clerk _instance_ as a Faable _Account_, your _application_ as one or more _Clients_, and your social/email connections one-to-one, then export your users from Clerk and import them into Faable. The biggest practical difference is the integration style: instead of Clerk's prebuilt React components you use standard OAuth flows via [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) or a [framework quickstart](../quickstart/nextjs.md). Teams typically move for **European data sovereignty (GDPR)**, **standards portability (no vendor-specific SDK lock-in)**, and **bundling with [Faable Deploy](../../deploy/get-started.md)**.
+**Short answer:** Migrating from Clerk to Faable Auth means moving from Clerk's component-first model to a standards-based OAuth 2.0 / OpenID Connect identity server. You recreate your Clerk _instance_ as a Faable _Account_, your _application_ as one or more _Clients_, and your social/email connections one-to-one, then export your users from Clerk and import them into Faable. The biggest practical difference is the integration style: instead of Clerk's prebuilt React components you use standard OAuth flows via [`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js) or a [framework quickstart](../quickstart/nextjs.md). Teams typically move for **data hosted in the EU (GDPR)**, **standards portability (no vendor-specific SDK lock-in)**, and **bundling with [Faable Deploy](../../deploy/get-started.md)**.
 
 ## Concept mapping
 

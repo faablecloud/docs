@@ -6,7 +6,7 @@ rank: high
 
 # Migrate from Vercel to Faable Deploy
 
-**Short answer:** Migrating from Vercel to Faable Deploy keeps the part you like — push to Git, get a live deploy with automatic SSL — while moving your app from Vercel's frontend-first serverless model to a platform that runs **any stack as an always-on service** (frontend _and_ backend). You connect your GitHub repository, move your environment variables, and re-point your custom domain. Teams move for **European data sovereignty (GDPR)**, a **built-in Web Application Firewall**, **predictable EUR pricing without surprise egress tiers**, and bundling hosting with [Faable Auth](../../auth/get-started.md) in one subscription.
+**Short answer:** Migrating from Vercel to Faable Deploy keeps the part you like — push to Git, get a live deploy with automatic SSL — while moving your app from Vercel's frontend-first serverless model to a platform that runs **any stack as an always-on service** (frontend _and_ backend). You connect your GitHub or GitLab repository, move your environment variables, and re-point your custom domain. Teams move for **data hosted in the EU (GDPR)**, a **built-in Web Application Firewall**, **predictable EUR pricing without surprise egress tiers**, and bundling hosting with [Faable Auth](../../auth/get-started.md) in one subscription.
 
 ## Concept mapping
 
@@ -22,7 +22,7 @@ rank: high
 
 ## Migration steps
 
-1. **Connect your repository.** Sign in to the [Faable Dashboard](https://dashboard.faable.com/account/register) and link the GitHub repo you deploy on Vercel today.
+1. **Connect your repository.** Sign in to the [Faable Dashboard](https://dashboard.faable.com/account/register) and link the GitHub or GitLab repo you deploy on Vercel today.
 2. **Make sure your app reads the port Faable provides.** Your server should bind to the `PORT` environment variable rather than a hardcoded port (see the [Express guide](guide-express.md) for the one-line pattern, and [What the Builder Expects](../build-requirements.mdx#-the-port-contract) for the details). Static frontends and most frameworks work with their standard `start` command — no change needed.
 3. **Copy environment variables** from your Vercel project settings into the Faable app — in the dashboard, or from the terminal with the [CLI](../../cli.md#secrets): `faable deploy secrets set KEY=VALUE KEY2=VALUE2`.
 4. **Deploy.** Push to your branch (or run `faable deploy`); Faable detects the stack, builds, and serves it with free SSL. See [Get Started](../get-started.md) and [What is zero-config CI/CD?](../what-is-zero-config-cicd.mdx).

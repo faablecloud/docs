@@ -7,7 +7,7 @@ rank: high
 
 # Deploy a FastAPI App ⚡
 
-**Push your FastAPI project to GitHub and Faable builds and runs it — no Dockerfile, no YAML, no `uvicorn` command to write.** The builder detects FastAPI from your repo, installs your dependencies, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
+**Push your FastAPI project to GitHub or GitLab and Faable builds and runs it — no Dockerfile, no YAML, no `uvicorn` command to write.** The builder detects FastAPI from your repo, installs your dependencies, and serves it behind automatic SSL at `https://<app>.faable.link`, hosted in Europe.
 
 ## What Faable detects
 
