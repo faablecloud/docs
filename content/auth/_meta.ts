@@ -17,6 +17,7 @@ export default {
   'roles-and-permissions': 'Roles & Permissions',
   protocolSeparator: { type: 'separator', title: 'Protocol' },
   'oauth-flows': 'OAuth 2.0 Flows',
+  'oauth-2-1': 'OAuth 2.1',
   oidc: 'OpenID Connect',
   saml: 'SAML for Your Apps',
   'validate-access-tokens': 'Validate Access Tokens',

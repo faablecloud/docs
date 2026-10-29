@@ -45,7 +45,7 @@ Yes, all the time: a SPA uses **Authorization Code + PKCE** to log the user in a
 
 ### What about the Implicit flow or Resource Owner Password?
 
-They're legacy. OAuth 2.0 best practice (and the OAuth 2.1 draft) replaces the Implicit flow with Authorization Code + PKCE, and discourages sending user passwords through your app. Faable Auth steers you to the modern grants above.
+They're legacy. OAuth 2.0 best practice (and the OAuth 2.1 draft) replaces the Implicit flow with Authorization Code + PKCE, and discourages sending user passwords through your app. Faable Auth steers you to the modern grants above, and a tenant with [OAuth 2.1](/auth/oauth-2-1) turned on refuses both — new tenants start with it on.
 
 ### Where do I get the credentials each flow needs?
 

@@ -1,0 +1,86 @@
+---
+title: OAuth 2.1 — Enforce PKCE and Turn Off the Implicit and Password Grants
+description: What OAuth 2.1 changes from OAuth 2.0, what Faable Auth already applies on every tenant, and how to enforce OAuth 2.1 for a whole tenant with oauth21_enabled — authorization code only, PKCE required for every client, no password grant — plus how to check your apps before you turn it on.
+rank: high
+---
+
+import { Callout } from 'nextra/components'
+
+# OAuth 2.1
+
+**OAuth 2.1** ([draft-ietf-oauth-v2-1](https://datatracker.ietf.org/doc/draft-ietf-oauth-v2-1/)) is OAuth 2.0 with a decade of security advice folded in. It adds no new flows; it removes the ones that proved unsafe and makes the safe defaults mandatory:
+
+- **The implicit grant is gone.** No more `response_type=token`: tokens never travel in a redirect URL.
+- **The password grant is gone.** Your app never handles the user's password for OAuth.
+- **PKCE is required for every authorization code**, including confidential, server-side clients.
+- **Redirect URIs match exactly**, with no wildcards or prefix matching.
+- **Authorization codes are single-use and short-lived.**
+- **Refresh tokens for public clients** are single-use or bound to the client that holds them.
+- **No bearer tokens in the query string.**
+
+In Faable Auth, most of this applies to every tenant. The rest — the parts that would break an application still using what 2.1 removed — is one tenant setting, **`oauth21_enabled`**.
+
+## What every tenant already does
+
+These apply whether or not you turn on `oauth21_enabled`:
+
+| OAuth 2.1 asks for               | Faable Auth                                                                                                                                          |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Exact redirect URI matching      | ✅ The `redirect_uri` must equal one registered on the client.                                                                                       |
+| Single-use, short-lived codes    | ✅ A code is valid for **10 minutes** and can be redeemed **once**; a second redemption fails, even if both requests arrive at the same moment.      |
+| PKCE with `S256`                 | ✅ `S256` is the only method accepted; `plain` is refused.                                                                                           |
+| PKCE for clients nobody vetted   | ✅ Required for clients created by [dynamic registration](clients.md#dynamic-client-registration) or Client ID Metadata Documents.                   |
+| No client credentials in the URL | ✅ `/oauth/token` refuses credentials sent in the query string.                                                                                      |
+| No tokens in the query string    | ✅ If a client still uses `response_type=token`, the tokens go in the URL **fragment**, which browsers never send to a server or put in a `Referer`. |
+
+## Enforce OAuth 2.1 for a tenant
+
+With **`oauth21_enabled`** on, your tenant refuses everything OAuth 2.1 removed:
+
+- **`/authorize` accepts only `response_type=code`**, and only **with PKCE** (`code_challenge` with `code_challenge_method=S256`) — for every client, confidential ones included.
+- **A password login from your own login form** (`@faable/auth-js` `signInWithUsernamePassword`) must also ask for a code with PKCE instead of tokens.
+- **The password grant** (`grant_type=password`) is refused, whatever the client's `grant_types` say, and the discovery document stops listing it in `grant_types_supported`.
+
+A refused request gets the error code [`oauth21_required`](errors.md#oauth21_required), and its `message` says which rule it broke. `/authorize` answers on your tenant's domain and never redirects back to the client, so a refused request doesn't reach your app's callback.
+
+The other grants are unchanged: [client credentials](oauth-flows/client-credentials.mdx), [refresh token](oauth-flows/refresh-token.mdx), [device code](oauth-flows/device-code.mdx) and [token exchange](oauth-flows/token-exchange.mdx) work as before.
+
+<Callout type="info">
+  **New tenants start with OAuth 2.1 on.** Tenants created before it existed
+  have it **off** until you turn it on, so an application that still relies on
+  the implicit or password grant keeps working while you migrate it.
+</Callout>
+
+### Turn it on
+
+Set it on your tenant through the Management API:
+
+```bash
+curl -X POST "https://your-domain.auth.faable.link/account/$ACCOUNT_ID" \
+  -H "Authorization: Bearer $MANAGEMENT_TOKEN" \
+  -H 'content-type: application/json' \
+  -d '{ "oauth21_enabled": true }'
+```
+
+It takes effect on the next request. To go back, send `false` — nothing is lost or migrated either way: the setting only decides which requests are accepted.
+
+## Before you turn it on
+
+Check each application that signs users in to the tenant:
+
+1. **Apps on `@faable/auth-js`: update to 3.1.0 or later.** From 3.1.0, `signInWithUsernamePassword` asks for a code bound with PKCE instead of receiving tokens in the redirect. Older versions get `oauth21_required` on that call.
+2. **Look for `response_type=token`** (or `id_token token`) in your code and your OIDC library's configuration. Move it to the [authorization code flow with PKCE](oauth-flows/authorization-code.mdx).
+3. **Look for `grant_type=password`.** A client with `password` in its `grant_types` should move to the [hosted login](hosted-login.mdx), or — for a first-party login form — to `signInWithUsernamePassword` on auth-js 3.1.0.
+4. **Check that server-side apps send PKCE.** A confidential client with a secret used to be allowed to skip it; under OAuth 2.1 it isn't. Most current OpenID Connect libraries send `code_challenge` by default or behind one option — check yours sends `code_challenge_method=S256`.
+
+Turn it on, sign in once with each app, and watch your [logs](logs.md) for failed logins. If an app you missed fails, turn the setting off, fix the app, and turn it on again.
+
+## What the setting doesn't change yet
+
+OAuth 2.1 asks that a refresh token held by a public client be **single-use** or bound to that client. Faable Auth **rotates** the refresh token on every refresh — each response carries a new one, see [Refresh Token](oauth-flows/refresh-token.mdx). For clients that go through a consent screen (dynamic registration and Client ID Metadata Documents) a refresh token is also **single-use**: presenting one that was already rotated revokes the connection. For every other client, a rotated refresh token isn't revoked yet. Making that the rule for every client is the next step; until then, always store the newest refresh token and discard the previous one.
+
+## Related
+
+- [Which OAuth flow should I use?](oauth-flows) · [Authorization Code with PKCE](oauth-flows/authorization-code.mdx)
+- [Clients](clients.md) · [Error codes](errors.md)
+- [Add OAuth to your MCP server](guides/mcp-authorization.mdx) — MCP requires OAuth 2.1 from its authorization server

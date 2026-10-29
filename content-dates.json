@@ -89,7 +89,7 @@
   },
   "content/auth/errors.md": {
     "published": "2026-09-17T11:53:00+02:00",
-    "modified": "2026-10-28T11:19:09.288Z"
+    "modified": "2026-10-29T20:50:22.813Z"
   },
   "content/auth/european-alternatives.mdx": {
     "published": "2026-10-17T19:03:21.619Z",
@@ -175,6 +175,10 @@
     "modified": "2026-09-24T13:46:23+02:00",
     "published": "2026-09-04T01:21:07+02:00"
   },
+  "content/auth/oauth-2-1.mdx": {
+    "published": "2026-10-29T20:50:22.813Z",
+    "modified": "2026-10-29T20:50:22.813Z"
+  },
   "content/auth/oauth-flows/authorization-code.mdx": {
     "modified": "2026-10-15T23:29:28+02:00",
     "published": "2026-04-08T20:16:59+02:00"
@@ -188,16 +192,16 @@
     "published": "2026-04-08T20:16:59+02:00"
   },
   "content/auth/oauth-flows/index.mdx": {
-    "modified": "2026-09-24T16:14:58+02:00",
-    "published": "2026-07-04T11:30:21+02:00"
+    "published": "2026-07-04T11:30:21+02:00",
+    "modified": "2026-10-29T20:50:22.813Z"
   },
   "content/auth/oauth-flows/password.mdx": {
-    "modified": "2026-09-24T16:14:58+02:00",
-    "published": "2026-09-24T16:14:58+02:00"
+    "published": "2026-09-24T16:14:58+02:00",
+    "modified": "2026-10-29T20:50:22.813Z"
   },
   "content/auth/oauth-flows/refresh-token.mdx": {
-    "modified": "2026-09-15T20:25:27+02:00",
-    "published": "2026-04-08T20:16:59+02:00"
+    "published": "2026-04-08T20:16:59+02:00",
+    "modified": "2026-10-29T20:50:22.813Z"
   },
   "content/auth/oauth-flows/token-exchange.mdx": {
     "published": "2026-07-04T11:34:33+02:00",
