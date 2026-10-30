@@ -38,7 +38,7 @@ These apply whether or not you turn on `oauth21_enabled`:
 With **`oauth21_enabled`** on, your tenant refuses everything OAuth 2.1 removed:
 
 - **`/authorize` accepts only `response_type=code`**, and only **with PKCE** (`code_challenge` with `code_challenge_method=S256`) — for every client, confidential ones included.
-- **A password login from your own login form** (`@faable/auth-js` `signInWithUsernamePassword`) must also ask for a code with PKCE instead of tokens.
+- **A password login from your own login form** must also ask for a code with PKCE instead of tokens. `@faable/auth-js` 3.2.0 or later does this for you.
 - **The password grant** (`grant_type=password`) is refused, whatever the client's `grant_types` say, and the discovery document stops listing it in `grant_types_supported`.
 
 A refused request gets the error code [`oauth21_required`](errors.md#oauth21_required), and its `message` says which rule it broke. `/authorize` answers on your tenant's domain and never redirects back to the client, so a refused request doesn't reach your app's callback.
@@ -68,9 +68,10 @@ It takes effect on the next request. To go back, send `false` — nothing is los
 
 Check each application that signs users in to the tenant:
 
-1. **Apps on `@faable/auth-js`: update to 3.1.0 or later.** From 3.1.0, `signInWithUsernamePassword` asks for a code bound with PKCE instead of receiving tokens in the redirect. Older versions get `oauth21_required` on that call.
+1. **Apps on `@faable/auth-js`: update to 3.2.0 or later — nothing else to change.** In the browser, every sign-in it starts (`signInWithOauthConnection`, `signInWithUsernamePassword`, `authorize`, `stepUp`) asks for a code bound with PKCE and exchanges it on the way back, on any tenant, with OAuth 2.1 on or off. That includes apps configured with `flowType: 'implicit'`: in the browser the setting is ignored. With an earlier version, some of those calls get `oauth21_required`.
+   Outside the browser (React Native, server-side code) auth-js still defaults to the implicit flow: there, start the login with the [authorization code flow with PKCE](oauth-flows/authorization-code.mdx) before you turn the setting on.
 2. **Look for `response_type=token`** (or `id_token token`) in your code and your OIDC library's configuration. Move it to the [authorization code flow with PKCE](oauth-flows/authorization-code.mdx).
-3. **Look for `grant_type=password`.** A client with `password` in its `grant_types` should move to the [hosted login](hosted-login.mdx), or — for a first-party login form — to `signInWithUsernamePassword` on auth-js 3.1.0.
+3. **Look for `grant_type=password`.** A client with `password` in its `grant_types` should move to the [hosted login](hosted-login.mdx), or — for a first-party login form — to `signInWithUsernamePassword` on auth-js 3.2.0.
 4. **Check that server-side apps send PKCE.** A confidential client with a secret used to be allowed to skip it; under OAuth 2.1 it isn't. Most current OpenID Connect libraries send `code_challenge` by default or behind one option — check yours sends `code_challenge_method=S256`.
 
 Turn it on, sign in once with each app, and watch your [logs](logs.md) for failed logins. If an app you missed fails, turn the setting off, fix the app, and turn it on again.
