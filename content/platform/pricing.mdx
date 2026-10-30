@@ -33,6 +33,10 @@ frees a slot for another.
 
 The fee unlocks the tier; the metered lines above are the only thing that can be added to it. The deep-dives below break down exactly what each plan includes per product.
 
+## GPUs
+
+Apps on Faable run on CPU today, on every plan. **GPU support is coming to the Pro plan.** Until then, a Python build that asks for PyTorch gets the CPU-only build automatically — the CUDA build from PyPI adds about 2 GB that a CPU container never loads, and would push most builds over their artifact limit. See [Build requirements](../deploy/build-requirements.mdx#pytorch-and-gpu-packages).
+
 ## What's covered by your plan
 
 The platform tier you choose maps to concrete entitlements in each product. See:

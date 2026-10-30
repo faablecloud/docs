@@ -156,6 +156,12 @@ If `runtime.txt` or `.python-version` holds something that is not a version (`py
 
 Supported Python minors: **3.10, 3.11, 3.12, 3.13 and 3.14** — the app runs on Faable's shared runtime image for the resolved minor.
 
+### PyTorch and GPU packages
+
+Faable runs apps on CPU — GPU support is coming to the [Pro plan](../platform/pricing.mdx#gpus). So when your dependencies name `torch`, `torchvision` or `torchaudio`, or a package that requires torch (`sentence-transformers`, `ultralytics`, `accelerate`, `timm`, …), the build first installs them from PyTorch's CPU index (`https://download.pytorch.org/whl/cpu`), keeping your version pins: `torch==2.5.1` is satisfied by `2.5.1+cpu`. Your install then runs as usual. The CUDA build from PyPI adds about 2 GB that never loads here; the CPU build of a typical `sentence-transformers` app ships as roughly 330 MB.
+
+The build leaves PyTorch alone when your requirements choose their own index (`--index-url`, `--extra-index-url`), pin a `+cpu` or `+cu…` build, or you set a `buildCommand`. Packages that only work with an NVIDIA GPU (`tensorflow[and-cuda]`, `onnxruntime-gpu`, `vllm`, `flash-attn`, `nvidia-*-cu12`…) are reported as a build warning with the CPU alternative, and an install over 2 GB names its five largest packages.
+
 **Start command**, first match wins:
 
 1. `startCommand` in `faable.json`
