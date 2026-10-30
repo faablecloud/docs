@@ -144,13 +144,15 @@ A `buildCommand` in `faable.json` replaces the manifest install entirely — use
 
 **Python version**, first match wins:
 
-1. `runtime.txt` — must be in the form `python-<version>` (e.g. `python-3.12.1`)
-2. `.python-version`
+1. `runtime.txt` — `python-<version>` (e.g. `python-3.12.1`); a bare `3.12` works too
+2. `.python-version` (the first line, as pyenv reads it)
 3. The manifest's own version (e.g. `python_version` in `cerebrium.toml`)
 4. `requires-python` in `pyproject.toml`
 5. Default: the newest supported minor (**3.14** today) for a new app. An app that has deployed keeps the minor of its first successful deploy — it never changes under you; pin one of the versions below to move.
 
-A `requires-python` floor like `>=3.11` resolves to the newest supported minor that satisfies it (an app that has already deployed keeps its minor while it satisfies the floor).
+A range — `>=3.11` in `requires-python`, or `python->=3.12`, `>=3.11,<3.13`, `~=3.12` in `runtime.txt` or `.python-version` — resolves to the newest supported minor that satisfies it (an app that has already deployed keeps its minor while it satisfies the range). A range no supported minor satisfies fails the build with the list below.
+
+If `runtime.txt` or `.python-version` holds something that is not a version (`python-latest`, `pypy3.10`), the build does not fail: it shows a warning naming the file, ignores it and resolves from the next source on this list.
 
 Supported Python minors: **3.10, 3.11, 3.12, 3.13 and 3.14** — the app runs on Faable's shared runtime image for the resolved minor.
 

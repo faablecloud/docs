@@ -153,7 +153,7 @@ Or with `.python-version`, or `requires-python` in `pyproject.toml`. First match
 
 ## Troubleshooting
 
-- **Build fails resolving Django with a `Requires-Python` error** — Django 6.x requires Python ≥3.12. A new app's default already satisfies it, so the app is on an older minor: either pinned in the repo (check `runtime.txt`, `.python-version` and `requires-python`) or kept from its first deploy. Pin a newer one — a `.python-version` file containing `3.13` — and push again; the build error names the version it used.
+- **Build fails resolving Django with a `Requires-Python` error** — Django 6.x requires Python ≥3.12. A new app's default already satisfies it, so the app is on an older minor: either pinned in the repo (check `runtime.txt`, `.python-version` and `requires-python`) or kept from its first deploy. Pin a newer one in the file that decided it — `python-3.13` in `runtime.txt` if you have one (it outranks `.python-version`), otherwise a `.python-version` file containing `3.13` — and push again; the build error names the version it used and where to pin.
 - **`DisallowedHost` in the logs** — `ALLOWED_HOSTS` doesn't include the domain you're visiting. Add `<app>.faable.link` and your custom domain.
 - **CSS and images 404** — static files weren't collected or WhiteNoise isn't in the middleware. Check both steps above.
 - **Build fails with "no start command"** — the builder found your dependencies but not `manage.py` + a `wsgi.py` package. Either fix the layout or declare `startCommand` in `faable.json`.
