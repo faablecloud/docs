@@ -151,7 +151,7 @@ The container started but **never became ready** within the time allowed. Almost
 
 ## Build warnings
 
-A deployment can succeed and still carry **warnings**: something in the repository the build worked around instead of failing on. The dashboard shows how many next to the deployment — on successful deployments too — with the full text above the build logs, and `faable deploy` prints them when it finishes. Each one is worth fixing: the workaround keeps the deploy going, but your project does not build the same way anywhere else.
+A deployment can succeed and still carry **warnings**: something in the repository the build worked around instead of failing on. The dashboard shows how many next to the deployment — on successful deployments too — with the full text above the build logs, `faable deploy` prints them when it finishes, and the deploy emails ("is live", "deployed" and "failed to deploy") list them as well. Each one is worth fixing: the workaround keeps the deploy going, but your project does not build the same way anywhere else.
 
 | Warning                     | What happened                                                                                                                                              | Fix                                                                                            |
 | :-------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
