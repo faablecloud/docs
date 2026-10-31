@@ -12,7 +12,7 @@ Your editors and administrators sign in with the same account they use in the re
 
 ## What the plugin does
 
-- **Sign in with Faable only.** Authorization code flow with PKCE (S256). Once the site is connected, password logins, password resets, registration, XML-RPC authentication and Application Passwords are turned off.
+- **Sign in with Faable only.** Authorization code flow with PKCE (S256). Once the site is connected, password logins, password resets, registration, XML-RPC authentication and Application Passwords are turned off (except for the [local service users](#local-service-users-application-passwords) you list).
 - **Accounts without local passwords.** A user is created on their first login, with no usable local password.
 - **Roles from Faable Auth, re-synced on every login.** The user gets the WordPress role their Faable Auth role maps to. A user whose roles map to nothing gets no account, and an existing user who lost their role loses their WordPress role and sessions at their next login.
 - **Linking by verified email.** A WordPress user that existed before the plugin is linked to the Faable Auth account with the same email, but only if Faable Auth reports that email as verified.
@@ -82,6 +82,7 @@ define( 'FAABLE_AUTH_CLIENT_SECRET', '...' );
 | `FAABLE_AUTH_AUDIENCE`                                                                                     | Optional. An [API](../apis.md) of the tenant with "include roles in ID token" on; roles then come in the ID token. |
 | `FAABLE_AUTH_ROLE_MAP`                                                                                     | Optional. The role map, as JSON (`{"staff":"editor"}`) or `faable_role = wp_role` lines.                           |
 | `FAABLE_AUTH_REST_AUDIENCE`, `FAABLE_AUTH_REST_USER`, `FAABLE_AUTH_REST_CLIENTS`, `FAABLE_AUTH_REST_SCOPE` | Optional. [REST API with machine-to-machine tokens](#headless-front-ends-rest-api).                                |
+| `FAABLE_AUTH_APP_PASSWORD_USERS`                                                                           | Optional. [Local service users](#local-service-users-application-passwords) that keep Application Passwords.       |
 | `FAABLE_AUTH_FEDERATED_LOGOUT`                                                                             | Optional. `true` to end the Faable Auth session on logout.                                                         |
 | `FAABLE_AUTH_BREAK_GLASS`                                                                                  | Emergency access, see below.                                                                                       |
 
@@ -118,6 +119,8 @@ A Faable Auth user is matched to a WordPress user in this order:
 
 If the email belongs to an existing WordPress user but Faable Auth has not verified it, the login is refused and the user is asked to verify their email first. A user without an email in Faable Auth cannot get an account.
 
+Each user's profile in wp-admin says how they sign in. A linked user shows **Managed by Faable Auth**, with an **Open in the Faable dashboard** button that opens that user in your tenant. The **Sign-in** column of the users list shows the same thing for every user.
+
 ## Federated logout
 
 By default, logging out of WordPress ends only the WordPress session. Tick **Also end the Faable session on logout** (or set `FAABLE_AUTH_FEDERATED_LOGOUT`) to send the browser to the tenant's logout endpoint as well ([RP-Initiated Logout](../oidc/logout.md)).
@@ -148,7 +151,17 @@ Configure it in the **Headless** section of the settings page:
 
 A request is accepted when the token is signed by your tenant, issued for that audience, is a `client_credentials` token (tokens issued to a user are refused), comes from an allowed client and carries the required scope if one is set. Otherwise the API answers `401` or `403`.
 
-Move each front-end from Basic Auth to a `client_credentials` token **before** connecting the site, since Application Passwords stop working at that moment.
+Move each front-end from Basic Auth to a `client_credentials` token **before** connecting the site, since Application Passwords stop working at that moment, or keep its user as a local service user while you move it.
+
+### Local service users (Application Passwords)
+
+A front-end that already calls the REST API with an Application Password can keep it. List its WordPress user in **Local users with Application Passwords** on the settings page (or `FAABLE_AUTH_APP_PASSWORD_USERS`, comma-separated logins). For those users only:
+
+- Their Application Passwords keep working on the REST API, with the user's own role and capabilities.
+- They still cannot log in to wp-admin. Neither a password nor an Application Password opens a session.
+- The listing applies only while the user is **not** linked to a Faable Auth account. Once someone signs in with Faable as that user, Faable is its only way in and its Application Passwords stop working.
+
+Use it for a user that only a front-end uses, and keep that user's role as small as the front-end allows. Machine-to-machine tokens are still the better long-term choice: they expire, they are issued per client, and you can revoke them from the dashboard.
 
 ## Emergency access
 
@@ -181,7 +194,7 @@ prints a URL that logs in as that user (ID, login or email) once, within 10 minu
 | "A user with your email already exists on this site" | The email is taken by a WordPress user and is not verified in Faable Auth. Verify it and log in again.                                            |
 | Logout shows an error from Faable Auth               | Federated logout is on, but `https://<your-site>/wp-login.php?loggedout=true` is not in the client's Logout URLs.                                 |
 | The native login came back after changing salts      | The stored secret can no longer be decrypted. Reconnect in Settings → Faable Auth.                                                                |
-| A headless front-end gets `401`                      | Application Passwords are off. Send a `client_credentials` token for the configured audience.                                                     |
+| A headless front-end gets `401`                      | Application Passwords are off. Send a `client_credentials` token for the configured audience, or list its user as a local service user.           |
 
 ## Developers
 
