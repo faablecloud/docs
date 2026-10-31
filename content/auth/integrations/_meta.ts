@@ -1,3 +1,4 @@
 export default {
-  shopify: 'Shopify Plus'
+  shopify: 'Shopify Plus',
+  wordpress: 'WordPress'
 }
