@@ -40,6 +40,12 @@ Faable Auth enforces **PKCE with `S256`** — it advertises no other code challe
 - **Allowed Web Origins (`web_origins`)** — origins (`scheme://host[:port]`, **no path** — e.g. `http://localhost:5173`) permitted to make cross-origin calls to the token and passwordless endpoints. **When the list is empty, any origin is allowed**; fill it in to lock browser calls down to your own app. Your account's auth domain is always allowed implicitly, so you only list your application origins.
 - **Connections** — which authentication methods (Google, passwordless, database…) this specific client may use. Set on each [connection](connections.md) via its _Enabled clients_ list.
 
+### Management API scopes
+
+`management_scopes` is the list of [Management API](academy/05-server-and-management-api.md) scopes (`read:users`, `read:rolemembers`, `update:clients`…) this client may obtain with [Client Credentials](oauth-flows/client-credentials.mdx#management-api-scopes) for the audience `faable:management:<account_id>`. A token request gets the requested scopes that are on the list, or the whole list when it asks for none. **Empty — the default for a new client — means the client cannot call the Management API** (`403 management_scopes_empty`).
+
+Set it on the client page (**OAuth** tab → **Management API scopes**), when creating the client (**Management API access**), or with `management_scopes` on `POST /client` and `POST /client/:id` (replaces the whole list). You can only add scopes your own token holds.
+
 ### Token lifetimes
 
 | Setting                        | Effect                                                                                                                      |
@@ -121,7 +127,7 @@ Notes on behaviour:
 - **Registrations are rate-limited** per IP address.
 - **The client is bound to the tenant resolved from the request host**, so register against the domain you actually want it to live in.
 - **`web_origins`** is accepted as a non-standard extra, with the same rules as in the dashboard.
-- **Registration is not itself authenticated.** Anyone who can reach your auth domain can create a client in your tenant — a new client grants no access on its own, but if that's not a trade-off you want, keep an eye on `oauth.client.register` entries in your [logs](logs.md).
+- **Registration is not itself authenticated.** Anyone who can reach your auth domain can create a client in your tenant — a new client grants no access on its own (its Management API scopes are empty), but if that's not a trade-off you want, keep an eye on `oauth.client.register` entries in your [logs](logs.md).
 
 ## Next Steps
 

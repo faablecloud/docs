@@ -27,7 +27,7 @@ With `rbac: true` on the API, a token issued **to a user** (authorization code, 
 - **`permissions`** = the scopes the client **requested** ∩ the API's **current** permission catalog ∩ the permissions the user's **account-level** roles grant for **that** API.
 - **`scope`** keeps the requested scopes, minus any catalog permission the user doesn't hold. OIDC scopes (`openid`, `profile`, `email`, `offline_access`) and scopes outside the catalog pass unchanged. An app that checks `scope` never gets what `permissions` refuses.
 - The `permissions` claim is only emitted with `token_dialect: "access_token_authz"`, as a space-separated **string**.
-- Machine-to-machine tokens (`client_credentials`) are **not affected**: a client that asks for no scope still gets the whole catalog. See [Client Credentials](oauth-flows/client-credentials.mdx).
+- Machine-to-machine tokens (`client_credentials`) are **not affected** by roles: for your own APIs, a client that asks for no scope still gets the API's whole catalog. The Management API is the exception: there a client gets at most its own [Management API scopes](oauth-flows/client-credentials.mdx#management-api-scopes).
 
 > **Request the permissions you need as scopes.** Faable Auth puts in the token what was requested **and** is held, not every permission the user holds. User tokens also go to third-party clients through the consent screen, and to agents acting on the user's behalf through token exchange. If every permission were included, those clients would get permissions the user was never asked to allow. The consent screen lists only the scopes the token will actually carry.
 

@@ -66,8 +66,10 @@ token) and the claim that says where the access token may be used (`aud`).
 
 ## Part C — Call the Management API as a machine (Module 5)
 
-1. In the dashboard, create a **confidential Client** for backend use. Save its
-   **Client ID** and **Client Secret**.
+1. In the dashboard, create a **confidential Client** for backend use. In its
+   **Management API access** section, allow `read:users` (or do it afterwards on the
+   client's **OAuth** tab → **Management API scopes**). Save its **Client ID** and
+   **Client Secret**.
 2. In a tiny Node script, use `@faable/auth-sdk` with `authClientCredentials`:
 
    ```ts
@@ -87,13 +89,16 @@ token) and the claim that says where the access token may be used (`aud`).
    the dashboard.
 
 ✅ _Checkpoint:_ a `client_credentials`-authenticated backend lists your tenant's users
-**without** you enumerating any scopes (full catalog by default).
+**without** the script enumerating any scopes: it gets the client's allow-list
+(`read:users`). Remove that scope from the client and run it again: the token request
+now fails with `management_scopes_empty`.
 
 ## Part D — Reflect (Module 5)
 
 In `lab-notes.md`, answer in 2–3 sentences each:
 
-1. What would you change to give the Part C client **only** read access to users?
+1. The Part C client already reads users only. What would you change so it can also
+   update them, and why not just allow every scope?
 2. A GitHub social login returns no email. Sketch how an **Action** would handle it.
 
 ---

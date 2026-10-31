@@ -45,10 +45,10 @@ can't they obtain tokens?
 - A) Authorization Code + `@faable/auth-js` B) Passwordless + `@faable/auth-helpers-react`
 - C) Client Credentials + `@faable/auth-sdk` D) Refresh token + `@faable/auth-js`
 
-**Q7.** You create an M2M client and request **no scopes**. What can it do on the
-Management API?
+**Q7.** You create an M2M client, leave its **Management API scopes** empty, and request
+**no scopes**. What can it do on the Management API?
 
-- A) Nothing until you list scopes B) Only `read:*` C) The **full catalog** of the API D) Only its own client record
+- A) The **full catalog** of the API B) Only `read:*` C) Nothing: the token request is refused until you allow scopes on the client D) Only its own client record
 
 **Q8.** A management call fails with `aud_mismatch`. What's wrong?
 

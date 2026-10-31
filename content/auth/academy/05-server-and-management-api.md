@@ -44,7 +44,8 @@ const { results } = await api.listUsers().first()
 await api.updateUser(userId, { locale: 'es' })
 ```
 
-You only supply **domain + credentials**. The SDK discovers the right **management
+You supply **domain + credentials**, and allow the client its **Management API
+scopes** once in the dashboard (below). The SDK discovers the right **management
 audience** from the domain automatically (it reads the tenant's
 `/.well-known/openid-configuration`).
 
@@ -59,17 +60,28 @@ for the full reference. The short version:
 - **Scopes / permissions** — _what_ the token may do, as `verb:resource` strings:
   `read:users`, `update:users`, `read:clients`, … A call needs the matching scope.
 
-### Do I have to list every scope?
+### Which scopes does the token get? The client's allow-list
 
-**No.** For a machine-to-machine (`client_credentials`) client, if you request **no
-scopes**, Faable grants the **full catalog** of the API (this matches Auth0 behavior).
-So the common case — "I made a client, put the id/secret in the SDK, and expect
-access" — just works without enumerating permissions. Request specific scopes only
-when you want to _narrow_ what a particular integration can do (least privilege).
+Every client has a list of **Management API scopes** (`management_scopes`): what a
+`client_credentials` token for the management audience may carry. It is set per
+client — dashboard → your tenant → **Clients** → the client → **OAuth** tab →
+**Management API scopes**, or `management_scopes` on `POST /client/:id`.
 
-> Tip: there are no per-client grant lists to configure. Migrating an integration is
-> just "point it at the right `domain` and give it credentials"; the SDK handles
-> audience, and an empty scope request yields the full catalog.
+- Request **no scopes** (what the SDK does by default) → you get the **whole
+  allow-list**, never more.
+- Request some → you get those that are on the list; the rest are dropped.
+- **The list is empty** → the request is refused: `403 access_denied` with
+  `error_code: management_scopes_empty`. **New clients start empty**, so a client
+  that only signs users in can't administer your tenant with its secret.
+- None of what you requested is on the list → `400 invalid_scope`
+  (`error_code: management_scope_not_allowed`).
+
+So the common case — "I made a client for my backend, put the id/secret in the SDK" —
+needs one more step: tick the scopes that backend uses (least privilege), e.g. only
+`read:users` for a reporting job. You can pick them when you create the client
+(**Management API access**) or later on its page. See
+[Calling the Faable Management API](../oauth-flows/client-credentials.mdx#management-api-scopes)
+for the full rules.
 
 ## Extending the flow: Actions
 
@@ -97,7 +109,8 @@ payload.
 ## Check yourself
 
 1. A nightly job updates user locales. Which grant and which SDK?
-2. You create an M2M client and request **no scopes**. Can it read users?
+2. You create an M2M client, leave its Management API scopes empty and request
+   **no scopes**. Can it read users?
 3. Your M2M call returns `aud_mismatch`. What's wrong, and does the SDK normally
    prevent this?
 4. GitHub login succeeds but the user has no email. Which feature do you reach for?
@@ -106,8 +119,9 @@ payload.
 <summary>Answers</summary>
 
 1. **Client Credentials** grant via **`@faable/auth-sdk`** (server-side).
-2. **Yes** — an M2M client requesting no scopes is granted the **full catalog** of the
-   management API (Auth0 parity).
+2. **No** — with an empty allow-list the token request is refused
+   (`403 management_scopes_empty`). Allow `read:users` under **Management API scopes**
+   on the client and the same request (no scopes) then gets exactly `read:users`.
 3. The token's **audience** isn't the tenant's `faable:management:<account_id>`. The
    SDK **auto-discovers** the correct audience from `domain`, so this usually means a
    misconfigured `domain` or a hand-rolled token bypassing the SDK.
