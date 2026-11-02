@@ -48,7 +48,7 @@ That makes the plan difference concrete:
 | A dashboard you open occasionally, checks running only while you use it | Free             | Sleeps after **30 minutes** idle, and the platform answers monitor pings on the app's behalf, so it cannot be kept awake from outside                                                       |
 | A monitor that watches your services continuously                       | **Hobby or Pro** | A four-times longer window (**2 hours**), and inbound traffic reaches your app instead of being answered for it — so its dashboard, its status page or an external ping all keep it running |
 
-On Hobby and Pro nothing sleeps while it is being used. The two-hour window only expires if genuinely nothing touches the app for two hours — so if your Uptime Kuma has a status page people load, or you point a second monitor at it, it simply keeps running.
+On Hobby and Pro you can also switch on [Always on](../always-on-and-workers.md#always-on) from the app page's **Runs as** row: the app then never sleeps, traffic or not, and its checks run around the clock. Without it, nothing sleeps while it is being used. The two-hour window only expires if genuinely nothing touches the app for two hours — so if your Uptime Kuma has a status page people load, or you point a second monitor at it, it simply keeps running.
 
 If continuous monitoring is the point, Hobby or Pro is the supported way to get it. Pinging your own app from somewhere else to keep it awake does not turn a Free app into a reliable monitor: the checks still only run when something happens to be poking it, you are paying for it in wake time either way, and you have built a monitor whose reliability depends on a second thing you also have to monitor.
 

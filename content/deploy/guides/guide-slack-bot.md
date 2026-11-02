@@ -22,7 +22,7 @@ Slack gives you two ways to receive events, and they are not interchangeable:
 
 Faable Deploy scales an app to zero once no HTTP request has arrived for a while — **30 minutes on the Free plan, 2 hours on Hobby and Pro** — and wakes it on the next one. A Request URL fits that exactly: somebody runs your command, the request wakes your app, your app answers. Idle time is free, and an app your team actually uses never sleeps at all.
 
-Socket Mode does the opposite. The connection is outbound, so **no inbound request ever arrives** — nothing keeps the app awake, and it sleeps as soon as that window elapses **on any plan**, dropping the socket.
+Socket Mode does the opposite. The connection is outbound, so **no inbound request ever arrives** — nothing keeps the app awake, and as a web app it sleeps as soon as that window elapses **on any plan**, dropping the socket — unless you run it as a [background worker](../always-on-and-workers.md#workers) (Hobby and Pro).
 
 |                        | Request URL (HTTP)                    | Socket Mode (WebSocket)                 |
 | :--------------------- | :------------------------------------ | :-------------------------------------- |
@@ -319,7 +319,7 @@ After 30 minutes with no requests on the Free plan — 2 hours on Hobby and Pro 
 
 - **The first event after a sleep is slower** — the container starts up. Acknowledging immediately, as above, is what keeps that inside Slack's window; keep boot work light too, and open database connections lazily rather than at import time.
 - **In-memory state is gone.** Anything held in a module-level dictionary disappears on sleep and on every deploy. Persist it — see [Databases](databases.md).
-- **Timers don't fire while asleep.** A standup reminder needs an external trigger hitting an endpoint, not an in-process `setInterval`.
+- **Timers don't fire while asleep.** A standup reminder needs a [scheduled task](../scheduled-tasks.md) or an external trigger hitting an endpoint, not an in-process `setInterval`.
 
 ## Troubleshooting
 

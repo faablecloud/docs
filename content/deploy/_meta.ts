@@ -7,6 +7,8 @@ export default {
   members: 'Members & Roles',
   organizations: 'Organizations & SSO',
   runtime: 'Runtime',
+  'scheduled-tasks': 'Scheduled Tasks & Cron',
+  'always-on-and-workers': 'Always On & Workers',
   http3: 'HTTP/3',
   images: 'Image Optimization',
   pricing: 'Pricing',

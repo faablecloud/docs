@@ -17,7 +17,7 @@ Make this decision first, because it decides whether your bot works at all.
 
 Faable Deploy scales an app to zero once no HTTP request has arrived for a while — **30 minutes on the Free plan, 2 hours on Hobby and Pro** — and wakes it on the next one. A webhook bot fits that exactly: Telegram POSTs an update, the request wakes your app, your app answers. Idle time is free, and a bot that people actually use never sleeps at all.
 
-A bot built on `getUpdates` long-polling does the opposite — it makes _outbound_ calls in a loop and receives no inbound traffic at all. Nothing keeps it awake, so it sleeps as soon as that window elapses **on any plan**, and simply stops polling. It also can't be scaled or redeployed cleanly, because Telegram allows only one active `getUpdates` consumer per token.
+A bot built on `getUpdates` long-polling does the opposite — it makes _outbound_ calls in a loop and receives no inbound traffic at all. Nothing keeps it awake, so it sleeps as soon as that window elapses **on any plan**, and simply stops polling. It also can't be scaled or redeployed cleanly, because Telegram allows only one active `getUpdates` consumer per token. If you must keep long polling, run the bot as a [background worker](../always-on-and-workers.md#workers) (Hobby and Pro): it never sleeps, and a deploy stops the old copy before starting the new one, so only one consumer polls at a time.
 
 |                        | `setWebhook`                     | `getUpdates` polling                   |
 | :--------------------- | :------------------------------- | :------------------------------------- |

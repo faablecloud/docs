@@ -22,7 +22,7 @@ Discord offers your bot two completely different ways to hear from users, and th
 
 Faable Deploy scales an app to zero once no HTTP request has arrived for a while — **30 minutes on the Free plan, 2 hours on Hobby and Pro** — and wakes it on the next one. HTTP interactions fit that exactly: somebody runs a command, the request wakes your app, your app answers. Idle time is free, and a bot people actually use never sleeps at all.
 
-A gateway bot does the opposite. Its connection is outbound, so **no inbound request ever arrives** — nothing keeps it awake, and it sleeps as soon as that window elapses **on any plan**, dropping the socket.
+A gateway bot does the opposite. Its connection is outbound, so **no inbound request ever arrives** — nothing keeps it awake, and as a web app it sleeps as soon as that window elapses **on any plan**, dropping the socket — unless you run it as a [background worker](../always-on-and-workers.md#workers) (Hobby and Pro).
 
 |                        | HTTP interactions                      | Gateway (WebSocket)                                             |
 | :--------------------- | :------------------------------------- | :-------------------------------------------------------------- |
@@ -31,7 +31,7 @@ A gateway bot does the opposite. Its connection is outbound, so **no inbound req
 | Cost while idle        | Nothing                                | Constantly running                                              |
 | Covers                 | Slash commands, buttons, menus, modals | Everything, plus message content, presence, reactions and voice |
 
-**Slash commands, buttons, select menus and modals all work over HTTP interactions**, which is the whole surface most bots need. If your bot genuinely has to read every message in a channel, track presence or join voice, it needs the gateway — and it needs a host that keeps a process alive with no inbound traffic, which is not what this platform does today.
+**Slash commands, buttons, select menus and modals all work over HTTP interactions**, which is the whole surface most bots need. If your bot genuinely has to read every message in a channel, track presence or join voice, it needs the gateway — and a process that stays alive with no inbound traffic: run it as a [background worker](../always-on-and-workers.md#workers) (Hobby and Pro), which never sleeps.
 
 ## What Faable detects
 
@@ -281,7 +281,7 @@ After 30 minutes with no requests on the Free plan — 2 hours on Hobby and Pro 
 
 - **The first interaction after a sleep is slower** — the container starts up. This is precisely what deferred replies absorb; keep boot work light too, and open database connections lazily rather than at import time.
 - **In-memory state is gone.** Anything held in a module-level dictionary disappears on sleep and on every deploy. Persist it — see [Databases](databases.md).
-- **Timers don't fire while asleep.** A bot that posts a daily announcement needs an external trigger hitting an endpoint, not an in-process `setInterval`.
+- **Timers don't fire while asleep.** A bot that posts a daily announcement needs a [scheduled task](../scheduled-tasks.md) or an external trigger hitting an endpoint, not an in-process `setInterval`.
 
 ## Troubleshooting
 

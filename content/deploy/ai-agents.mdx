@@ -17,12 +17,12 @@ Managed application platforms in Europe — Faable included — put an idle app 
 | Agent shape              | What it looks like                                                                                              | Fits scale-to-zero?                                     |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
 | **Request-driven**       | An HTTP endpoint: a chat backend, a tool the model calls, a webhook that receives an event and reasons about it | ✅ Yes — each request wakes it, idle time costs nothing |
-| **Schedule-driven**      | Runs on a timer, but triggered from outside (a cron service, a queue that POSTs)                                | ✅ Yes — the trigger is an inbound request              |
-| **Continuously polling** | Loops on `getUpdates`, polls a queue, or holds a WebSocket open to a provider                                   | ❌ No — see below                                       |
+| **Schedule-driven**      | Runs on a timer: a [scheduled task](scheduled-tasks.md), or a cron service or queue that POSTs                  | ✅ Yes — a task or the inbound request starts it        |
+| **Continuously polling** | Loops on `getUpdates`, polls a queue, or holds a WebSocket open to a provider                                   | ❌ No — run it as a worker (below)                      |
 
 The third row is the trap, and it is the shape most "autonomous agent" tutorials produce. An agent that polls makes **outbound** calls in a loop and receives no inbound traffic at all. Nothing resets the idle timer, so the platform puts it to sleep and the loop simply stops — on **any** plan, paid included. It will look like the platform killed your agent. What actually happened is that nothing ever told the platform the agent was working.
 
-**The fix is usually to invert the trigger**: have the queue, the scheduler, or the provider call your agent over HTTPS instead of having your agent ask them in a loop. Most providers support webhooks for exactly this reason. If yours genuinely cannot be inverted — a long-lived WebSocket to a broker you do not control, say — you need a platform that bills for a process that is always running, not one that scales to zero.
+**The fix is usually to invert the trigger**: have the queue, the scheduler, or the provider call your agent over HTTPS instead of having your agent ask them in a loop. Most providers support webhooks for exactly this reason. A loop that only needs to run every few minutes can be a [scheduled task](scheduled-tasks.md), which runs on a cron schedule even while the app sleeps. And if yours genuinely cannot be inverted — a long-lived WebSocket to a broker you do not control, say — run it as a [background worker](always-on-and-workers.md#workers): a process with no web server that never sleeps, on Hobby and Pro.
 
 ## What a model call does to your request
 

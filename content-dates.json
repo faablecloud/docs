@@ -393,7 +393,11 @@
   },
   "content/deploy/ai-agents.mdx": {
     "published": "2026-09-12T13:03:24+02:00",
-    "modified": "2026-10-29T07:59:35.927Z"
+    "modified": "2026-11-02T10:25:50.009Z"
+  },
+  "content/deploy/always-on-and-workers.md": {
+    "published": "2026-11-02T10:25:50.009Z",
+    "modified": "2026-11-02T10:25:50.009Z"
   },
   "content/deploy/build-failures.md": {
     "published": "2026-10-21T08:07:23.433Z",
@@ -413,7 +417,7 @@
   },
   "content/deploy/compare-heroku.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-29T19:13:19.774Z"
+    "modified": "2026-11-02T10:25:50.009Z"
   },
   "content/deploy/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
@@ -477,7 +481,7 @@
   },
   "content/deploy/guides/guide-discord-bot.md": {
     "published": "2026-09-03T11:22:00+02:00",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-11-02T10:25:50.009Z"
   },
   "content/deploy/guides/guide-django.md": {
     "published": "2026-08-11T12:09:26+02:00",
@@ -513,7 +517,7 @@
   },
   "content/deploy/guides/guide-slack-bot.md": {
     "published": "2026-09-03T11:32:11+02:00",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-11-02T10:25:50.009Z"
   },
   "content/deploy/guides/guide-stripe-webhooks.md": {
     "published": "2026-09-03T11:56:16+02:00",
@@ -521,11 +525,11 @@
   },
   "content/deploy/guides/guide-telegram-bot.md": {
     "published": "2026-08-24T17:57:53+02:00",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-11-02T10:25:50.009Z"
   },
   "content/deploy/guides/guide-uptime-kuma.md": {
     "published": "2026-08-24T22:47:21+02:00",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-11-02T10:25:50.009Z"
   },
   "content/deploy/guides/guide-vite.md": {
     "published": "2026-09-08T10:38:28+02:00",
@@ -572,12 +576,16 @@
     "published": "2026-10-05T17:43:47+02:00"
   },
   "content/deploy/pricing.mdx": {
-    "modified": "2026-10-16T16:10:11+02:00",
-    "published": "2026-08-24T18:03:43+02:00"
+    "published": "2026-08-24T18:03:43+02:00",
+    "modified": "2026-11-02T10:25:50.009Z"
   },
   "content/deploy/runtime.md": {
     "published": "2026-03-31T11:42:44+02:00",
     "modified": "2026-10-28T14:14:46.015Z"
+  },
+  "content/deploy/scheduled-tasks.md": {
+    "published": "2026-11-02T10:25:50.009Z",
+    "modified": "2026-11-02T10:25:50.009Z"
   },
   "content/deploy/sdk.mdx": {
     "modified": "2026-07-16T12:45:45+02:00",
