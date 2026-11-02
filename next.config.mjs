@@ -14,6 +14,14 @@ export default withNextra({
   // OOM-killed while generating pages (2026-09-28, BUILD_ERROR reported as an
   // infrastructure failure). Reproduced in a 4 GiB container: several workers
   // → killed, one worker → passes, and pages generate in ~5 s instead of ~55.
+  //
+  // `next build --webpack` (package.json), not Turbopack, since 2026-11-02: at
+  // 329 pages the Turbopack build peaked at exactly the Job's 4 GiB (cgroup
+  // `memory.peak` = 4294967296) and the builder lost three of four deploys that
+  // day. In a 3 GiB, 2-CPU container Turbopack is killed (137) and webpack
+  // passes at 2.8 GiB; the full `npm run build` with webpack peaks at 3.2 GiB
+  // in 4 GiB and takes ~56 s. Capping the V8 heap does not help — Turbopack's
+  // memory is native.
   experimental: { cpus: 1 },
   async headers() {
     // Fastly purges by Surrogate-Key (this app's id) on every deployment
