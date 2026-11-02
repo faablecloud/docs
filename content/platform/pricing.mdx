@@ -10,12 +10,14 @@ Faable is sold as a **single subscription that covers every product** — both F
 
 Each tier is a **fixed monthly fee** that unlocks features and entitlements, and everything the tier includes — instances, deployments, users, egress — comes with the fee. There is never a per-user charge.
 
-**Four things are metered, only above what the plan includes:**
+**Six things are metered, only above what the plan includes:**
 
 - **Egress, on Pro:** 100 GB included, then 0.18 €/GB. Free and Hobby are not metered — their allowance (10 GB and 50 GB) is what the tier includes, and no per-GB line can appear on their invoice. See [Deploy pricing](../deploy/pricing.md#bandwidth).
 - **Recovery SMS, on Hobby and Pro:** 20 a month included, then per message. See [Auth pricing](../auth/pricing.mdx#sms).
 - **Enterprise SSO users, on Pro:** 50 federated MAU a month included, then €0.0010 each. See [Auth pricing](../auth/pricing.mdx#enterprise-sso).
 - **Machine-to-machine tokens, on Hobby and Pro:** 100 a month included, then €2.25 per 1,000. Free is capped at 100 and never needs a card. See [Auth pricing](../auth/pricing.mdx#machine-to-machine-tokens).
+- **Compute hours of always-on apps and workers, on Hobby and Pro:** 365 GiB-hours a month included on Hobby and 1,460 on Pro, then €0.02 per GiB-hour. Apps that sleep don't count. See [Always on and workers](../deploy/always-on-and-workers.md#compute-hours).
+- **Task minutes, on Hobby and Pro:** 500 a month included on Hobby and 2,000 on Pro, then €0.008 per minute. See [Scheduled tasks](../deploy/scheduled-tasks.md#task-minutes).
 
 Plans apply **per project**: each project has its own plan, starting on Free. An account can keep
 **up to 3 projects on Free** — 2 during its first 48 hours — and moving any one of them to Hobby

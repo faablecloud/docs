@@ -49,7 +49,7 @@ If a covered service of a Pro project falls below the commitment in a calendar m
 | Less than 99.0 % but at least 95.0 % | 25 %           |
 | Less than 95.0 %                     | 50 %           |
 
-- Credits are calculated on the fixed monthly fee only, not on metered usage (egress, SMS, machine-to-machine tokens) or taxes.
+- Credits are calculated on the fixed monthly fee only, not on metered usage (egress, SMS, machine-to-machine tokens, compute hours, task minutes) or taxes.
 - When both covered services miss the commitment in the same month, the higher credit applies; credits do not add up.
 - The total credit for a project in a month **never exceeds 50 %** of its monthly Pro fee.
 - Credits are applied to a future invoice of the same account. They have no cash value, cannot be transferred, and are not refunded if you cancel.

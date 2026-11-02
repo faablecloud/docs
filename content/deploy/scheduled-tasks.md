@@ -60,7 +60,7 @@ It waits for the task and prints its output; `--no-wait` only queues it.
 
 ## Task minutes
 
-Each task counts its duration rounded up to the minute: a task of 5 seconds is one minute. A project includes **500 task minutes a month on Hobby** and **2,000 on Pro**, one-off and scheduled tasks together — including what an installed app runs, such as its setup and the WordPress cron below. The Tasks tab shows the minutes used this month.
+Each task counts its duration rounded up to the minute: a task of 5 seconds is one minute. A project includes **500 task minutes a month on Hobby** and **2,000 on Pro**, one-off and scheduled tasks together — including what an installed app runs, such as its setup and the WordPress cron below. The Tasks tab shows the minutes used this month. Above the included minutes, each minute is billed at **€0.008** with the next invoice, and the project's owners get an email at 80 % and at 100 %.
 
 ## Deleting an app
 

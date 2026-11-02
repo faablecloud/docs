@@ -26,7 +26,7 @@ If a paid plan is not what you needed, we refund the **first plan fee** you were
 
 It does not cover:
 
-- **Metered usage** already consumed — egress, recovery SMS, and machine-to-machine tokens above the allowance. It is billed for what was used and remains payable.
+- **Metered usage** already consumed — egress, recovery SMS, machine-to-machine tokens, compute hours of always-on apps and workers, and task minutes above the allowance. It is billed for what was used and remains payable.
 - **Later renewals.** Every charge after the first follows [Cancelling a plan](#cancelling-a-plan).
 - Accounts terminated for a breach of the [acceptable use rules](terms-of-service.md#5-acceptable-use).
 
