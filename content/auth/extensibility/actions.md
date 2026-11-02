@@ -95,6 +95,10 @@ event = {
     // Same, widened to the IP's /24 (or /48 for IPv6). Only ever non-zero for
     // datacenter addresses, so it can never implicate a residential range.
     ip_network_active_blocks?: number;
+    // How many OTHER users of your tenant logged in from this same browser in
+    // the last 90 days. `null` when the browser sent no login cookie (blocked
+    // cookies, a direct token grant), which means "unknown", not zero.
+    browser_accounts?: number | null;
   };
   stats: {
     // true when this login is the user's SIGNUP — the identity was created
@@ -113,7 +117,10 @@ event = {
 ```
 
 > [!NOTE]
-> The three `ip_*` fields are resolved **on demand**: Faable only computes them when your action's source mentions them by name, so an action that never reads them costs nothing. Treat `undefined` as "not evaluated" and compare explicitly (`=== true`).
+> The three `ip_*` fields and `browser_accounts` are resolved **on demand**: Faable only computes them when your action's source mentions them by name, so an action that never reads them costs nothing. Treat `undefined` as "not evaluated" and compare explicitly (`=== true`, `> 0`).
+
+> [!NOTE]
+> `browser_accounts` comes from a random first-party cookie set on the login page, not from a device fingerprint. Clearing cookies or opening a private window starts from zero, so it catches repeat signups from the same browser, not someone deliberately evading. Use it as one signal among others rather than as a hard deny on its own.
 
 > [!TIP]
 > `event.stats.is_new_user` distinguishes a **signup** from a returning login, regardless of how the user registered (email/password form, Google, GitHub…). Every flow passes through `post-login`, which makes it the one reliable place to react to new accounts.
