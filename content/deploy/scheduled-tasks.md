@@ -20,7 +20,7 @@ Tasks and schedules are available on the **Hobby and Pro** plans.
    - **Name (optional)** — how the schedule shows in the list.
 3. Click **Add schedule**.
 
-The list shows each schedule in words, its next run, and why a run was skipped if one was. **Turn off** pauses a schedule without deleting it; **Delete** removes it. Under **Recent runs** you see the last 20 tasks of the app — scheduled and one-off — with their status and output.
+The list shows each schedule in words, its next run, and why a run was skipped if one was. **Turn off** pauses a schedule without deleting it; **Delete** removes it. Under **Recent runs** you see the last 20 tasks of the app — scheduled and one-off — with their status. Open one to read its output: the last 32 KB are kept, shown from the end, and can be copied or downloaded.
 
 ## From the CLI
 
@@ -60,11 +60,15 @@ It waits for the task and prints its output; `--no-wait` only queues it.
 
 ## Task minutes
 
-Each task counts its duration rounded up to the minute: a task of 5 seconds is one minute. A project includes **500 task minutes a month on Hobby** and **2,000 on Pro**, one-off and scheduled tasks together. The Tasks tab shows the minutes used this month.
+Each task counts its duration rounded up to the minute: a task of 5 seconds is one minute. A project includes **500 task minutes a month on Hobby** and **2,000 on Pro**, one-off and scheduled tasks together — including what an installed app runs, such as its setup and the WordPress cron below. The Tasks tab shows the minutes used this month.
+
+## Deleting an app
+
+Deleting an app — or the installation it belongs to — deletes its schedules and its task history with it. The minutes those tasks used this month still count.
 
 ## WordPress cron
 
-A WordPress site runs its scheduled events (scheduled posts, plugin jobs such as backups or mail queues) on page views, so a site that sleeps would never run them. Faable keeps a schedule on every WordPress app that runs `wp cron event run --due-now` every 15 minutes. It shows in the Tasks tab as **Managed by Faable**, cannot be changed or deleted, and does **not** count toward your task minutes.
+A WordPress site runs its scheduled events (scheduled posts, plugin jobs such as backups or mail queues) on page views, so a site that sleeps would never run them. Faable keeps a schedule on every WordPress app that runs `wp cron event run --due-now` every 15 minutes. It shows in the Tasks tab as **Managed by Faable** and counts toward your task minutes like any task (each run is usually under a minute). It can't be changed or deleted on its own: deleting the installation deletes the app, and with it this schedule and the history of its runs.
 
 ## On the Free plan
 
