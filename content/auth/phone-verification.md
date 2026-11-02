@@ -7,7 +7,7 @@ description: Verify a user's mobile number with an SMS code, so it can later car
 
 A verified mobile number is what lets Faable Auth send a password-recovery code by SMS when the email does not reach the person — common with university, hospital and corporate mailboxes that quarantine automated mail. Nothing is ever sent to a number that has not been verified first.
 
-Phone verification is available on **Hobby** and **Pro**. It uses the tenant's monthly SMS allowance; see [Pricing](pricing.mdx).
+Phone verification is available on **Hobby** and **Pro**. Each SMS it sends is billed per message; see [Pricing](pricing.mdx#sms).
 
 ## Phone numbers are stored in E.164
 
