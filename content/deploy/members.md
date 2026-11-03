@@ -46,6 +46,10 @@ The **owner** role and **who pays** for the project are separate: the person who
 
 Billing can be handed over only while the project has **no active subscription**. With one, write to [support@faable.com](mailto:support@faable.com) and we'll move it for you.
 
+## Email notifications
+
+Which emails each person gets about the project — successful and failed deploys, app health, platform maintenance — is chosen per member in **Project settings → Notifications**. Billing emails go to whoever pays. See [Email Notifications](notifications.md).
+
 ## Activity
 
 **Project settings → Activity** lists who joined, left, was invited, removed or changed role, and who did it, newest first. A change can take a few seconds to show up.

@@ -568,8 +568,12 @@
     "modified": "2026-10-29T19:13:19.774Z"
   },
   "content/deploy/members.md": {
-    "modified": "2026-09-30T14:05:48+02:00",
-    "published": "2026-09-30T14:05:48+02:00"
+    "published": "2026-09-30T14:05:48+02:00",
+    "modified": "2026-11-03T04:46:57.739Z"
+  },
+  "content/deploy/notifications.md": {
+    "published": "2026-11-03T04:46:57.739Z",
+    "modified": "2026-11-03T04:46:57.739Z"
   },
   "content/deploy/organizations.md": {
     "modified": "2026-10-05T17:43:47+02:00",

@@ -5,6 +5,7 @@ export default {
   guides: 'Guides & Migrations',
   domains: 'Custom Domains',
   members: 'Members & Roles',
+  notifications: 'Email Notifications',
   organizations: 'Organizations & SSO',
   runtime: 'Runtime',
   'scheduled-tasks': 'Scheduled Tasks & Cron',
