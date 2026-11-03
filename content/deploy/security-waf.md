@@ -32,7 +32,6 @@ The firewall matches requests by **path, `User-Agent` and query parameter name**
 
 - It does **not** read request bodies, other headers or the values of query parameters.
 - It is **not** a signature engine such as the OWASP Core Rule Set: it does not detect SQL injection or cross-site scripting in your forms and APIs.
-- There is no monitor (log-only) mode: a rule blocks as soon as it is in place.
 
 It removes the noise every public site receives and shuts the doors scanners try first. It does not replace validating input in your code, and it does not cover the OWASP Top 10 on its own.
 
@@ -40,11 +39,12 @@ It removes the noise every public site receives and shuts the doors scanners try
 
 Add rules for the traffic that is specific to your app. A rule selects requests and decides what they get back:
 
-| Action  | Answer     | Use it when                                                                                   |
-| ------- | ---------- | --------------------------------------------------------------------------------------------- |
-| `block` | `403`      | You want the request refused: a scanner probe, an admin path that should not be public        |
-| `sink`  | `404`      | Your app does not serve that path anyway. Faable answers the same 404 without waking your app |
-| `allow` | your app's | Faable blocks that path for every app (a `.zip`, a dotfile) and your app really serves it     |
+| Action    | Answer     | Use it when                                                                                                    |
+| --------- | ---------- | -------------------------------------------------------------------------------------------------------------- |
+| `block`   | `403`      | You want the request refused: a scanner probe, an admin path that should not be public                         |
+| `sink`    | `404`      | Your app does not serve that path anyway. Faable answers the same 404 without waking your app                  |
+| `allow`   | your app's | Faable blocks that path for every app (a `.zip`, a dotfile) and your app really serves it                      |
+| `monitor` | your app's | You want to see what a rule would stop before it stops anything — [try it first](#try-a-rule-before-it-blocks) |
 
 A rule matches on:
 
@@ -75,6 +75,23 @@ faable deploy waf rm '^/robots\.txt$'               # remove a rule as you creat
 
 Open your app and go to the **Firewall** tab. **Add rule** offers the same selectors and actions. Each rule shows its description, so the reason for it stays with it, and can be edited or removed.
 
+### Try a rule before it blocks
+
+```bash
+faable deploy waf monitor '^/admin'
+```
+
+```
+👀 requests for ^/admin → monitor only, nothing is blocked
+   for shop-api (app_a1b2c3).
+
+In the last 7 days it would have stopped 206 requests your app served.
+```
+
+A `monitor` rule blocks nothing: every request still reaches your app. Faable checks the rule against the traffic your app served, with the same matching the edge uses, and the **Would block** panel of the Firewall tab shows what it would have stopped, path by path. It reads the past too, so the first answer is the last 30 days, not a week from now.
+
+When it only catches what it should, add the same rule with `block` or `sink` (or change its action in the dashboard) and remove the monitor one. Monitor rules count toward the 50 rules of the app.
+
 ### Allow a path Faable blocks
 
 ```bash
@@ -98,6 +115,8 @@ Each app can have up to **50 rules**, with at most 10 user-agent patterns, 10 qu
 ## See what was stopped
 
 The **Firewall** tab shows the requests stopped over the last 24 hours, 7 days or 30 days: blocked (`403`) and sunk (`404`) over time, the most-blocked paths and the user-agents behind them. These requests never reached your app, so they are not in Metrics.
+
+**Stopped by** names the rule behind each: one of yours, by its description or pattern, or one of Faable's rulesets by name. The same rule appears under each of the most-blocked paths. If your app has monitor rules, **Would block** lists what they would have stopped.
 
 ## Troubleshooting
 

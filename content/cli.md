@@ -504,14 +504,16 @@ specific to your app: on a scale-to-zero app, every one of those requests **star
 container** just to answer a 404.
 
 `faable deploy waf` lets you handle those paths at the edge, so they never reach your
-app. Two rules, depending on what the caller should get back — and a third for the
-opposite case, a path Faable blocks that your app really serves:
+app. Two rules, depending on what the caller should get back, a third for the opposite
+case — a path Faable blocks that your app really serves — and `monitor`, to see what a
+rule would stop before it stops anything:
 
-| Command | Answer     | Use it when                                                                                        |
-| ------- | ---------- | -------------------------------------------------------------------------------------------------- |
-| `block` | `403`      | You want the request refused — a scanner probe, an admin path that should not be public            |
-| `sink`  | `404`      | Your app does not serve that path anyway. Faable replies with the same 404, without the cold start |
-| `allow` | your app's | Faable blocks that path for every app (a `.zip`, a dotfile) and your app really serves it          |
+| Command   | Answer     | Use it when                                                                                        |
+| --------- | ---------- | -------------------------------------------------------------------------------------------------- |
+| `block`   | `403`      | You want the request refused — a scanner probe, an admin path that should not be public            |
+| `sink`    | `404`      | Your app does not serve that path anyway. Faable replies with the same 404, without the cold start |
+| `allow`   | your app's | Faable blocks that path for every app (a `.zip`, a dotfile) and your app really serves it          |
+| `monitor` | your app's | You want to see what a rule would stop before it stops anything                                    |
 
 A rule selects requests by **path**, by **user-agent**, by **query parameter**, or by a
 path together with one of the other two:
@@ -555,6 +557,29 @@ faable deploy waf sink '^/robots\.txt$'
 Use `sink` for paths your app 404s anyway. A 404 on `robots.txt` means "no crawling
 restrictions", which is exactly what your app was already replying — the only difference
 is that Faable answers it and your container stays asleep.
+
+### Try a rule before it blocks
+
+```bash
+faable deploy waf monitor '^/admin'
+```
+
+```
+👀 requests for ^/admin → monitor only, nothing is blocked
+   for shop-api (app_a1b2c3).
+
+In the last 7 days it would have stopped 206 requests your app served.
+The Firewall tab of the app shows what it would stop, request by request.
+
+When it only catches what it should: faable deploy waf block '^/admin' -a app_a1b2c3
+Undo: faable deploy waf rm '^/admin' --action monitor -a app_a1b2c3
+```
+
+A `monitor` rule takes the same selectors as `block` and `sink` (`--user-agent`,
+`--query`, a path with either) and blocks nothing: Faable checks it against the traffic
+your app already served, so it tells you what it would have stopped in the past week
+straight away. Promote it by adding the same rule with `block` or `sink`, then remove
+the monitor one with `--action monitor`.
 
 ### Allow a path Faable blocks for every app
 
