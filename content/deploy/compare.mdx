@@ -20,7 +20,7 @@ If you are choosing a platform for a real product — a SaaS backend, an API, an
 | Commercial use on the free plan           | ✅                                       | ❌ personal use only   | ✅                    | —                       |
 | Custom domains on the free plan           | ✅                                       | ✅                     | ✅                    | ❌                      |
 | Free-plan app wakes from sleep in         | **a few seconds**                        | n/a (serverless)       | ~1 minute             | n/a                     |
-| Built-in Web Application Firewall         | ✅ OWASP CRS, every plan                 | Paid add-on            | ❌                    | ❌                      |
+| Built-in Web Application Firewall         | ✅ edge firewall, every plan             | Paid add-on            | ❌                    | ❌                      |
 | Bundled identity / auth (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md) | ❌                     | ❌                    | ❌                      |
 | First paid tier                           | **15 €/month per project, fixed**        | $20 per seat / month   | $25 / month + compute | $5 minimum + usage      |
 | Company and infrastructure in Europe      | ✅ 100% EU                               | US company, EU regions | US company, EU region | US company, EU region   |
@@ -38,7 +38,7 @@ Faable's [Free plan](pricing.mdx) is permanent, needs no credit card, **allows c
 
 ### Security and identity are included, not assembled
 
-Every app sits behind a [managed Web Application Firewall](security-waf.md) running the OWASP Core Rule Set — on every plan, including Free. On Vercel a WAF with custom rules is a paid feature; on Render and Railway it is something you put in front yourself.
+Every app sits behind a [managed Web Application Firewall](security-waf.md) that blocks scanner traffic before it reaches your code — on every plan, including Free, with your own rules by path, user-agent or query parameter. On Vercel a WAF with custom rules is a paid feature; on Render and Railway it is something you put in front yourself.
 
 And when your app needs users, [Faable Auth](../auth/get-started.md) is already in your subscription: hosted login, social and passwordless login, MFA, passkeys and machine-to-machine tokens, with **15,000 monthly active users on the Free plan**. On the other platforms that is a second vendor — Auth0, Clerk or Cognito — with a second bill and a second data-processing agreement.
 

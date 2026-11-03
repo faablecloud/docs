@@ -484,6 +484,9 @@ faable deploy domains check www.example.com
 
 Verification re-runs automatically; there is nothing to trigger manually.
 
+The same rules can be added, edited and removed from the **Firewall** tab of the app in the
+dashboard, which also shows what was stopped over the last 24 hours, 7 days or 30 days.
+
 ### Remove
 
 ```bash
@@ -510,13 +513,16 @@ opposite case, a path Faable blocks that your app really serves:
 | `sink`  | `404`      | Your app does not serve that path anyway. Faable replies with the same 404, without the cold start |
 | `allow` | your app's | Faable blocks that path for every app (a `.zip`, a dotfile) and your app really serves it          |
 
-A rule selects requests by **path**, by **user-agent**, or by both at once:
+A rule selects requests by **path**, by **user-agent**, by **query parameter**, or by a
+path together with one of the other two:
 
-| You write                            | It matches                                       |
-| ------------------------------------ | ------------------------------------------------ |
-| `waf block '^/wp-admin'`             | that path, from anyone                           |
-| `waf block --user-agent YisouSpider` | that crawler, on **every** path                  |
-| `waf block '^/api/' -u YisouSpider`  | that path **and** that crawler — both must match |
+| You write                            | It matches                                         |
+| ------------------------------------ | -------------------------------------------------- |
+| `waf block '^/wp-admin'`             | that path, from anyone                             |
+| `waf block --user-agent YisouSpider` | that crawler, on **every** path                    |
+| `waf block '^/api/' -u YisouSpider`  | that path **and** that crawler — both must match   |
+| `waf block --query rest_route`       | any request carrying `?rest_route=`, on every path |
+| `waf block '^/$' --query author`     | `/?author=…` only — both must match                |
 
 Patterns are regular expressions. Path patterns are matched against the request path and
 user-agent patterns against the `User-Agent` header, unanchored (agents append versions
@@ -604,6 +610,22 @@ To restrict a rule to certain paths, give both halves — then **both** have to 
 faable deploy waf block '^/api/' --user-agent YisouSpider
 ```
 
+### Block a query parameter
+
+```bash
+faable deploy waf block --query rest_route
+```
+
+Scanners often probe through the query string — `?rest_route=/wp/v2/users` asks a
+WordPress REST API that a Node app does not have. `--query` takes a parameter **name**,
+not a regex, and matches any request that carries it, whatever its value. Combine it with
+a path to narrow it down: `faable deploy waf block '^/$' --query author` refuses
+`/?author=1` and leaves `?author=` on every other path alone. A rule combines a path with
+`--user-agent` **or** with `--query`, not both.
+
+Parameters that carry a sign-in flow (`code`, `state`…) are refused until you add
+`--force`: blocking them breaks the redirect back from an identity provider.
+
 ### List
 
 ```bash
@@ -619,6 +641,7 @@ each one answers.
 faable deploy waf rm '^/robots\.txt$'
 faable deploy waf rm --user-agent YisouSpider
 faable deploy waf rm '^/api/' --user-agent YisouSpider
+faable deploy waf rm --query rest_route
 ```
 
 Remove a rule the same way you created it: `'^/login'` and `'^/login' -u YisouSpider` are

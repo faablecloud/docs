@@ -22,7 +22,7 @@ rank: high
 | Pricing model                             | **Fixed fee per project**: 0 €, 15 €, 99 €/month               | Your servers + Coolify Cloud ($5/month for 2 servers, $3 per extra) or free self-hosted |
 | Free automatic SSL                        | ✅                                                             | ✅                                                                                      |
 | Pull-request previews                     | ❌                                                             | ✅                                                                                      |
-| Built-in Web Application Firewall         | ✅ OWASP CRS, every plan                                       | ❌ bring your own                                                                       |
+| Built-in Web Application Firewall         | ✅ edge firewall, every plan                                   | ❌ bring your own                                                                       |
 | Bundled identity / auth (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free      | ❌                                                                                      |
 | Databases and persistent volumes          | ❌ use a managed database ([see options](guides/databases.md)) | ✅ one-click Postgres, MySQL, Redis… with persistent storage                            |
 | One-click services                        | ❌                                                             | ✅ 360+ (n8n, Plausible, Umami…)                                                        |
@@ -38,7 +38,7 @@ Coolify makes deploying easy, but it doesn't make the server go away. Its own do
 
 ### Security in front of every app
 
-Every Faable app sits behind a [managed Web Application Firewall](security-waf.md) running the OWASP Core Rule Set, on every plan. With Coolify, what sits in front of your app is the reverse proxy on your server; a WAF is something you add and maintain yourself.
+Every Faable app sits behind a [managed Web Application Firewall](security-waf.md) that blocks scanner traffic before it reaches your code, on every plan, with your own rules by path, user-agent or query parameter. With Coolify, what sits in front of your app is the reverse proxy on your server; a WAF is something you add and maintain yourself.
 
 ### Sign-in included
 

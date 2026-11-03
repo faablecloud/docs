@@ -20,7 +20,7 @@ rank: high
 | Idle sleep on the entry tier              | 30 min, wakes in a few seconds                                 | 30 min on Eco                              |
 | Horizontal autoscaling                    | ✅                                                             | Performance and Private dynos only         |
 | Free automatic SSL                        | ✅                                                             | ✅                                         |
-| Built-in Web Application Firewall         | ✅ OWASP CRS, every plan                                       | ❌ third-party add-on                      |
+| Built-in Web Application Firewall         | ✅ edge firewall, every plan                                   | ❌ third-party add-on                      |
 | Bundled identity / auth (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free      | ❌ third-party add-on                      |
 | Company and infrastructure                | 🇪🇺 European                                                    | US (Salesforce), EU region available       |
 | Currency                                  | EUR                                                            | USD                                        |
@@ -39,7 +39,7 @@ A typical Heroku app is a dyno per process plus add-ons for logging, authenticat
 
 ### Security and identity out of the box
 
-Every app sits behind a [managed Web Application Firewall](security-waf.md) running the OWASP Core Rule Set, on every plan. When your app needs sign-in, [Faable Auth](../auth/get-started.md) is already there — hosted login, social and passwordless login, MFA, passkeys and machine-to-machine tokens — under the same account, the same bill and the same data-processing agreement.
+Every app sits behind a [managed Web Application Firewall](security-waf.md) that blocks scanner traffic before it reaches your code, on every plan. When your app needs sign-in, [Faable Auth](../auth/get-started.md) is already there — hosted login, social and passwordless login, MFA, passkeys and machine-to-machine tokens — under the same account, the same bill and the same data-processing agreement.
 
 ### European by construction
 

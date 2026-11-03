@@ -40,12 +40,12 @@ Within the workload cluster:
 
 **Managed request filtering at the edge.** Faable operates a managed [Web Application Firewall](../deploy/security-waf.md) in front of every application, on every plan. Rules are maintained by us as a set of **profiles** applied fleet-wide, so protection improves for all apps without you changing anything:
 
-| Profile         | Applies to        | Blocks                                                                                                                                                                     |
-| --------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Sensitive paths | Every app         | `.git/`, `.env`, `.aws/`, `.ssh/`, `.npmrc`, `.netrc`, Terraform state, source maps, `/actuator`, `/phpmyadmin`, installer leftovers, and similar credential-hunting paths |
-| Scanner traffic | Node applications | `*.php`, `/wp-*`, `/xmlrpc`, WordPress and IIS bait probes                                                                                                                 |
+| Profile         | Applies to                      | Blocks                                                                                                                                                                     |
+| --------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sensitive paths | Every app                       | `.git/`, `.env`, `.aws/`, `.ssh/`, `.npmrc`, `.netrc`, Terraform state, source maps, `/actuator`, `/phpmyadmin`, installer leftovers, and similar credential-hunting paths |
+| Scanner traffic | Every app that does not run PHP | `*.php`, `/wp-*`, `/xmlrpc`, WordPress and IIS bait probes                                                                                                                 |
 
-Matching requests are rejected with `403` **at the edge, before they reach your application** — so they do not consume your compute, do not keep a scaled-to-zero app awake, and do not appear as load in your app. Per-app rules can be added or relaxed on request; see the [WAF documentation](../deploy/security-waf.md) for how to read WAF events and tune false positives.
+Matching requests are rejected with `403` **at the edge, before they reach your application** — so they do not consume your compute, do not keep a scaled-to-zero app awake, and do not appear as load in your app. Each app can add its own rules by path, user-agent or query parameter from the CLI or the dashboard; see the [WAF documentation](../deploy/security-waf.md) for the rules, what was stopped, and what the firewall does not inspect.
 
 **Traffic visibility.** Every HTTP request to your apps is recorded with its host, status, and timing, which is what drives usage metering and lets us spot abusive traffic patterns per app.
 
@@ -116,4 +116,4 @@ If an incident affects the confidentiality, integrity, or availability of your d
 - [Compliance](compliance.md) — GDPR, the DPA, and the frameworks included in Pro
 - [Privacy Policy](privacy-policy.md) — what we collect, why, and for how long
 - [Terms of Service](terms-of-service.md) — acceptable use, liability, termination
-- [Web Application Firewall](../deploy/security-waf.md) — how edge filtering works and how to tune it
+- [Web Application Firewall](../deploy/security-waf.md) — how edge filtering works and how to add your own rules

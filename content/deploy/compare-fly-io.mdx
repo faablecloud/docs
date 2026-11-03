@@ -19,7 +19,7 @@ rank: high
 | Traffic billing                                                | Included; only Pro meters beyond 100 GB                   | Egress billed per GB                         |
 | Scale to zero and wake on request                              | ✅ automatic                                              | ✅ configurable                              |
 | Free automatic SSL                                             | ✅                                                        | ✅                                           |
-| Built-in Web Application Firewall                              | ✅ OWASP CRS, every plan                                  | ❌ bring your own                            |
+| Built-in Web Application Firewall                              | ✅ edge firewall, every plan                              | ❌ bring your own                            |
 | Bundled identity / auth (OAuth 2.0, OIDC)                      | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free | ❌                                           |
 | Support                                                        | Email from platform engineers on Hobby and Pro            | Community; paid support plans from $29/month |
 | Low-level control (regions, machine types, private networking) | Abstracted away                                           | ✅ fine-grained                              |
@@ -44,7 +44,7 @@ Fly.io replaced its free allowance with a short trial. Faable's [Free plan](pric
 
 ### Security and identity included
 
-Every app is protected by a [managed Web Application Firewall](security-waf.md) running the OWASP Core Rule Set — no proxy to deploy in front of your app. When you need sign-in, [Faable Auth](../auth/get-started.md) gives you hosted login, social and passwordless login, MFA, passkeys and machine-to-machine tokens in the same account.
+Every app is protected by a [managed Web Application Firewall](security-waf.md) that blocks scanner traffic before it reaches your code — no proxy to deploy in front of your app. When you need sign-in, [Faable Auth](../auth/get-started.md) gives you hosted login, social and passwordless login, MFA, passkeys and machine-to-machine tokens in the same account.
 
 ### European company, European infrastructure
 

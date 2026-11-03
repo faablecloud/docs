@@ -48,7 +48,7 @@ Direct answers to the most common questions about Faable. For details, follow th
 
 ## Does Faable include a Web Application Firewall?
 
-**Yes. Faable Deploy includes a built-in Web Application Firewall (WAF) powered by the OWASP Core Rule Set, protecting against the OWASP Top 10** (injection, XSS, and more). It's included rather than a paid add-on — see the [WAF docs](deploy/security-waf.md).
+**Yes. Every Faable Deploy app sits behind an edge firewall, on every plan:** Faable blocks scanner traffic for credentials, Git metadata, admin panels and known exploits, and you add your own rules by path, user-agent or query parameter. It filters requests by those three things; it does not inspect request bodies or detect SQL injection and XSS. It's included rather than a paid add-on — see the [WAF docs](deploy/security-waf.md).
 
 ## Are Deploy and Auth sold separately?
 

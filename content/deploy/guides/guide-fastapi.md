@@ -149,7 +149,7 @@ You rarely need to. One async process serves many concurrent requests, and each 
 
 ### Does the built-in WAF interfere with API clients?
 
-The WAF ships in monitor mode conventions described in the [WAF guide](../security-waf.md): review the logs before switching to block mode, because machine clients sometimes send payloads that trip generic OWASP rules. Exclusions are scoped per path, parameter or rule.
+No. The firewall matches paths, user-agents and query parameter names, never request bodies, so JSON payloads from API clients are not inspected. What it blocks by default are scanner paths no API serves (`.env`, `.git/`, `*.php`…). If a client of yours does get a `403`, `faable deploy waf list` shows the rules in effect — see the [WAF guide](../security-waf.md).
 
 ## Related
 
