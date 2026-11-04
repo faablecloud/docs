@@ -68,11 +68,16 @@ It takes effect on the next request. To go back, send `false` — nothing is los
 
 Check each application that signs users in to the tenant:
 
-1. **Apps on `@faable/auth-js`: update to 3.2.0 or later — nothing else to change.** In the browser, every sign-in it starts (`signInWithOauthConnection`, `signInWithUsernamePassword`, `authorize`, `stepUp`) asks for a code bound with PKCE and exchanges it on the way back, on any tenant, with OAuth 2.1 on or off. That includes apps configured with `flowType: 'implicit'`: in the browser the setting is ignored. With an earlier version, some of those calls get `oauth21_required`.
+1. **Apps on `@faable/auth-js`: update to 3.2.0 or later, and start every sign-in from it.** In the browser, every sign-in it starts (`signInWithOauthConnection`, `signInWithUsernamePassword`, `authorize`, `stepUp`) asks for a code bound with PKCE and exchanges it on the way back, on any tenant, with OAuth 2.1 on or off. That includes apps configured with `flowType: 'implicit'`: in the browser the setting is ignored. With an earlier version, some of those calls get `oauth21_required`.
+   Updating is not enough if the app builds the `/authorize` URL by hand: that request sends no PKCE whatever version is installed, so OAuth 2.1 refuses it. With the setting off it still fails on auth-js 3: the code comes back, but the SDK has no verifier to exchange it, no token is issued, and the [logs](logs.md) show `sdk.callback_no_verifier`. Replace the URL with one of those calls.
    Outside the browser (React Native, server-side code) auth-js still defaults to the implicit flow: there, start the login with the [authorization code flow with PKCE](oauth-flows/authorization-code.mdx) before you turn the setting on.
 2. **Look for `response_type=token`** (or `id_token token`) in your code and your OIDC library's configuration. Move it to the [authorization code flow with PKCE](oauth-flows/authorization-code.mdx).
 3. **Look for `grant_type=password`.** A client with `password` in its `grant_types` should move to the [hosted login](hosted-login.mdx), or — for a first-party login form — to `signInWithUsernamePassword` on auth-js 3.2.0.
 4. **Check that server-side apps send PKCE.** A confidential client with a secret used to be allowed to skip it; under OAuth 2.1 it isn't. Most current OpenID Connect libraries send `code_challenge` by default or behind one option — check yours sends `code_challenge_method=S256`.
+
+`@faable/auth-sdk` needs no change for this setting: it calls the Management API with client credentials, which OAuth 2.1 keeps.
+
+Before you turn it on, open **SDKs** in your tenant: **Sign-in flows** shows how each application signed in over the last 7 days and whether OAuth 2.1 would accept it, whatever library it uses. The switch lists the applications it would refuse and asks you to confirm. An application that did not sign in during those days does not appear, so one you rarely use is still yours to check.
 
 Turn it on, sign in once with each app, and watch your [logs](logs.md) for failed logins. If an app you missed fails, turn the setting off, fix the app, and turn it on again.
 

@@ -77,6 +77,14 @@ One entry per webhook attempt.
 
 See [Webhooks](extensibility/webhooks.md) for the delivery contract.
 
+### `sdk.*` — problems reported by the browser
+
+`sdk.callback_no_verifier` (`failed`) means a sign-in came back to your application with a code, but `@faable/auth-js` had no PKCE verifier to exchange it, so no token was issued. The `oauth.authorize` entry just before it still says `success`: that step only hands out the code.
+
+The usual cause is an application that builds the `/authorize` URL by hand instead of starting the sign-in with `signInWithOauthConnection` or `authorize`. See [Enforcing OAuth 2.1](oauth-2-1.mdx).
+
+The browser reports this, so `data.reported_by` is `browser`. It is logged at most once an hour per application.
+
 ## Filtering
 
 The `?query=` parameter accepts **FaableQL** — a compact filter syntax used across Faable resources. Field-value pairs are colon-separated:
