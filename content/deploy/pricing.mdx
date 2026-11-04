@@ -14,7 +14,7 @@ Faable Deploy is part of the unified Faable subscription. The platform fee and b
 
 | Plan      | Deploy entitlements                                                                                                                                                                                                                                                                                                                                                                                   |
 | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | **up to 3 projects per account** (2 in your first 48 hours) · apps run on `bi.xs` (0.6 vCPU · 512 MB) · **managed Node, Python and PHP buildpacks only** · **up to 50 successful deployments per day per project** (resets at 00:00 UTC) · **pushes build at most once every 5 minutes** · **build artifacts up to 512 MB** · custom domains per app · **10 GB egress / month included (1 GB / day)** |
+| **Free**  | **up to 3 projects per account** (2 in your first 48 hours) · apps run on `bi.xs` (0.6 vCPU · 512 MB) · **managed Node, Python and PHP buildpacks only** · **up to 50 successful deployments per day per project** (resets at 00:00 UTC) · **pushes build at most once every 5 minutes** · **build artifacts up to 512 MB** · custom domains per app · **10 GB egress / month included (1 GB / day)** · **[up to 60 GiB-hours of compute / month](#compute-on-free)** |
 | **Hobby** | apps run on `bi.small` (1 vCPU · 1.5 GB) · **Docker, Dockerfile and prebuilt-image deploys** · **unlimited deployments** · **build artifacts up to 2 GB** · **apps under traffic never sleep** · **[Always on and background workers](always-on-and-workers.md), 365 GiB-hours / month** · **[scheduled tasks](scheduled-tasks.md), 500 task minutes / month** · **50 GB egress / month included**    |
 | **Pro**   | Everything in Hobby · apps run on `bi.base` (1.5 vCPU · 2 GB), larger sizes on request · **1,460 GiB-hours of always-on and workers / month** · **2,000 task minutes / month** · **100 GB egress / month included**, metered **0.18 €/GB** beyond · [99.9 % uptime SLA](../platform/sla.md)                                                                                                           |
 
@@ -165,6 +165,14 @@ Usage page. Days and months are counted in UTC.
 
 Nothing is paused automatically. A Free project that keeps its traffic above
 the allowance may be paused; moving to Hobby brings it back.
+
+## Compute on Free
+
+A Free project is expected to stay under **60 GiB-hours of compute a month**, counted across all of its apps. A GiB-hour is one GiB of memory running for one hour. Every app counts while it is awake and nothing counts while it sleeps, so a Free app on 128 MB that runs for 480 hours uses all 60. See it under **Deploy → Usage** in your project, by app, along with its egress.
+
+We email the project's owners when it reaches **80 %** and **100 %**, once each per calendar month (UTC). **Nothing stops at either one, and you are never charged.** Usage at this level is beyond what Free covers, so a project that stays above it may sleep sooner or be paused. The count starts again on the first of each month.
+
+If your app has to stay awake, that is what [Always on](always-on-and-workers.md#always-on) on Hobby and Pro is for.
 
 ## Related
 
