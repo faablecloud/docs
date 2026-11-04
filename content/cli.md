@@ -70,6 +70,22 @@ faable project clear
 
 For a single command, pass `--project` (`-p`) or set `FAABLE_PROJECT` — both take an id, name or slug and win over the stored one. Commands about one app always use that app's own project.
 
+## Organizations
+
+An organization groups the projects of a company. It gives nobody access to its projects and is not billed: members still join each project on their own. `org` works as a short form.
+
+```bash
+faable organization list                              # the ones you administer or have a project in
+faable organization get "Acme"                        # its projects and admins, by name, slug or id
+faable organization create "Acme" --project acme-web  # from a project: you become its admin
+faable organization projects add "Acme" acme-api      # moves it from any other organization
+faable organization projects rm "Acme" acme-api       # the project becomes personal
+faable organization admins add "Acme" user_6a54...    # admins manage it, with no access to its projects
+faable organization admins rm "Acme" user_6a54...
+```
+
+To add a project you must be an admin of the organization and an owner of the project. These commands need a `faable login` session: API keys are refused. `rm` asks for confirmation; `--yes` skips it.
+
 ## Project Setup
 
 ### Link
