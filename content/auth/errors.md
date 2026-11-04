@@ -22,6 +22,8 @@ Every error response from the Management API and the hosted flows has the same s
 - **`details`** is optional and structured. `validation_error` and `already_exists` carry `fields`; `validation_error` also carries `issues` (one `{ path, message }` per failing field).
 - **`docs`** links to the entry for the code on this page.
 
+When the request is a browser navigation to `/authorize`, `/callback`, `/continue` or `/logout`, a `4xx` is shown on a hosted error page instead of as JSON. The page shows `message` and `error_code`, links to this page and, for configuration errors, to the guide that explains the setting.
+
 A few codes carry a detail after a colon — `sms_unavailable:plan`, `sms_unavailable:quota`. Branch on the prefix.
 
 The one exception is the OAuth token endpoint (`POST /oauth/token`), which answers in the [RFC 6749 shape](oauth-flows) — `{ "error", "error_description" }` — and carries `error_code` as an extension member when the canonical `error` is too coarse (for example `invalid_grant` with `error_code: "user_suspended"`).
