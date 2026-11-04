@@ -168,9 +168,9 @@ the allowance may be paused; moving to Hobby brings it back.
 
 ## Compute on Free
 
-A Free project is expected to stay under **60 GiB-hours of compute a month**, counted across all of its apps. A GiB-hour is one GiB of memory running for one hour. Every app counts while it is awake and nothing counts while it sleeps, so a Free app on 128 MB that runs for 480 hours uses all 60. See it under **Deploy → Usage** in your project, by app, along with its egress.
+On Free you are expected to stay under **60 GiB-hours of compute a month**, added up across the Free projects you belong to, so splitting apps into several projects does not change the total. A GiB-hour is one GiB of memory running for one hour. Every app counts while it is awake and nothing counts while it sleeps, so a single app on 128 MB that runs for 480 hours uses all 60. See it under **Deploy → Usage** in your project, by project and by app, along with egress.
 
-We email the project's owners when it reaches **80 %** and **100 %**, once each per calendar month (UTC). **Nothing stops at either one, and you are never charged.** Usage at this level is beyond what Free covers, so a project that stays above it may sleep sooner or be paused. The count starts again on the first of each month.
+We email whoever pays for the project when the total reaches **80 %** and **100 %**, once each per calendar month (UTC). **Nothing stops at either one, and you are never charged.** Usage at this level is beyond what Free covers, so apps of accounts that stay above it may sleep sooner or be paused. The count starts again on the first of each month.
 
 If your app has to stay awake, that is what [Always on](always-on-and-workers.md#always-on) on Hobby and Pro is for.
 
