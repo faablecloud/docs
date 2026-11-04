@@ -1,0 +1,59 @@
+---
+title: Test and production tenants
+description: Run a separate Faable Auth tenant for development and testing. Which values change between tenants, how to keep them in your environment and how to read the errors you get when one is left over from the other tenant.
+---
+
+# Test and production tenants
+
+**Short answer:** keep a separate tenant for development and testing, and read every value below from your environment. Clients, connections and users belong to one tenant, so an id from production doesn't exist in your test tenant.
+
+## What changes between tenants
+
+| Value                 | Where to find it           | Why it changes                                               |
+| --------------------- | -------------------------- | ------------------------------------------------------------ |
+| Auth domain           | Tenant settings            | Each tenant has its own domain, and its own issuer in tokens |
+| `client_id`           | Client page, **Client ID** | A client exists in one tenant                                |
+| Client secret         | Client page                | Confidential clients only                                    |
+| `connection_id`       | Connection page            | A connection exists in one tenant                            |
+| Allowed Callback URLs | Client page                | Your test app runs on another URL, such as `localhost`       |
+
+Users aren't copied either. Sign up in the test tenant, or [import](import-password-hashes.mdx) the users you need.
+
+## Keep the values in your environment
+
+Don't write ids in your code. With `@faable/auth-js`:
+
+```ts
+import { createClient } from '@faable/auth-js'
+
+export const auth = createClient({
+  domain: process.env.NEXT_PUBLIC_AUTH_DOMAIN!,
+  clientId: process.env.NEXT_PUBLIC_AUTH_CLIENT_ID!
+})
+
+// Only if a button goes straight to one provider. Omit it to show the login screen.
+await auth.signInWithOauthConnection({
+  connection_id: process.env.NEXT_PUBLIC_AUTH_GOOGLE_CONNECTION
+})
+```
+
+If your test tenant has no such connection, leave the variable empty and your app shows the [hosted login](../hosted-login.mdx) with what the tenant does offer.
+
+## Set up the test tenant
+
+1. Create a tenant and a client in it.
+2. Add your local URL to **Allowed Callback URLs**, exactly as your app sends it, for example `http://localhost:3000/callback`.
+3. Create the connections you want to test. A social connection needs its own credentials and its own callback URL at the provider: the connection's page shows the URL.
+4. Put the tenant's values in your local environment and sign in once.
+
+## Errors when a value is left over
+
+| Error                  | What it usually means                                                                                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `invalid_connection`   | The `connection_id` is from another tenant. The message lists the connection types this client offers.                                                                      |
+| `client_not_found`     | The `client_id` is unknown here, or it is the client's internal id. See [two identifiers](../clients.md#two-identifiers).                                                   |
+| `client_mismatch`      | The `client_id` exists, but in another tenant.                                                                                                                              |
+| `invalid_redirect_uri` | The URL isn't in **Allowed Callback URLs**. It must match exactly, and the message suggests the closest one on the same host.                                               |
+| `oauth21_required`     | The tenant [enforces OAuth 2.1](../oauth-2-1.mdx) and the login sends no PKCE. New tenants start with it on, so a test tenant can be stricter than an older production one. |
+
+In a browser these errors appear on a hosted page, with links to this documentation. The full list is in [error codes](../errors.md).

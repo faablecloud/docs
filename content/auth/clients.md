@@ -16,6 +16,17 @@ Registering a client generates two credentials:
 - **Client ID** — a public, unique identifier. Safe to ship in client-side code (React, Expo); it tells Faable Auth which application is asking.
 - **Client Secret** — a confidential string that proves the application's identity. _Never expose it in a SPA, a mobile binary, or anything a user can read._ It belongs to backends only.
 
+## Two identifiers
+
+Every client has two ids, and the dashboard shows both:
+
+| Field       | Looks like                             | Goes in                                                                  |
+| ----------- | -------------------------------------- | ------------------------------------------------------------------------ |
+| `client_id` | `030cf3e0-147b-4a4d-86de-8a8b0bdc7617` | Sign-in: the `/authorize` URL, your SDK configuration and `/oauth/token` |
+| `id`        | `client_6a1f0c3e9b7d4e2a8c5f1b03`      | The Management API: `GET /client/:id`                                    |
+
+The dashboard labels them **Client ID** and **ID**. Using one where the other belongs fails, and the error says which one to use.
+
 ## Types of Clients
 
 Your architecture dictates the configuration and the flow:
@@ -34,7 +45,7 @@ Faable Auth enforces **PKCE with `S256`** — it advertises no other code challe
 
 ### Security boundaries
 
-- **Allowed Callback URLs (`callbacks`)** — the whitelist of URLs Faable Auth may redirect to after login (e.g. `https://myapp.com/callback`). Prevents open-redirect abuse.
+- **Allowed Callback URLs (`callbacks`)** — the whitelist of URLs Faable Auth may redirect to after login (e.g. `https://myapp.com/callback`). Prevents open-redirect abuse. The `redirect_uri` must match an entry exactly, including the scheme and the path, so `http://localhost:3000` does not match `http://localhost:3000/callback`. Only the port of a loopback address may differ. Register each domain your app is served from, including the default one if people can reach it.
 - **Allowed Logout URLs (`logout_urls`)** — where users may be sent after [RP-Initiated Logout](oidc/logout.md).
 - **Login URL (`initiate_login_uri`)** — the page in your app that starts a login by redirecting to `/authorize` (e.g. `https://myapp.com/login`). A login link carries a one-time state that belongs to the browser that opened it, so people who bookmark it, or forward it to someone else, end up on a link that can't sign them in. When that happens, the hosted login screen sends them to this URL to start over instead of showing a form that won't work. Without it, they get a button to the home page of your registered callback origin. `https://` only (`http://` is accepted on `localhost`).
 - **Allowed Web Origins (`web_origins`)** — origins (`scheme://host[:port]`, **no path** — e.g. `http://localhost:5173`) permitted to make cross-origin calls to the token and passwordless endpoints. **When the list is empty, any origin is allowed**; fill it in to lock browser calls down to your own app. Your account's auth domain is always allowed implicitly, so you only list your application origins.

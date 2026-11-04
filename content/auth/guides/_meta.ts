@@ -1,6 +1,7 @@
 export default {
   'nextjs-passkeys': 'Next.js: Face ID & Passkeys',
   'mcp-authorization': 'MCP servers: add OAuth',
+  'test-and-production-tenants': 'Test and production tenants',
   'import-password-hashes': 'Import & export password hashes',
   'migrate-from-auth0': 'Migrate from Auth0',
   'migrate-from-clerk': 'Migrate from Clerk',
