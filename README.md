@@ -81,19 +81,20 @@ and `sitemap.xml` all get their list of pages.
 ## Contributing
 
 Spotted a mistake or a missing page? [Open an issue](https://github.com/faablecloud/docs/issues) or
-send a pull request. Every page is written in English.
+send a pull request. Every page is written in English. See the
+[contributing guide](https://github.com/faablecloud/.github/blob/main/CONTRIBUTING.md).
 
 ## Support
 
 - **Documentation:** [faable.com/docs](https://faable.com/docs)
-- **Help with your account or deployments:** [support@faable.com](mailto:support@faable.com) or the
-  [support page](https://faable.com/docs/platform/support)
+- **Community help, on every plan:** [GitHub Discussions](https://github.com/orgs/faablecloud/discussions)
+- **Help from the Faable team, on the Hobby and Pro plans:** [support@faable.com](mailto:support@faable.com).
+  See the [support page](https://faable.com/docs/platform/support)
 - **Mistakes in the docs:** [open an issue](https://github.com/faablecloud/docs/issues)
 - **Security issues:** report them privately to [support@faable.com](mailto:support@faable.com),
   not in a public issue
 
-## License
+## Code samples
 
-The code samples published in the documentation may be used, copied and modified under the MIT
-License, so that you can use them in your own applications. The rest of this repository is
-proprietary: see [LICENSE](LICENSE).
+The code samples in the documentation may be used, copied and modified under the MIT License, so
+that you can use them in your own applications.
