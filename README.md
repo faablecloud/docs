@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://faable.com/docs">
+    <img src=".github/assets/cover.png" alt="Faable Docs: everything you need to ship on Faable" width="100%">
+  </a>
+</p>
+
 # Faable Docs
 
 The public documentation at [faable.com/docs](https://faable.com/docs) — Faable Deploy,
@@ -71,3 +77,23 @@ an LLM reads to decide what to fetch.
 
 The table above lives in `app/_lib/pages.js`, which is also where `llms.txt`, `llms-full.txt`
 and `sitemap.xml` all get their list of pages.
+
+## Contributing
+
+Spotted a mistake or a missing page? [Open an issue](https://github.com/faablecloud/docs/issues) or
+send a pull request. Every page is written in English.
+
+## Support
+
+- **Documentation:** [faable.com/docs](https://faable.com/docs)
+- **Help with your account or deployments:** [support@faable.com](mailto:support@faable.com) or the
+  [support page](https://faable.com/docs/platform/support)
+- **Mistakes in the docs:** [open an issue](https://github.com/faablecloud/docs/issues)
+- **Security issues:** report them privately to [support@faable.com](mailto:support@faable.com),
+  not in a public issue
+
+## License
+
+The code samples published in the documentation may be used, copied and modified under the MIT
+License, so that you can use them in your own applications. The rest of this repository is
+proprietary: see [LICENSE](LICENSE).
