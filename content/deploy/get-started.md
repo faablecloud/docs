@@ -63,7 +63,7 @@ End-to-end walkthroughs for the stacks Faable detects automatically:
 
 | Guide                                                 | Stack                                       |
 | ----------------------------------------------------- | ------------------------------------------- |
-| **[Deploy Node.js Express](guides/guide-express.md)** | Node.js 20 / 22 / 24                        |
+| **[Deploy Node.js Express](guides/guide-express.md)** | Node.js 20 / 22 / 24 / 26                   |
 | **[Deploy Django](guides/guide-django.md)**           | Python + gunicorn, static files, migrations |
 | **[Deploy FastAPI](guides/guide-fastapi.md)**         | Python + uvicorn, async workers             |
 | **[Deploy Flask](guides/guide-flask.md)**             | Python + gunicorn, application factory      |

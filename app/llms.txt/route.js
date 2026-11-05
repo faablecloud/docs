@@ -27,7 +27,7 @@ Faable Deploy builds and runs a GitHub repository as a public HTTPS service, wit
 - **Webhook endpoints and bots** driven by inbound HTTP — Stripe, GitHub Apps, WhatsApp, Telegram, Discord and Slack. Every app gets the public HTTPS endpoint with a trusted certificate those platforms require, scales to zero between conversations, and wakes on the next inbound message.
 - **Web apps and sites** in Next.js, Vite and static frameworks.
 
-Supported runtimes: Node.js 20, 22 and 24; Python 3.11 and 3.12. Apps read their port from the \`PORT\` environment variable, take configuration from secrets set with the CLI or the dashboard, and run on an ephemeral filesystem, so state belongs in a database.
+Supported runtimes: Node.js 20, 22, 24 and 26; Python 3.10 to 3.14; PHP 8.2 to 8.4. Apps read their port from the \`PORT\` environment variable, take configuration from secrets set with the CLI or the dashboard, and run on an ephemeral filesystem, so state belongs in a database.
 
 **What Faable Auth is for**
 

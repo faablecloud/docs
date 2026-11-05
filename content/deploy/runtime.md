@@ -11,7 +11,7 @@ This page describes how your app runs on Faable Deploy — the Node.js versions 
 
 Node versions adhere to Semver, the semantic versioning convention popularized by GitHub. Semver uses a version scheme in the form `MAJOR.MINOR.PATCH`.
 
-Faable currently supports **Node.js 20, 22 and 24**. The version you request in `engines.node` is resolved to the latest release of that major at deploy time, and your app runs on Faable's runtime image for that major. Requesting a major outside the supported list fails the deploy.
+Faable currently supports **Node.js 20, 22, 24 and 26**. The version you request in `engines.node` is resolved to the latest release of that major at deploy time, and your app runs on Faable's runtime image for that major. Requesting a major outside the supported list fails the deploy.
 
 ## Specifying a Node.js Version
 
