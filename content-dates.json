@@ -393,7 +393,7 @@
   },
   "content/cli.md": {
     "published": "2026-04-08T11:37:58+02:00",
-    "modified": "2026-11-03T11:39:37.187Z"
+    "modified": "2026-11-05T10:44:37.253Z"
   },
   "content/deploy/ai-agents.mdx": {
     "published": "2026-09-12T13:03:24+02:00",
@@ -483,6 +483,18 @@
     "published": "2026-09-08T10:38:28+02:00",
     "modified": "2026-10-29T07:57:41.727Z"
   },
+  "content/deploy/guides/guide-claude-code.md": {
+    "published": "2026-11-05T10:44:37.253Z",
+    "modified": "2026-11-05T10:44:37.253Z"
+  },
+  "content/deploy/guides/guide-codex.md": {
+    "published": "2026-11-05T10:44:37.253Z",
+    "modified": "2026-11-05T10:44:37.253Z"
+  },
+  "content/deploy/guides/guide-cursor.md": {
+    "published": "2026-11-05T10:44:37.253Z",
+    "modified": "2026-11-05T10:44:37.253Z"
+  },
   "content/deploy/guides/guide-discord-bot.md": {
     "published": "2026-09-03T11:22:00+02:00",
     "modified": "2026-11-02T10:25:50.009Z"
@@ -543,9 +555,13 @@
     "published": "2026-08-24T17:57:53+02:00",
     "modified": "2026-10-19T06:55:32.936Z"
   },
+  "content/deploy/guides/guide-windsurf.md": {
+    "published": "2026-11-05T10:44:37.253Z",
+    "modified": "2026-11-05T10:44:37.253Z"
+  },
   "content/deploy/guides/index.mdx": {
     "published": "2026-10-17T14:48:06.267Z",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-11-05T10:44:37.253Z"
   },
   "content/deploy/guides/migrate-from-netlify.mdx": {
     "published": "2026-06-27T13:49:17+02:00",

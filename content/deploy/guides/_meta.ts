@@ -16,6 +16,10 @@ export default {
   'guide-github-app': 'Deploy a GitHub App',
   'guide-telegram-bot': 'Deploy a Telegram Bot',
   'guide-uptime-kuma': 'Deploy Uptime Kuma',
+  'guide-claude-code': 'Deploy from Claude Code',
+  'guide-cursor': 'Deploy from Cursor',
+  'guide-codex': 'Deploy from Codex',
+  'guide-windsurf': 'Deploy from Windsurf',
   databases: 'Databases & SQLite',
   'migrate-from-vercel': 'Migrate from Vercel',
   'migrate-from-netlify': 'Migrate from Netlify'

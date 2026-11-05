@@ -898,6 +898,8 @@ claude mcp add faable -- npx -y @faable/faable mcp
 
 For other clients, add a stdio server that runs `npx -y @faable/faable mcp`.
 
+Step-by-step guides: [Claude Code](/deploy/guides/guide-claude-code), [Cursor](/deploy/guides/guide-cursor), [Codex](/deploy/guides/guide-codex) and [Windsurf](/deploy/guides/guide-windsurf).
+
 ### Hosted endpoint
 
 No install needed: connect any MCP client that speaks Streamable HTTP — including ones that cannot run local processes — to **`https://mcp.faable.com/mcp`**. The first time, your client opens a browser to sign in with your Faable account:
