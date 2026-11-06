@@ -140,7 +140,7 @@ Detected by `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml`
 | `Pipfile`          | `pipenv install --system --deploy`       |
 | `cerebrium.toml`   | the `[cerebrium.dependencies.pip]` table |
 
-A `buildCommand` in `faable.json` replaces the manifest install entirely — use it when you need a custom install step, and make it install your dependencies itself (`pip install -r requirements.txt && …`). The Python build image has no `npm`.
+A `buildCommand` in `faable.json` runs after that install. To replace the install itself, set `installCommand`, and make it install your dependencies (`pip install -r deps/prod.txt`). The Python build image has no `npm`.
 
 **Python version**, first match wins:
 
@@ -160,7 +160,7 @@ Supported Python minors: **3.10, 3.11, 3.12, 3.13 and 3.14** — the app runs on
 
 Faable runs apps on CPU — GPU support is coming to the [Pro plan](../platform/pricing.mdx#gpus). So when your dependencies name `torch`, `torchvision` or `torchaudio`, or a package that requires torch (`sentence-transformers`, `ultralytics`, `accelerate`, `timm`, …), the build first installs them from PyTorch's CPU index (`https://download.pytorch.org/whl/cpu`), keeping your version pins: `torch==2.5.1` is satisfied by `2.5.1+cpu`. Your install then runs as usual. The CUDA build from PyPI adds about 2 GB that never loads here; the CPU build of a typical `sentence-transformers` app ships as roughly 330 MB.
 
-The build leaves PyTorch alone when your requirements choose their own index (`--index-url`, `--extra-index-url`), pin a `+cpu` or `+cu…` build, or you set a `buildCommand`. Packages that only work with an NVIDIA GPU (`tensorflow[and-cuda]`, `onnxruntime-gpu`, `vllm`, `flash-attn`, `nvidia-*-cu12`…) are reported as a build warning with the CPU alternative, and an install over 2 GB names its five largest packages.
+The build leaves PyTorch alone when your requirements choose their own index (`--index-url`, `--extra-index-url`), pin a `+cpu` or `+cu…` build, or you set an `installCommand`. Packages that only work with an NVIDIA GPU (`tensorflow[and-cuda]`, `onnxruntime-gpu`, `vllm`, `flash-attn`, `nvidia-*-cu12`…) are reported as a build warning with the CPU alternative, and an install over 2 GB names its five largest packages.
 
 **Start command**, first match wins:
 
@@ -225,7 +225,7 @@ With a `composer.json`, the builder runs:
 composer install --no-dev --optimize-autoloader --no-interaction --no-progress
 ```
 
-Your scripts run (Laravel's `package:discover`, Symfony's `cache:clear`), so `vendor/` ships with the app. A `buildCommand` in `faable.json` replaces that install entirely. Without a `composer.json` nothing is installed — plain PHP deploys as it is, and the build log says so.
+Your scripts run (Laravel's `package:discover`, Symfony's `cache:clear`), so `vendor/` ships with the app. An `installCommand` in `faable.json` replaces that install, and a `buildCommand` runs after it. Without a `composer.json` nothing is installed — plain PHP deploys as it is, and the build log says so.
 
 ### PHP Version
 
@@ -377,6 +377,7 @@ The platform also injects `FAABLE_HOST` (your app's public URL). Platform-manage
   "app_slug": "my-app",
   "buildpack": "docker",
   "rootDir": "apps/web",
+  "installCommand": "npm ci --include=dev",
   "buildCommand": "npm run build:prod",
   "startCommand": "node dist/main.js",
   "next": { "standalone": false },
@@ -389,7 +390,8 @@ The platform also injects `FAABLE_HOST` (your app's public URL). Platform-manage
 | `app_id` / `app_slug` | Which Faable app this repo deploys to (written by `faable deploy link`).                                                                                                                             |
 | `buildpack`           | Force a buildpack (`php`, `node`, `python`, `docker`, `static`) instead of auto-detection. `docker` requires Hobby or Pro.                                                                           |
 | `rootDir`             | Monorepo Root Directory — the subdirectory the app builds from. This is where you set it; a per-app Root Directory (support-configured, for several apps in one repo) takes precedence when present. |
-| `buildCommand`        | Node: build step used when `package.json` has no `build` script (the `build` script wins otherwise). Python and PHP: replaces the manifest install.                                                  |
+| `installCommand`      | Replaces the default dependency install, in every language. Without it, Faable installs from your manifest as usual.                                                                                 |
+| `buildCommand`        | Runs after the dependencies are installed. On Node it is used when `package.json` has no `build` script (the `build` script wins otherwise).                                                         |
 | `startCommand`        | Overrides everything — framework detection and `npm run start`. On a Next.js app it also opts out of the standalone output.                                                                          |
 | `next.standalone`     | Set `false` to ship the full workspace instead of Next's compact standalone output.                                                                                                                  |
 | `static.spa`          | Static sites only: set `true` so unknown paths rewrite to `index.html` (client-side routers). Defaults to `false` — unknown paths 404.                                                               |

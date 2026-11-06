@@ -94,8 +94,6 @@ STORAGES = {
 
 Faable runs `python manage.py collectstatic --noinput` for you at build time, after installing your dependencies. You don't need to configure anything else.
 
-Don't put `collectstatic` in a `buildCommand`: on Python, a `buildCommand` replaces the dependency install, so Django is never installed and the build fails with `Couldn't import Django`.
-
 If `collectstatic` itself fails, the build continues without `staticfiles/` and logs `collectstatic failed` — check the build log if your static files are missing.
 
 ### 4. Secrets and debug
@@ -166,7 +164,7 @@ No. Faable detects Django from `manage.py` plus a `wsgi.py` package and generate
 
 ### How do I run `collectstatic` on Faable?
 
-You don't have to: Faable runs it at build time, after installing your dependencies. Set `STATIC_ROOT` and serve the result with WhiteNoise. Don't add it as a `buildCommand`, because on Python that replaces the dependency install.
+You don't have to: Faable runs it at build time, after installing your dependencies. Set `STATIC_ROOT` and serve the result with WhiteNoise.
 
 ### Which Python versions does Faable support for Django?
 
