@@ -163,13 +163,7 @@ Faable also injects `PORT`, `FAABLE_APP_ID`, `FAABLE_RELEASE` and `FAABLE_GIT_CO
 
 ## Static files and templates
 
-Flask serves its own `static/` folder and Jinja templates from the app process, so both work unchanged — no extra configuration. For a heavier asset pipeline (a bundled frontend), build it at deploy time with a `buildCommand` in `faable.json`:
-
-```json
-{
-  "buildCommand": "npm ci && npm run build"
-}
-```
+Flask serves its own `static/` folder and Jinja templates from the app process, so both work unchanged — no extra configuration. For a bundled frontend, build it before you push and commit the output to `static/`: the Python build has no `npm`, and on Python a `buildCommand` replaces the dependency install, so don't use one for this. Keep the frontend's `package.json` in a subfolder such as `frontend/`, because a `package.json` at the repository root makes Faable build the project as a Node app.
 
 ## Deploy
 

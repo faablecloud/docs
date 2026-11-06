@@ -140,7 +140,7 @@ Detected by `requirements.txt`, `pyproject.toml`, `Pipfile`, or `cerebrium.toml`
 | `Pipfile`          | `pipenv install --system --deploy`       |
 | `cerebrium.toml`   | the `[cerebrium.dependencies.pip]` table |
 
-A `buildCommand` in `faable.json` replaces the manifest install entirely — use it when you need a custom install step.
+A `buildCommand` in `faable.json` replaces the manifest install entirely — use it when you need a custom install step, and make it install your dependencies itself (`pip install -r requirements.txt && …`). The Python build image has no `npm`.
 
 **Python version**, first match wins:
 
