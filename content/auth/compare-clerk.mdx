@@ -1,10 +1,10 @@
 ---
-title: Faable Auth vs Clerk
-description: Faable Auth vs Clerk — pricing past 50,000 users, MFA and passkeys by plan, hosted login pages vs React components, B2B organizations and enterprise SSO, SAML, M2M tokens, MCP authorization, US-only data vs a European company, and migrating from Clerk.
+title: 'Clerk alternative: Faable Auth vs Clerk'
+description: Looking for a Clerk alternative? Faable Auth vs Clerk — pricing past 50,000 users, MFA and passkeys by plan, hosted login pages vs React components, B2B organizations and enterprise SSO, SAML, M2M tokens, MCP authorization, US-only data vs a European company, and migrating from Clerk.
 rank: high
 ---
 
-# Faable Auth vs Clerk
+# Clerk alternative: Faable Auth vs Clerk
 
 **Short answer:** Clerk is a **component-first** auth platform: drop `<SignIn />` and `<UserButton />` into a React or Next.js app and the UI is done, with a generous free tier of 50,000 monthly retained users. Faable Auth is a **standards-first OAuth 2.0 / OpenID Connect identity server**: the login is **hosted** on your auth domain and any stack integrates through standard flows. The practical differences are the price curve **after** the free tier, which features need a paid plan, where your users' data lives — Clerk is **US-only**, Faable runs **in Europe** as a European company — and that Faable is **one subscription with your app hosting**.
 
@@ -111,6 +111,17 @@ The full walk-through, with the concept mapping, is in [Migrate from Clerk](guid
 - **Your customers' identity providers only speak SAML.** Faable Auth connects company identity providers over OpenID Connect; Okta, Entra ID and Google Workspace all speak it.
 - **You issue machine tokens at high volume**, where Clerk's per-token price is lower.
 - **You want auth settings as code today**: `clerk config pull/patch` does it; Faable's equivalent is the Management API.
+
+## Other Clerk alternatives
+
+If you are comparing more than two options, these pages put each one side by side with Faable Auth:
+
+- **[Auth0](compare.mdx)** and **Keycloak**: the managed enterprise identity platform and the self-hosted open-source server, both standards-first like Faable Auth.
+- **[Better Auth](compare-better-auth.mdx)**: an open-source TypeScript library that runs inside your app and stores users in your own database — the closest to Clerk's "auth in your code" model, without the hosted service.
+- **[ZITADEL](compare-zitadel.mdx)**: an OAuth 2.0 / OpenID Connect identity server with hosted login and organizations, in the cloud or self-hosted.
+- **[Supabase Auth](compare-supabase-auth.mdx)**: the auth layer of a Supabase Postgres backend, the natural pick if your data already lives there.
+- **[Firebase Authentication](compare-firebase-auth.mdx)** and **[AWS Cognito](compare-aws-cognito.mdx)**: the sign-in services of Google's and Amazon's clouds.
+- **Need your users' data held in Europe?** [European alternatives to Auth0, Clerk and Cognito](european-alternatives.mdx) compares the providers that are European companies, not only an EU region.
 
 ## Related
 

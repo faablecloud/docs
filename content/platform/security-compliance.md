@@ -38,14 +38,16 @@ Within the workload cluster:
 
 **TLS everywhere.** Every custom domain and every `*.faable.link` deployment gets a certificate automatically, issued and renewed by the platform. Traffic is served over HTTPS with modern cipher suites; plain HTTP is redirected.
 
-**Managed request filtering at the edge.** Faable operates a managed [Web Application Firewall](../deploy/security-waf.md) in front of every application, on every plan. Rules are maintained by us as a set of **profiles** applied fleet-wide, so protection improves for all apps without you changing anything:
+**Managed request filtering at the edge.** Faable operates a managed [Web Application Firewall](../deploy/security-waf.md) in front of every application, on every plan. Rules are maintained by us as **rulesets** applied fleet-wide, so protection improves for all apps without you changing anything:
 
-| Profile         | Applies to                      | Blocks                                                                                                                                                                     |
-| --------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Sensitive paths | Every app                       | `.git/`, `.env`, `.aws/`, `.ssh/`, `.npmrc`, `.netrc`, Terraform state, source maps, `/actuator`, `/phpmyadmin`, installer leftovers, and similar credential-hunting paths |
-| Scanner traffic | Every app that does not run PHP | `*.php`, `/wp-*`, `/xmlrpc`, WordPress and IIS bait probes                                                                                                                 |
+| Ruleset                             | Applies to                      | Blocks                                                                                                                              |
+| ----------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Sensitive files and secret scanners | Every app                       | `.env`, `.git/` and other VCS metadata, cloud and SSH credentials, Terraform state, source maps, backups and dumps, debug endpoints |
+| Command-injection probes            | Every app                       | Query parameters used to try to run commands on the server                                                                          |
+| PHP and WordPress scanners          | Every app that does not run PHP | `*.php`, `/wp-*`, `/xmlrpc`, CMS fingerprints and WordPress REST probes                                                             |
+| WordPress                           | WordPress sites on Faable       | XML-RPC, `wp-config.php` and its backups, debug logs, the installer, PHP in `uploads/`, user enumeration                            |
 
-Matching requests are rejected with `403` **at the edge, before they reach your application** — so they do not consume your compute, do not keep a scaled-to-zero app awake, and do not appear as load in your app. Each app can add its own rules by path, user-agent or query parameter from the CLI or the dashboard; see the [WAF documentation](../deploy/security-waf.md) for the rules, what was stopped, and what the firewall does not inspect.
+Matching requests are rejected with `403` **at the edge, before they reach your application** — so they do not consume your compute, do not keep a scaled-to-zero app awake, and do not appear as load in your app. Each app can add its own rules by path, user-agent or query parameter from the CLI or the dashboard; see the [WAF documentation](../deploy/security-waf.md) for the rules, what was stopped, and what the firewall does not inspect. The firewall matches **path, `User-Agent` and query parameter name**: it does not read request bodies and is not a signature engine such as the OWASP Core Rule Set, so it does not detect SQL injection or cross-site scripting — input validation stays in your code.
 
 **Traffic visibility.** Every HTTP request to your apps is recorded with its host, status, and timing, which is what drives usage metering and lets us spot abusive traffic patterns per app.
 

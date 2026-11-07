@@ -62,7 +62,7 @@ An EU or Swiss company operating the identity service. Look closely here, becaus
 - **[Hanko](https://www.hanko.io/)** is Hanko GmbH, in Kiel, Germany. Hanko Cloud is hosted in the AWS Frankfurt region, and its DPA states that customer personal data "is stored exclusively in data centers located in Germany" and that Hanko "does not permit access to Customer Personal Data from outside the European Economic Area". Its listed sub-processors include AWS's EU entity and Hetzner. Its backend is open source (AGPL-3.0).
 - **[cidaas](https://www.cidaas.com/)** is Widas ID GmbH, in Germany, and states "Hosting in Germany / EU". It is priced for enterprises — paid plans start at €699 a month.
 - **[ZITADEL](https://zitadel.com/)** is contracted through CAOS AG in St. Gallen, Switzerland, under Swiss law, and offers data residency in the EU, Switzerland, the US or Australia on Google Cloud. Its DPA and privacy policy, however, name Zitadel, Inc., in San Francisco — read both before treating it as a purely Swiss provider. See [Faable Auth vs ZITADEL](/auth/compare-zitadel).
-- **Faable Auth** — see below.
+- **[Faable Auth](/auth/get-started)** is Faable, a European company, running its identity service in Europe with no non-EU region. Its features and terms are in [Where Faable Auth fits](#where-faable-auth-fits), below.
 
 This is the category to look at when the requirement is about the company and its jurisdiction, not only the datacenter. Even here, check the infrastructure underneath: a European company running on a US hyperscaler's EU region has a US sub-processor holding your data, which may or may not matter for your requirement.
 
@@ -108,7 +108,7 @@ Two honest readings. First, at these volumes several US providers are free, so p
 
 ## Where Faable Auth fits
 
-[Faable Auth](/auth/get-started) sits in the second category: a European company running the identity service **in Europe**, with no non-EU region to fall back to. Your users' identities and user data stay in the EU. It is a managed, multi-tenant OAuth 2.0 and OpenID Connect server with [hosted login](/auth/hosted-login), social and [passwordless](/auth/passwordless) sign-in, [passkeys](/auth/passkeys), [two-step verification](/auth/mfa), B2B [organizations with enterprise SSO](/auth/organizations), and machine-to-machine tokens.
+[Faable Auth](/auth/get-started) sits in the second category: a European company running the identity service **in Europe**, with no non-EU region to fall back to. Your users' identities and user data stay in the EU. Faable Auth is a managed, multi-tenant OAuth 2.0 and OpenID Connect server with [hosted login](/auth/hosted-login), social and [passwordless](/auth/passwordless) sign-in, [passkeys](/auth/passkeys), [two-step verification](/auth/mfa), B2B [organizations with enterprise SSO](/auth/organizations), and machine-to-machine tokens.
 
 What you get on the questions above, as published on our own pages:
 
