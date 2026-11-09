@@ -785,6 +785,7 @@ A role grants permissions of your APIs; a user assigned the role gets them in to
 ```bash
 faable auth apis create https://api.example.com --permission tickets:read --permission tickets:write --rbac
 faable auth apis update https://api.example.com --add-permission tickets:admin   # edit the catalog
+faable auth apis update https://api.example.com --token-lifetime 3600 --include-roles-in-access-token   # 1 h tokens with a `roles` claim
 faable auth roles create support -d "Support staff"
 faable auth roles permissions support --api https://api.example.com --add tickets:read --add tickets:write
 faable auth users roles alice@example.com --add support      # assign; --rm removes
@@ -793,6 +794,8 @@ faable auth roles get support                                # its permissions a
 ```
 
 A role is named by its id or its exact name, an API by its id or its identifier. Changes reach the user's next tokens, refreshes included; tokens already issued keep theirs until they expire.
+
+`faable auth apis create` and `update` also set the API's token settings: `--token-lifetime <seconds>` (60 to 2592000; a new API gets 86400), `--description`, and the yes/no settings `--allow-offline-access`, `--skip-consent`, `--enforce-policies`, `--include-roles-in-access-token`, `--include-teams-in-access-token`, `--include-roles-in-id-token` and `--include-teams-in-id-token` (turn one off with `--no-<flag>`). They are the fields `faable auth apis get --json` shows. Only the identifier cannot change after the API is created.
 
 ### Sessions
 
@@ -946,7 +949,7 @@ By default the server exposes **reads plus one deploy**:
 
 When a deploy failed, `get_deployment` also says whose side it is on: `user` (your code, configuration or repository) or `platform` (Faable's).
 
-`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). The local server also has the role writes — `create_auth_role`, `update_auth_role_permissions` and `update_auth_user_roles` —, which the hosted server never exposes: assigning a role grants permissions to your users. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path, and `delete_app`, the one destructive tool: it deletes an app with its deployments, domains and secrets, and is marked destructive so your client asks before running it. Deleting domains, secrets or users stays in the CLI and the dashboard, and the hosted server exposes nothing destructive.
+`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain`, `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). The local server also has the role and API writes — `create_auth_role`, `update_auth_role_permissions`, `update_auth_user_roles`, `create_auth_api` and `update_auth_api` (token lifetime, RBAC, the `roles` and `teams` claims) —, which the hosted server never exposes: they change what your users' tokens carry. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path, and `delete_app`, the one destructive tool: it deletes an app with its deployments, domains and secrets, and is marked destructive so your client asks before running it. Deleting domains, secrets or users stays in the CLI and the dashboard, and the hosted server exposes nothing destructive.
 
 With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions, settings, roles and APIs, suspend and reinstate users, end sessions, send password emails and update an application's settings (the MCP only sets its profile fields) — never delete anything or change the tenant itself.
 
@@ -1046,8 +1049,8 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 | `faable auth roles rm`               | Delete a role (confirmation, `--yes`)                                                     |
 | `faable auth apis list`              | List APIs with their dialect and RBAC                                                     |
 | `faable auth apis get`               | Show an API: token settings and its permission catalog                                    |
-| `faable auth apis create`            | Create an API (`--permission`, `--rbac`)                                                  |
-| `faable auth apis update`            | Turn RBAC on or off, change the dialect, edit the catalog                                 |
+| `faable auth apis create`            | Create an API (`--permission`, `--rbac`, `--token-lifetime`, claims)                      |
+| `faable auth apis update`            | Token lifetime, RBAC, dialect, `roles`/`teams` claims, the catalog                        |
 | `faable auth sessions list`          | A user's sessions: devices, IP, last seen                                                 |
 | `faable auth sessions revoke`        | End sessions — one, or every active one of a user (`--user`)                              |
 | `faable auth connections list`       | The tenant's login methods                                                                |
