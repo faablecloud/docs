@@ -72,12 +72,12 @@ Implementing it yourself (a backend, a CLI, a non-JS stack)? It's a single reque
 
 ### Request Parameters
 
-| Parameter       | Required | Description                                                                                                                   |
-| :-------------- | :------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `grant_type`    | Yes      | Must be `refresh_token`.                                                                                                      |
-| `client_id`     | Yes      | Your application's Client ID.                                                                                                 |
-| `refresh_token` | Yes      | The most recent refresh token you received.                                                                                   |
-| `scope`         | No       | Space-separated. May only **narrow** the original grant — scopes not present in the original token are dropped (RFC 6749 §6). |
+| Parameter       | Required | Description                                                                                                                               |
+| :-------------- | :------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| `grant_type`    | Yes      | Must be `refresh_token`.                                                                                                                  |
+| `client_id`     | Yes      | Your application's Client ID.                                                                                                             |
+| `refresh_token` | Yes      | The most recent refresh token you received.                                                                                               |
+| `scope`         | No       | Space-separated. Omit it to keep the original grant. May only **narrow** it — scopes not in the original grant are dropped (RFC 6749 §6). |
 
 The token's `audience` is preserved automatically from the original grant — you don't (and can't) change it on refresh.
 
@@ -100,7 +100,8 @@ curl --request POST \
   "id_token": "eyJhbGciOiJSUzI1NiIs...",
   "refresh_token": "v1.NEW_ROTATED_TOKEN...",
   "token_type": "Bearer",
-  "expires_in": 86400
+  "expires_in": 86400,
+  "scope": "openid profile email offline_access"
 }
 ```
 
@@ -110,6 +111,7 @@ curl --request POST \
 | `id_token`      | Refreshed OIDC identity token. Keeps the original `nonce`, `auth_time`, and session id (`sid`) per the OIDC spec. |
 | `refresh_token` | **A new, rotated refresh token.** Replace the stored one with this value.                                         |
 | `expires_in`    | New access token lifetime in **seconds** (from the target API's `token_lifetime`, default 86400 = 24 h).          |
+| `scope`         | The scope granted to the new access token: the original grant, or the narrowed subset you requested.              |
 
 ---
 
@@ -142,6 +144,12 @@ Rotation limits the damage of a leaked token: each refresh token is superseded b
 ### Can I extend the scopes when refreshing?
 
 No — RFC 6749 §6 only allows narrowing. Scopes not granted originally are silently dropped. To gain new scopes, send the user through login again.
+
+Narrowing sticks: the rotated refresh token carries the narrowed scope, so a later refresh can't widen it back.
+
+### Does a refreshed token keep its `permissions`?
+
+Yes. The refreshed access token is computed from the same scope as the original one, so for an API with the `access_token_authz` dialect its `permissions` claim matches the original (or the narrowed subset). With [RBAC](../roles-and-permissions.md) enabled, roles are evaluated again on each refresh, so a role removed since login is no longer reflected in the new token.
 
 ### Does the Client Credentials flow use refresh tokens?
 
