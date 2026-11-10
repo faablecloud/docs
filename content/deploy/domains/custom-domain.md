@@ -27,6 +27,16 @@ If your domain is an apex (root) domain such as `example.com`, create an `ALIAS`
 
 Check with your DNS provider that it supports `ALIAS` (sometimes called `ANAME` or "CNAME flattening") at the apex — it is not universally available. Providers that support it include Cloudflare, Route 53, DNSimple and Namecheap. GoDaddy does not. If yours does not, use an `A` record or serve on `www` and redirect the root — all three options, and how to choose, are in [Apex domains](apex.md).
 
+## Root and www together
+
+`example.com` and `www.example.com` are two hostnames. To serve one and send visitors of the other to it, add them as a pair: when you add a root domain or its `www`, keep **Also add …** checked in the dashboard (or run `faable deploy domains add example.com --www`).
+
+The name you type is the one that serves your app. The other is added too and answers every request with a permanent redirect to the same path on the first, so search engines see one site instead of the same page twice. Deleting the domain you typed deletes its pair as well.
+
+Both names need their own DNS record: the root with `ALIAS` or `A` (see [Apex domains](apex.md)) and `www` with its `CNAME`. Each one gets its own certificate.
+
+If you are unsure which one should serve, choose `www`: its `CNAME` follows Faable wherever your app runs, while the root needs an `ALIAS` or a fixed address.
+
 ## Moving a live domain without downtime
 
 If the domain already serves your site somewhere else, switching its record to Faable first would leave a short window — usually a minute or two — in which visitors reach Faable before its certificate exists and see an HTTPS error. Avoid it by letting Faable issue the certificate **before** any traffic moves:

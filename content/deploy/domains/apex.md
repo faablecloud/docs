@@ -55,9 +55,9 @@ Faable accepts this and verifies the domain normally.
 
 ## Option 3 — serve on `www` and redirect the root
 
-Often the simplest answer: put the app on `www.example.com` with a normal `CNAME`, and have your DNS provider redirect the bare domain to it.
+Often the simplest answer: put the app on `www.example.com` with a normal `CNAME`, and send the bare domain to it.
 
-Most providers offer this as **Domain Forwarding**, **URL Redirect** or a redirect rule. Use a **permanent (301)** redirect to `https://www.example.com`.
+Faable can do the redirect: add `www.example.com` with **Also add example.com** checked (see [Root and www together](custom-domain.md#root-and-www-together)) and point the bare domain at Faable with an `A` record (Option 2). Or let your DNS provider do it: most offer **Domain Forwarding**, **URL Redirect** or a redirect rule. Use a **permanent (301)** redirect to `https://www.example.com`.
 
 Nothing to maintain, nothing pinned to an address, and visitors typing `example.com` still land on your app.
 
@@ -83,7 +83,7 @@ dig example.com A +short
 
 The address should match the one you resolved from `<domain_id>.faable.link`. Faable re-checks every domain automatically; once the record resolves, the domain verifies and the [SSL certificate](ssl-certificates.md) is issued shortly after.
 
-Remember that both the apex and `www` are separate names. If you want both to work, configure both.
+Remember that both the apex and `www` are separate names. If you want both to work, configure both — or add them as a pair, so one redirects to the other ([Root and www together](custom-domain.md#root-and-www-together)).
 
 ## Related
 

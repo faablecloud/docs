@@ -428,16 +428,16 @@
     "modified": "2026-11-03T10:49:34.417Z"
   },
   "content/deploy/domains/apex.md": {
-    "modified": "2026-09-19T12:00:03+02:00",
-    "published": "2026-09-19T12:00:03+02:00"
+    "published": "2026-09-19T12:00:03+02:00",
+    "modified": "2026-11-10T13:03:25.236Z"
   },
   "content/deploy/domains/cloudflare.md": {
     "modified": "2026-09-19T12:00:03+02:00",
     "published": "2026-09-19T12:00:03+02:00"
   },
   "content/deploy/domains/custom-domain.md": {
-    "modified": "2026-10-16T18:18:31+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-11-10T13:03:25.236Z"
   },
   "content/deploy/domains/godaddy.md": {
     "modified": "2026-09-19T12:00:03+02:00",
@@ -457,7 +457,7 @@
   },
   "content/deploy/errors.md": {
     "published": "2026-09-17T12:56:03+02:00",
-    "modified": "2026-10-25T21:26:19.270Z"
+    "modified": "2026-11-10T13:03:25.236Z"
   },
   "content/deploy/european-alternatives.mdx": {
     "published": "2026-09-12T13:03:24+02:00",
