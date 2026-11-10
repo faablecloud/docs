@@ -37,6 +37,18 @@ Both names need their own DNS record: the root with `ALIAS` or `A` (see [Apex do
 
 If you are unsure which one should serve, choose `www`: its `CNAME` follows Faable wherever your app runs, while the root needs an `ALIAS` or a fixed address.
 
+## Redirecting one domain to another
+
+Any domain of the project can send its visitors to another domain of the same project: an old name to the new one, a second brand to the main site, or a `www` you added on its own. In the dashboard, open the domain and pick the target under **Redirect**; from the terminal:
+
+```bash
+faable deploy domains redirect www.example.com example.com
+```
+
+Every request gets a permanent redirect to the same path and query on the target: `301` for `GET`, `308` for every other method, so a form post is not turned into a `GET`. The target must serve your app itself (a domain that redirects cannot be a target, so there are no chains). DNS and the certificate stay as they are. To serve the domain again, choose **Don't redirect**, or run `faable deploy domains redirect www.example.com --off`.
+
+A domain that redirects belongs to its target: deleting the target deletes it too.
+
 ## Moving a live domain without downtime
 
 If the domain already serves your site somewhere else, switching its record to Faable first would leave a short window — usually a minute or two — in which visitors reach Faable before its certificate exists and see an HTTPS error. Avoid it by letting Faable issue the certificate **before** any traffic moves:
