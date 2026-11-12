@@ -50,6 +50,23 @@ Two kinds, and the difference matters in Next.js:
 faable deploy secrets set NEXT_PUBLIC_API_URL=https://api.example.com DATABASE_URL=postgres://…
 ```
 
+## Using bun
+
+bun 1.4.4 is included in every Node.js image. A committed `bun.lock` (or `bun.lockb`) is installed with `bun install --frozen-lockfile`, so bun workspaces with `workspace:*` dependencies install as they do on your machine. The build still runs your `build` script (`next build`), and Node.js stays the runtime `engines.node` selects.
+
+A `start` script that runs the server with bun works as written:
+
+```json
+{
+  "scripts": {
+    "build": "next build",
+    "start": "bun .next/standalone/server.js"
+  }
+}
+```
+
+Like a custom `startCommand`, a `start` of your own turns off the automatic standalone packaging above: the deploy ships your full build output, and the build log says `next-standalone: full image — custom start script`. To keep the smaller artifact, leave `start` as `next start`, or leave it out. Faable still installs with bun.
+
 ## Monorepos (Turborepo, npm workspaces)
 
 If your Next.js app lives in a subdirectory (`apps/web`), set the **Root Directory** on the app — in the dashboard app settings, or in `faable.json`:

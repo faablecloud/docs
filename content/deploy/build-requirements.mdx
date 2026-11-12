@@ -1,7 +1,7 @@
 ---
 schema: faq
 title: What the Builder Expects in Your Repo
-description: How Faable's remote builder detects and builds your project — package.json for Node.js, requirements.txt or pyproject.toml for Python, composer.json or plain .php files for PHP, an index.html for a plain static site, and a Dockerfile as the escape hatch on the Hobby and Pro plans — plus monorepo Root Directory, the $PORT contract and faable.json options.
+description: How Faable's remote builder detects and builds your project — package.json for Node.js (npm, yarn, pnpm or bun lockfiles), requirements.txt or pyproject.toml for Python, composer.json or plain .php files for PHP, an index.html for a plain static site, and a Dockerfile as the escape hatch on the Hobby and Pro plans — plus monorepo Root Directory, the $PORT contract and faable.json options.
 ---
 
 # What the Builder Expects in Your Repo 📦
@@ -73,7 +73,9 @@ What each piece means to the builder:
 | `scripts.build` | No       | If present, the builder runs `npm run build` before packaging, with your app's environment variables available to the build.                                                                                                                            |
 | `scripts.start` | No       | The app runs `npm run start` by default. When a static framework is detected and there is no `start` — or it only serves the build output — the build is served as a static site instead, with no container.                                            |
 
-**Dependencies** are installed by the builder when no `node_modules` is present in the uploaded sources (for a monorepo, a `node_modules` at the workspace root counts). The lockfile picks the tool: `package-lock.json`/`npm-shrinkwrap.json` → `npm ci`, `yarn.lock` → `yarn install --frozen-lockfile`, `pnpm-lock.yaml` → `pnpm install --frozen-lockfile`, no lockfile → `npm install`. Dev dependencies are always included (build tools live there). If yarn or pnpm is not available, `npm install` is used instead. If a frozen install fails — e.g. a stale lockfile — the builder retries with a plain `npm install` rather than failing the deploy, and if npm then refuses the tree over conflicting peer dependencies (`ERESOLVE`) it retries once more with `--legacy-peer-deps`. Each of those workarounds leaves a [build warning](build-failures.md#build-warnings) on the deployment. Native modules (`better-sqlite3`, `bcrypt`, `sharp`…) build fine: when no prebuilt binary matches, `node-gyp` compiles them with the `python3`, `make` and `g++` the builder ships.
+**Dependencies** are installed by the builder when no `node_modules` is present in the uploaded sources (for a monorepo, a `node_modules` at the workspace root counts). The lockfile picks the tool: `package-lock.json`/`npm-shrinkwrap.json` → `npm ci`, `bun.lock`/`bun.lockb` → `bun install --frozen-lockfile`, `yarn.lock` → `yarn install --frozen-lockfile`, `pnpm-lock.yaml` → `pnpm install --frozen-lockfile`, no lockfile → `npm install` (or `bun install` when `package.json` declares `"packageManager": "bun@…"`). Dev dependencies are always included (build tools live there). If yarn or pnpm is not available, `npm install` is used instead. If a frozen install fails — e.g. a stale lockfile — the builder retries with a plain `npm install` (`bun install` for a bun project, so `workspace:*` dependencies keep working) rather than failing the deploy, and if npm then refuses the tree over conflicting peer dependencies (`ERESOLVE`) it retries once more with `--legacy-peer-deps`. Each of those workarounds leaves a [build warning](build-failures.md#build-warnings) on the deployment. Native modules (`better-sqlite3`, `bcrypt`, `sharp`…) build fine: when no prebuilt binary matches, `node-gyp` compiles them with the `python3`, `make` and `g++` the builder ships.
+
+**bun** (1.4.4) is available in every Node.js image, so `build` and `start` scripts that call `bun` or `bunx` work — for example `"start": "bun .next/standalone/server.js"`. Node.js is still the runtime that `engines.node` selects; bun is a tool next to it, like npm and yarn.
 
 **Start command precedence**: `startCommand` in `faable.json` → static site (a detected static framework with no `start`, or a `start` that only serves its build output) → `npm run start`.
 
@@ -109,7 +111,7 @@ To deploy one app from a repository holding several, declare its **Root Director
 
 This works for both shapes a monorepo comes in:
 
-- **A workspace** (Turborepo, npm/yarn/pnpm workspaces) — a `package.json` at the repository root ties the packages together.
+- **A workspace** (Turborepo, npm/yarn/pnpm/bun workspaces) — a `package.json` at the repository root ties the packages together.
 - **Sibling folders** — `client/` and `server/`, each self-contained with its own `package.json` and lockfile, and nothing at the repository root.
 
 The builder then:

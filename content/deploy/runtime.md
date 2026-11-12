@@ -1,6 +1,6 @@
 ---
 title: Runtime
-description: Understand the Faable Deploy runtime environment. Learn about supported Node.js versions, environment variables, the start command, gunicorn and uvicorn workers and memory, and our automatic app manager.
+description: Understand the Faable Deploy runtime environment. Learn about supported Node.js versions, the bun that ships with them, environment variables, the start command, gunicorn and uvicorn workers and memory, and our automatic app manager.
 ---
 
 # Runtime
@@ -12,6 +12,8 @@ This page describes how your app runs on Faable Deploy — the Node.js versions 
 Node versions adhere to Semver, the semantic versioning convention popularized by GitHub. Semver uses a version scheme in the form `MAJOR.MINOR.PATCH`.
 
 Faable currently supports **Node.js 20, 22, 24 and 26**. The version you request in `engines.node` is resolved to the latest release of that major at deploy time, and your app runs on Faable's runtime image for that major. Requesting a major outside the supported list fails the deploy.
+
+Every Node.js image also includes **bun 1.4.4** (`bun` and `bunx`), so a `start` script such as `bun .next/standalone/server.js` runs as written. Node.js remains the runtime your app is versioned on: `engines.node` picks the image, and bun's version is the one the image ships.
 
 ## Specifying a Node.js Version
 
@@ -58,7 +60,7 @@ Your `start` script should run the compiled app and nothing else. Tools meant fo
 
 If `start` is exactly `nest start` and your `start:prod` script runs a file the build produced (the Nest template's `node dist/main`), Faable runs `start:prod` instead and says so in the app's runtime log, in a line that starts with `Faable:`.
 
-**npm itself:** `npm run start` would stay running as the parent of your app, holding around 25 MB of memory (more when the script calls `npm run` or `npx` again). So Faable runs your `start` script directly, the way npm would have: with `node_modules/.bin` on the `PATH` and the `npm_package_name`, `npm_package_version` and `npm_lifecycle_event` variables set, following `npm run` chains, and calling a locally installed binary instead of `npx`. When your `package.json` has a `prestart` or `poststart` script, npm runs it as before.
+**npm itself:** `npm run start` would stay running as the parent of your app, holding around 25 MB of memory (more when the script calls `npm run` or `npx` again). So Faable runs your `start` script directly, the way npm would have: with `node_modules/.bin` on the `PATH` and the `npm_package_name`, `npm_package_version` and `npm_lifecycle_event` variables set, following `npm run` chains, and calling a locally installed binary instead of `npx`. When your `package.json` has a `prestart` or `poststart` script, npm runs it as before. A `start` script that calls bun (`bun run …`, `bun server.js`) is executed as written: there is no npm parent to remove.
 
 If your app depends on something only npm provides, set the environment variable `FAABLE_NPM_BYPASS=0` to start it through npm.
 

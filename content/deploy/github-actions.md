@@ -68,8 +68,8 @@ jobs:
 The same workflow works for every runtime — Node, Python, or Docker. `faable
 deploy` detects your project type and, for Node projects, installs dependencies
 automatically when `node_modules` is missing (`npm ci` with a lockfile,
-`npm install` otherwise; `yarn` and `pnpm` lockfiles are honored when the tool
-is available).
+`npm install` otherwise; `bun.lock`, `yarn.lock` and `pnpm-lock.yaml` are
+honored when the tool is available, and bun always is).
 
 ## Build script
 

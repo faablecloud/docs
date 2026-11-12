@@ -405,11 +405,11 @@
   },
   "content/deploy/build-failures.md": {
     "published": "2026-10-21T08:07:23.433Z",
-    "modified": "2026-10-31T11:51:17.407Z"
+    "modified": "2026-11-12T11:29:09.477Z"
   },
   "content/deploy/build-requirements.mdx": {
     "published": "2026-07-04T11:38:43+02:00",
-    "modified": "2026-11-06T09:39:53.106Z"
+    "modified": "2026-11-12T11:29:09.477Z"
   },
   "content/deploy/compare-coolify.mdx": {
     "published": "2026-10-29T19:13:19.774Z",
@@ -469,7 +469,7 @@
   },
   "content/deploy/github-actions.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-10-19T10:14:33.064Z"
+    "modified": "2026-11-12T11:29:09.477Z"
   },
   "content/deploy/gitlab-bitbucket.md": {
     "published": "2026-10-19T10:14:33.064Z",
@@ -525,7 +525,7 @@
   },
   "content/deploy/guides/guide-next.md": {
     "published": "2026-08-15T19:11:40+02:00",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-11-12T11:29:09.477Z"
   },
   "content/deploy/guides/guide-php.md": {
     "published": "2026-08-26T11:47:16+02:00",
@@ -605,7 +605,7 @@
   },
   "content/deploy/runtime.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-11-05T10:58:12.608Z"
+    "modified": "2026-11-12T11:29:09.477Z"
   },
   "content/deploy/scheduled-tasks.md": {
     "published": "2026-11-02T10:25:50.009Z",
