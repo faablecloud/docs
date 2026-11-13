@@ -25,13 +25,19 @@ Create it pointing at the same target the dashboard shows for the `CNAME`:
 .    IN    ALIAS    <domain_id>.faable.link.
 ```
 
-Providers that support it include **Cloudflare** (automatic CNAME flattening at the root), **Route 53** (alias records), **DNSimple** and **Namecheap**. See [Cloudflare](cloudflare.md) and [Namecheap](namecheap.md).
+Providers that support it include **Cloudflare** (automatic CNAME flattening at the root), **DNSimple** and **Namecheap**. See [Cloudflare](cloudflare.md) and [Namecheap](namecheap.md).
+
+<Callout type="warning">
+  **Route 53 is not one of them.** Its _alias_ records only point at AWS resources (CloudFront,
+  load balancers, S3 websites) or at another record in the same hosted zone — not at an outside
+  hostname like `<domain_id>.faable.link`. On Route 53, use Option 2 for the bare domain.
+</Callout>
 
 This is the option to prefer: the target is a hostname, so if Faable's addresses ever change your domain follows automatically.
 
 ## Option 2 — an `A` record
 
-If your provider has no `ALIAS` — **GoDaddy** is the common case, see [GoDaddy](godaddy.md) — point the root at Faable's address with a plain `A` record.
+If your provider has no `ALIAS` — **GoDaddy** and **Route 53** are the common cases, see [GoDaddy](godaddy.md) — point the root at Faable's address with a plain `A` record.
 
 Resolve the address your domain should use:
 
@@ -69,11 +75,12 @@ Nothing to maintain, nothing pinned to an address, and visitors typing `example.
 
 ## Which to choose
 
-| Your provider                              | Use                             |
-| ------------------------------------------ | ------------------------------- |
-| Cloudflare, Route 53, DNSimple, Namecheap  | Option 1 — `ALIAS` / flattening |
-| GoDaddy, or anything without `ALIAS`       | Option 3 — `www` plus a 301     |
-| You need the bare domain to serve directly | Option 2 — `A` record           |
+| Your provider                              | Use                                                                |
+| ------------------------------------------ | ------------------------------------------------------------------ |
+| Cloudflare, DNSimple, Namecheap            | Option 1 — `ALIAS` / flattening                                    |
+| Route 53                                   | Option 3 with Faable's redirect — the bare domain on an `A` record |
+| GoDaddy, or anything without `ALIAS`       | Option 3 — `www` plus a 301                                        |
+| You need the bare domain to serve directly | Option 2 — `A` record                                              |
 
 ## Verify
 

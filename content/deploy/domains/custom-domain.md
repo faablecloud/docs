@@ -25,7 +25,7 @@ If your domain is an apex (root) domain such as `example.com`, create an `ALIAS`
 .    IN      ALIAS      <domain_id>.faable.link.
 ```
 
-Check with your DNS provider that it supports `ALIAS` (sometimes called `ANAME` or "CNAME flattening") at the apex — it is not universally available. Providers that support it include Cloudflare, Route 53, DNSimple and Namecheap. GoDaddy does not. If yours does not, use an `A` record or serve on `www` and redirect the root — all three options, and how to choose, are in [Apex domains](apex.md).
+Check with your DNS provider that it supports `ALIAS` (sometimes called `ANAME` or "CNAME flattening") at the apex — it is not universally available. Providers that support it include Cloudflare, DNSimple and Namecheap. GoDaddy does not, and neither does Route 53: its alias records only point at AWS resources, not at `faable.link`. If yours does not, use an `A` record or serve on `www` and redirect the root — all three options, and how to choose, are in [Apex domains](apex.md).
 
 ## Root and www together
 
