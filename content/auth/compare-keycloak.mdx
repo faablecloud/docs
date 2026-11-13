@@ -1,0 +1,102 @@
+---
+title: 'Keycloak alternative: Faable Auth vs Keycloak'
+description: Looking for a Keycloak alternative? Faable Auth vs Keycloak — a managed OAuth 2.0 / OpenID Connect identity server instead of one you install, cluster, patch and upgrade yourself. Protocols, organizations, passkeys, custom login logic in JavaScript instead of Java SPIs, what running Keycloak in production takes, pricing, and migrating with users keeping their passwords.
+rank: high
+---
+
+# Keycloak alternative: Faable Auth vs Keycloak
+
+**Short answer:** Keycloak is the most complete open-source identity server: OAuth 2.0, OpenID Connect and SAML, identity brokering, LDAP federation and organizations, free under Apache 2.0 and a CNCF incubating project. What it costs is **running it**. You operate a cluster of at least two instances, a production database, TLS, a reverse proxy and a release train that ships several updates a month. Faable Auth is a **managed** OAuth 2.0 / OpenID Connect identity server: the same standards for your apps, **with nothing to install, patch or upgrade**. Hosted login is included, custom logic goes in **JavaScript Actions instead of Java SPIs**, it is **free up to 15,000 MAU with no per-user price above that**, and it is **operated in Europe by a European company**.
+
+> Keycloak details checked against keycloak.org, its server guides, release notes and upgrading guide in November 2026. Confirm anything decisive on their own site.
+
+## At a glance
+
+| Capability                    | Faable Auth                                                                         | Keycloak                                                                 |
+| ----------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| What it is                    | Managed identity server (SaaS)                                                      | Open-source identity server you deploy and operate                       |
+| Licence and price             | Free up to 15,000 MAU; Hobby 15 €/month and Pro 99 €/month, **no MAU limit**        | Apache 2.0, no licence fee; you pay for servers, database and operations |
+| OAuth 2.0 / OpenID Connect    | ✅ provider for your apps                                                           | ✅ OpenID Certified                                                      |
+| SAML                          | ✅ SAML 2.0 IdP for your apps (Pro)                                                 | ✅ as IdP and as service provider                                        |
+| Enterprise SSO from customers | ✅ over OpenID Connect (Pro)                                                        | ✅ OIDC and SAML identity brokering                                      |
+| LDAP / Active Directory       | ❌ federate over OIDC                                                               | ✅ user federation, Kerberos                                             |
+| Machine-to-machine            | ✅ client credentials, 100/month free, then €2.25 per 1,000                         | ✅ service accounts                                                      |
+| Device code, token exchange   | ✅                                                                                  | ✅                                                                       |
+| Social login                  | 14 providers + custom OAuth 2.0                                                     | ✅ brokering to social and generic providers                             |
+| Passkeys                      | ✅ sign-in (Pro) and second factor (Hobby)                                          | ✅ in the login forms since 26.4                                         |
+| B2B organizations             | ✅ [Organizations](organizations.md) with verified domains, SSO and auto-join (Pro) | ✅ Organizations since 26.0                                              |
+| Custom logic in the login     | [Actions](extensibility/actions.md) in JavaScript + webhooks                        | Java SPIs, built and deployed with the server                            |
+| Login pages                   | [Hosted](hosted-login.mdx), configured from the dashboard                           | FreeMarker themes you build and maintain                                 |
+| Admin tooling                 | Dashboard, [`faable auth`](../cli.md#faable-auth) CLI, Management API               | Admin console, `kcadm.sh`, Admin REST API, realm export/import           |
+| Upgrades and security patches | Applied by Faable, nothing to schedule                                              | Yours to schedule, test and roll out                                     |
+| High availability             | Included; 99.9 % uptime SLA on Pro                                                  | Yours: two or more instances, distributed cache, database                |
+| Where identities live         | In Europe, operated by a European company                                           | Wherever you run it                                                      |
+| Bundled with app hosting      | ✅ [Faable Deploy](../deploy/get-started.md), same subscription                     | ❌                                                                       |
+
+## What running Keycloak in production takes
+
+Keycloak's own production guide is the fairest description of the work:
+
+- **A cluster.** It recommends "two or more Keycloak instances". They share state through Infinispan and JGroups, encrypted with TLS between nodes, behind a reverse proxy that "is recommended" for production.
+- **A production database.** PostgreSQL 14–18, MySQL, MariaDB, Oracle or SQL Server. The bundled `dev-file` database "must be replaced before deploying to production", and backing it up is your job.
+- **Capacity planning.** The sizing guide starts at **1,250 MB of RAM per pod**, then allocates **1 vCPU for every 15 password logins per second**, with **150 % headroom** for spikes. It also tells you to run your own load tests before going live.
+- **TLS and hostnames.** Every channel needs HTTPS, the public hostname must be configured, and the admin console belongs on a separate hostname or path.
+- **A release train.** Keycloak 26.8.0 shipped on 1 October 2026, then 26.8.1 on 13 October and 26.8.2 on 5 November. Upgrades migrate the database schema on start-up. Large tables can need indexes applied by hand afterwards. Zero-downtime upgrades cover patch releases, and even then not every change: the upgrading guide says some require you to "shut down the cluster and upgrade all nodes together".
+
+None of this is a flaw: it is what an identity server you own looks like. The question is whether owning one is a good use of your team's time.
+
+With Faable Auth there is no cluster, database, certificate or upgrade on your side. Login spikes, patches and backups are ours to handle. Your apps see an issuer URL, standard OAuth 2.0 / OIDC endpoints and JWTs.
+
+## Custom code: Java SPIs vs JavaScript Actions
+
+Keycloak is extended through **Service Provider Interfaces**: Java code compiled into a JAR, deployed with the server and kept compatible across upgrades. It's very powerful: anything from a custom authenticator to a new user store.
+
+Faable Auth runs [Actions](extensibility/actions.md): **JavaScript functions inside the login flow** that can add claims to tokens, enforce rules, call your API or block a sign-in. You can ship them from a file and switch them off without a deploy, plus [webhooks](extensibility/webhooks.md) for what happens afterwards. There's less surface than an SPI, and nothing to recompile when the platform updates.
+
+## Login pages: themes vs hosted
+
+Keycloak renders every screen from a **theme**: FreeMarker templates and CSS, or React through community tooling such as Keycloakify. You can make it look like anything, and you carry that theme across upgrades.
+
+Faable Auth [hosts every screen](hosted-login.mdx): sign-in, sign-up, password reset, two-step verification, passkey enrolment, device activation for CLIs, and a security page where users manage their own factors. You set the logo, the sign-in methods and their order, per account or per client. You can't restyle the pages beyond that, so if pixel-level control over the login UI is a requirement, Keycloak themes give you more.
+
+## Pricing, worked through
+
+Keycloak has no licence fee, and the real cost is the infrastructure plus the people. A minimal highly available setup is two instances of at least 1.25 GB each, a managed or replicated database, a load balancer and monitoring. On top of that comes someone who reads every release note and runs the upgrade.
+
+Faable Auth is a plan fee with **no per-user charge**: **Free** up to 15,000 MAU with no credit card, then **Hobby 15 €/month** and **Pro 99 €/month** with unlimited MAU. Enterprise SSO users on Pro are 50 federated MAU a month included, then €0.0010 each. See [Auth pricing](pricing.mdx).
+
+**The reading:** if you already have a platform team that runs stateful services well, Keycloak's infrastructure bill can be lower than any managed product. If identity would be one more system for a small team to keep alive, the managed fee is usually far below the hours it replaces.
+
+## When Keycloak might fit better
+
+- **You must run identity on your own infrastructure**: air-gapped networks, on-premises mandates, or a policy against SaaS identity.
+- **You need LDAP or Active Directory federation, or Kerberos**, directly from the identity server.
+- **Your customers' identity providers only speak SAML.** Keycloak brokers SAML identity providers; Faable Auth connects company identity providers over OpenID Connect.
+- **You need deep customization**: custom user stores, protocol extensions or a login UI built from scratch.
+
+## When Faable Auth is the better fit
+
+- **You want Keycloak's standards without operating Keycloak.** No cluster, database, theme or upgrade schedule.
+- **You're a small team building a product**, and identity should be a service you consume, not one you run.
+- **You want a European provider**, with identities held in Europe under one data-processing agreement.
+- **You want auth and hosting together.** [Faable Deploy](../deploy/get-started.md) and Faable Auth share one [subscription](pricing.mdx).
+
+## Migrating from Keycloak
+
+Each Keycloak realm maps to a Faable Account, clients to [Clients](clients.md), identity providers to [Connections](connections.md) and SPIs to [Actions](extensibility/actions.md). Export the realm with `kc.sh export` and import it with `faable auth users import realm.json --from keycloak`. **Users keep their passwords**: Keycloak's PBKDF2-SHA256/SHA512 and Argon2 hashes import as they are, and social users keep their linked identities. The full walk-through is in **[Migrate from Keycloak](guides/migrate-from-keycloak.mdx)**.
+
+## Other Keycloak alternatives
+
+If you're comparing more than two options, these pages put each one side by side with Faable Auth:
+
+- **[ZITADEL](compare-zitadel.mdx)**: an open-source OIDC identity server, managed or self-hosted. The closest to Keycloak if you want to keep the option of running it yourself.
+- **[Authelia](compare-authelia.mdx)**: a self-hosted SSO portal that protects services behind a reverse proxy, for infrastructure rather than products.
+- **[Auth0](compare.mdx)**: the managed enterprise identity platform, priced per user.
+- **[Clerk](compare-clerk.mdx)**: component-first auth for React and Next.js, hosted in the US.
+- **[Better Auth](compare-better-auth.mdx)**: a TypeScript library that runs inside your app and your database.
+- **Need your users' data held in Europe?** [European alternatives to Auth0, Clerk and Cognito](european-alternatives.mdx) compares the providers that are European companies, including self-hosted Keycloak.
+
+## Related
+
+- [Faable Auth vs Auth0, Clerk & Keycloak](compare.mdx) · [Migrate from Keycloak](guides/migrate-from-keycloak.mdx)
+- [What is a multi-tenant identity server?](what-is-a-multi-tenant-identity-server.mdx) · [Auth pricing](pricing.mdx)

@@ -48,6 +48,7 @@ export default {
   'saml-vs-oidc': 'SAML vs OIDC',
   compare: 'Faable Auth vs Auth0, Clerk & Keycloak',
   'compare-clerk': 'vs Clerk',
+  'compare-keycloak': 'vs Keycloak',
   'compare-zitadel': 'vs ZITADEL',
   'compare-better-auth': 'vs Better Auth',
   'compare-aws-cognito': 'vs AWS Cognito',

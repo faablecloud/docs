@@ -57,11 +57,15 @@
   },
   "content/auth/compare-clerk.mdx": {
     "published": "2026-10-11T13:11:20+02:00",
-    "modified": "2026-11-07T19:55:44.901Z"
+    "modified": "2026-11-13T00:12:53.044Z"
   },
   "content/auth/compare-firebase-auth.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
     "modified": "2026-10-19T06:55:32.936Z"
+  },
+  "content/auth/compare-keycloak.mdx": {
+    "published": "2026-11-13T00:12:53.044Z",
+    "modified": "2026-11-13T00:12:53.044Z"
   },
   "content/auth/compare-supabase-auth.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
@@ -69,11 +73,11 @@
   },
   "content/auth/compare-zitadel.mdx": {
     "published": "2026-10-29T19:13:17.555Z",
-    "modified": "2026-10-29T19:13:17.555Z"
+    "modified": "2026-11-13T00:12:53.044Z"
   },
   "content/auth/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-10-29T19:13:17.555Z"
+    "modified": "2026-11-13T00:12:53.044Z"
   },
   "content/auth/connections.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -129,7 +133,7 @@
   },
   "content/auth/guides/migrate-from-keycloak.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-11-13T00:12:53.044Z"
   },
   "content/auth/guides/migrate-from-nextauth.mdx": {
     "modified": "2026-10-11T19:28:39+02:00",
@@ -423,9 +427,13 @@
     "published": "2026-06-27T13:49:17+02:00",
     "modified": "2026-11-03T10:49:34.417Z"
   },
+  "content/deploy/compare-vercel.mdx": {
+    "published": "2026-11-13T00:12:53.044Z",
+    "modified": "2026-11-13T00:12:53.044Z"
+  },
   "content/deploy/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-11-03T10:49:34.417Z"
+    "modified": "2026-11-13T00:12:53.044Z"
   },
   "content/deploy/domains/apex.md": {
     "published": "2026-09-19T12:00:03+02:00",
@@ -569,7 +577,7 @@
   },
   "content/deploy/guides/migrate-from-vercel.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-11-03T10:49:34.417Z"
+    "modified": "2026-11-13T00:12:53.044Z"
   },
   "content/deploy/how-it-works.mdx": {
     "modified": "2026-09-15T20:25:27+02:00",

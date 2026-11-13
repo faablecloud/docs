@@ -1,0 +1,92 @@
+---
+title: 'Vercel alternative: Faable Deploy vs Vercel'
+description: Looking for a Vercel alternative? Faable Deploy vs Vercel — a free plan that allows commercial use, full backends as long-running servers instead of time-limited functions, a fixed monthly fee per project instead of per seat plus usage, bundled authentication, and apps hosted in Europe by a European company.
+rank: high
+---
+
+# Vercel alternative: Faable Deploy vs Vercel
+
+**Short answer:** Vercel is the best-known home for Next.js: push to Git, get a deploy on a global CDN, with serverless functions for the dynamic parts. Faable Deploy keeps the same push-to-deploy workflow and differs where teams usually start looking elsewhere. Its **free plan allows commercial use**, while Vercel's Hobby is for personal projects only. Your code runs as a **real, long-running server**, not a function with a time limit. You pay a **fixed monthly fee per project**, not per seat plus usage. And **[Faable Auth](../auth/get-started.md) is included**, with **apps and data hosted in Europe** by a European company.
+
+> Vercel details checked against vercel.com pricing, plan docs and limits in November 2026. They change often, so confirm anything decisive on their own site.
+
+## At a glance
+
+|                                    | **Faable Deploy**                                                                                       | Vercel                                                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Deploy from Git, zero config       | ✅ Node.js, Python, PHP; Dockerfile on Hobby and Pro                                                    | ✅ Next.js first, plus other frameworks                                                    |
+| Free plan                          | ✅ permanent, no card                                                                                   | ✅ Hobby                                                                                   |
+| Commercial use on the free plan    | ✅                                                                                                      | ❌ "non-commercial personal use only"                                                      |
+| Custom domains on the free plan    | ✅                                                                                                      | ✅                                                                                         |
+| How your backend runs              | A long-running server process in a container                                                            | Serverless functions                                                                       |
+| Request time limit                 | 60 s to the first byte, then streams for as long as it needs                                            | 300 s on Hobby; up to 800 s on Pro                                                         |
+| Background workers and cron        | ✅ [workers](always-on-and-workers.md), [scheduled tasks](scheduled-tasks.md) (Hobby and Pro)           | Cron jobs; background workers in beta                                                      |
+| First paid tier                    | **15 €/month per project, fixed**                                                                       | $20/month per deploying seat, with $20 of usage credit, then usage billed on top           |
+| Team members                       | Not billed per seat                                                                                     | $20/month per extra Owner or Member                                                        |
+| Data transfer                      | 10 GB (Free) and 50 GB (Hobby) included, **never billed per GB**; Pro meters beyond 100 GB at 0.18 €/GB | 100 GB on Hobby, then you wait for the next 30-day window; 1 TB on Pro, then from $0.15/GB |
+| Edge firewall                      | ✅ managed rulesets + your own rules, every plan                                                        | ✅ DDoS and bot protection on every plan; custom rules: 3 on Hobby, 40 on Pro              |
+| Bundled identity (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free                                               | ❌ a second vendor                                                                         |
+| Per-branch preview deployments     | ❌                                                                                                      | ✅                                                                                         |
+| Global edge network                | ❌ served from Europe                                                                                   | ✅                                                                                         |
+| Where your app runs                | In the EU, operated by a European company                                                               | `iad1` (Washington, D.C.) by default, other regions selectable; US company                 |
+| Currency                           | EUR                                                                                                     | USD                                                                                        |
+
+## Why teams look for a Vercel alternative
+
+### The free plan has to stay personal
+
+Vercel's terms are explicit: "Hobby teams are for non-commercial personal use only", and "all commercial usage requires a Pro or Enterprise plan". Commercial use includes taking payments, showing ads, and paid or affiliate work. So a client's landing page, an indie product with a Stripe checkout, or a blog with AdSense has to move to Pro, however little traffic it gets.
+
+Faable's [Free plan](pricing.mdx) **allows commercial use**. It is permanent, needs no credit card, includes custom domains, and runs each app with up to 0.6 vCPU and 512 MB. An idle app sleeps after 30 minutes and wakes in a few seconds. Static sites are served directly, with no container, so they never have a cold start.
+
+### Your backend is a server, not a function
+
+On Vercel, the dynamic parts of your app run as functions: up to 300 seconds on Hobby and 800 seconds on Pro, with 2 GB of memory by default. That suits request–response pages. It gets awkward for the things a product backend does all day, like consuming a queue, holding a connection open, or running a job that takes a while.
+
+On Faable your code runs as **an ordinary server process** in a Linux container: Next.js with `next start`, Express, Fastify, NestJS, Django, FastAPI, Flask, Laravel or plain PHP, all detected and built without configuration. There's no per-invocation limit to design around. The only timeout is 60 seconds to the first byte, and a response can then stream for minutes, which is what LLM apps need (see [Hosting AI agents in Europe](ai-agents.mdx)). On Hobby and Pro, a process with no web server at all can run as a [background worker](always-on-and-workers.md), and commands can run on a cron schedule as [scheduled tasks](scheduled-tasks.md), even while the app sleeps.
+
+### A bill you can predict
+
+Vercel Pro is $20 a month for one deploying seat, with $20 of usage credit. Every extra Owner or Member is another $20. Usage beyond the credit (data transfer, CDN requests, function invocations, CPU time and build minutes) is billed on demand, uncapped unless you configure a spend limit. New teams start with a $200 on-demand budget.
+
+Faable charges a **fixed fee per plan, per project**: Hobby is **15 €/month** and Pro **99 €/month**, with no per-seat charge. On Free and Hobby there is no per-GB line at all: the traffic allowance is what the plan includes, and going over it sends warnings at 80 %, 90 % and 100 % instead of opening a meter. Only Pro meters egress, beyond its 100 GB. See [Deploy pricing](pricing.mdx).
+
+### Auth is in the same subscription
+
+Most apps on Vercel add a second vendor for sign-in, such as Clerk, Auth0 or Cognito, with its own bill and its own data-processing agreement. On Faable, [Faable Auth](../auth/get-started.md) is part of the plan: hosted login, social and passwordless sign-in, MFA, passkeys and machine-to-machine tokens, with **15,000 monthly active users on Free** and no MAU limit on Hobby and Pro.
+
+### European by construction
+
+Vercel runs functions in Washington, D.C. (`iad1`) unless you pick another region. Even with a European region, the company operating your app, and the law that can reach it, stays American. Faable is a European company: **your apps and data are hosted in the EU**, and hosting and identity sit under one European provider and one data-processing agreement. More in [European alternatives to Vercel, Render and Railway](european-alternatives.mdx).
+
+### A firewall that closes the obvious doors for you
+
+Both platforms filter traffic at the edge on every plan. Vercel gives you DDoS mitigation and bot protection, plus 3 custom rules on Hobby and 40 on Pro. Faable's [Web Application Firewall](security-waf.md) adds **rulesets we maintain**: requests for `.env` files, Git metadata, credentials, admin panels and PHP probes are blocked before they reach your code or wake a sleeping app. You can add your own rules by path, user-agent or query parameter. It doesn't inspect request bodies, so it isn't a replacement for an OWASP signature engine.
+
+## When Vercel might fit better
+
+- **Your app is Next.js, and you want edge rendering and middleware on a global CDN.** Faable serves from Europe; for a mostly European audience that is closer anyway, but it isn't a worldwide edge network.
+- **Your workflow depends on a preview deployment for every pull request.** Faable doesn't create per-branch previews; you can deploy a staging app from [your own CI](github-actions.md).
+- **You rely on Vercel-specific products** such as Edge Config, v0 or their analytics and observability suite.
+
+## Moving from Vercel
+
+Most projects move without code changes. Connect the same repository, copy your environment variables, deploy, and point your domain at Faable. Next.js builds with [standalone output](guides/guide-next.md) automatically, so the deployed artifact stays around 150 MB. The step-by-step version, including what changes when serverless functions become a long-running process, is in **[Migrate from Vercel](guides/migrate-from-vercel.mdx)**.
+
+**[Get started with Faable Deploy](get-started.md)**: free, no credit card.
+
+## Other Vercel alternatives
+
+If you're comparing more than two options, these pages put each one side by side with Faable Deploy:
+
+- **[Render and Railway](compare.mdx)**: container platforms with usage-based billing in USD.
+- **[Netlify](guides/migrate-from-netlify.mdx)**: the other frontend-first platform, with the move to Faable step by step.
+- **[Heroku](compare-heroku.mdx)**: the original git-push platform, billed per dyno.
+- **[Fly.io](compare-fly-io.mdx)**: VMs close to your users, configured by you.
+- **[Coolify](compare-coolify.mdx)**: open-source and self-hosted on your own server.
+- **Need your app hosted in Europe?** [European alternatives to Vercel, Render and Railway](european-alternatives.mdx) compares the providers that are European companies, not only an EU region.
+
+## Related
+
+- [Faable Deploy vs Vercel, Render & Railway](compare.mdx) · [Deploy pricing](pricing.mdx)
+- [Deploy Next.js on Faable](guides/guide-next.md) · [Migrate from Vercel](guides/migrate-from-vercel.mdx)
