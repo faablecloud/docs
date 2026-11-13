@@ -401,7 +401,7 @@
   },
   "content/cli.md": {
     "published": "2026-04-08T11:37:58+02:00",
-    "modified": "2026-11-10T20:41:01.383Z"
+    "modified": "2026-11-13T12:45:31.954Z"
   },
   "content/deploy/ai-agents.mdx": {
     "published": "2026-09-12T13:03:24+02:00",
@@ -621,7 +621,7 @@
   },
   "content/deploy/pricing.mdx": {
     "published": "2026-08-24T18:03:43+02:00",
-    "modified": "2026-11-02T10:25:50.009Z"
+    "modified": "2026-11-13T12:45:31.954Z"
   },
   "content/deploy/runtime.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -637,7 +637,7 @@
   },
   "content/deploy/security-waf.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-11-03T11:39:37.187Z"
+    "modified": "2026-11-13T12:45:31.954Z"
   },
   "content/deploy/what-is-zero-config-cicd.mdx": {
     "published": "2026-06-26T11:51:20+02:00",

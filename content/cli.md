@@ -550,14 +550,16 @@ container** just to answer a 404.
 
 `faable deploy waf` lets you handle those paths at the edge, so they never reach your
 app. Two rules, depending on what the caller should get back, a third for the opposite
-case — a path Faable blocks that your app really serves — and `monitor`, to see what a
-rule would stop before it stops anything:
+case — a path Faable blocks that your app really serves — `limit`, to let a path or a
+client through but not too fast, and `monitor`, to see what a rule would stop before it
+stops anything:
 
 | Command   | Answer     | Use it when                                                                                        |
 | --------- | ---------- | -------------------------------------------------------------------------------------------------- |
 | `block`   | `403`      | You want the request refused — a scanner probe, an admin path that should not be public            |
 | `sink`    | `404`      | Your app does not serve that path anyway. Faable replies with the same 404, without the cold start |
 | `allow`   | your app's | Faable blocks that path for every app (a `.zip`, a dotfile) and your app really serves it          |
+| `limit`   | `429`      | The path or client is fine, just not this fast — a login form, a search endpoint, a crawler        |
 | `monitor` | your app's | You want to see what a rule would stop before it stops anything                                    |
 
 A rule selects requests by **path**, by **user-agent**, by **query parameter**, or by a
@@ -654,6 +656,54 @@ filtered for your app. An allow is a **path** rule only — no `--user-agent` an
 `sink` rules still win over it. Remove it like any other rule:
 `faable deploy waf rm '^/downloads/.*\.zip$' --action allow`.
 
+### Rate limit a path or a client
+
+```bash
+faable deploy waf limit '^/api/login$' --rate 10/m
+```
+
+```
+⏱️  requests for ^/api/login$ → 10/min per IP, then 429
+   for shop-api (app_a1b2c3).
+Over the limit, Faable answers 429 at the edge: those requests do not reach or wake your app.
+It takes about 20s to reach the edge. Then check it with:
+  for i in $(seq 1 15); do curl -s -o /dev/null -w '%{http_code} ' 'https://shop-api.faable.link/api/login'; done; echo
+Undo: faable deploy waf rm '^/api/login$' --action limit -a app_a1b2c3
+```
+
+Matching requests reach your app up to the rate. Past it, Faable answers `429 Too Many
+Requests` with a `Retry-After` header, at the edge, so they never wake the app.
+
+| Option              | Meaning                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `--rate N/s`, `N/m` | Requests per second or per minute, up to 10,000. Per hour or per day is refused (see below) |
+| `--burst B`         | Requests allowed at once before the rate applies. Defaults to the rate                      |
+| `--per ip`          | Each client IP has its own count (the default)                                              |
+| `--per rule`        | One count shared by every client, per domain of the app                                     |
+
+It takes the same selectors as `block` — `--user-agent`, `--query`, a path with either:
+
+```bash
+faable deploy waf limit '^/search' --rate 5/s --burst 20             # room for a burst
+faable deploy waf limit --user-agent GPTBot --rate 60/m --per rule   # the crawler as a whole
+```
+
+`--per ip` slows down one client without touching the rest; `--per rule` caps what all of
+them get together, which is what you want for a crawler that spreads over many addresses.
+
+There is no per hour: the edge refills its counters several times an hour, so an hourly
+limit would not hold, and the CLI says so instead of accepting it:
+
+```
+❌ A limit counts per second or per minute, not per hour or day: the edge refills its
+   counters several times an hour, so it would not hold.
+  Use a per-minute rate, e.g. --rate 2/m instead of 100/h.
+```
+
+To change a rate, run the command again with the new one: the selector identifies the
+rule and its rate is replaced. An app can have up to 10 `limit` rules, and an `allow` rule
+on the same path wins over a `limit`.
+
 ### Block a crawler
 
 ```bash
@@ -703,7 +753,7 @@ faable deploy waf list
 ```
 
 Shows the platform rulesets protecting your app plus every rule you added, with what
-each one answers.
+each one answers — and, for a `limit` rule, its rate.
 
 ### Remove
 
@@ -712,6 +762,7 @@ faable deploy waf rm '^/robots\.txt$'
 faable deploy waf rm --user-agent YisouSpider
 faable deploy waf rm '^/api/' --user-agent YisouSpider
 faable deploy waf rm --query rest_route
+faable deploy waf rm '^/api/login$' --action limit
 ```
 
 Remove a rule the same way you created it: `'^/login'` and `'^/login' -u YisouSpider` are
@@ -731,8 +782,9 @@ Some patterns cannot be ruled on, and the CLI tells you why instead of accepting
 - a user-agent pattern matching Faable's own platform traffic, which would break
   certificate renewal for the app;
 - lookahead and backreference syntax, which the edge's regex engine does not support;
-- an `allow` pattern that would also match `/`, `/.well-known/acme-challenge/`, `/.faable/`
-  or `/_next/` — those paths belong to the platform.
+- an `allow` or `limit` pattern that would also match `/`, `/.well-known/acme-challenge/`,
+  `/.faable/` or `/_next/` — those paths belong to the platform, and the whole app already
+  has the [request rate limit of its instance](deploy/pricing.mdx#request-rate-limit).
 
 ## Faable Auth
 
