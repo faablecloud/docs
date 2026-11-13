@@ -1,0 +1,96 @@
+---
+title: 'Railway alternative: Faable Deploy vs Railway (and Render)'
+description: Looking for a Railway alternative? Faable Deploy vs Railway — a fixed monthly fee per project instead of usage billed per second, custom domains on the free plan, a built-in WAF and bundled authentication, hosted in Europe by a European company. Includes Railway vs Render compared side by side.
+rank: high
+---
+
+# Railway alternative: Faable Deploy vs Railway
+
+**Short answer:** Railway runs your services and databases from a visual canvas and bills what they consume, by the second. Faable Deploy keeps the same push-to-deploy workflow and charges **a fixed monthly fee per project**, so the invoice doesn't depend on how busy last month was. Its **free plan includes custom domains** (Railway's has none), every app sits behind a **built-in Web Application Firewall**, **[Faable Auth](../auth/get-started.md) is in the same subscription**, and **your apps and data are hosted in the EU** by a European company. Choosing between Railway and Render as well? There's a [three-way comparison](#railway-vs-render-vs-faable) below.
+
+> Railway and Render details checked against their pricing pages and docs in November 2026. They change often, so confirm anything decisive on their own sites.
+
+## At a glance
+
+|                                    | **Faable Deploy**                                                                                       | Railway                                                        |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Deploy from Git, zero config       | ✅ Node.js, Python, PHP; Dockerfile on Hobby and Pro                                                    | ✅ buildpacks or Dockerfile                                    |
+| Free plan                          | ✅ permanent, no card                                                                                   | ✅ $1 of usage a month, after a 30-day trial with $5 of credit |
+| Free plan resources                | 0.6 vCPU · 512 MB per app, up to 3 projects                                                             | 1 vCPU · 0.5 GB per service, 1 project, 3 services             |
+| Custom domains on the free plan    | ✅                                                                                                      | ❌ none; 2 on Hobby, 20 on Pro                                 |
+| Pricing model                      | **Fixed fee per project**: 0 €, 15 €, 99 €/month                                                        | Plan fee that is also a usage credit, then per-second usage    |
+| Entry paid plan                    | **Hobby, 15 €/month**: 1 vCPU · 1.5 GB per app, compute included                                        | Hobby, $5/month including $5 of usage                          |
+| Compute beyond the plan            | Included in the plan; always-on and workers have their own monthly allowance                            | ~$20 per vCPU and ~$10 per GB of memory a month                |
+| Egress                             | 10 GB (Free) and 50 GB (Hobby) included, **never billed per GB**; Pro meters beyond 100 GB at 0.18 €/GB | $0.05 per GB                                                   |
+| Idle apps                          | Sleep and wake in a few seconds; Always on on Hobby and Pro                                             | Optional "Serverless" mode stops idle services                 |
+| Built-in Web Application Firewall  | ✅ managed rulesets + your own rules, every plan                                                        | ❌                                                             |
+| Bundled identity (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free                                               | ❌ a second vendor                                             |
+| Databases and persistent volumes   | ❌ use a managed database ([see options](guides/databases.md))                                          | ✅ Postgres, MySQL, Redis and others, with volumes             |
+| Company and infrastructure         | 🇪🇺 European                                                                                             | US company, EU region available                                |
+| Currency                           | EUR                                                                                                     | USD                                                            |
+
+## Why teams look for a Railway alternative
+
+### A bill that doesn't move with usage
+
+Railway's plans are a monthly fee that doubles as usage credit: $5 on Hobby and $20 per workspace on Pro. Everything the services consume beyond that is billed per second. That's roughly $20 per vCPU and $10 per GB of memory a month, plus $0.05 per GB of egress and $0.15 per GB of volume storage. It's fair, and it means the invoice reflects whatever your services did last month. You can set a hard usage limit (from $10), but when you reach it "all your workloads will be taken offline".
+
+Faable charges **a fixed fee per plan, per project, never per user**. Hobby is **15 €/month** and covers its compute: each app runs on 1 vCPU and 1.5 GB, with unlimited deployments and 50 GB of egress. On Free and Hobby there is no per-GB line at all, and going over the traffic allowance sends warnings at 80 %, 90 % and 100 % instead of taking your site down. The only metered extras are the ones you switch on yourself, such as always-on apps and workers past their monthly allowance. See [Deploy pricing](pricing.mdx).
+
+### A free plan you can put a domain on
+
+Railway's Free plan gives you $1 of usage a month for one project with up to three services, and **no custom domains**. Faable's [Free plan](pricing.mdx) is permanent and needs no card. It includes **up to 3 projects with custom domains and free SSL**, 50 deployments a day and 10 GB of egress a month, and it allows commercial use. An idle app sleeps after 30 minutes and wakes in a few seconds.
+
+### Security and identity are included
+
+Every Faable app sits behind a [managed Web Application Firewall](security-waf.md). It blocks requests for `.env` files, Git metadata, credentials and admin panels before they reach your code, on every plan, and you can add your own rules. On Railway that is something you put in front yourself. When your app needs sign-in, [Faable Auth](../auth/get-started.md) is already in the subscription: hosted login, social and passwordless sign-in, MFA, passkeys and machine-to-machine tokens.
+
+### European by construction
+
+Picking a European region on a US platform keeps your data's location in Europe. The company that operates it, and the law that can reach it, stays American. Faable is a European company: **your apps and data are hosted in the EU**, with hosting and identity under one provider and one data-processing agreement. More in [European alternatives to Vercel, Render and Railway](european-alternatives.mdx).
+
+## When Railway might fit better
+
+- **You want databases next to your app from the same provider.** Railway runs Postgres, MySQL, Redis and others with persistent volumes on the same canvas. Faable apps are stateless and connect to a [managed database](guides/databases.md) such as Neon or Turso.
+- **You like assembling services visually** and want pure usage-based billing that scales down to cents.
+- **You need very large instances.** Railway Pro goes up to 1,000 vCPU and 1 TB per service; Faable's largest instance is 6 vCPU · 6 GB, on request.
+
+## Railway vs Render vs Faable
+
+Railway and Render are often compared with each other. Both are US container platforms billed in USD; they differ mainly in how they charge.
+
+|                        | **Faable Deploy**                                       | Railway                              | Render                                                               |
+| ---------------------- | ------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------------- |
+| How you pay            | Fixed fee per project                                   | Usage per second, with a plan credit | A price per instance; teams need a paid workspace plan               |
+| Free web services      | ✅ sleep after 30 min, wake in a few seconds            | $1 of usage a month                  | ✅ sleep after 15 min, wake in "about one minute"; 750 hours a month |
+| Custom domains on free | ✅                                                      | ❌                                   | ✅                                                                   |
+| Egress included        | 10 GB Free · 50 GB Hobby · 100 GB Pro                   | None, $0.05 per GB                   | 5 GB Hobby · 25 GB Pro, then $0.15 per GB                            |
+| Cron jobs              | ✅ [scheduled tasks](scheduled-tasks.md), Hobby and Pro | ✅                                   | ✅                                                                   |
+| Background workers     | ✅ [workers](always-on-and-workers.md), Hobby and Pro   | ✅                                   | ✅                                                                   |
+| Managed Postgres       | ❌ external ([options](guides/databases.md))            | ✅                                   | ✅; the free database expires after 30 days                          |
+| Team members           | Not billed per seat                                     | Unlimited on Pro, included           | 1 on Hobby, unlimited on Pro                                         |
+| WAF                    | ✅ every plan                                           | ❌                                   | ❌                                                                   |
+| Bundled auth           | ✅                                                      | ❌                                   | ❌                                                                   |
+| EU hosting             | ✅ European company                                     | EU region, US company                | Frankfurt region, US company                                         |
+
+**The reading:** Render is easier to predict than Railway, since each instance has a price, and its free web services include custom domains, though they take about a minute to wake. Railway is the more flexible of the two and can be the cheapest for small, bursty workloads, but its bill follows usage. Faable is the option where the price stays fixed, the free plan stays usable for real projects, and the firewall, sign-in and European hosting come in the same plan.
+
+## Moving from Railway
+
+A Railway service that builds from your repository moves without code changes. Connect the same repository to Faable, copy the service variables into [environment variables](environment.mdx), make sure your server listens on the `PORT` Faable provides, and push. Databases stay where they are, or move to a [managed database](guides/databases.md), and your app connects with the same connection string. Point your [custom domain](domains/custom-domain.md) at Faable when the new deploy is live.
+
+**[Get started with Faable Deploy](get-started.md)**: free, no credit card.
+
+## Other Railway alternatives
+
+- **[Vercel](compare-vercel.mdx)** and **[Netlify](compare-netlify.mdx)**: frontend-first, with serverless functions.
+- **[Render](compare.mdx)**: per-instance pricing and managed Postgres, compared with Vercel and Railway.
+- **[Heroku](compare-heroku.mdx)**: the original git-push platform, billed per dyno.
+- **[Fly.io](compare-fly-io.mdx)**: VMs you configure yourself, close to your users.
+- **[Coolify](compare-coolify.mdx)**: open-source and self-hosted on your own server.
+- **Need your app hosted in Europe?** [European alternatives to Vercel, Render and Railway](european-alternatives.mdx).
+
+## Related
+
+- [Faable Deploy vs Vercel, Render & Railway](compare.mdx) · [Deploy pricing](pricing.mdx)
+- [Always on and background workers](always-on-and-workers.md) · [Scheduled tasks](scheduled-tasks.md)

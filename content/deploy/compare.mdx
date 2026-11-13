@@ -12,27 +12,27 @@ If you are choosing a platform for a real product — a SaaS backend, an API, an
 
 ## Quick comparison
 
-|                                           | **Faable Deploy**                        | Vercel                             | Render                | Railway                 |
-| ----------------------------------------- | ---------------------------------------- | ---------------------------------- | --------------------- | ----------------------- |
-| Deploy from Git, zero config              | ✅ Node.js, Python, PHP                  | ✅                                 | ✅                    | ✅                      |
-| Full backends (long-running containers)   | ✅                                       | Serverless functions               | ✅                    | ✅                      |
-| Permanent free plan                       | ✅ no card, no expiry                    | ✅                                 | ✅                    | Trial credit, then paid |
-| Commercial use on the free plan           | ✅                                       | ❌ personal use only               | ✅                    | —                       |
-| Custom domains on the free plan           | ✅                                       | ✅                                 | ✅                    | ❌                      |
-| Free-plan app wakes from sleep in         | **a few seconds**                        | n/a (serverless)                   | ~1 minute             | n/a                     |
-| Built-in Web Application Firewall         | ✅ edge firewall, every plan             | 3 custom rules on Hobby, 40 on Pro | ❌                    | ❌                      |
-| Bundled identity / auth (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md) | ❌                                 | ❌                    | ❌                      |
-| First paid tier                           | **15 €/month per project, fixed**        | $20 per seat / month               | $25 / month + compute | $5 minimum + usage      |
-| Company and infrastructure in Europe      | ✅ 100% EU                               | US company, EU regions             | US company, EU region | US company, EU region   |
-| Currency                                  | EUR                                      | USD                                | USD                   | USD                     |
+|                                           | **Faable Deploy**                        | Vercel                             | Render                | Railway               |
+| ----------------------------------------- | ---------------------------------------- | ---------------------------------- | --------------------- | --------------------- |
+| Deploy from Git, zero config              | ✅ Node.js, Python, PHP                  | ✅                                 | ✅                    | ✅                    |
+| Full backends (long-running containers)   | ✅                                       | Serverless functions               | ✅                    | ✅                    |
+| Permanent free plan                       | ✅ no card, no expiry                    | ✅                                 | ✅                    | $1 of usage / month   |
+| Commercial use on the free plan           | ✅                                       | ❌ personal use only               | ✅                    | —                     |
+| Custom domains on the free plan           | ✅                                       | ✅                                 | ✅                    | ❌                    |
+| Free-plan app wakes from sleep in         | **a few seconds**                        | n/a (serverless)                   | ~1 minute             | n/a                   |
+| Built-in Web Application Firewall         | ✅ edge firewall, every plan             | 3 custom rules on Hobby, 40 on Pro | ❌                    | ❌                    |
+| Bundled identity / auth (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md) | ❌                                 | ❌                    | ❌                    |
+| First paid tier                           | **15 €/month per project, fixed**        | $20 per seat + usage               | Per instance, in USD  | $5 minimum + usage    |
+| Company and infrastructure in Europe      | ✅ 100% EU                               | US company, EU regions             | US company, EU region | US company, EU region |
+| Currency                                  | EUR                                      | USD                                | USD                   | USD                   |
 
-> Competitor figures checked against each vendor's official pricing and docs in late September 2026. They change often — confirm on their pages before you decide.
+> Competitor figures checked against each vendor's official pricing and docs in late September 2026, and Vercel, Render and Railway rechecked in November 2026. They change often — confirm on their pages before you decide.
 
 ## Why teams pick Faable Deploy
 
 ### Your free plan can run a real business
 
-Vercel's Hobby plan is for **personal, non-commercial use only** — a client landing page or a side project that charges money is obliged to move to Pro, however little traffic it gets. Railway replaced its free tier with **trial credit that runs out**, and its free plan has no custom domains. Render's free web services **take around a minute to wake up**.
+Vercel's Hobby plan is for **personal, non-commercial use only** — a client landing page or a side project that charges money is obliged to move to Pro, however little traffic it gets. Railway's free plan is **$1 of usage a month** with **no custom domains**. Render's free web services **take around a minute to wake up**.
 
 Faable's [Free plan](pricing.mdx) is permanent, needs no credit card, **allows commercial use**, includes **custom domains**, and runs each app with up to 0.6 vCPU and 512 MB of memory. An idle Free app wakes in a few seconds, and static sites are served directly with no container at all, so they never have a cold start.
 
@@ -44,7 +44,7 @@ And when your app needs users, [Faable Auth](../auth/get-started.md) is already 
 
 ### Pricing you can predict
 
-Faable charges a **fixed monthly fee per plan, per project — never per user or per seat**. Hobby is 15 €/month with unlimited deployments and unlimited monthly active users. On Free and Hobby there is no per-GB line at all: traffic is included, and only Pro meters egress beyond its 100 GB (0.18 €/GB). Compare that with Vercel's per-seat Pro, Render's plan fee plus compute, and Railway's usage-based billing — all in USD.
+Faable charges a **fixed monthly fee per plan, per project — never per user or per seat**. Hobby is 15 €/month with unlimited deployments and unlimited monthly active users. On Free and Hobby there is no per-GB line at all: traffic is included, and only Pro meters egress beyond its 100 GB (0.18 €/GB). Compare that with Vercel's per-seat Pro plus usage, Render's per-instance prices, and Railway's usage-based billing — all in USD.
 
 The Free plan also fails gracefully: hit the daily deployment quota and your latest push is **queued, not dropped**; a failed build never counts against it; and going over the egress allowance sends you warnings at 80 %, 90 % and 100 % instead of pausing your site. See [Deploy pricing](pricing.mdx).
 
@@ -64,7 +64,7 @@ Hobby and Pro get email support straight from **the engineers who build and run 
 
 - **Vercel** if you are all-in on Next.js edge rendering and per-branch preview deployments, and neither commercial use on a free plan nor European hosting matters to you. See [Faable Deploy vs Vercel](compare-vercel.mdx) for the full comparison.
 - **Render** if you need a managed Postgres from the same provider. On Faable, connect an [EU-hosted database such as Neon or Turso](guides/databases.md) in minutes; cron jobs and background workers are built in on Hobby and Pro ([scheduled tasks](scheduled-tasks.md), [workers](always-on-and-workers.md)).
-- **Railway** if you want to assemble databases and services from a visual canvas and prefer pure usage-based billing.
+- **Railway** if you want to assemble databases and services from a visual canvas and prefer pure usage-based billing. See [Faable Deploy vs Railway](compare-railway.mdx), which also compares Railway with Render.
 
 ## How deploying works on Faable
 
@@ -74,6 +74,6 @@ Connect your GitHub repository, push your code, and Faable detects your stack, b
 
 ## Related
 
-- [Faable Deploy vs Vercel](compare-vercel.mdx) · [vs Heroku](compare-heroku.mdx) · [Faable Deploy vs Fly.io](compare-fly-io.mdx) · [Faable Deploy vs Coolify](compare-coolify.mdx)
+- [Faable Deploy vs Vercel](compare-vercel.mdx) · [vs Railway](compare-railway.mdx) · [vs Netlify](compare-netlify.mdx) · [vs Heroku](compare-heroku.mdx) · [Faable Deploy vs Fly.io](compare-fly-io.mdx) · [Faable Deploy vs Coolify](compare-coolify.mdx)
 - [European alternatives to Vercel, Render and Railway](european-alternatives.mdx)
 - [Deploy pricing](pricing.mdx) · [What is zero-config CI/CD?](what-is-zero-config-cicd.mdx)

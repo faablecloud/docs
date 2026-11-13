@@ -47,6 +47,7 @@ export default {
   jwt: 'Understanding JWTs',
   'saml-vs-oidc': 'SAML vs OIDC',
   compare: 'Faable Auth vs Auth0, Clerk & Keycloak',
+  'compare-auth0': 'vs Auth0',
   'compare-clerk': 'vs Clerk',
   'compare-keycloak': 'vs Keycloak',
   'compare-zitadel': 'vs ZITADEL',

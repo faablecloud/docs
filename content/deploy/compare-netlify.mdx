@@ -1,0 +1,77 @@
+---
+title: 'Netlify alternative: Faable Deploy vs Netlify'
+description: Looking for a Netlify alternative? Faable Deploy vs Netlify — a fixed monthly fee instead of credits for every deploy, gigabyte and request, a free plan that doesn't pause your sites, full backends as long-running servers instead of 60-second functions, bundled authentication, and apps hosted in Europe by a European company.
+rank: high
+---
+
+# Netlify alternative: Faable Deploy vs Netlify
+
+**Short answer:** Netlify is a frontend platform: push to Git, get your site on a global CDN with deploy previews, forms and functions for the dynamic parts. Since its move to credit-based plans, every production deploy, gigabyte of bandwidth, request and minute of compute draws from a monthly credit balance. On the Free plan, when the credits run out, **every site is paused** until the next cycle. Faable Deploy keeps the same Git workflow with **a fixed monthly fee per project**, no meters on Free and Hobby, and **a free plan that keeps serving your sites**. Your backend runs as **a real, long-running server**, **[Faable Auth](../auth/get-started.md) is included**, and **your apps and data are hosted in the EU** by a European company.
+
+> Netlify details checked against netlify.com pricing and docs in November 2026. They change often, so confirm anything decisive on their own site.
+
+## At a glance
+
+|                                    | **Faable Deploy**                                                                             | Netlify                                                                                                    |
+| ---------------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Deploy from Git, zero config       | ✅ static sites, Node.js, Python, PHP; Dockerfile on Hobby and Pro                            | ✅ static sites and frontend frameworks                                                                    |
+| Pricing model                      | **Fixed fee per project**: 0 €, 15 €, 99 €/month                                              | Monthly credits: Free 300, Personal $9 for 1,000, Pro $20 for 3,000                                        |
+| What counts against the plan       | Nothing on Free and Hobby; egress beyond 100 GB on Pro                                        | 15 credits per production deploy, 20 per GB of bandwidth, 10 per GB-hour of compute, 2 per 10,000 requests |
+| When the free plan runs out        | Deploys are **queued**; going over traffic sends warnings, **sites keep serving**             | "All of your web projects are paused" until the next cycle, or you upgrade                                 |
+| Production deploys on free         | Up to 50 a day per project                                                                    | Each costs 15 of the 300 monthly credits                                                                   |
+| How your backend runs              | A long-running server process in a container                                                  | Functions: 60 s synchronous, 15 min in the background; long-running servers in early access                |
+| Background workers and cron        | ✅ [workers](always-on-and-workers.md), [scheduled tasks](scheduled-tasks.md) (Hobby and Pro) | Scheduled functions, limited to 30 s                                                                       |
+| Team members                       | Not billed per seat                                                                           | Unlimited on Pro                                                                                           |
+| Edge firewall                      | ✅ managed rulesets + your own rules, every plan                                              | ✅ traffic rules and basic rate limiting on Free; DDoS protection                                          |
+| Bundled identity (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free                                     | ❌ a second vendor                                                                                         |
+| Deploy previews per branch         | ❌                                                                                            | ✅, free of credits                                                                                        |
+| Global CDN                         | ❌ served from Europe                                                                         | ✅                                                                                                         |
+| Where your app runs                | In the EU, operated by a European company                                                     | Functions in Ohio (`cmh`) by default; EU regions selectable per function on Pro                            |
+| Currency                           | EUR                                                                                           | USD                                                                                                        |
+
+## Why teams look for a Netlify alternative
+
+### Credits turn every deploy into a cost
+
+On Netlify's credit plans, a production deploy costs 15 credits, a gigabyte of bandwidth 20, a GB-hour of compute 10, and 10,000 requests 2. The Free plan's 300 credits a month are about **20 production deploys**, or **15 GB of bandwidth**, before anything else. Paid plans can buy more credits, at $5 per 500 on Personal and $10 per 1,500 on Pro. Free has a hard limit: once the balance is spent, "all of your web projects (sites/apps) are paused", visitors see a "Site not available" page, and new production deploys are blocked until the cycle resets.
+
+Faable charges **a fixed fee per plan, per project, never per user**, and there's no meter on Free or Hobby. The [Free plan](pricing.mdx) allows up to 50 deployments a day per project, and a push over the daily quota is **queued, not dropped**. Failed builds never count. Going over the 10 GB traffic allowance sends warnings at 80 %, 90 % and 100 %; it doesn't take your site offline. Hobby is **15 €/month** with unlimited deployments and 50 GB of egress; only Pro meters egress beyond its 100 GB. See [Deploy pricing](pricing.mdx).
+
+### A backend that isn't a function
+
+Netlify runs dynamic code as functions: 60 seconds for a synchronous request, 30 seconds for a scheduled one and 15 minutes in the background, with 1 GB of memory by default. A long-running server option, Netlify Server, is in early access, and full-stack frameworks still run as functions.
+
+On Faable your code runs as **an ordinary server process** in a Linux container: Next.js with `next start`, Astro, Express, Fastify, NestJS, Django, FastAPI, Flask, Laravel or plain PHP, detected and built without configuration. The only timeout is 60 seconds to the first byte, after which a response can stream for minutes (see [Hosting AI agents in Europe](ai-agents.mdx)). On Hobby and Pro, [background workers](always-on-and-workers.md) run processes with no web server, and [scheduled tasks](scheduled-tasks.md) run any command of your app on a cron schedule, for as long as it needs. Static sites are served directly, with no container and no cold start.
+
+### Auth is in the same subscription
+
+Most sites on Netlify add a second vendor for sign-in, with its own bill and its own data-processing agreement. On Faable, [Faable Auth](../auth/get-started.md) is part of the plan: hosted login, social and passwordless sign-in, MFA, passkeys and machine-to-machine tokens, with **15,000 monthly active users on Free** and no MAU limit on Hobby and Pro.
+
+### European by construction
+
+Netlify deploys functions to Ohio by default, and choosing a European region is a per-function setting on Pro. Faable is a European company: **your apps and data are hosted in the EU**, with hosting and identity under one provider and one data-processing agreement. More in [European alternatives to Vercel, Render and Railway](european-alternatives.mdx).
+
+## When Netlify might fit better
+
+- **Your site is static or Jamstack, with a global audience**, and you want it on a worldwide CDN.
+- **You rely on deploy previews for every branch and pull request.** They cost no credits on Netlify; Faable doesn't create them, though you can deploy a staging app from [your own CI](github-actions.md).
+- **You use Netlify Forms or edge functions** as part of your site.
+
+## Moving from Netlify
+
+Connect the same repository, copy your environment variables, deploy, and point your domain at Faable. Static builds are served as they are; a `_redirects` file is handled in your framework or server instead. The step-by-step version is in **[Migrate from Netlify](guides/migrate-from-netlify.mdx)**.
+
+**[Get started with Faable Deploy](get-started.md)**: free, no credit card.
+
+## Other Netlify alternatives
+
+- **[Vercel](compare-vercel.mdx)**: the other frontend-first platform, with serverless functions and per-seat pricing.
+- **[Railway](compare-railway.mdx)** and **[Render](compare.mdx)**: container platforms billed in USD, by usage or per instance.
+- **[Heroku](compare-heroku.mdx)**: the original git-push platform, billed per dyno.
+- **[Coolify](compare-coolify.mdx)**: open-source and self-hosted on your own server.
+- **Need your app hosted in Europe?** [European alternatives to Vercel, Render and Railway](european-alternatives.mdx).
+
+## Related
+
+- [Faable Deploy vs Vercel, Render & Railway](compare.mdx) · [Deploy pricing](pricing.mdx)
+- [Migrate from Netlify](guides/migrate-from-netlify.mdx) · [Deploy a Vite or static site](guides/guide-vite.md)

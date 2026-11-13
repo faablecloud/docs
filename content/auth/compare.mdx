@@ -85,7 +85,7 @@ There's no Terraform provider or declarative config export for Faable Auth yet; 
 
 There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx). The concepts map closely — Auth0 tenant → Faable account, application → client, API → API, Action → Action.
 
-**Users keep their passwords:** Faable imports bcrypt, scrypt, PBKDF2 and Argon2id hashes on every plan, with `faable auth users import` — see [Import and export password hashes](guides/import-password-hashes.mdx). Getting the hashes out is its own hurdle at the source: Auth0 only exports them through a support ticket, and not on its Free tier.
+**Users keep their passwords:** Faable imports bcrypt, scrypt, PBKDF2 and Argon2id hashes on every plan, with `faable auth users import` — see [Import and export password hashes](guides/import-password-hashes.mdx). Getting the hashes out is its own hurdle at the source: Auth0 only exports them through a support case, with an acknowledgment signed by an executive (see [Faable Auth vs Auth0](compare-auth0.mdx#getting-your-users-out)).
 
 ## When Faable Auth is the better fit
 
@@ -97,7 +97,7 @@ There are step-by-step guides for [Auth0](guides/migrate-from-auth0.mdx), [Clerk
 
 ## When another tool might fit better
 
-- **Auth0** has the deepest feature surface and tooling (Terraform, Deploy CLI, adaptive MFA) — a fit for enterprises already standardized on Okta.
+- **Auth0** has the deepest feature surface and tooling (Terraform, Deploy CLI, adaptive MFA) — a fit for enterprises already standardized on Okta. See [Faable Auth vs Auth0](compare-auth0.mdx) for its pricing tier by tier.
 - **Clerk** has excellent React components for teams that want to design the auth UI inside their app and are happy with US hosting. See [Faable Auth vs Clerk](compare-clerk.mdx).
 - **Keycloak** is the choice when you want open-source identity on your own infrastructure and have the team to operate it. See [Faable Auth vs Keycloak](compare-keycloak.mdx) for what operating it takes.
 - **You need SMS login today**, or the identity provider your customers bring only speaks SAML. All three handle those; Faable Auth connects company identity providers over OpenID Connect.

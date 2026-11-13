@@ -43,6 +43,10 @@
     "published": "2026-03-31T11:42:44+02:00",
     "modified": "2026-11-04T13:16:02.219Z"
   },
+  "content/auth/compare-auth0.mdx": {
+    "published": "2026-11-13T00:22:38.119Z",
+    "modified": "2026-11-13T00:22:38.119Z"
+  },
   "content/auth/compare-authelia.mdx": {
     "published": "2026-07-27T13:52:25+02:00",
     "modified": "2026-10-19T06:55:32.936Z"
@@ -57,7 +61,7 @@
   },
   "content/auth/compare-clerk.mdx": {
     "published": "2026-10-11T13:11:20+02:00",
-    "modified": "2026-11-13T00:12:53.044Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/auth/compare-firebase-auth.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
@@ -65,7 +69,7 @@
   },
   "content/auth/compare-keycloak.mdx": {
     "published": "2026-11-13T00:12:53.044Z",
-    "modified": "2026-11-13T00:12:53.044Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/auth/compare-supabase-auth.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
@@ -77,7 +81,7 @@
   },
   "content/auth/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-11-13T00:12:53.044Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/auth/connections.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -97,7 +101,7 @@
   },
   "content/auth/european-alternatives.mdx": {
     "published": "2026-10-17T19:03:21.619Z",
-    "modified": "2026-11-07T19:55:44.901Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/auth/extensibility/actions.md": {
     "published": "2026-05-16T11:42:20+02:00",
@@ -125,7 +129,7 @@
   },
   "content/auth/guides/migrate-from-auth0.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/auth/guides/migrate-from-clerk.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
@@ -427,13 +431,21 @@
     "published": "2026-06-27T13:49:17+02:00",
     "modified": "2026-11-03T10:49:34.417Z"
   },
+  "content/deploy/compare-netlify.mdx": {
+    "published": "2026-11-13T00:22:38.119Z",
+    "modified": "2026-11-13T00:22:38.119Z"
+  },
+  "content/deploy/compare-railway.mdx": {
+    "published": "2026-11-13T00:22:38.119Z",
+    "modified": "2026-11-13T00:22:38.119Z"
+  },
   "content/deploy/compare-vercel.mdx": {
     "published": "2026-11-13T00:12:53.044Z",
-    "modified": "2026-11-13T00:12:53.044Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/deploy/compare.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
-    "modified": "2026-11-13T00:12:53.044Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/deploy/domains/apex.md": {
     "published": "2026-09-19T12:00:03+02:00",
@@ -469,7 +481,7 @@
   },
   "content/deploy/european-alternatives.mdx": {
     "published": "2026-09-12T13:03:24+02:00",
-    "modified": "2026-10-29T19:13:19.774Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/deploy/get-started.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -573,7 +585,7 @@
   },
   "content/deploy/guides/migrate-from-netlify.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
-    "modified": "2026-11-03T10:49:34.417Z"
+    "modified": "2026-11-13T00:22:38.119Z"
   },
   "content/deploy/guides/migrate-from-vercel.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
