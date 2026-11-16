@@ -127,6 +127,8 @@ The VM range `0 - 849` is what your LOGO! program maps with **Network** function
 
 ---
 
+<a id="step-2"></a>
+
 ## Step 2: Give the gateway a key
 
 The gateway needs a key pair: a **private key** it signs with, and the **public key** you register on its client. There are two ways to get one — pick by how you work.
@@ -394,6 +396,10 @@ An API key is a bearer secret that never expires: it lives in the gateway's conf
 ### Why private_key_jwt instead of a client secret?
 
 Because gateways get copied: the flow is exported, the SD card is cloned, the project is emailed to the integrator. A `client_secret` travels with all of those and keeps working until you rotate it. With `private_key_jwt` the device holds a private key that only signs short-lived, single-use assertions, and Faable Auth stores only the public half. See [Authenticate with a private key](../oauth-flows/client-credentials.mdx#private-key-jwt).
+
+### How do I rotate a gateway's key without downtime?
+
+A client holds up to 5 public keys at once, and any of them can sign. Add the new key (Option A or B of [Step 2](#step-2)), move the gateway to the new private key and its `kid`, and watch the dashboard: each key shows when it last signed. When the old key stops advancing — no gateway uses it any more — remove it.
 
 ### Should several gateways share one client?
 
