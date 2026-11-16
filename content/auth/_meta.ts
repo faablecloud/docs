@@ -2,6 +2,7 @@ export default {
   index: 'Overview',
   'get-started': 'Get Started',
   quickstart: 'Quickstarts',
+  guides: 'Guides',
   features: 'Features',
   pricing: 'Pricing',
   academy: '🎓 Academy (Integrator)',
@@ -40,13 +41,14 @@ export default {
   extensibility: 'Extensibility',
   'custom-domain': 'Custom Domain',
   integrations: 'Integrations',
-  learnSeparator: { type: 'separator', title: 'Learn & Compare' },
+  learnSeparator: { type: 'separator', title: 'Learn' },
   'what-is-a-multi-tenant-identity-server':
     'What is a multi-tenant identity server?',
-  'european-alternatives': 'European alternatives to Auth0, Clerk & Cognito',
   jwt: 'Understanding JWTs',
   'saml-vs-oidc': 'SAML vs OIDC',
-  compare: 'Faable Auth vs Auth0, Clerk & Keycloak',
+  compareSeparator: { type: 'separator', title: 'Compare' },
+  compare: 'Overview: Auth0, Clerk & Keycloak',
+  'european-alternatives': 'European alternatives',
   'compare-auth0': 'vs Auth0',
   'compare-clerk': 'vs Clerk',
   'compare-keycloak': 'vs Keycloak',
@@ -55,6 +57,5 @@ export default {
   'compare-aws-cognito': 'vs AWS Cognito',
   'compare-firebase-auth': 'vs Firebase Authentication',
   'compare-supabase-auth': 'vs Supabase Auth',
-  'compare-authelia': 'vs Authelia',
-  guides: 'Migration Guides'
+  'compare-authelia': 'vs Authelia'
 }
