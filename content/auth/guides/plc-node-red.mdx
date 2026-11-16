@@ -1,13 +1,19 @@
 ---
 schema: faq
-title: PLCs and Industrial Gateways — Machine-to-Machine Auth with Node-RED
-description: Send data from a Siemens LOGO! 8 or any PLC to your API through a Node-RED gateway, authenticated with OAuth 2.0 Client Credentials and private_key_jwt — no shared secret on the device. With notes for Beckhoff, Yaskawa, Rockwell, Schneider, Mitsubishi, Omron, WAGO and Phoenix Contact.
+title: Secure PLC Telemetry — Securing the Path from Your Industrial Gateway to Your API with Node-RED
+description: PLC data is only as trustworthy as the path that carries it from the gateway to your API. Secure that path with Faable Auth — a cryptographic identity per Node-RED gateway (private_key_jwt), short-lived audience-bound tokens, least privilege, signed attribution of every reading and an audit trail — for a Siemens LOGO! 8 or any PLC. With notes for Beckhoff, Yaskawa, Rockwell, Schneider, Mitsubishi, Omron, WAGO and Phoenix Contact.
 rank: high
 ---
 
-# PLCs and industrial gateways: M2M auth with Node-RED 🏭
+# Secure PLC telemetry: the path from your gateway to your API 🏭
 
-**Short answer:** a PLC doesn't speak OAuth, and it shouldn't have to. Put a **Node-RED gateway** next to it: the gateway reads the PLC over the plant network (S7, Modbus, ADS, OPC UA…), gets an **M2M access token** from Faable Auth with the [Client Credentials flow](../oauth-flows/client-credentials.mdx), and calls your API over HTTPS with it. The gateway authenticates with [**`private_key_jwt`**](../oauth-flows/client-credentials.mdx#private-key-jwt) — a private key that never leaves the box — instead of a `client_secret` that anyone who copies the flow file can reuse.
+**Short answer:** PLC data is only as trustworthy as the path that carries it **from the gateway to your API**. That's the hop that leaves the plant, crosses networks you don't control, and lands in the system where you store readings, trigger alarms and bill customers — and it's the hop **Faable Auth secures**. The PLC stays on the plant network; a **Node-RED gateway** next to it reads it (S7, Modbus, ADS, OPC UA…) and sends the data to your API. Faable Auth makes every one of those requests answer three questions before your API accepts it:
+
+- **Who is sending this?** A specific gateway, proven with a private key that never leaves it ([`private_key_jwt`](../oauth-flows/client-credentials.mdx#private-key-jwt)) — not a shared password that anyone who copies the flow can reuse.
+- **Is it allowed to?** It carries a short-lived [M2M access token](../oauth-flows/client-credentials.mdx) that only opens your telemetry API, and only for writing readings.
+- **Can it be replayed or forged?** No: what travels expires within minutes, can't be reused, and is signed — your API verifies it with public keys and stores, with every reading, which gateway sent it.
+
+Without that layer, a gateway posting to a URL — or with a static API key pasted into its config — gives your API no way to tell your gateways from anyone who found the URL or the key. [The path Faable Auth secures](#security-layer) explains each layer and what it stops.
 
 This guide uses a **Siemens LOGO! 8**, the entry-level PLC, read with [`node-red-contrib-s7`](https://www.npmjs.com/package/node-red-contrib-s7). The auth part is the same for any PLC that Node-RED can read — see [Other PLCs](#other-plcs).
 
@@ -22,25 +28,79 @@ sequenceDiagram
     participant Auth as Faable Auth
     participant API as Your API
 
-    GW->>PLC: read VM / I / Q (S7 protocol, plant LAN)
+    rect rgba(128, 128, 128, 0.12)
+    Note over PLC,GW: Plant network — your segmentation and firewall
+    GW->>PLC: read VM / I / Q (S7 protocol)
     PLC-->>GW: values
+    end
+    rect rgba(16, 185, 129, 0.15)
+    Note over GW,API: Gateway → your API — secured by Faable Auth
     Note over GW: token cached? if not:
     GW->>Auth: POST /oauth/token (client_assertion signed with the gateway's private key)
-    Auth-->>GW: access token (JWT, expires_in)
-    GW->>API: POST /telemetry (Authorization: Bearer …)
-    API-->>GW: 200 OK
+    Auth-->>GW: access token (signed JWT, short-lived, for the telemetry API only)
+    GW->>API: POST /readings (Authorization: Bearer …)
+    Note over API: verifies signature, audience, expiry, scope — gateway = token sub
+    API-->>GW: 204
+    end
 ```
 
-- The **PLC** stays on the plant network and never talks to the internet.
-- The **gateway** (a Raspberry Pi, an industrial PC, a Siemens IOT2050…) is the only thing that leaves it, over outbound HTTPS.
-- **Faable Auth** knows each gateway as its own client, so you can see what each one does in the [logs](../logs.md) and cut one off without touching the others.
-- **Your API** validates the token locally against your tenant's public keys — see [Validate Access Tokens](../validate-access-tokens.mdx).
+Two hops, two different jobs:
+
+- **PLC → gateway** happens inside the plant, over the PLC's own protocol. It's protected the way plant networks are: segmentation, a firewall, and the PLC never reachable from outside. Faable Auth doesn't take part in it.
+- **Gateway → your API** is the one that leaves the plant, and the one **Faable Auth secures**: every request carries a token that proves which gateway sent it, expires, and only opens the telemetry API. The gateway (a Raspberry Pi, an industrial PC, a Siemens IOT2050…) only makes **outbound** HTTPS requests — no inbound port, no VPN into the plant.
+
+---
+
+<a id="security-layer"></a>
+
+## 🛡️ The path Faable Auth secures: gateway → your API
+
+Everything your API does with PLC data — storing it, alarming on it, billing for it, showing it to a customer — trusts that the data came from **your** gateway and arrived **unaltered**. That trust is decided on the path between the gateway and the API, and that's where it usually breaks: a gateway that posts to an open endpoint, or a static API key pasted into every gateway's config. Either way your API can't tell a real gateway from anyone who found the URL or the key, and a leaked key works from anywhere, forever.
+
+Faable Auth puts standard OAuth 2.0 on that path. These are the layers it adds:
+
+### 1. A cryptographic identity per gateway
+
+Each gateway is its own client with its own key pair. The **private key is generated on the gateway and never leaves it**; Faable Auth stores only the public half. There is no shared secret to copy out of a flow export, a backup or the integrator's email — and a public key that leaks is harmless by definition.
+
+### 2. Nothing reusable on the wire
+
+What the gateway sends to Faable Auth is a **client assertion**: a JWT valid for 60 seconds, **single-use** (its `jti` is recorded and a second use is refused), and bound to your tenant's token endpoint (`aud`), so it can't be replayed against another server either. What it gets back — the **access token** — is a signed JWT that expires (you choose how soon, see [token usage](#token-usage)) and is bound to **one API** by its `aud` claim: a telemetry token is refused by every other API you run.
+
+### 3. Least privilege
+
+Register a **dedicated API for telemetry** (e.g. `https://telemetry.example.com`) with a single permission, `write:telemetry`, and `enforce_policies` on. A gateway token then grants exactly that: it can't read your customers' data or call your admin endpoints, even if it leaks — those live behind other audiences. With a [`client-credentials` Action](#gateway-allow-list) you also decide **which clients may get a telemetry token at all**, so a client created for something else in the same tenant can't post readings.
+
+### 4. Signed attribution of every reading
+
+The access token's `sub` is the gateway's `client_id`, signed by Faable Auth. Your API takes the gateway's identity **from the token, never from the payload** — so gateway A can't post readings as gateway B, and every row you store says, verifiably, where it came from. An Action can add the plant or line to the token as a claim, so the API doesn't even need a lookup table.
+
+### 5. Your API holds no secrets
+
+The API validates each token **locally**, against your tenant's public keys (JWKS). Nothing secret lives on the API side, and validating doesn't call Faable Auth on every request — the telemetry path keeps working at full speed.
+
+### 6. Visibility and containment
+
+The tenant's [logs](../logs.md) record every token issued and **every failed attempt**, per client, with the source IP and the reason (`client_assertion_signature_invalid`, `client_assertion_replayed`, `client_assertion_expired`…). A replayed assertion or a bad signature on a gateway's client is an alarm, not noise. Token requests are rate-limited per client. And cutting one gateway off is one action — delete its client — with no effect on the others.
+
+### What each layer stops
+
+| Threat                                                                    | What stops it                                                                                                                                                                                                                               |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Someone finds your API's URL and posts fake readings                      | No valid token, no write: the API answers `401`.                                                                                                                                                                                            |
+| A flow export, backup or support ticket leaks the gateway's configuration | It contains no secret: the private key is a file outside the flow, and the client has no usable `client_secret`.                                                                                                                            |
+| A request is captured on the plant network or in a proxy's logs           | The assertion has already been used and expires within a minute; the access token expires and only opens the telemetry API.                                                                                                                 |
+| A stolen access token is used against your other APIs                     | Its `aud` is the telemetry API: every other API refuses it.                                                                                                                                                                                 |
+| One gateway tries to post as another                                      | The API reads the gateway from the signed `sub`, not from the payload.                                                                                                                                                                      |
+| Another client in the same tenant asks for a telemetry token              | The [allow-list Action](#gateway-allow-list) denies it.                                                                                                                                                                                     |
+| A gateway is stolen or compromised                                        | Delete its client: no new tokens from that moment; the one it holds expires on its own. The logs show what it did.                                                                                                                          |
+| The gateway's disk is cloned, key file included                           | This is the one layer software can't close — a copied private key is a copy of the identity. It shows up in the logs (one client, two source IPs); delete the client and issue a new key. Restrict who can read the key file (`chmod 600`). |
 
 ---
 
 ## ✅ What you need
 
-1. A Faable Auth tenant, and your API registered as an [API](../apis.md). Its `identifier` (e.g. `https://api.example.com`) is the `audience` the gateway asks for.
+1. A Faable Auth tenant, and a **dedicated telemetry API** registered as an [API](../apis.md), with one permission, `write:telemetry`, and `enforce_policies` on. Its `identifier` (e.g. `https://telemetry.example.com`) is the `audience` the gateway asks for.
 2. **One Machine-to-Machine client per gateway** ([Clients](../clients.md)). Restrict its grants to Client Credentials.
 3. Node-RED 3 or later on the gateway, with these nodes from the palette: `node-red-contrib-s7`. The function node's **Setup → Modules** must be enabled (it is by default; if the tab is missing, set `functionExternalModules: true` in `settings.js`).
 4. The gateway's clock synced with NTP — the client assertion carries an expiry, and a box that is minutes off gets refused.
@@ -90,8 +150,8 @@ FAABLE_AUTH_DOMAIN=https://your-domain.auth.faable.link
 FAABLE_CLIENT_ID=your-client-id
 FAABLE_KEY_ID=the-kid-from-the-dashboard
 FAABLE_KEY_FILE=/home/pi/.node-red/faable/client-key.pem
-FAABLE_AUDIENCE=https://api.example.com
-API_URL=https://api.example.com/telemetry
+FAABLE_AUDIENCE=https://telemetry.example.com
+API_URL=https://telemetry.example.com/readings
 ```
 
 ---
@@ -147,7 +207,8 @@ msg.payload = new URLSearchParams({
   client_assertion_type:
     'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
   client_assertion: assertion,
-  audience: env.get('FAABLE_AUDIENCE')
+  audience: env.get('FAABLE_AUDIENCE'),
+  scope: 'write:telemetry'
 }).toString()
 return [null, msg]
 ```
@@ -184,6 +245,82 @@ That's the whole integration: the first message signs an assertion and gets a to
 
 ---
 
+## Step 4: Accept only gateway tokens in your API
+
+The API is where the security layer pays off. Validate the token **locally** against your tenant's public keys, require the telemetry permission, and take the gateway's identity from the token:
+
+```ts
+import express from 'express'
+import { createRemoteJWKSet, jwtVerify } from 'jose'
+
+const ISSUER = 'https://your-domain.auth.faable.link' // no trailing slash
+const AUDIENCE = 'https://telemetry.example.com' // the telemetry API's identifier
+const JWKS = createRemoteJWKSet(new URL(`${ISSUER}/.well-known/jwks.json`))
+
+const app = express()
+app.use(express.json())
+
+app.post('/readings', async (req, res) => {
+  const token = req.headers.authorization?.replace(/^Bearer /i, '')
+  if (!token) return res.status(401).json({ error: 'missing_token' })
+
+  let claims
+  try {
+    // Signature, issuer, audience and expiry — nothing secret needed.
+    ;({ payload: claims } = await jwtVerify(token, JWKS, {
+      issuer: ISSUER,
+      audience: AUDIENCE,
+      algorithms: ['RS256']
+    }))
+  } catch {
+    return res.status(401).json({ error: 'invalid_token' })
+  }
+
+  const scopes = String(claims.scope ?? '').split(' ')
+  if (!scopes.includes('write:telemetry')) {
+    return res.status(403).json({ error: 'insufficient_scope' })
+  }
+
+  // WHO sent it comes from the signed token, never from the body.
+  const gateway = claims.sub // the gateway's client_id
+  const plant = claims['https://example.com/plant'] // set by the Action below
+  await saveReadings({ gateway, plant, readings: req.body })
+  res.status(204).end()
+})
+```
+
+The same checks in other stacks are in [Validate Access Tokens](../validate-access-tokens.mdx).
+
+<a id="gateway-allow-list"></a>
+
+## Step 5: Allow only your gateways (Action)
+
+Every M2M client in a tenant can ask for a token for any of its APIs. A [`client-credentials` Action](../extensibility/actions.md) closes that: it runs before every machine token is issued, denies any client that isn't one of your gateways, and stamps the plant on the token so your API gets it signed:
+
+```js
+// Dashboard → Actions → new action, trigger: client-credentials
+const PLANT_BY_GATEWAY = {
+  'client-id-of-gateway-line-1': 'plant_zaragoza',
+  'client-id-of-gateway-line-2': 'plant_zaragoza',
+  'client-id-of-gateway-warehouse': 'plant_valencia'
+}
+
+exports.onExecuteClientCredentials = async (event, api) => {
+  const plant = PLANT_BY_GATEWAY[event.client.client_id]
+  if (!plant) {
+    api.access.deny('This client is not a registered gateway', {
+      code: 'not-a-gateway'
+    })
+    return
+  }
+  api.accessToken.setCustomClaim('https://example.com/plant', plant)
+}
+```
+
+Actions are available from the **Hobby** plan up. A denied request answers `401` and leaves an `action.deny` row in the logs. To add a gateway, create its client, register its key, and add its `client_id` here.
+
+---
+
 <a id="token-usage"></a>
 
 ## 💶 How many tokens a gateway uses
@@ -206,7 +343,7 @@ A longer lifetime means fewer tokens, and also a longer window if a token leaks 
 
 ## Other PLCs
 
-Faable Auth doesn't care what's behind the gateway: Steps 2 and 3 are identical for every brand. What changes is the node that reads the PLC in Step 1:
+Faable Auth doesn't care what's behind the gateway: Steps 2 to 5 — and the whole security layer — are identical for every brand. What changes is the node that reads the PLC in Step 1:
 
 | Manufacturer                    | Typical protocol   | Node-RED node                                                                                                                                                        |
 | ------------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -233,6 +370,14 @@ A few notes:
 ### Can the PLC call Faable Auth directly?
 
 Usually not, and it shouldn't: an entry-level PLC like the LOGO! can't sign a JWT or hold a TLS session to the internet, and putting a PLC on the internet widens its attack surface. A gateway on the plant network does the HTTPS and the auth; the PLC only talks to the gateway.
+
+### Isn't HTTPS enough to secure PLC telemetry?
+
+HTTPS encrypts the path between the gateway and your API. It doesn't tell your API **who** is on the other end of it: anyone who can reach the endpoint can send well-encrypted fake readings. Faable Auth adds the identity — each gateway proves who it is with its own key, and each reading arrives with a signed token that names the gateway, expires, and only opens the telemetry API. See [The path Faable Auth secures](#security-layer).
+
+### Why not a static API key per gateway?
+
+An API key is a bearer secret that never expires: it lives in the gateway's config, travels with every export and backup, works from anywhere, and you validate it against your own database. With Faable Auth the gateway holds a private key that never leaves it, what travels expires within minutes, your API validates tokens without storing any secret, and issuing, auditing and revoking gateways is done in one place.
 
 ### Why private_key_jwt instead of a client secret?
 
