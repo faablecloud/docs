@@ -127,9 +127,23 @@ The VM range `0 - 849` is what your LOGO! program maps with **Network** function
 
 ---
 
+<a id="step-2"></a>
+
 ## Step 2: Give the gateway a key
 
-On the gateway, generate a key pair. The private key stays here:
+The gateway needs a key pair: a **private key** it signs with, and the **public key** you register on its client. There are two ways to get one — pick by how you work.
+
+### Option A: from the dashboard, no terminal
+
+In the [Faable Dashboard](https://dashboard.faable.com), open the gateway's client → **OAuth** → **Client authentication** → **Private key (private_key_jwt)** and click **Generate key pair**.
+
+- The pair is generated **in your browser**. The private key downloads as a file (`faable-<client>-<kid>.pem`) and is **never sent to Faable** — only the public key is added to the client.
+- Click **Save** to register the public key, and note the key's **kid** shown in the list.
+- Copy the downloaded file to the gateway, for example to `~/.node-red/faable/client-key.pem`, make it readable only by the Node-RED user (`chmod 600`), and **delete it from your computer**. The file is the only copy: if it's lost, generate a new pair and remove the old key.
+
+### Option B: on the gateway itself (strictest)
+
+Generate the pair on the gateway, so the private key never exists anywhere else:
 
 ```bash
 mkdir -p ~/.node-red/faable && cd ~/.node-red/faable
@@ -138,7 +152,7 @@ chmod 600 client-key.pem
 openssl pkey -in client-key.pem -pubout
 ```
 
-In the [Faable Dashboard](https://dashboard.faable.com), open the gateway's client → **OAuth** → **Client authentication** → **Private key (private_key_jwt)**, paste the public key that last command printed, and save. Copy the key's **kid** shown in the list.
+Then, on the same dashboard screen, paste the public key that last command printed into **Add a public key**, click **Add key** and **Save**. Note the key's **kid** shown in the list.
 
 > [!WARNING]
 > Keep the private key **out of the flow**. Node-RED exports flows to JSON that people email, commit and paste into forums — a key in a function node or a flow environment variable travels with it. A file only the Node-RED user can read, referenced by path, doesn't.
@@ -382,6 +396,10 @@ An API key is a bearer secret that never expires: it lives in the gateway's conf
 ### Why private_key_jwt instead of a client secret?
 
 Because gateways get copied: the flow is exported, the SD card is cloned, the project is emailed to the integrator. A `client_secret` travels with all of those and keeps working until you rotate it. With `private_key_jwt` the device holds a private key that only signs short-lived, single-use assertions, and Faable Auth stores only the public half. See [Authenticate with a private key](../oauth-flows/client-credentials.mdx#private-key-jwt).
+
+### How do I rotate a gateway's key without downtime?
+
+A client holds up to 5 public keys at once, and any of them can sign. Add the new key (Option A or B of [Step 2](#step-2)), move the gateway to the new private key and its `kid`, and watch the dashboard: each key shows when it last signed. When the old key stops advancing — no gateway uses it any more — remove it.
 
 ### Should several gateways share one client?
 
