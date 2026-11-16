@@ -1,4 +1,5 @@
 import posthog from 'posthog-js'
+import { startReadTracking } from './read-tracking'
 
 // Only run analytics on the production host. This keeps localhost and the
 // *.faable.link preview/origin deploys from polluting production analytics.
@@ -23,4 +24,8 @@ if (isProductionHost) {
   posthog.register({
     app: 'docs'
   })
+
+  // Which sections each reader had on screen, sent when the tab is hidden —
+  // $pageleave misses most reads (see read-tracking.ts).
+  startReadTracking(posthog)
 }
