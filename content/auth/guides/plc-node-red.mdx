@@ -1,7 +1,7 @@
 ---
 schema: faq
 title: Secure PLC Telemetry — Securing the Path from Your Industrial Gateway to Your API with Node-RED
-description: PLC data is only as trustworthy as the path that carries it from the gateway to your API. Secure that path with Faable Auth — a cryptographic identity per Node-RED gateway (private_key_jwt), short-lived audience-bound tokens, least privilege, signed attribution of every reading and an audit trail — for a Siemens LOGO! 8 or any PLC. With notes for Beckhoff, Yaskawa, Rockwell, Schneider, Mitsubishi, Omron, WAGO and Phoenix Contact.
+description: PLC data is only as trustworthy as the path that carries it from the gateway to your API. Secure that path with Faable Auth — a cryptographic identity per Node-RED gateway (private_key_jwt), short-lived audience-bound tokens, least privilege, signed attribution of every reading and an audit trail — for a Siemens LOGO! 8 or any PLC, from a single gateway to a segmented plant with an OT/IT DMZ (Purdue model). With notes for Siemens, Rockwell, Schneider, Beckhoff, B&R, Omron, Mitsubishi, Yaskawa, WAGO and Phoenix Contact.
 rank: high
 ---
 
@@ -48,6 +48,60 @@ Two hops, two different jobs:
 
 - **PLC → gateway** happens inside the plant, over the PLC's own protocol. It's protected the way plant networks are: segmentation, a firewall, and the PLC never reachable from outside. Faable Auth doesn't take part in it.
 - **Gateway → your API** is the one that leaves the plant, and the one **Faable Auth secures**: every request carries a token that proves which gateway sent it, expires, and only opens the telemetry API. The gateway (a Raspberry Pi, an industrial PC, a Siemens IOT2050…) only makes **outbound** HTTPS requests — no inbound port, no VPN into the plant.
+
+That's the simplest layout: one gateway next to the PLC with a way out. Most production plants put more zones in between — see [Where the gateway sits in a plant network](#plant-network).
+
+---
+
+<a id="plant-network"></a>
+
+## 🏗️ Where the gateway sits in a plant network
+
+To meet industrial cybersecurity requirements (IEC 62443, NIS2), a plant rarely lets anything on the control network talk to the internet. The usual layout follows the [Purdue model](https://en.wikipedia.org/wiki/Purdue_Enterprise_Reference_Architecture): the PLCs and a **data concentrator** (SCADA, an OPC UA server, KEPServerEX, a Node-RED instance…) sit in the OT zone; an **IT/OT DMZ** separates them from the plant's IT, where historians and plant apps run (AVEVA PI, inmation…); and a second DMZ separates IT from the cloud. No zone talks to one that isn't next to it.
+
+```mermaid
+flowchart LR
+    subgraph OT["OT zone"]
+        PLC["PLCs"] --> CON["Data concentrator<br/>(SCADA, OPC UA server, Node-RED)"]
+    end
+    subgraph DMZ1["IT/OT DMZ"]
+        GW["Node-RED gateway<br/>holds the Faable key"]
+    end
+    subgraph IT["IT zone"]
+        HIS["Historian, plant apps"]
+    end
+    subgraph DMZ2["Internet DMZ"]
+        PX["Outbound proxy"]
+    end
+    CON -- "OPC UA" --> GW
+    GW --> HIS
+    GW -- "HTTPS, outbound only" --> PX
+    PX --> AUTH["Faable Auth"]
+    PX --> API["Your API"]
+```
+
+Faable Auth doesn't change any of that. The rule is simple: **the key pair lives on the component that makes the last hop to the cloud** — the gateway in the DMZ or IT zone, never a box in the OT zone. Nothing in the OT zone needs internet access, a Faable key or a token; it only needs to be readable from the zone next to it, the way it already is.
+
+How the gateway gets the data depends on what the plant already has:
+
+- **A small site or a single machine:** one Node-RED gateway reads the PLC directly (Step 1) and goes out through the plant firewall. That's the layout in the rest of this guide.
+- **A concentrator in the OT zone** — SCADA, the PLC's own OPC UA server or an industrial OPC UA server such as KEPServerEX: the gateway in the DMZ reads it over OPC UA, with Sign & Encrypt and the gateway's certificate trusted on the server. See [Send OPC UA data to your API](./opcua-node-red.mdx).
+- **The readings already reach a historian in the IT zone:** the gateway can read them from there instead of from the OT zone.
+
+In every case Steps 2 to 5 are the same: the gateway holds the key, gets the token and sends to your API.
+
+### What the firewall and the proxy need
+
+- **Outbound only, port 443, to two hostnames:** your tenant's domain (`your-domain.auth.faable.link`, or your custom domain) for the token, and your API's host for the readings. Nothing inbound to the gateway, and no VPN. The gateway never fetches the public keys (JWKS) — your API does.
+- **Allow by hostname, not by IP.** Faable Auth's addresses aren't guaranteed to stay fixed; FQDN rules on the proxy or firewall are what to use.
+- **Through the DMZ proxy:** Node-RED's **http request** node uses the proxy in the `HTTPS_PROXY` environment variable (and skips the hosts in `NO_PROXY`). Set them next to the other variables in [Step 2](#step-2), or pick a proxy config — with credentials, if the proxy asks for them — under **Use proxy** in both http request nodes:
+
+  ```bash
+  HTTPS_PROXY=http://proxy.dmz.example.local:3128
+  NO_PROXY=localhost,127.0.0.1,.plant.example.local
+  ```
+
+- **A proxy that inspects TLS** re-signs every connection with its own CA. Give Node.js that CA with `NODE_EXTRA_CA_CERTS=/path/to/proxy-ca.pem`, or every request fails with a certificate error. What such a proxy can see on the wire is covered by the security layer: the client assertion is single-use and already spent, and the access token expires and only opens the telemetry API.
 
 ---
 
@@ -104,6 +158,7 @@ The tenant's [logs](../logs.md) record every token issued and **every failed att
 2. **One Machine-to-Machine client per gateway** ([Clients](../clients.md)). Restrict its grants to Client Credentials.
 3. Node-RED 3 or later on the gateway, with these nodes from the palette: `node-red-contrib-s7`. The function node's **Setup → Modules** must be enabled (it is by default; if the tab is missing, set `functionExternalModules: true` in `settings.js`).
 4. The gateway's clock synced with NTP — the client assertion carries an expiry, and a box that is minutes off gets refused.
+5. Outbound HTTPS from the gateway to two hostnames — your tenant's domain and your API — directly or through the plant's proxy. See [What the firewall and the proxy need](#what-the-firewall-and-the-proxy-need).
 
 ---
 
@@ -353,29 +408,28 @@ A longer lifetime means fewer tokens, and also a longer window if a token leaks 
 
 ---
 
-<a id="other-plcs"></a>
-
 ## Other PLCs
 
 Faable Auth doesn't care what's behind the gateway: Steps 2 to 5 — and the whole security layer — are identical for every brand. What changes is the node that reads the PLC in Step 1:
 
-| Manufacturer                    | Typical protocol   | Node-RED node                                                                                                                                                        |
-| ------------------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Siemens** S7-1200/1500, LOGO! | S7 (ISO-on-TCP)    | [`node-red-contrib-s7`](https://www.npmjs.com/package/node-red-contrib-s7)                                                                                           |
-| **Beckhoff** TwinCAT            | ADS                | [`node-red-contrib-ads-client`](https://www.npmjs.com/package/node-red-contrib-ads-client)                                                                           |
-| **Yaskawa** iC9200, MP3300iec   | OPC UA, Modbus TCP | [`node-red-contrib-opcua`](https://www.npmjs.com/package/node-red-contrib-opcua), [`node-red-contrib-modbus`](https://www.npmjs.com/package/node-red-contrib-modbus) |
-| **Rockwell / Allen-Bradley**    | EtherNet/IP (CIP)  | [`node-red-contrib-cip-ethernet-ip`](https://www.npmjs.com/package/node-red-contrib-cip-ethernet-ip)                                                                 |
-| **Schneider Electric** Modicon  | Modbus TCP         | [`node-red-contrib-modbus`](https://www.npmjs.com/package/node-red-contrib-modbus)                                                                                   |
-| **Mitsubishi** MELSEC           | MC protocol (SLMP) | [`node-red-contrib-mcprotocol`](https://www.npmjs.com/package/node-red-contrib-mcprotocol)                                                                           |
-| **Omron** CJ/CP/NX              | FINS               | [`node-red-contrib-omron-fins`](https://www.npmjs.com/package/node-red-contrib-omron-fins)                                                                           |
-| Any controller with OPC UA      | OPC UA             | [`node-red-contrib-opcua`](https://www.npmjs.com/package/node-red-contrib-opcua)                                                                                     |
+| Manufacturer                    | Typical protocol                | Node-RED node                                                                                                                                                        |
+| ------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Siemens** S7-1200/1500, LOGO! | S7 (ISO-on-TCP), OPC UA         | [`node-red-contrib-s7`](https://www.npmjs.com/package/node-red-contrib-s7)                                                                                           |
+| **Rockwell / Allen-Bradley**    | EtherNet/IP (CIP)               | [`node-red-contrib-cip-ethernet-ip`](https://www.npmjs.com/package/node-red-contrib-cip-ethernet-ip)                                                                 |
+| **Schneider Electric** Modicon  | Modbus TCP                      | [`node-red-contrib-modbus`](https://www.npmjs.com/package/node-red-contrib-modbus)                                                                                   |
+| **Beckhoff** TwinCAT            | ADS, OPC UA                     | [`node-red-contrib-ads-client`](https://www.npmjs.com/package/node-red-contrib-ads-client)                                                                           |
+| **B&R** X20, Automation PC      | OPC UA (built into the runtime) | [`node-red-contrib-opcua`](https://www.npmjs.com/package/node-red-contrib-opcua)                                                                                     |
+| **Omron** CJ/CP/NX              | FINS, OPC UA (NX/NJ)            | [`node-red-contrib-omron-fins`](https://www.npmjs.com/package/node-red-contrib-omron-fins)                                                                           |
+| **Mitsubishi** MELSEC           | MC protocol (SLMP)              | [`node-red-contrib-mcprotocol`](https://www.npmjs.com/package/node-red-contrib-mcprotocol)                                                                           |
+| **Yaskawa** iC9200, MP3300iec   | OPC UA, Modbus TCP              | [`node-red-contrib-opcua`](https://www.npmjs.com/package/node-red-contrib-opcua), [`node-red-contrib-modbus`](https://www.npmjs.com/package/node-red-contrib-modbus) |
+| Any controller with OPC UA      | OPC UA                          | [`node-red-contrib-opcua`](https://www.npmjs.com/package/node-red-contrib-opcua)                                                                                     |
 
 A few notes:
 
 - **Beckhoff:** ADS needs a route on the TwinCAT side for the gateway's AMS Net ID before the node can connect.
 - **WAGO** and **Phoenix Contact PLCnext** controllers can run Node-RED on the controller itself, so there's no separate gateway — the key pair then lives on the PLC.
 - **Siemens IOT2050** is an industrial gateway that runs Node-RED, a natural fit for an S7 line.
-- **OPC UA** is the safest default for a new installation: most current controllers expose it, and one node covers all of them.
+- **OPC UA** is the safest default for a new installation: almost every manufacturer now ships an OPC UA server in the PLC itself or as a module, and plants that already run SCADA or an industrial OPC UA server (KEPServerEX and similar) expose every brand through it. One node covers all of them — see [Send OPC UA data to your API](./opcua-node-red.mdx).
 
 ---
 
@@ -384,6 +438,14 @@ A few notes:
 ### Can the PLC call Faable Auth directly?
 
 Usually not, and it shouldn't: an entry-level PLC like the LOGO! can't sign a JWT or hold a TLS session to the internet, and putting a PLC on the internet widens its attack surface. A gateway on the plant network does the HTTPS and the auth; the PLC only talks to the gateway.
+
+### Our plant follows the Purdue model. Where does the gateway go?
+
+In the DMZ or the IT zone — on the component that makes the last hop to the cloud. Nothing in the OT zone gets a key, a token or internet access: the gateway reads a concentrator there (usually over OPC UA) and only the gateway goes out, through the proxy, to two hostnames. See [Where the gateway sits in a plant network](#plant-network).
+
+### Does the gateway need a fixed IP, or an inbound port?
+
+Neither. The gateway only makes outbound HTTPS requests, so nothing has to reach it. Allow-list it on the way out by hostname — your tenant's domain and your API — not by IP.
 
 ### Isn't HTTPS enough to secure PLC telemetry?
 
@@ -417,6 +479,7 @@ The gateway's clock is off. The assertion's `exp` is checked with 60 seconds of 
 
 ## 🔗 Related
 
+- **[Send OPC UA data to your API](./opcua-node-red.mdx)** — when the data comes from an OPC UA server (on the PLC, SCADA or KEPServerEX) and the gateway sits in the DMZ.
 - **[Client Credentials (M2M)](../oauth-flows/client-credentials.mdx)** — the flow, `private_key_jwt` in detail, and every error.
 - **[Validate Access Tokens](../validate-access-tokens.mdx)** — the API side.
 - **[APIs](../apis.md)** — audience, permissions and `token_lifetime`.

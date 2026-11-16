@@ -2,6 +2,7 @@ export default {
   'nextjs-passkeys': 'Next.js: Face ID & Passkeys',
   'mcp-authorization': 'MCP servers: add OAuth',
   'plc-node-red': 'PLCs & industrial gateways (Node-RED)',
+  'opcua-node-red': 'OPC UA servers → your API (Node-RED)',
   'test-and-production-tenants': 'Test and production tenants',
   'import-password-hashes': 'Import & export password hashes',
   'migrate-from-auth0': 'Migrate from Auth0',
