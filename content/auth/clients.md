@@ -68,13 +68,16 @@ Set it on the client page (**OAuth** tab → **Management API scopes**), when cr
 
 ### Client authentication at the token endpoint
 
-`POST /oauth/token` accepts three methods, as published in your tenant's [discovery document](oidc):
+`POST /oauth/token` accepts four methods, as published in your tenant's [discovery document](oidc):
 
 | `token_endpoint_auth_method` | How the client authenticates                                   | For                           |
 | ---------------------------- | -------------------------------------------------------------- | ----------------------------- |
 | `client_secret_basic`        | HTTP Basic header with `client_id:client_secret` (the default) | Confidential clients          |
 | `client_secret_post`         | `client_id` + `client_secret` in the form body                 | Confidential clients          |
 | `none`                       | No secret — the PKCE `code_verifier` is the proof              | Public SPA and native clients |
+| `private_key_jwt`            | A JWT signed with the client's own private key (RFC 7523)      | Devices and gateways (M2M)    |
+
+`private_key_jwt` works with the `client_credentials` grant. The client registers its **public** keys in `jwks`, and from then on its `client_secret` is refused everywhere — see [Authenticate with a private key](oauth-flows/client-credentials.mdx#private-key-jwt).
 
 ### Application metadata
 
