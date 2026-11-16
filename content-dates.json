@@ -147,9 +147,13 @@
     "modified": "2026-10-11T19:28:39+02:00",
     "published": "2026-09-04T01:21:07+02:00"
   },
+  "content/auth/guides/opcua-node-red.mdx": {
+    "published": "2026-11-16T19:00:56.046Z",
+    "modified": "2026-11-16T19:00:56.046Z"
+  },
   "content/auth/guides/plc-node-red.mdx": {
     "published": "2026-11-16T10:33:35.843Z",
-    "modified": "2026-11-16T11:02:06.684Z"
+    "modified": "2026-11-16T19:00:56.046Z"
   },
   "content/auth/guides/test-and-production-tenants.mdx": {
     "published": "2026-11-04T13:16:02.219Z",
