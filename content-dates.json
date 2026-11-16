@@ -116,12 +116,16 @@
     "modified": "2026-10-20T07:37:57.593Z"
   },
   "content/auth/get-started.md": {
-    "modified": "2026-10-14T22:32:09+02:00",
-    "published": "2026-03-31T11:42:44+02:00"
+    "published": "2026-03-31T11:42:44+02:00",
+    "modified": "2026-11-16T19:04:39.963Z"
   },
   "content/auth/guides/import-password-hashes.mdx": {
     "published": "2026-09-24T13:13:28+02:00",
     "modified": "2026-10-31T12:56:13.191Z"
+  },
+  "content/auth/guides/index.mdx": {
+    "published": "2026-11-16T19:04:39.963Z",
+    "modified": "2026-11-16T19:04:39.963Z"
   },
   "content/auth/guides/mcp-authorization.mdx": {
     "published": "2026-10-11T13:11:17+02:00",
@@ -165,7 +169,7 @@
   },
   "content/auth/index.mdx": {
     "published": "2026-10-17T14:48:06.267Z",
-    "modified": "2026-10-29T19:13:17.555Z"
+    "modified": "2026-11-16T19:04:39.963Z"
   },
   "content/auth/integrations/shopify.md": {
     "modified": "2026-09-24T13:46:23+02:00",
@@ -268,12 +272,12 @@
     "modified": "2026-10-29T11:42:58.018Z"
   },
   "content/auth/quickstart/fastapi.mdx": {
-    "modified": "2026-09-15T20:25:27+02:00",
-    "published": "2026-07-27T13:52:25+02:00"
+    "published": "2026-07-27T13:52:25+02:00",
+    "modified": "2026-11-16T19:04:39.963Z"
   },
   "content/auth/quickstart/index.mdx": {
-    "modified": "2026-09-15T20:25:27+02:00",
-    "published": "2026-07-27T14:41:26+02:00"
+    "published": "2026-07-27T14:41:26+02:00",
+    "modified": "2026-11-16T19:04:39.963Z"
   },
   "content/auth/quickstart/javascript.mdx": {
     "published": "2026-07-07T12:06:31+02:00",
@@ -284,8 +288,8 @@
     "published": "2026-07-09T11:50:57+02:00"
   },
   "content/auth/quickstart/nextjs.mdx": {
-    "modified": "2026-09-24T16:14:58+02:00",
-    "published": "2026-05-19T18:22:48+02:00"
+    "published": "2026-05-19T18:22:48+02:00",
+    "modified": "2026-11-16T19:04:39.963Z"
   },
   "content/auth/quickstart/nuxt.mdx": {
     "published": "2026-07-07T12:06:31+02:00",

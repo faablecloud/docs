@@ -2,6 +2,7 @@ export default {
   index: 'Overview',
   'get-started': 'Get Started',
   quickstart: 'Quickstarts',
+  guides: 'Guides',
   features: 'Features',
   pricing: 'Pricing',
   academy: '🎓 Academy (Integrator)',
@@ -55,6 +56,5 @@ export default {
   'compare-aws-cognito': 'vs AWS Cognito',
   'compare-firebase-auth': 'vs Firebase Authentication',
   'compare-supabase-auth': 'vs Supabase Auth',
-  'compare-authelia': 'vs Authelia',
-  guides: 'Migration Guides'
+  'compare-authelia': 'vs Authelia'
 }

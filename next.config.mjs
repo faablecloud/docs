@@ -63,17 +63,12 @@ export default withNextra({
       // in the page body (`[Hosted login](hosted-login.mdx)` → `href="hosted-login"`)
       // then resolved to `/auth/compare/hosted-login`, a 404.
       { source: '/:path+/', destination: '/:path+', permanent: false },
-      // Section roots: folders without an index page. /deploy, /auth and
-      // /deploy/guides have one now (their hubs), so they are not here — a
+      // Section roots: folders without an index page. /deploy, /auth,
+      // /deploy/guides and /auth/guides have one now (their hubs), so they are not here — a
       // redirect would shadow the page, which is why all of these are 302s.
       {
         source: '/platform',
         destination: '/platform/pricing',
-        permanent: false
-      },
-      {
-        source: '/auth/guides',
-        destination: '/auth/guides/migrate-from-auth0',
         permanent: false
       },
       // NOTE: /auth/quickstart is NOT here — it has a real index page now, and

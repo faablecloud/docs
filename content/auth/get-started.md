@@ -74,6 +74,8 @@ Once a user can sign in, Faable Auth gives you the building blocks for the rest 
 | **[OIDC Logout](oidc/logout.md)**           | RP-Initiated + Front-Channel logout across every signed-in application.                                                  |
 | **[UserInfo](oidc/userinfo.md)**            | Standard claims endpoint, scope-gated per OIDC §5.4.                                                                     |
 
+For complete use cases with working code, see the **[guides](/auth/guides)**: [passkeys and Face ID in Next.js](guides/nextjs-passkeys.mdx), [OAuth for MCP servers](guides/mcp-authorization.mdx), [industrial gateways with Node-RED](guides/plc-node-red.mdx), [test and production tenants](guides/test-and-production-tenants.mdx) and migrations from [Auth0](guides/migrate-from-auth0.mdx), [Clerk](guides/migrate-from-clerk.mdx), [NextAuth.js](guides/migrate-from-nextauth.mdx) and [Keycloak](guides/migrate-from-keycloak.mdx).
+
 ## SDKs and libraries
 
 - **[`@faable/auth-js`](https://www.npmjs.com/package/@faable/auth-js)** — client SDK for browsers and React Native (PKCE, session management, token refresh).
