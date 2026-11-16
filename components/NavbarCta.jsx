@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
+import { hasSessionHint } from '@faable/auth-js/session-hint'
 import posthog from 'posthog-js'
 
 const REGISTER_URL =
@@ -8,24 +9,28 @@ const REGISTER_URL =
 const DASHBOARD_URL =
   'https://dashboard.faable.com?utm_source=docs&utm_medium=referral&utm_content=docs_navbar_avatar'
 
-// Whether the reader is signed in to the dashboard. Same mechanism as the
-// landing's lib/dashboardSession.ts (keep them in step): the session lives in
-// dashboard.faable.com's localStorage, and dashboard/public/session-hint.html
-// answers a postMessage handshake from faable.com only. The iframe loads only
-// when a dashboard cookie on .faable.com says it is worth asking —
-// `faable_session_hint` (written while signed in) or the older `last-used`
-// login cookie. Both can outlive the session: they gate the check, they don't
-// answer it.
+// Whether the reader is signed in to the dashboard — same as the landing's
+// lib/dashboardSession.ts, keep them in step. The answer is auth-js's session
+// hint: the dashboard client writes `faableauth-<clientId>-session-hint=1` on
+// .faable.com while it holds a session and removes it when it loses it, a
+// plain cookie that works in every browser. The framed
+// dashboard/public/session-hint.html stays only for the avatar: Safari gives
+// it an empty, partitioned storage, so it cannot decide who is signed in.
+const DASHBOARD_CLIENT_ID = '7cb62eab-d817-44f9-a5a7-93aafe82b082'
 const HINT_URL =
   process.env.NEXT_PUBLIC_SESSION_HINT_URL ??
   'https://dashboard.faable.com/session-hint.html'
 const HINT_ORIGIN = new URL(HINT_URL).origin
-const GATE_COOKIE =
-  /(?:^|;\s*)(?:faable_session_hint=1|faableauth-[0-9a-f-]{36}-last-used=)/
 const TIMEOUT_MS = 3000
 
 // One question per full page load: the navbar remounts on client navigation.
-let answer = null
+let avatar = null
+
+const askAvatar = () =>
+  askDashboard().then(({ session, answer }) => {
+    posthog.capture('dashboard_session_hint', { surface: 'docs', answer })
+    return session
+  })
 
 const askDashboard = () =>
   new Promise(resolve => {
@@ -35,20 +40,23 @@ const askDashboard = () =>
     iframe.setAttribute('aria-hidden', 'true')
     iframe.tabIndex = -1
 
-    const done = value => {
+    const done = (session, answer) => {
       window.removeEventListener('message', onMessage)
       clearTimeout(timer)
       iframe.remove()
-      resolve(value)
+      resolve({ session, answer })
     }
     const onMessage = event => {
       if (event.origin !== HINT_ORIGIN || event.source !== iframe.contentWindow)
         return
       if (event.data?.type !== 'faable:session-hint') return
       const { signedIn, name, picture } = event.data
-      done(signedIn ? { name: name ?? null, picture: picture ?? null } : null)
+      done(
+        signedIn ? { name: name ?? null, picture: picture ?? null } : null,
+        signedIn ? 'signed_in' : 'signed_out'
+      )
     }
-    const timer = setTimeout(() => done(null), TIMEOUT_MS)
+    const timer = setTimeout(() => done(null, 'timeout'), TIMEOUT_MS)
 
     window.addEventListener('message', onMessage)
     iframe.onload = () =>
@@ -59,18 +67,24 @@ const askDashboard = () =>
     document.body.appendChild(iframe)
   })
 
+// The cookie is read on the client only: the server snapshot is `false`, so
+// the navbar hydrates as "Start free" and switches once mounted.
+const noSubscribe = () => () => {}
+const readHint = () => hasSessionHint({ clientId: DASHBOARD_CLIENT_ID })
+
 function useDashboardSession() {
-  const [session, setSession] = useState(null)
+  const hinted = useSyncExternalStore(noSubscribe, readHint, () => false)
+  const [known, setKnown] = useState(null)
   useEffect(() => {
-    if (!GATE_COOKIE.test(document.cookie)) return
-    answer ??= askDashboard()
+    if (!hinted) return
+    avatar ??= askAvatar()
     let alive = true
-    answer.then(value => alive && setSession(value))
+    avatar.then(value => alive && value && setKnown(value))
     return () => {
       alive = false
     }
-  }, [])
-  return session
+  }, [hinted])
+  return hinted ? (known ?? { name: null, picture: null }) : null
 }
 
 const ctaStyle = {
@@ -129,11 +143,9 @@ export function NavbarCta() {
           referrerPolicy="no-referrer"
           style={avatarStyle}
         />
-      ) : (
-        <span style={avatarStyle}>
-          {session.name?.trim()[0]?.toUpperCase() ?? '?'}
-        </span>
-      )}
+      ) : session.name ? (
+        <span style={avatarStyle}>{session.name.trim()[0]?.toUpperCase()}</span>
+      ) : null}
       Dashboard
     </a>
   )
