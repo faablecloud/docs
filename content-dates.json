@@ -41,7 +41,7 @@
   },
   "content/auth/clients.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-11-16T10:33:35.843Z"
+    "modified": "2026-11-17T13:53:15.790Z"
   },
   "content/auth/compare-auth0.mdx": {
     "published": "2026-11-13T00:22:38.119Z",
@@ -97,7 +97,7 @@
   },
   "content/auth/errors.md": {
     "published": "2026-09-17T11:53:00+02:00",
-    "modified": "2026-10-30T07:06:52.338Z"
+    "modified": "2026-11-17T13:53:15.790Z"
   },
   "content/auth/european-alternatives.mdx": {
     "published": "2026-10-17T19:03:21.619Z",
@@ -113,7 +113,7 @@
   },
   "content/auth/features.mdx": {
     "published": "2026-08-25T11:39:10+02:00",
-    "modified": "2026-10-20T07:37:57.593Z"
+    "modified": "2026-11-17T13:53:15.790Z"
   },
   "content/auth/get-started.md": {
     "published": "2026-03-31T11:42:44+02:00",
@@ -164,8 +164,8 @@
     "modified": "2026-11-04T13:16:02.219Z"
   },
   "content/auth/hosted-login.mdx": {
-    "modified": "2026-10-04T20:31:31+02:00",
-    "published": "2026-09-24T11:37:30+02:00"
+    "published": "2026-09-24T11:37:30+02:00",
+    "modified": "2026-11-17T13:53:15.790Z"
   },
   "content/auth/index.mdx": {
     "published": "2026-10-17T14:48:06.267Z",
@@ -256,8 +256,8 @@
     "modified": "2026-10-29T11:42:58.018Z"
   },
   "content/auth/passwordless.mdx": {
-    "modified": "2026-09-24T15:08:33+02:00",
-    "published": "2026-04-08T20:16:59+02:00"
+    "published": "2026-04-08T20:16:59+02:00",
+    "modified": "2026-11-17T13:53:15.790Z"
   },
   "content/auth/phone-verification.md": {
     "published": "2026-09-16T16:20:45+02:00",
@@ -331,9 +331,13 @@
     "published": "2026-09-24T21:08:49+02:00",
     "modified": "2026-10-29T11:42:58.018Z"
   },
+  "content/auth/signup-protection.md": {
+    "published": "2026-11-17T13:53:15.790Z",
+    "modified": "2026-11-17T13:53:15.790Z"
+  },
   "content/auth/signup.md": {
-    "modified": "2026-09-30T20:26:36+02:00",
-    "published": "2026-07-01T12:22:28+02:00"
+    "published": "2026-07-01T12:22:28+02:00",
+    "modified": "2026-11-17T13:53:15.790Z"
   },
   "content/auth/social/apple.md": {
     "published": "2026-03-31T11:42:44+02:00",

@@ -151,17 +151,21 @@ It creates the user and the database credential in one step. It does **not** est
 
 - The endpoint is **public** (account-scoped, resolved by host) — no management token required. It can only ever create a new, unverified user.
 - Rate-limited to **5 requests per minute** per IP.
+- Send `client_id` (auth-js does): it picks the client whose Allowed Web Origins and [signup protection](signup-protection.md) apply. With protection on, the request may come back as `428 challenge_required` — solve the challenge and send it again with `challenge: { id, nonce }`. `signup()` and `signupAndLogin()` from auth-js 3.4.0 do it for you.
 
 ### Errors
 
-| HTTP | `error_code`        | Meaning                                                                                                           |
-| ---- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| 400  | `bad_request`       | A required identifier is missing for this connection, or there is no password and no email. `message` says which. |
-| 400  | `invalid_username`  | The username is empty or contains `@` or whitespace, or the connection signs in by email only.                    |
-| 400  | `password_too_weak` | The password fails the connection's [password policy](connections.md). `message` lists what is missing.           |
-| 403  | `signup_disabled`   | Public signup is turned off for this connection (see below).                                                      |
-| 409  | `email_taken`       | A credential with that email already exists in the connection.                                                    |
-| 409  | `username_taken`    | A credential with that username already exists in the connection.                                                 |
+| HTTP | `error_code`                               | Meaning                                                                                                                              |
+| ---- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 400  | `bad_request`                              | A required identifier is missing for this connection, or there is no password and no email. `message` says which.                    |
+| 400  | `invalid_username`                         | The username is empty or contains `@` or whitespace, or the connection signs in by email only.                                       |
+| 400  | `password_too_weak`                        | The password fails the connection's [password policy](connections.md). `message` lists what is missing.                              |
+| 403  | `signup_disabled`                          | Public signup is turned off for this connection (see below).                                                                         |
+| 403  | `challenge_unsupported`                    | The client's [signup protection](signup-protection.md) is `always` and this client cannot solve the challenge.                       |
+| 403  | `origin_required`                          | The client has Allowed Web Origins and signup protection on, and the request has no `Origin` header.                                 |
+| 409  | `email_taken`                              | A credential with that email already exists in the connection.                                                                       |
+| 409  | `username_taken`                           | A credential with that username already exists in the connection.                                                                    |
+| 428  | `challenge_required` / `challenge_invalid` | Solve the proof-of-work challenge in `details` and repeat the request. See [Signup protection](signup-protection.md#custom-clients). |
 
 In `@faable/auth-js` these surface as an `AuthApiError` with a stable `code`: `signup_disabled`, `email_exists`, `username_exists`, `weak_password`, or `validation_failed` for the other 400s.
 
@@ -205,5 +209,6 @@ if (result.is_new_user) {
 ## Next steps
 
 - [Connections](connections.md) — configure the database connection, its password policy, and welcome/verification emails.
+- [Signup protection](signup-protection.md) — make scripts pay before an account is created.
 - [Change Email](change-email.md) — let users update their address after signup.
 - [Authorization Code with PKCE](oauth-flows/authorization-code.mdx) — the flow behind the callback and `is_new_user`.

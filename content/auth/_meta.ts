@@ -24,6 +24,7 @@ export default {
   'validate-access-tokens': 'Validate Access Tokens',
   usersSeparator: { type: 'separator', title: 'Users & Sessions' },
   signup: 'Signup',
+  'signup-protection': 'Signup Protection',
   'change-email': 'Change Email',
   'self-service-account': 'Self-Service Account',
   'email-sending': 'Email Sending',

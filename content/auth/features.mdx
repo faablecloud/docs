@@ -70,14 +70,15 @@ Your backend verifies all of this offline: signature against the JWKS, then issu
 
 Everything that happens to an identity after (and before) the first login is a supported flow, not something you rebuild:
 
-| Flow                                    | What it does                                                                                                                                                            |
-| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Login Experience](login-experience.md) | Which methods the hosted login screen offers and in what order, passkey sign-in, and a post-login invitation to create a passkey — per account, overridable per client. |
-| [Signup](signup.md)                     | Email + password registration from a browser-only app, and an `is_new_user` marker on the OAuth callback so you can branch into onboarding.                             |
-| [Change Email](change-email.md)         | Ownership-verified email updates, with an optional double confirmation from the old address for high-risk accounts.                                                     |
-| [Team Invitations](team-invitations.md) | Invite by email: known users join the team directly, unknown addresses get a link that creates the account on first click.                                              |
-| [Suspend Users](suspend-users.md)       | Block a user across every login flow, token grant, session and management call — instantly, reversibly, without deleting data.                                          |
-| [Logs](logs.md)                         | A queryable record of email deliveries, webhook attempts and authentication events, filterable with FaableQL.                                                           |
+| Flow                                      | What it does                                                                                                                                                            |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Login Experience](login-experience.md)   | Which methods the hosted login screen offers and in what order, passkey sign-in, and a post-login invitation to create a passkey — per account, overridable per client. |
+| [Signup](signup.md)                       | Email + password registration from a browser-only app, and an `is_new_user` marker on the OAuth callback so you can branch into onboarding.                             |
+| [Signup Protection](signup-protection.md) | A proof-of-work challenge on sign-ups and passwordless codes when a request looks automated, or on every one — solved invisibly by auth-js and the hosted login.        |
+| [Change Email](change-email.md)           | Ownership-verified email updates, with an optional double confirmation from the old address for high-risk accounts.                                                     |
+| [Team Invitations](team-invitations.md)   | Invite by email: known users join the team directly, unknown addresses get a link that creates the account on first click.                                              |
+| [Suspend Users](suspend-users.md)         | Block a user across every login flow, token grant, session and management call — instantly, reversibly, without deleting data.                                          |
+| [Logs](logs.md)                           | A queryable record of email deliveries, webhook attempts and authentication events, filterable with FaableQL.                                                           |
 
 ## Extensibility
 
