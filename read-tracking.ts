@@ -5,9 +5,12 @@ import type { PostHog } from 'posthog-js'
 // who leaves the tab open, closes the whole browser or locks the phone never
 // sends it — and a scroll percentage on a 400-line guide doesn't say which
 // step they read anyway. This sends `docs_page_read` whenever the tab is hidden
-// or the route changes, with cumulative numbers: a page view can send it more
-// than once (the reader goes away and comes back), so group by `read_id` and
-// keep the row with the largest `visible_seconds`.
+// or the route changes. A page view can send it more than once (the reader goes
+// away and comes back): each send carries only what happened since the previous
+// one, numbered by `read_part`, so a read's totals are the SUM over its
+// `read_id` and no row repeats time another row already counted. Sections are
+// counted per part (5 s on screen within that part). Rows without `read_part`
+// (16-11-2026 18:16 to the deploy of this change) were cumulative instead.
 
 export const READ_EVENT = 'docs_page_read'
 
@@ -28,11 +31,11 @@ type Section = { id: string; title: string; ms: number; order: number }
 type PageRead = {
   readId: string
   path: string
+  part: number
   visibleMs: number
   maxScrollPct: number
   sections: Map<string, Section>
   lastOrder: number
-  lastSent: string
 }
 
 const randomId = () =>
@@ -40,14 +43,14 @@ const randomId = () =>
     ? crypto.randomUUID()
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
 
-const newPage = (): PageRead => ({
-  readId: randomId(),
+const newPage = (readId = randomId(), part = 1): PageRead => ({
+  readId,
   path: window.location.pathname,
+  part,
   visibleMs: 0,
   maxScrollPct: 0,
   sections: new Map(),
-  lastOrder: -1,
-  lastSent: ''
+  lastOrder: -1
 })
 
 const headings = () =>
@@ -112,6 +115,7 @@ export function startReadTracking(posthog: PostHog) {
     )
     const properties = {
       read_id: page.readId,
+      read_part: page.part,
       page_path: page.path,
       visible_seconds: Math.round(page.visibleMs / 1000),
       max_scroll_pct: page.maxScrollPct,
@@ -122,14 +126,13 @@ export function startReadTracking(posthog: PostHog) {
       sections_total: headings().length,
       flush_reason: reason
     }
-    // Nothing new since the last send (e.g. hidden twice without reading).
-    const fingerprint = `${properties.visible_seconds}|${properties.max_scroll_pct}|${properties.sections_read_count}`
-    if (fingerprint === page.lastSent) return
-    page.lastSent = fingerprint
     posthog.capture(READ_EVENT, properties, {
       transport: 'sendBeacon',
       send_instantly: true
     })
+    // What was just sent is counted: the next send starts from zero, under the
+    // same read_id. (A pagehide right after hidden then has nothing to send.)
+    page = newPage(page.readId, page.part + 1)
   }
 
   const tick = () => {
