@@ -8,6 +8,7 @@ export default {
   'guide-fastapi': 'Deploy FastAPI',
   'guide-flask': 'Deploy Flask',
   'guide-php': 'Deploy PHP & Laravel',
+  'guide-wordpress': 'Install WordPress',
   'guide-whatsapp-bot': 'Deploy a WhatsApp Bot',
   'guide-discord-bot': 'Deploy a Discord Bot',
   'guide-slack-bot': 'Deploy a Slack App',

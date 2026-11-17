@@ -12,23 +12,23 @@ rank: high
 
 ## Quick comparison
 
-|                                           | **Faable Deploy**                                              | Coolify                                                                                 |
-| ----------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| What it is                                | Managed platform                                               | Open-source PaaS you install on your own servers                                        |
-| Servers                                   | Ours — nothing to rent or size                                 | Yours — you rent and size them, even on Coolify Cloud                                   |
-| OS updates, hardening, server security    | Ours                                                           | **Yours** ("Server OS updates and hardening: Managed by you")                           |
-| Getting an app live                       | Push to GitHub — zero config                                   | Connect a repo in the dashboard; Nixpacks, Dockerfile or Compose                        |
-| Permanent free plan                       | ✅ no card, no expiry                                          | Self-hosted is free; you pay for the servers                                            |
-| Pricing model                             | **Fixed fee per project**: 0 €, 15 €, 99 €/month               | Your servers + Coolify Cloud ($5/month for 2 servers, $3 per extra) or free self-hosted |
-| Free automatic SSL                        | ✅                                                             | ✅                                                                                      |
-| Pull-request previews                     | ❌                                                             | ✅                                                                                      |
-| Built-in Web Application Firewall         | ✅ edge firewall, every plan                                   | ❌ bring your own                                                                       |
-| Bundled identity / auth (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free      | ❌                                                                                      |
-| Databases and persistent volumes          | ❌ use a managed database ([see options](guides/databases.md)) | ✅ one-click Postgres, MySQL, Redis… with persistent storage                            |
-| One-click services                        | ❌                                                             | ✅ 360+ (n8n, Plausible, Umami…)                                                        |
-| Backups of your app data                  | Nothing stateful to back up on our side                        | Yours to configure — Coolify Cloud backs up only its own control plane                  |
-| Support                                   | Email from platform engineers on Hobby and Pro                 | Community, plus limited email support on Cloud                                          |
-| Company                                   | 🇪🇺 European                                                    | coolLabs Solutions Kft.; Coolify Cloud runs on Hetzner in Germany                       |
+|                                           | **Faable Deploy**                                                                                        | Coolify                                                                                 |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| What it is                                | Managed platform                                                                                         | Open-source PaaS you install on your own servers                                        |
+| Servers                                   | Ours — nothing to rent or size                                                                           | Yours — you rent and size them, even on Coolify Cloud                                   |
+| OS updates, hardening, server security    | Ours                                                                                                     | **Yours** ("Server OS updates and hardening: Managed by you")                           |
+| Getting an app live                       | Push to GitHub — zero config                                                                             | Connect a repo in the dashboard; Nixpacks, Dockerfile or Compose                        |
+| Permanent free plan                       | ✅ no card, no expiry                                                                                    | Self-hosted is free; you pay for the servers                                            |
+| Pricing model                             | **Fixed fee per project**: 0 €, 15 €, 99 €/month                                                         | Your servers + Coolify Cloud ($5/month for 2 servers, $3 per extra) or free self-hosted |
+| Free automatic SSL                        | ✅                                                                                                       | ✅                                                                                      |
+| Pull-request previews                     | ❌                                                                                                       | ✅                                                                                      |
+| Built-in Web Application Firewall         | ✅ edge firewall, every plan                                                                             | ❌ bring your own                                                                       |
+| Bundled identity / auth (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free                                                | ❌                                                                                      |
+| Databases and persistent volumes          | ⚠️ managed MariaDB on Hobby and Pro; volumes for catalogue apps ([WordPress](guides/guide-wordpress.md)) | ✅ one-click Postgres, MySQL, Redis… with persistent storage                            |
+| One-click services                        | ❌                                                                                                       | ✅ 360+ (n8n, Plausible, Umami…)                                                        |
+| Backups of your app data                  | Nothing stateful to back up on our side                                                                  | Yours to configure — Coolify Cloud backs up only its own control plane                  |
+| Support                                   | Email from platform engineers on Hobby and Pro                                                           | Community, plus limited email support on Cloud                                          |
+| Company                                   | 🇪🇺 European                                                                                              | coolLabs Solutions Kft.; Coolify Cloud runs on Hetzner in Germany                       |
 
 ## Why teams pick Faable Deploy over Coolify
 
@@ -55,7 +55,7 @@ Faable is a European company and your apps and data are hosted in the EU, with h
 ## When Coolify might fit better
 
 - **You must run on your own servers** — full control, an on-premises mandate or an air-gapped network — and have someone whose job is to operate them.
-- **You need databases or persistent volumes next to your app.** Coolify runs Postgres, MySQL, Redis and the rest with persistent storage; Faable apps are stateless and use a [managed database](guides/databases.md).
+- **You need databases or persistent volumes next to your app.** Coolify runs Postgres, MySQL, Redis and the rest with persistent storage; on Faable your own apps are stateless, with a managed MariaDB on Hobby and Pro or an external [database](guides/databases.md), and only catalogue apps such as [WordPress](guides/guide-wordpress.md) get a volume.
 - **You want one-click self-hosted services** like n8n, Plausible or Umami, or **pull-request preview environments**.
 
 ## Related

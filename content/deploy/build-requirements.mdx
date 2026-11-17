@@ -253,7 +253,7 @@ Two things trip up PHP projects more than any other stack, and neither is a buil
 - **There is no database beside your app.** `new mysqli("localhost", "root", "", …)` — the XAMPP/WAMP default — has nothing to connect to. Use a managed MySQL or PostgreSQL database and read the credentials from environment variables (`faable deploy secrets set DB_HOST=…`). The build log warns when it spots a localhost connection in your sources.
 - **The filesystem is ephemeral.** Uploads and generated files live in the running container only: they are lost on restart, on sleep/wake and on every deploy, and two instances never see each other's files. Conventional write targets (`uploads/`, `storage/`, `writable/`, `var/`, `bootstrap/cache/`…) are made writable at start-up for caches and temporary work — put anything that must survive in object storage or a database.
 
-WordPress is refused at detection for exactly those two reasons, with an explanation instead of a broken site.
+WordPress from a repository is refused at detection for exactly those two reasons, with an explanation instead of a broken site. [Install it from the catalogue](guides/guide-wordpress.md) instead: it comes with a persistent volume and a managed database.
 
 ### Start Command
 
@@ -422,7 +422,7 @@ Then `faable deploy secrets set DB_HOST=… DB_USER=…`. The build log warns yo
 
 ### Can I deploy WordPress?
 
-Not yet, and the deploy says so instead of shipping a broken site: WordPress needs a MySQL database beside the app and a persistent filesystem for `wp-content/uploads`, and Faable gives an app neither.
+Yes, from the catalogue, not from a repository: [Install WordPress](guides/guide-wordpress.md) gives it a persistent volume and a managed MariaDB (Hobby and Pro). A repository deploy of WordPress is refused, with an explanation, because a regular app has neither.
 
 ### Can I deploy a plain HTML site with no framework and no package.json?
 

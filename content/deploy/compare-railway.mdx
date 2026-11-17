@@ -12,22 +12,22 @@ rank: high
 
 ## At a glance
 
-|                                    | **Faable Deploy**                                                                                       | Railway                                                        |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Deploy from Git, zero config       | ✅ Node.js, Python, PHP; Dockerfile on Hobby and Pro                                                    | ✅ buildpacks or Dockerfile                                    |
-| Free plan                          | ✅ permanent, no card                                                                                   | ✅ $1 of usage a month, after a 30-day trial with $5 of credit |
-| Free plan resources                | 0.6 vCPU · 512 MB per app, up to 3 projects                                                             | 1 vCPU · 0.5 GB per service, 1 project, 3 services             |
-| Custom domains on the free plan    | ✅                                                                                                      | ❌ none; 2 on Hobby, 20 on Pro                                 |
-| Pricing model                      | **Fixed fee per project**: 0 €, 15 €, 99 €/month                                                        | Plan fee that is also a usage credit, then per-second usage    |
-| Entry paid plan                    | **Hobby, 15 €/month**: 1 vCPU · 1.5 GB per app, compute included                                        | Hobby, $5/month including $5 of usage                          |
-| Compute beyond the plan            | Included in the plan; always-on and workers have their own monthly allowance                            | ~$20 per vCPU and ~$10 per GB of memory a month                |
-| Egress                             | 10 GB (Free) and 50 GB (Hobby) included, **never billed per GB**; Pro meters beyond 100 GB at 0.18 €/GB | $0.05 per GB                                                   |
-| Idle apps                          | Sleep and wake in a few seconds; Always on on Hobby and Pro                                             | Optional "Serverless" mode stops idle services                 |
-| Built-in Web Application Firewall  | ✅ managed rulesets + your own rules, every plan                                                        | ❌                                                             |
-| Bundled identity (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free                                               | ❌ a second vendor                                             |
-| Databases and persistent volumes   | ❌ use a managed database ([see options](guides/databases.md))                                          | ✅ Postgres, MySQL, Redis and others, with volumes             |
-| Company and infrastructure         | 🇪🇺 European                                                                                             | US company, EU region available                                |
-| Currency                           | EUR                                                                                                     | USD                                                            |
+|                                    | **Faable Deploy**                                                                                        | Railway                                                        |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Deploy from Git, zero config       | ✅ Node.js, Python, PHP; Dockerfile on Hobby and Pro                                                     | ✅ buildpacks or Dockerfile                                    |
+| Free plan                          | ✅ permanent, no card                                                                                    | ✅ $1 of usage a month, after a 30-day trial with $5 of credit |
+| Free plan resources                | 0.6 vCPU · 512 MB per app, up to 3 projects                                                              | 1 vCPU · 0.5 GB per service, 1 project, 3 services             |
+| Custom domains on the free plan    | ✅                                                                                                       | ❌ none; 2 on Hobby, 20 on Pro                                 |
+| Pricing model                      | **Fixed fee per project**: 0 €, 15 €, 99 €/month                                                         | Plan fee that is also a usage credit, then per-second usage    |
+| Entry paid plan                    | **Hobby, 15 €/month**: 1 vCPU · 1.5 GB per app, compute included                                         | Hobby, $5/month including $5 of usage                          |
+| Compute beyond the plan            | Included in the plan; always-on and workers have their own monthly allowance                             | ~$20 per vCPU and ~$10 per GB of memory a month                |
+| Egress                             | 10 GB (Free) and 50 GB (Hobby) included, **never billed per GB**; Pro meters beyond 100 GB at 0.18 €/GB  | $0.05 per GB                                                   |
+| Idle apps                          | Sleep and wake in a few seconds; Always on on Hobby and Pro                                              | Optional "Serverless" mode stops idle services                 |
+| Built-in Web Application Firewall  | ✅ managed rulesets + your own rules, every plan                                                         | ❌                                                             |
+| Bundled identity (OAuth 2.0, OIDC) | ✅ [Faable Auth](../auth/get-started.md), 15,000 MAU free                                                | ❌ a second vendor                                             |
+| Databases and persistent volumes   | ⚠️ managed MariaDB on Hobby and Pro; volumes for catalogue apps ([WordPress](guides/guide-wordpress.md)) | ✅ Postgres, MySQL, Redis and others, with volumes             |
+| Company and infrastructure         | 🇪🇺 European                                                                                              | US company, EU region available                                |
+| Currency                           | EUR                                                                                                      | USD                                                            |
 
 ## Why teams look for a Railway alternative
 
@@ -51,7 +51,7 @@ Picking a European region on a US platform keeps your data's location in Europe.
 
 ## When Railway might fit better
 
-- **You want databases next to your app from the same provider.** Railway runs Postgres, MySQL, Redis and others with persistent volumes on the same canvas. Faable apps are stateless and connect to a [managed database](guides/databases.md) such as Neon or Turso.
+- **You want databases next to your app from the same provider.** Railway runs Postgres, MySQL, Redis and others with persistent volumes on the same canvas. On Faable your own apps are stateless and use a managed MariaDB (Hobby and Pro) or an external [database](guides/databases.md) such as Neon or Turso; only catalogue apps such as [WordPress](guides/guide-wordpress.md) get a volume.
 - **You like assembling services visually** and want pure usage-based billing that scales down to cents.
 - **You need very large instances.** Railway Pro goes up to 1,000 vCPU and 1 TB per service; Faable's largest instance is 6 vCPU · 6 GB, on request.
 

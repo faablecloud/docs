@@ -127,7 +127,7 @@ Your app's instance was replaced — by a deploy, a restart, or by sleeping afte
 
 ### Does Faable Deploy offer persistent disks or volumes?
 
-Not today. The filesystem is ephemeral by design, which keeps deploys fast and rollbacks safe. We're exploring first-class persistence for SQLite apps; until then, connect a hosted database — the EU-hosted free tiers of Neon and Turso cover most projects.
+Not for apps deployed from your repository: their filesystem is ephemeral by design, which keeps deploys fast and rollbacks safe. Apps installed from the catalogue, such as [WordPress](guide-wordpress.md), come with a persistent volume. For your own app, on Hobby and Pro you can give it a **managed MariaDB** from the dashboard (Deploy › Databases), billed per database (10 € `db-s`, 20 € `db-m` a month); or connect a hosted database — the EU-hosted free tiers of Neon and Turso cover most projects.
 
 ### Which database providers work with Faable?
 

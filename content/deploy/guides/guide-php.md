@@ -205,7 +205,7 @@ The build log warns you when it spots a localhost connection in your sources, so
 
 **"This app would run on PHP X, but its installed dependencies require PHP Y".** The same thing, caught before shipping: the artifact would have run on a PHP its own `vendor/` cannot boot. The message names the package that raised the bar.
 
-**WordPress.** Not supported, and the deploy says so rather than shipping a broken site: WordPress needs a MySQL database beside the app and a persistent filesystem for `wp-content/uploads`, and Faable gives an app neither.
+**WordPress.** Not from a repository, and the deploy says so rather than shipping a broken site: WordPress needs a MySQL database beside the app and a persistent filesystem for `wp-content/uploads`, which a regular app does not have. [Install it from the catalogue](guide-wordpress.md) instead: it comes with both.
 
 ## FAQ
 

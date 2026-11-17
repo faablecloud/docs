@@ -433,11 +433,11 @@
   },
   "content/deploy/build-requirements.mdx": {
     "published": "2026-07-04T11:38:43+02:00",
-    "modified": "2026-11-12T11:29:09.477Z"
+    "modified": "2026-11-17T16:07:45.650Z"
   },
   "content/deploy/compare-coolify.mdx": {
     "published": "2026-10-29T19:13:19.774Z",
-    "modified": "2026-11-03T10:49:34.417Z"
+    "modified": "2026-11-17T16:07:45.650Z"
   },
   "content/deploy/compare-fly-io.mdx": {
     "published": "2026-06-27T13:49:17+02:00",
@@ -453,7 +453,7 @@
   },
   "content/deploy/compare-railway.mdx": {
     "published": "2026-11-13T00:22:38.119Z",
-    "modified": "2026-11-13T00:22:38.119Z"
+    "modified": "2026-11-17T16:07:45.650Z"
   },
   "content/deploy/compare-vercel.mdx": {
     "published": "2026-11-13T00:12:53.044Z",
@@ -513,7 +513,7 @@
   },
   "content/deploy/guides/databases.md": {
     "published": "2026-08-22T23:19:44+02:00",
-    "modified": "2026-10-19T06:55:32.936Z"
+    "modified": "2026-11-17T16:07:45.650Z"
   },
   "content/deploy/guides/guide-astro.md": {
     "published": "2026-09-08T10:38:28+02:00",
@@ -565,7 +565,7 @@
   },
   "content/deploy/guides/guide-php.md": {
     "published": "2026-08-26T11:47:16+02:00",
-    "modified": "2026-10-29T07:57:41.727Z"
+    "modified": "2026-11-17T16:07:45.650Z"
   },
   "content/deploy/guides/guide-slack-bot.md": {
     "published": "2026-09-03T11:32:11+02:00",
@@ -594,6 +594,10 @@
   "content/deploy/guides/guide-windsurf.md": {
     "published": "2026-11-05T10:44:37.253Z",
     "modified": "2026-11-05T10:44:37.253Z"
+  },
+  "content/deploy/guides/guide-wordpress.md": {
+    "published": "2026-11-17T16:07:45.650Z",
+    "modified": "2026-11-17T16:07:45.650Z"
   },
   "content/deploy/guides/index.mdx": {
     "published": "2026-10-17T14:48:06.267Z",
