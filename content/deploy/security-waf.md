@@ -149,13 +149,13 @@ The address matched is the one that **connects to Faable's edge**, never `X-Forw
 > [!WARNING]
 > If a custom domain sits behind **your own proxy or CDN** (Cloudflare with the orange cloud on, for example), the client Faable sees is that proxy's edge, not the visitor. An IP rule on that address blocks a slice of all your visitors on that domain. Use a user-agent or path rule there instead, or block the IP at your proxy.
 
-From the API, `POST /app/<app_id>/waf/rules` takes the IP as `ip`, alone or with `pattern`, and `DELETE` on the same URL removes the rule with the same body:
+From the API, `POST /app/<app_id>/waf/rules` takes the IP as `client_ip`, alone or with `pattern`, and `DELETE` on the same URL removes the rule with the same body:
 
 ```bash
 curl -X POST https://api.faable.com/app/<app_id>/waf/rules \
   -H "Authorization: Bearer $FAABLE_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"ip": "203.0.113.7", "action": "deny"}'
+  -d '{"client_ip": "203.0.113.7", "action": "deny"}'
 ```
 
 In the dashboard, **Add rule** in the **Firewall** tab has the same IP selector.
@@ -164,7 +164,7 @@ In the dashboard, **Add rule** in the **Firewall** tab has the same IP selector.
 
 The **Metrics** page of the app has a **Top IPs** panel: the 10 client IPs that sent your app the most requests it served, each with its most common user-agent, how many distinct paths it requested and when it was last seen. A listed IP can be blocked or sunk from the panel in one click. Addresses from Faable's own network show as internal and cannot be blocked.
 
-The same list is `top_ips` in `GET /app/<app_id>/traffic`, with `ip`, `requests`, `user_agent`, `paths`, `last_seen` and `blockable` (false for those internal addresses).
+From the terminal, `faable deploy traffic` prints the same list as **Top client IPs**, marks the addresses no rule can name with `(platform)`, and suggests the `faable deploy waf sink --ip <ip>` command. An AI agent connected to the [Faable MCP server](../cli.md#mcp-server) gets it from `get_app_traffic`, reads the rules with `list_waf_rules` and, with writes enabled, adds and removes them with `add_waf_rule` and `remove_waf_rule`. From the API, it is `top_ips` in `GET /app/<app_id>/traffic`, with `ip`, `requests`, `user_agent`, `paths`, `last_seen` and `blockable` (false for those internal addresses).
 
 ### Stop a keepalive pinger
 

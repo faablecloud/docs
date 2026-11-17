@@ -294,6 +294,13 @@ faable deploy traffic --since 7d      # 30m, 24h, 7d…
 faable deploy traffic -d deployment_a1b2c3   # only what one deployment served
 ```
 
+It also lists the **Top client IPs**: the addresses that sent the app the most requests,
+with how many distinct paths each requested and the user-agent it sent most. One address
+hitting one path thousands of times is usually a keepalive pinger keeping the app awake;
+the output suggests `faable deploy waf sink --ip <ip>` to stop it (see
+[Block an IP](#block-an-ip)). Addresses from Faable's own network are marked `(platform)`:
+no rule can name them.
+
 ### Usage and quota
 
 ```bash
@@ -1050,6 +1057,7 @@ By default the server exposes **reads plus one deploy**:
 | `whoami`, `list_projects`, `list_apps`, `get_app`                            | Find the app you mean, see what is live                                                                                      |
 | `list_deployments`, `get_deployment`, `get_build_logs`, `get_runtime_logs`   | Find out why a deploy failed or an app crashes                                                                               |
 | `get_app_traffic`, `get_usage`, `get_quota`                                  | Traffic (with the top client IPs), this period's usage, today's deploy allowance                                             |
+| `list_waf_rules`                                                             | The app's own edge rules, what each matches and answers, and the platform rulesets protecting it                             |
 | `list_domains`, `check_domain`                                               | Custom domains of an app or of the project, and why one is not verified yet                                                  |
 | `list_secrets`                                                               | Which environment variables are set — names only                                                                             |
 | `list_github_repos`                                                          | The GitHub repositories Faable can deploy, and the install link when one is missing                                          |
@@ -1063,7 +1071,7 @@ By default the server exposes **reads plus one deploy**:
 
 When a deploy failed, `get_deployment` also says whose side it is on: `user` (your code, configuration or repository) or `platform` (Faable's).
 
-`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain` (`www` adds the root and its `www` as a pair), `attach_domain` (link a domain of the project to an app, e.g. one whose app was deleted), `set_domain_redirect` (redirect a domain to another of the project, or stop it), `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). The local server also has the role and API writes — `create_auth_role`, `update_auth_role_permissions`, `update_auth_user_roles`, `create_auth_api` and `update_auth_api` (token lifetime, RBAC, the `roles` and `teams` claims) —, which the hosted server never exposes: they change what your users' tokens carry. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path, and `delete_app`, the one destructive tool: it deletes an app with its deployments and secrets — its domains stay in the project, linked to no app — and is marked destructive so your client asks before running it. Deleting domains, secrets or users stays in the CLI and the dashboard, and the hosted server exposes nothing destructive.
+`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain` (`www` adds the root and its `www` as a pair), `attach_domain` (link a domain of the project to an app, e.g. one whose app was deleted), `set_domain_redirect` (redirect a domain to another of the project, or stop it), `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists), `add_waf_rule` and `remove_waf_rule` (an edge rule by path, user-agent, query parameter or `client_ip`: deny, sink, monitor, limit or allow); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). The local server also has the role and API writes — `create_auth_role`, `update_auth_role_permissions`, `update_auth_user_roles`, `create_auth_api` and `update_auth_api` (token lifetime, RBAC, the `roles` and `teams` claims) —, which the hosted server never exposes: they change what your users' tokens carry. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path, and `delete_app`, the one destructive tool: it deletes an app with its deployments and secrets — its domains stay in the project, linked to no app — and is marked destructive so your client asks before running it. Deleting domains, secrets or users stays in the CLI and the dashboard, and the hosted server exposes nothing destructive.
 
 With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions, settings, roles and APIs, suspend and reinstate users, end sessions, send password emails and update an application's settings (the MCP only sets its profile fields) — never delete anything or change the tenant itself.
 
