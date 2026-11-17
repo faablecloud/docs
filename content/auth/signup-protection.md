@@ -25,7 +25,7 @@ It is set **per client** (the dashboard calls it **Bot protection**) and covers 
 
 **New clients start in `on_risk`.** Clients created before November 2026 have no value, which reads as `off`: nothing changes for them until you turn it on.
 
-Client libraries that cannot solve the challenge (auth-js older than 3.4.0, or your own client that has not [announced support](#custom-clients)):
+Client libraries that cannot solve the challenge (auth-js older than 3.4.0, or your own client that does not [declare support](#custom-clients)):
 
 - in `on_risk`, keep working as before, with no challenge;
 - in `always`, are refused with `403 challenge_unsupported`. Upgrade them before you switch.
@@ -37,16 +37,19 @@ Client libraries that cannot solve the challenge (auth-js older than 3.4.0, or y
 
 **Dashboard** — **Auth → Applications →** your client **→ Login** tab **→ Bot protection**. The change applies to the next request.
 
-**CLI** — on [`faable auth clients`](../cli.md#oauth-clients) `create` and `update`:
+**CLI** — `--signup-protection <off|on_risk|always>` on [`faable auth clients`](../cli.md#oauth-clients) `create` and `update`:
 
 ```bash
-faable auth clients update <client_id> --signup-protection always
+faable auth clients create -n my-app --callback https://app.example.com/callback --signup-protection always
+faable auth clients update <client_id> --signup-protection on_risk
 ```
 
-**MCP** — the [Faable MCP server](../cli.md#mcp-server) reads and sets it on a client.
+`faable auth clients get` prints a `Signup protection:` line, `list` has a `SIGNUP_PROTECTION` column, and `--json` output carries `signup_protection`.
+
+**MCP** — on the [Faable MCP server](../cli.md#mcp-server), `list_auth_clients` returns each client's `signup_protection`, and `update_auth_client_signup_protection` sets it (`client` — the resource id or the OAuth client_id —, `mode`, and optionally `tenant` and `project`). That one is a write tool: it is only there with writes enabled (`faable mcp --writes`, or the `auth:write` permission on the hosted server).
 
 > [!NOTE]
-> The CLI flag and the MCP tool are new. Update the CLI with `npm i -g @faable/faable@latest`; the local MCP server (`faable mcp`) comes with it.
+> The CLI flag and the MCP tools are new: they need the latest CLI (`npm i -g @faable/faable@latest`, which also updates the local `faable mcp`) or the latest hosted MCP server.
 
 **Management API** — `signup_protection` (`off`, `on_risk` or `always`) on `POST /client` and `POST /client/:id`.
 
@@ -117,7 +120,7 @@ A native `reset` of the parent `<form>` resets the badge too.
 
 ## Custom clients
 
-Without auth-js the protocol is three steps.
+Without auth-js the protocol is three steps. Send `"challenge_support": "pow"` in the body of every request (the first one and the retry): it declares that your client can solve the challenge, so the server asks it for one instead of treating it like an old library ([see modes](#modes)). auth-js and the hosted login need nothing.
 
 **1. The server asks for a challenge.** The request comes back as `428 challenge_required`, with the challenge in `details`:
 
@@ -125,8 +128,7 @@ Without auth-js the protocol is three steps.
 curl -i https://your-tenant.auth.faable.link/passwordless/start \
   -H 'Content-Type: application/json' \
   -H 'Origin: https://app.example.com' \
-  -H 'X-Faable-Client: auth-js/3.5.0' \
-  -d '{"client_id":"<your_client_id>","email":"user@example.com","send":"code"}'
+  -d '{"client_id":"<your_client_id>","email":"user@example.com","send":"code","challenge_support":"pow"}'
 ```
 
 ```http
@@ -158,6 +160,7 @@ Content-Type: application/json
   "client_id": "<your_client_id>",
   "email": "user@example.com",
   "send": "code",
+  "challenge_support": "pow",
   "challenge": {
     "id": "0d6c3f0e-7a1b-4c55-9f0e-2b8d3a7e9c41",
     "nonce": "1k3x9"
@@ -171,12 +174,10 @@ In JavaScript, `solveChallenge` from auth-js does step 2:
 import { solveChallenge } from '@faable/auth-js'
 
 const AUTH = 'https://your-tenant.auth.faable.link'
-const headers = {
-  'Content-Type': 'application/json',
-  'X-Faable-Client': 'auth-js/3.5.0'
-}
+const headers = { 'Content-Type': 'application/json' }
 
-async function post(path: string, body: Record<string, unknown>) {
+async function post(path: string, fields: Record<string, unknown>) {
+  const body = { ...fields, challenge_support: 'pow' }
   let res = await fetch(AUTH + path, {
     method: 'POST',
     headers,
@@ -198,7 +199,9 @@ async function post(path: string, body: Record<string, unknown>) {
 Elsewhere it is a few lines. In Python:
 
 ```python
-import hashlib, itertools
+import hashlib, itertools, requests
+
+AUTH = "https://your-tenant.auth.faable.link"
 
 def solve(c):
     prefix = f"{c['seed']}:{c['email_hash']}:"
@@ -207,11 +210,20 @@ def solve(c):
         digest = int.from_bytes(hashlib.sha256((prefix + nonce).encode()).digest(), "big")
         if digest >> (256 - c["difficulty"]) == 0:
             return nonce
+
+def post(path, fields):
+    body = {**fields, "challenge_support": "pow"}
+    res = requests.post(AUTH + path, json=body)
+    if res.status_code == 428:
+        c = res.json()["details"]
+        body["challenge"] = {"id": c["id"], "nonce": solve(c)}
+        res = requests.post(AUTH + path, json=body)
+    return res
 ```
 
 The rules:
 
-- **Announce support** with the `X-Faable-Client` header, as above. The server only asks for a challenge from clients that say they can solve it; without the header your client is treated like an old library ([see modes](#modes)). Claiming it buys nothing: a client that claims support is simply asked to solve it.
+- **Declare support** with `"challenge_support": "pow"`. Without it, `on_risk` lets your client through as before and `always` refuses it with `challenge_unsupported`. Declaring it buys nothing: a client that declares support is simply asked to solve the challenge.
 - **Send `client_id`.** It picks the client whose setting applies.
 - **Single use, 5 minutes.** A challenge is bound to the client, the email and the IP address it was issued for, and can be redeemed once.
 - **Difficulty** is 18 bits by default, one more per risk signal, up to 21. That is about 260,000 hashes on average at 18 bits: around 0.3 s in a laptop browser, three to four times longer on a phone. The server sets it; the client never picks it.

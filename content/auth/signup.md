@@ -151,7 +151,7 @@ It creates the user and the database credential in one step. It does **not** est
 
 - The endpoint is **public** (account-scoped, resolved by host) — no management token required. It can only ever create a new, unverified user.
 - Rate-limited to **5 requests per minute** per IP.
-- Send `client_id` (auth-js does): it picks the client whose Allowed Web Origins and [signup protection](signup-protection.md) apply. With protection on, the request may come back as `428 challenge_required` — solve the challenge and send it again with `challenge: { id, nonce }`. `signup()` and `signupAndLogin()` from auth-js 3.4.0 do it for you.
+- Send `client_id` (auth-js does): it picks the client whose Allowed Web Origins and [signup protection](signup-protection.md) apply. With protection on, the request may come back as `428 challenge_required` — solve the challenge and send it again with `challenge: { id, nonce }` (a client without auth-js also sends `challenge_support: "pow"`; see [Custom clients](signup-protection.md#custom-clients)). `signup()` and `signupAndLogin()` from auth-js 3.4.0 do it for you.
 
 ### Errors
 
