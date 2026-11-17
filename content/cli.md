@@ -562,8 +562,8 @@ stops anything:
 | `limit`   | `429`      | The path or client is fine, just not this fast — a login form, a search endpoint, a crawler        |
 | `monitor` | your app's | You want to see what a rule would stop before it stops anything                                    |
 
-A rule selects requests by **path**, by **user-agent**, by **query parameter**, or by a
-path together with one of the other two:
+A rule selects requests by **path**, by **user-agent**, by **query parameter**, by
+**client IP**, or by a path together with one of the other three:
 
 | You write                            | It matches                                         |
 | ------------------------------------ | -------------------------------------------------- |
@@ -572,6 +572,8 @@ path together with one of the other two:
 | `waf block '^/api/' -u YisouSpider`  | that path **and** that crawler — both must match   |
 | `waf block --query rest_route`       | any request carrying `?rest_route=`, on every path |
 | `waf block '^/$' --query author`     | `/?author=…` only — both must match                |
+| `waf block --ip 203.0.113.0/24`      | every request from that network, on every path     |
+| `waf sink '^/$' --ip 203.0.113.7`    | `/` from that address only — both must match       |
 
 Patterns are regular expressions. Path patterns are matched against the request path and
 user-agent patterns against the `User-Agent` header, unanchored (agents append versions
@@ -746,6 +748,35 @@ a path to narrow it down: `faable deploy waf block '^/$' --query author` refuses
 Parameters that carry a sign-in flow (`code`, `state`…) are refused until you add
 `--force`: blocking them breaks the redirect back from an identity provider.
 
+### Block an IP
+
+```bash
+faable deploy waf block --ip 203.0.113.7
+faable deploy waf sink '^/$' --ip 203.0.113.7      # stop a keepalive pinger waking the app
+faable deploy waf monitor --ip 198.51.100.0/24
+```
+
+`--ip` takes one IPv4 or IPv6 address or a CIDR, not a regex. Alone it covers every
+request from that client; with a path, both have to match. It works with `block`, `sink`
+and `monitor` — not with `allow` or `limit` — and a rule combines a path with `--ip`, not
+with `--user-agent` or `--query` as well.
+
+- A CIDR can be at most a `/16` (IPv4) or a `/48` (IPv6).
+- Private, loopback, link-local, carrier-grade NAT and multicast ranges are refused.
+- The address is normalized: `1.2.3.4/32` becomes `1.2.3.4`, host bits are cleared and
+  IPv6 is compressed.
+- An app can name up to 20 distinct IPs across its rules.
+
+`'^/$'` with `--ip` is accepted without `--force`: it leaves your site root alone for
+everyone else, which is what you want for an uptime or keepalive service that requests
+`/` every minute and keeps a scale-to-zero app awake. The **Top IPs** panel of the app's
+Metrics page shows which address it is.
+
+The IP matched is the one connecting to Faable's edge, never `X-Forwarded-For`. If a
+custom domain sits behind your own proxy or CDN (Cloudflare with the orange cloud on),
+that address is the proxy's, shared by many of your visitors: block there, or use a
+user-agent or path rule instead. See [Block an IP](deploy/security-waf.md#block-an-ip).
+
 ### List
 
 ```bash
@@ -762,6 +793,8 @@ faable deploy waf rm '^/robots\.txt$'
 faable deploy waf rm --user-agent YisouSpider
 faable deploy waf rm '^/api/' --user-agent YisouSpider
 faable deploy waf rm --query rest_route
+faable deploy waf rm --ip 203.0.113.7
+faable deploy waf rm '^/$' --ip 203.0.113.7
 faable deploy waf rm '^/api/login$' --action limit
 ```
 
@@ -1016,7 +1049,7 @@ By default the server exposes **reads plus one deploy**:
 | :--------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
 | `whoami`, `list_projects`, `list_apps`, `get_app`                            | Find the app you mean, see what is live                                                                                      |
 | `list_deployments`, `get_deployment`, `get_build_logs`, `get_runtime_logs`   | Find out why a deploy failed or an app crashes                                                                               |
-| `get_app_traffic`, `get_usage`, `get_quota`                                  | Traffic, this period's usage, today's deploy allowance                                                                       |
+| `get_app_traffic`, `get_usage`, `get_quota`                                  | Traffic (with the top client IPs), this period's usage, today's deploy allowance                                             |
 | `list_domains`, `check_domain`                                               | Custom domains of an app or of the project, and why one is not verified yet                                                  |
 | `list_secrets`                                                               | Which environment variables are set — names only                                                                             |
 | `list_github_repos`                                                          | The GitHub repositories Faable can deploy, and the install link when one is missing                                          |
@@ -1115,7 +1148,7 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 | `faable deploy domains redirect`     | Redirect a domain to another of the project (`--off` to serve it again)                   |
 | `faable deploy domains rm`           | Remove a domain (confirmation, `--yes`)                                                   |
 | `faable deploy waf list`             | Show the edge rules in effect for the app                                                 |
-| `faable deploy waf block`            | Refuse requests at the edge with a 403 (by path, user-agent, or both)                     |
+| `faable deploy waf block`            | Refuse requests at the edge with a 403 (by path, user-agent, query, IP, or a combination) |
 | `faable deploy waf sink`             | Answer requests with a 404 without waking the app                                         |
 | `faable deploy waf rm`               | Remove one of your edge rules                                                             |
 | `faable auth users list`             | List, filter, sort and count users (`--email`, `--sort`, `--last-login-since`, `--count`) |

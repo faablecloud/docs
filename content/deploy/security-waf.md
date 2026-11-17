@@ -1,11 +1,11 @@
 ---
 title: Web Application Firewall (WAF)
-description: Faable Deploy filters hostile requests at the edge, before they reach your app — on every plan. See what the platform blocks for you, add your own rules by path, user-agent or query parameter to block, sink or rate limit them, and read what was stopped.
+description: Faable Deploy filters hostile requests at the edge, before they reach your app — on every plan. See what the platform blocks for you, add your own rules by path, user-agent, query parameter or client IP to block, sink or rate limit them, and read what was stopped.
 ---
 
 # Web Application Firewall
 
-**Every Faable app sits behind an edge firewall that stops hostile requests before they reach your code — on every plan, including Free.** Faable maintains rulesets against the traffic every site on the internet receives (scanners hunting for `.env` files, Git metadata, credentials, admin panels and known exploits), and you can add your own rules by path, user-agent or query parameter, to block requests or to rate limit them, from the CLI or the dashboard.
+**Every Faable app sits behind an edge firewall that stops hostile requests before they reach your code — on every plan, including Free.** Faable maintains rulesets against the traffic every site on the internet receives (scanners hunting for `.env` files, Git metadata, credentials, admin panels and known exploits), and you can add your own rules by path, user-agent, query parameter or client IP, to block requests or to rate limit them, from the CLI or the dashboard.
 
 A blocked request is answered at the edge. It never runs your code, never wakes an app that is scaled to zero, and does not count as traffic in your Metrics.
 
@@ -28,7 +28,7 @@ The rulesets in effect for your app are listed in the **Firewall** tab of the ap
 
 ## What it does not do
 
-The firewall matches requests by **path, `User-Agent` and query parameter name**. Be clear about what that leaves out:
+The firewall matches requests by **path, `User-Agent`, query parameter name and client IP**. Be clear about what that leaves out:
 
 - It does **not** read request bodies, other headers or the values of query parameters.
 - It is **not** a signature engine such as the OWASP Core Rule Set: it does not detect SQL injection or cross-site scripting in your forms and APIs.
@@ -56,8 +56,10 @@ A rule matches on:
 | Query parameter              | `--query rest_route`                | any request carrying that parameter |
 | Path **and** User-Agent      | `'^/api/' --user-agent YisouSpider` | both must match                     |
 | Path **and** query parameter | `'^/$' --query author`              | both must match                     |
+| Client IP                    | `--ip 203.0.113.7`                  | that address or CIDR, on every path |
+| Path **and** client IP       | `'^/$' --ip 203.0.113.7`            | both must match                     |
 
-Paths and user-agents are regular expressions (RE2: no lookahead or backreferences). A query selector is a parameter **name**, matched by its presence, not a regex. Rules take about 20 seconds to reach the edge.
+Paths and user-agents are regular expressions (RE2: no lookahead or backreferences). A query selector is a parameter **name**, matched by its presence, not a regex. An IP selector is an address or a CIDR, not a regex: see [Block an IP](#block-an-ip). Rules take about 20 seconds to reach the edge.
 
 ### From the CLI
 
@@ -66,6 +68,7 @@ faable deploy waf block '^/\.well-known/'           # 403 at the edge
 faable deploy waf sink '^/robots\.txt$'             # 404 without waking the app
 faable deploy waf block --user-agent YisouSpider    # a crawler, on every path
 faable deploy waf block --query rest_route          # any request with ?rest_route=
+faable deploy waf block --ip 203.0.113.0/24         # a network, on every path
 faable deploy waf list                              # platform rulesets and your rules
 faable deploy waf rm '^/robots\.txt$'               # remove a rule as you created it
 ```
@@ -115,7 +118,7 @@ faable deploy waf limit --user-agent GPTBot --rate 60/m --per rule   # the crawl
 Over the limit, Faable answers 429 at the edge: those requests do not reach or wake your app.
 ```
 
-A `limit` rule lets matching requests through up to a rate. Past it, they get a `429 Too Many Requests` at the edge with a `Retry-After` header: they never run your code and never wake an app that is asleep. It takes the same selectors as `block`.
+A `limit` rule lets matching requests through up to a rate. Past it, they get a `429 Too Many Requests` at the edge with a `Retry-After` header: they never run your code and never wake an app that is asleep. It takes the same selectors as `block`, except an IP.
 
 - **`--rate`** is requests per second (`5/s`) or per minute (`10/m`), up to 10,000. There is no per hour or per day: the edge refills its counters several times an hour, so a longer window would not hold.
 - **`--burst`** is how many requests can arrive at once before the rate applies. It defaults to the rate.
@@ -124,6 +127,57 @@ A `limit` rule lets matching requests through up to a rate. Past it, they get a 
 To change the rate, run the same command with the new one: the rule is the selector, and its rate is replaced. Remove it with `faable deploy waf rm '^/api/login$' --action limit`.
 
 This is on top of the [request rate limit of your instance](pricing.mdx#request-rate-limit), which applies to every path and is set by Faable. A `limit` rule is yours, for one path or one client, and is usually much lower. If one of your `allow` rules covers the same path, the `allow` wins and the path is not limited.
+
+### Block an IP
+
+```bash
+faable deploy waf block --ip 203.0.113.7               # 403 for every request from it
+faable deploy waf sink '^/api/' --ip 2001:db8::/48     # 404 on /api/ only, app not woken
+faable deploy waf monitor --ip 198.51.100.0/24         # see what it would stop first
+faable deploy waf rm --ip 203.0.113.7                  # remove it as you created it
+```
+
+An IP rule targets one client address (IPv4 or IPv6) or a CIDR, alone — every request from it, on every path — or together with a path, and then both must match. It works with `block` (`403` at the edge), `sink` (`404` from Faable, without waking your app) and `monitor` (blocks nothing, reports what it would have stopped). It is not available for `allow` or `limit`, and it cannot be combined with `--user-agent` or `--query`.
+
+- **At most a `/16`** for IPv4 and a `/48` for IPv6. For anything wider, block the narrower ranges you actually see.
+- **Private, loopback, link-local, carrier-grade NAT (`100.64.0.0/10`) and multicast ranges are refused**: no visitor reaches your app from them, so a rule there would only block Faable talking to your app.
+- **Addresses are normalized**: `1.2.3.4/32` is stored as `1.2.3.4`, host bits are cleared (`203.0.113.9/24` becomes `203.0.113.0/24`) and IPv6 is written compressed and in lower case. `faable deploy waf list` shows the rule in that form, and `rm` finds it whichever way you write it.
+- **Up to 20 distinct IPs** per app, across all your rules. To cover more, name the network with a CIDR.
+
+The address matched is the one that **connects to Faable's edge**, never `X-Forwarded-For` or any other header, so a client cannot dodge or forge an IP rule by sending one.
+
+> [!WARNING]
+> If a custom domain sits behind **your own proxy or CDN** (Cloudflare with the orange cloud on, for example), the client Faable sees is that proxy's edge, not the visitor. An IP rule on that address blocks a slice of all your visitors on that domain. Use a user-agent or path rule there instead, or block the IP at your proxy.
+
+From the API, `POST /app/<app_id>/waf/rules` takes the IP as `ip`, alone or with `pattern`, and `DELETE` on the same URL removes the rule with the same body:
+
+```bash
+curl -X POST https://api.faable.com/app/<app_id>/waf/rules \
+  -H "Authorization: Bearer $FAABLE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"ip": "203.0.113.7", "action": "deny"}'
+```
+
+In the dashboard, **Add rule** in the **Firewall** tab has the same IP selector.
+
+### Find the IPs behind your traffic
+
+The **Metrics** page of the app has a **Top IPs** panel: the 10 client IPs that sent your app the most requests it served, each with its most common user-agent, how many distinct paths it requested and when it was last seen. A listed IP can be blocked or sunk from the panel in one click. Addresses from Faable's own network show as internal and cannot be blocked.
+
+The same list is `top_ips` in `GET /app/<app_id>/traffic`, with `ip`, `requests`, `user_agent`, `paths`, `last_seen` and `blockable` (false for those internal addresses).
+
+### Stop a keepalive pinger
+
+An uptime or keepalive service that requests `/` every minute keeps an app that scales to zero awake all day. To let it sleep:
+
+1. Open the app's **Metrics** page and find the pinger in **Top IPs**: a single address, many requests, one path, a user-agent such as an uptime monitor's.
+2. Sink `/` for that IP only:
+
+```bash
+faable deploy waf sink '^/$' --ip 203.0.113.7
+```
+
+The pinger gets a `404` from Faable and your app is never woken for it; every other visitor still reaches `/`. A rule on `^/$` alone would take your site root away from everyone and is refused; bounded to an IP, it is allowed without `--force`. Try it with `monitor` first if you are not sure the address is only the pinger.
 
 ### Safeguards and limits
 
@@ -135,7 +189,7 @@ Some rules would take your app offline or break the platform, and are refused wi
 
 Search engines, AI crawlers, uptime monitors and query parameters that carry a sign-in flow are refused until you confirm with `--force` (**Add anyway** in the dashboard). Certificate renewal always gets through: `/.well-known/acme-challenge/` stays reachable even under a broad rule.
 
-Each app can have up to **50 rules**, with at most 10 `limit` rules, 10 user-agent patterns, 10 query parameters and 4,000 bytes of patterns in total.
+Each app can have up to **50 rules**, with at most 10 `limit` rules, 10 user-agent patterns, 10 query parameters, 20 IPs and 4,000 bytes of patterns in total.
 
 ## See what was stopped
 
@@ -147,6 +201,7 @@ The **Firewall** tab shows the requests stopped over the last 24 hours, 7 days o
 
 - **A legitimate request gets a `403` it should not.** Check `faable deploy waf list` for a rule of yours that covers it, and remove or narrow it. If it is a path Faable blocks for every app (an archive, a dotfile, a config file), [allow it](#allow-a-path-faable-blocks). Otherwise, contact support with the URL: platform rulesets are only tuned by Faable.
 - **A rule does not seem to apply.** Wait about 20 seconds, then test with `curl -s -o /dev/null -w '%{http_code}\n' https://<your-app>/<path>`. Path patterns match the path only, without the query string: use `--query` for parameters.
+- **An IP rule blocks visitors it should not.** If the domain is behind your own proxy or CDN, the address Faable sees is the proxy's, shared by many visitors: remove the rule and block at your proxy, or use a user-agent or path rule.
 - **A client gets `429`s you did not expect.** A `limit` rule of yours may cover it: `faable deploy waf list` shows each with its rate. A `--per rule` limit is shared by every client, so one busy client uses it up for the rest. If no rule of yours matches, it is the [instance rate limit](pricing.mdx#request-rate-limit).
 - **Your error rate in Metrics shows scanner 404s.** Those requests reached your app because no rule covered them. A `sink` rule answers them at the edge and keeps them out of Metrics.
 
