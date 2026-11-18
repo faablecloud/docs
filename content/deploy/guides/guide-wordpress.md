@@ -36,10 +36,12 @@ A WordPress on Hobby is the Hobby plan (15 €/month) plus 10 € for a `db-s`. 
 
 Open your project, go to **Deploy › Installations** and click **Install an app**. Pick **WordPress**, then fill in:
 
-- **App name**: lowercase letters, digits and dashes. It becomes the site's address, `https://<name>-xxxxx.faable.link`.
-- **Site title** and **Admin email**: the first administrator. They get an email to set their password.
-- **Language** (optional).
+- **Site title**. The site's app is named after it, and gets the address `https://<name>-xxxxx.faable.link`.
+- **Language** (optional). Type to search it, by its own name, its English name or its code (`es_ES`).
+- **Your domain** (optional): where the site lives in production, for example `www.example.com`. See [your own domain](#your-own-domain).
 - **Database tier**: the one recommended for your plan is preselected.
+
+You don't enter an admin email. **You are the site's first administrator**, with the email of your Faable account, which has to be verified. The **Sign-in with Faable Auth** card shows which Auth tenant of your project the site signs in with (a new one, named after the project, if it has none) and your email.
 
 Click **Install WordPress**. The installation's page follows the install, which takes a few minutes.
 
@@ -52,10 +54,11 @@ faable deploy install
 faable deploy install wordpress \
   --name my-blog \
   --input title="My blog" \
-  --input admin_email=me@example.com \
   --input locale=es_ES \
   --wait
 ```
+
+You are the administrator, by the verified email of the account you logged in with. To make someone else the administrator, add `--input admin_email=them@example.com`.
 
 `--wait` returns when the site is ready and its address answers, with the URL. Add `--tier db-m` for the larger database and `--json` for scripts. See [the CLI](../../cli.md).
 
@@ -63,17 +66,23 @@ faable deploy install wordpress \
 
 With the [Faable MCP server](../../cli.md#mcp-server) connected and writes allowed, ask:
 
-> Install WordPress in my project as "my-blog", titled "My blog", admin me@example.com.
+> Install WordPress in my project as "my-blog", titled "My blog".
 
 The agent uses `list_blueprints` to see what WordPress asks for and `install_blueprint` to install it.
 
 ## After the install
 
-- **Sign in**: open `https://<your-site>/wp-admin`. The administrator sets their password from the email they received, then signs in with **Log in with Faable**.
-- **Your domain**: add it to the app like any other. See [custom domains](../domains/custom-domain.md).
+- **Sign in**: open `https://<your-site>/wp-admin` and sign in with **Log in with Faable**, with your Faable account's email. If that email was new in the project's Auth tenant, you get an email there to set its password first.
+- **Your domain**: if you didn't give one at install, add it to the app like any other. See [custom domains](../domains/custom-domain.md).
 - **Plugins and themes**: install them from `wp-admin` as usual. They live on the volume and survive restarts and deploys.
 - **WP-CLI**: run a command once with [`faable deploy run`](../scheduled-tasks.md#from-the-cli), for example `faable deploy run --app my-blog -- wp plugin list`.
 - **Backups**: the volume and the database are backed up every night, and you can back them up, restore, export and import from their pages in the dashboard, or with `faable deploy volumes`.
+
+## Your own domain
+
+Give the domain at install and the site is born on it: WordPress's address, its links and its sign-in all use it, and its `faable.link` address leads there too. Faable adds the domain to the app and issues its certificate.
+
+**You have to configure the domain's DNS.** After installing, the installation's page shows the DNS record to create at your DNS provider (a `CNAME` to Faable, or the records for a bare domain). Until the domain points at Faable and its certificate is issued, the site does not load. The page follows the DNS on its own and says when the site is live. See [custom domains](../domains/custom-domain.md).
 
 ## Sleeping and waking
 
