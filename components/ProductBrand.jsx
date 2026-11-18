@@ -207,43 +207,47 @@ const CARDS = [
       'Runs the Signup Protection of Faable Auth'
     ],
     accent: 'text-violet-600 dark:text-violet-400',
-    border: 'hover:border-violet-400 dark:hover:border-violet-500'
+    border: 'hover:border-violet-400 dark:hover:border-violet-500',
+    // A row of its own under Deploy and Auth: three columns read cramped.
+    wide: true
   }
 ]
 
 // The product picker on the docs home (content/index.mdx).
 export function ProductCards() {
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {CARDS.map(({ product, href, tagline, bullets, accent, border }) => (
-        <Link
-          key={product}
-          href={href}
-          className={`group flex flex-col gap-3 rounded-xl border border-gray-200 p-6 no-underline! transition-colors dark:border-neutral-800 ${border}`}
-        >
-          <div className="flex items-center gap-3">
-            <ProductIcon product={product} />
-            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
-              {PRODUCTS[product].name}
+    <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      {CARDS.map(
+        ({ product, href, tagline, bullets, accent, border, wide }) => (
+          <Link
+            key={product}
+            href={href}
+            className={`group flex flex-col gap-3 rounded-xl border border-gray-200 p-6 no-underline! transition-colors dark:border-neutral-800 ${border} ${wide ? 'sm:col-span-2' : ''}`}
+          >
+            <div className="flex items-center gap-3">
+              <ProductIcon product={product} />
+              <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                {PRODUCTS[product].name}
+              </span>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400">{tagline}</p>
+            <ul className="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">
+              {bullets.map(b => (
+                <li key={b} className="flex gap-2">
+                  <span className={accent}>✓</span>
+                  {b}
+                </li>
+              ))}
+            </ul>
+            <span className={`mt-auto pt-2 font-semibold ${accent}`}>
+              Read the {PRODUCTS[product].name} docs{' '}
+              <span className="inline-block transition-transform group-hover:translate-x-1">
+                →
+              </span>
             </span>
-          </div>
-          <p className="text-gray-600 dark:text-gray-400">{tagline}</p>
-          <ul className="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">
-            {bullets.map(b => (
-              <li key={b} className="flex gap-2">
-                <span className={accent}>✓</span>
-                {b}
-              </li>
-            ))}
-          </ul>
-          <span className={`mt-auto pt-2 font-semibold ${accent}`}>
-            Read the {PRODUCTS[product].name} docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </span>
-        </Link>
-      ))}
+          </Link>
+        )
+      )}
     </div>
   )
 }
