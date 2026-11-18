@@ -107,6 +107,10 @@ Not on your own yet: importing a site is not part of the install. Write to [supp
 
 The app is deleted. Its volume and its database are kept for 30 days, so the data is not lost if it was a mistake, and are then deleted with their backups. To delete the database and its backups at once, choose so in the uninstall dialog.
 
+### Can I bring back a WordPress I uninstalled?
+
+Yes, within those 30 days, if you did not delete its database with it. Open the installation in the dashboard and click **Restore**. Faable brings it back as a new app with its files and a copy of its database as they were, its sign-in in the same Auth tenant with the same users, and its own domain, with the same DNS. A site without its own domain gets a new `faable.link` address, and the links inside its content are moved to it. It takes a few minutes.
+
 ### Is it hosted in Europe?
 
 Yes. The site, its files, its database and its backups stay in the EU.
