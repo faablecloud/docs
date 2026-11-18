@@ -81,7 +81,7 @@ The agent uses `list_blueprints` to see what WordPress asks for and `install_blu
 
 ## Your own domain
 
-Give the domain at install and the site is born on it: WordPress's address, its links and its sign-in all use it, and its `faable.link` address leads there too. Faable adds the domain to the app and issues its certificate.
+Give the domain at install and the site is born on it: WordPress's address, its links and its sign-in all use it. Its `faable.link` address keeps answering, and its links and `wp-admin` take you to your domain. Faable adds the domain to the app and issues its certificate.
 
 **You have to configure the domain's DNS.** After installing, the installation's page shows the DNS record to create at your DNS provider (a `CNAME` to Faable, or the records for a bare domain). Until the domain points at Faable and its certificate is issued, the site does not load. The page follows the DNS on its own and says when the site is live. See [custom domains](../domains/custom-domain.md).
 
