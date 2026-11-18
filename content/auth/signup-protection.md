@@ -8,6 +8,8 @@ rank: high
 
 A public sign-up form, or a "send me a code" box, is an endpoint anyone can script: thousands of fake accounts, or thousands of emails sent from your domain to addresses that never asked for them. **Signup protection** makes every such request cost CPU before Faable Auth sends an email or creates an account. The browser solves a small **proof-of-work challenge** — a fraction of a second for a person, real work for a script sending thousands.
 
+Signup protection is powered by **Faable Challenge**, Faable's bot-protection service, and is included with Faable Auth on every plan. The challenge is issued and verified by Challenge; if it ever does not answer in time, Faable Auth issues the same challenge itself, so a sign-up never waits on it.
+
 It is set **per client** (the dashboard calls it **Bot protection**) and covers the two endpoints that act on an address nobody has proven yet:
 
 - `POST /dbconnections/signup` — [sign-up](signup.md) with email or username.
@@ -35,7 +37,7 @@ Client libraries that cannot solve the challenge (auth-js older than 3.4.0, or y
 
 ## Turning it on
 
-**Dashboard** — **Auth → Applications →** your client **→ Login** tab **→ Bot protection**. The change applies to the next request.
+**Dashboard** — **Auth → Clients →** your client **→ Security** tab. It also shows a live preview of the badge next to a Send button. The change applies to the next request.
 
 **CLI** — `--signup-protection <off|on_risk|always>` on [`faable auth clients`](../cli.md#oauth-clients) `create` and `update`:
 
