@@ -52,11 +52,12 @@ Click **Install WordPress**. The installation's page follows the install, which 
 faable deploy install
 
 faable deploy install wordpress \
-  --name my-blog \
   --input title="My blog" \
   --input locale=es_ES \
   --wait
 ```
+
+The app is named after the title (`my-blog`); give it another name with `--name`. To install it on your own domain, add `--domain www.example.com`: the command prints the DNS record to create (see [your own domain](#your-own-domain)).
 
 You are the administrator, by the verified email of the account you logged in with. To make someone else the administrator, add `--input admin_email=them@example.com`.
 
@@ -66,9 +67,9 @@ You are the administrator, by the verified email of the account you logged in wi
 
 With the [Faable MCP server](../../cli.md#mcp-server) connected and writes allowed, ask:
 
-> Install WordPress in my project as "my-blog", titled "My blog".
+> Install WordPress in my project, titled "My blog", on www.example.com.
 
-The agent uses `list_blueprints` to see what WordPress asks for and `install_blueprint` to install it.
+The agent uses `list_blueprints` to see what WordPress asks for and `install_blueprint` to install it. With a domain, it tells you the DNS record to create.
 
 ## After the install
 
