@@ -1196,3 +1196,30 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 | `faable auth clients rm`             | Delete a client (confirmation, `--yes`)                                                   |
 | `faable auth logs list`              | Filter the audit log (type, status, origin, user or email, dates; `--expand-user`)        |
 | `faable auth logs get`               | Show one audit entry with its data payload                                                |
+
+## Faable Challenge
+
+Manage the [Faable Challenge](challenge) sites of the [active project](#projects): `faable challenge <sites|usage>`. Commands reuse your `faable login` session (or `FAABLE_TOKEN`); deploy API keys are not accepted. A site is named by its `site_…` id, its site key (`fcs_pk_…`) or its name. Every command accepts `--json`.
+
+```bash
+faable challenge sites list
+faable challenge sites create --name "Contact form" --domain example.com --domain shop.example.com
+faable challenge sites update <site> --name "New name"
+faable challenge sites update <site> --domain example.com --domain example.org   # replaces the list
+faable challenge sites rotate-secret <site>      # asks first; --yes to skip
+faable challenge sites delete <site>             # asks first; --yes to skip
+faable challenge usage                           # verifications this month against the plan
+```
+
+`create` and `rotate-secret` print the site key (for the [widget](challenge/widget.md)) and the secret (for your server's [verify call](challenge/verify.md)). **The secret is shown only once**: store it right away, for example with `faable deploy secrets set FAABLE_CHALLENGE_SECRET=…`. Rotating takes effect immediately, and the old secret stops working. A site has up to 10 domains, and each domain also covers its subdomains. Sites and verifications per plan are on [Faable Challenge pricing](challenge/pricing.mdx); creating a site over the plan's limit fails with `plan_required`.
+
+| Command                                | Description                                       |
+| -------------------------------------- | ------------------------------------------------- |
+| `faable challenge sites list`          | List the project's sites with their domains       |
+| `faable challenge sites create`        | Create a site (prints site key + secret once)     |
+| `faable challenge sites update`        | Rename a site or replace its domains              |
+| `faable challenge sites rotate-secret` | New secret, shown once; the old one stops working |
+| `faable challenge sites delete`        | Delete a site (confirmation, `--yes`)             |
+| `faable challenge usage`               | Verifications this month against the plan's quota |
+
+In the MCP server (`faable mcp`, or mcp.faable.com), `list_challenge_sites` and `get_challenge_usage` are always available, and `create_challenge_site` and `update_challenge_site` are writes. `rotate_challenge_secret` and `delete_challenge_site` exist only on a local `faable mcp --writes`. On the hosted server, Challenge needs an OAuth connection: API keys are not accepted.
