@@ -4,13 +4,16 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { PRODUCT_NAMES, productFor } from '../app/_lib/products'
 
-// Each product has its own corner of the docs: /deploy/* and /auth/* show only
+// Each product has its own corner of the docs: /deploy/*, /auth/* and
+// /challenge/* show only
 // that product in the sidebar (content/_meta.ts makes them `type: 'page'`), and
 // carry its name, icon and colour. Everything else (/, /cli, /platform, /faq)
 // is the platform and keeps the Faable brand.
 //
 // Colours and icons follow the landing (landing/components/base/ProductsMenu.tsx):
-// Deploy is indigo with a rocket, Auth is emerald with a shield. The colours
+// Deploy is indigo with a rocket, Auth is emerald with a shield. Challenge
+// follows the dashboard instead (components/apps/challenge): a violet →
+// fuchsia tile with a plain shield. The colours
 // are Tailwind's -600 (light) and -400 (dark), as HSL for Nextra's
 // --nextra-primary-* variables.
 //
@@ -33,6 +36,10 @@ const SHIELD_CHECK = (
   </>
 )
 
+const SHIELD = (
+  <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+)
+
 const PRODUCTS = {
   deploy: {
     name: PRODUCT_NAMES.deploy,
@@ -47,6 +54,13 @@ const PRODUCTS = {
     tile: 'linear-gradient(135deg, #10b981, #047857)',
     light: { hue: 161, saturation: 94, lightness: 30 },
     dark: { hue: 158, saturation: 64, lightness: 52 }
+  },
+  challenge: {
+    name: PRODUCT_NAMES.challenge,
+    icon: SHIELD,
+    tile: 'linear-gradient(135deg, #8b5cf6, #d946ef)',
+    light: { hue: 262, saturation: 83, lightness: 58 },
+    dark: { hue: 255, saturation: 92, lightness: 76 }
   }
 }
 
@@ -181,13 +195,26 @@ const CARDS = [
     ],
     accent: 'text-emerald-600 dark:text-emerald-400',
     border: 'hover:border-emerald-400 dark:hover:border-emerald-500'
+  },
+  {
+    product: 'challenge',
+    href: '/challenge',
+    tagline:
+      'Bot protection for any form. An invisible proof of work in the browser, a one-time token your server verifies.',
+    bullets: [
+      'No puzzles, no cookies, no third parties, hosted in the EU',
+      'One script tag or npm package, one verify call on your server',
+      'Runs the Signup Protection of Faable Auth'
+    ],
+    accent: 'text-violet-600 dark:text-violet-400',
+    border: 'hover:border-violet-400 dark:hover:border-violet-500'
   }
 ]
 
 // The product picker on the docs home (content/index.mdx).
 export function ProductCards() {
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-2">
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {CARDS.map(({ product, href, tagline, bullets, accent, border }) => (
         <Link
           key={product}

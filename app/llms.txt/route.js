@@ -14,9 +14,9 @@ const MAX_BYTES = 40_000
 
 const INTRO = `# Faable
 
-> Faable is a European cloud platform that converges zero-ops application hosting (Faable Deploy) and a multi-tenant identity server (Faable Auth) into a single abstraction layer. Ship apps and AI agents straight from a Git repository — automatic deployments, free SSL, a built-in WAF and turnkey authentication — with no servers, pipelines or infrastructure to manage. Apps and data are hosted in the EU, and support comes from the engineers who build the platform.
+> Faable is a European cloud platform that converges zero-ops application hosting (Faable Deploy) and a multi-tenant identity server (Faable Auth) into a single abstraction layer, with bot protection for any form (Faable Challenge). Ship apps and AI agents straight from a Git repository — automatic deployments, free SSL, a built-in WAF and turnkey authentication — with no servers, pipelines or infrastructure to manage. Apps and data are hosted in the EU, and support comes from the engineers who build the platform.
 
-One subscription covers both products: Free (0 €, no credit card, Faable Auth up to 15,000 MAU), Hobby (15 €/month) and Pro (99 €/month), each a fixed monthly fee with no per-user charge.
+One subscription covers every product: Free (0 €, no credit card, Faable Auth up to 15,000 MAU), Hobby (15 €/month) and Pro (99 €/month), each a fixed monthly fee with no per-user charge.
 
 **What Faable Deploy is for**
 
@@ -40,6 +40,10 @@ Faable Auth is a managed, multi-tenant identity server built on OAuth 2.0 and Op
 
 Client libraries: \`@faable/auth-js\` for browser and native apps, \`@faable/auth-sdk\` for server-side code and the Management API.
 
+**What Faable Challenge is for**
+
+Faable Challenge protects any form — contact, booking, newsletter, a sign-up to your own backend — from scripts, without puzzles, cookies or third parties. A widget (\`https://challenge.faable.com/v1/api.js\` or \`@faable/challenge\`) solves a SHA-256 proof of work in the browser (18 bits, up to 21 for Tor exits, datacenter IPs and malformed User-Agents) and leaves a one-time token in the form as \`faable-challenge-response\`; the backend checks it with \`POST https://challenge.faable.com/v1/verify\` and the site's secret. Tokens last 5 minutes and verify once. It runs the Signup Protection of Faable Auth, and a successful verify returns a signed receipt that marks the users a form creates as verified. Included in every plan: 1,000 verifications a month on Free, 10,000 on Hobby, 100,000 on Pro.
+
 The full documentation as a single plain-text file is available at ${SITE_ROOT}/llms-full.txt.`
 
 // Not pages under content/, so they cannot come from the page map — and they
@@ -50,6 +54,7 @@ const PACKAGES = `## SDKs & Libraries
 - [@faable/auth-js](https://www.npmjs.com/package/@faable/auth-js): Browser and React Native auth client — Authorization Code + PKCE, session storage, token refresh, multi-tab sync.
 - [@faable/auth-helpers-react](https://www.npmjs.com/package/@faable/auth-helpers-react): React provider and hooks (\`SessionContextProvider\`, \`useSession\`, \`useUser\`) on top of @faable/auth-js.
 - [@faable/auth-sdk](https://www.npmjs.com/package/@faable/auth-sdk): Node.js server SDK — verify access tokens and call the Auth Management API with client credentials.
+- [@faable/challenge](https://www.npmjs.com/package/@faable/challenge): Faable Challenge widget for the browser — \`render\`, \`getResponse\`, \`execute\`, \`reset\`, \`remove\`; the same code as the \`challenge.faable.com/v1/api.js\` script.
 - [@faable/deploy-sdk](https://www.npmjs.com/package/@faable/deploy-sdk): Node.js client for the Faable Deploy API — manage apps, deployments, domains and secrets programmatically.
 - [@faable/faable](https://www.npmjs.com/package/@faable/faable): The Faable CLI — \`npm i -g @faable/faable\` to deploy and manage apps from the terminal.`
 

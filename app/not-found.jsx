@@ -3,7 +3,7 @@ import Link from 'next/link'
 export const metadata = {
   title: 'Page not found',
   description:
-    "We couldn't find the page you were looking for. Head over to Faable Auth or Faable Deploy to keep exploring."
+    "We couldn't find the page you were looking for. Head over to Faable Auth, Faable Deploy or Faable Challenge to keep exploring."
 }
 
 const products = [
@@ -24,6 +24,15 @@ const products = [
     description:
       'Link a Git repository and Faable builds, deploys, and serves it — with custom domains and free SSL out of the box.',
     cta: 'Explore Deploy'
+  },
+  {
+    href: '/challenge/get-started',
+    emoji: '🛡️',
+    name: 'Faable Challenge',
+    tagline: 'Bot protection for any form',
+    description:
+      'An invisible proof of work in the browser and a one-time token your server verifies — no puzzles, no cookies, no third parties.',
+    cta: 'Explore Challenge'
   }
 ]
 
@@ -45,7 +54,7 @@ export default function NotFound() {
         .
       </p>
 
-      <div className="mt-12 grid w-full grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className="mt-12 grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
         {products.map(product => (
           <Link
             key={product.href}

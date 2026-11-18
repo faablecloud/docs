@@ -1,0 +1,36 @@
+---
+title: Challenge pricing
+description: Faable Challenge is included in every Faable plan — 1,000 verifications a month and 1 site on Free, 10,000 and 5 sites on Hobby, 100,000 and unlimited sites on Pro. Going over never breaks your forms, and Faable Auth's Signup Protection never counts.
+rank: high
+---
+
+# Challenge pricing
+
+Faable Challenge is **included in every Faable plan**. There is nothing to add to your subscription and no metered line on your invoice: each plan includes a monthly allowance of verifications and a number of sites, **per project**.
+
+| Plan                   | Verifications a month | Sites     |
+| ---------------------- | --------------------- | --------- |
+| **Free** (0 €)         | 1,000                 | 1         |
+| **Hobby** (15 €/month) | 10,000                | 5         |
+| **Pro** (99 €/month)   | 100,000               | Unlimited |
+
+The plan is the project's; see [Pricing](/platform/pricing) for everything else each plan includes.
+
+<PricingCta product="challenge">Protect a form for free</PricingCta>
+
+## What counts
+
+- **A successful verify counts.** Each `POST /v1/verify` that answers `success: true` is one verification — and so is a `challenge_token` that [Faable Auth verifies](/challenge/faable-auth#with-the-token) for you.
+- **Challenges issued do not count**, and neither do failed verifies. A script that asks for challenges and never solves them does not spend your allowance.
+- **Faable Auth's own protection never counts.** [Signup Protection](/auth/signup-protection) on your Auth clients is included with Faable Auth, whatever its volume.
+- The count is per calendar month and per project, across all the project's sites.
+
+## Going over
+
+**Verification keeps working above the allowance.** A form protected by Faable Challenge never starts failing because of the plan: the dashboard shows the project over its plan and suggests moving to the next one.
+
+Sites are a hard limit: creating a site beyond what the plan includes is refused with `402 plan_required` until the project moves up a plan. Existing sites keep working.
+
+## Where to see it
+
+**Challenge** in the [Faable Dashboard](https://dashboard.faable.com) shows this month's verifications against the plan, the checks issued, the failed verifications, and how many sites the project has of how many it may.

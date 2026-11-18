@@ -6,6 +6,7 @@ export { SITE_URL }
 const SECTIONS = [
   { prefix: '/deploy', title: 'Faable Deploy' },
   { prefix: '/auth', title: 'Faable Auth' },
+  { prefix: '/challenge', title: 'Faable Challenge' },
   { prefix: '/cli', title: 'CLI' },
   { prefix: '/platform', title: 'Platform & Policies' }
 ]

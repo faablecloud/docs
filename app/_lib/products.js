@@ -1,9 +1,11 @@
-// The two products that have their own corner of the docs (/deploy, /auth).
+// The products that have their own corner of the docs (/deploy, /auth,
+// /challenge).
 // Shared by the server (page titles, social cards) and the client brand
 // (components/ProductBrand.jsx), so it holds plain data only.
 export const PRODUCT_NAMES = {
   deploy: 'Faable Deploy',
-  auth: 'Faable Auth'
+  auth: 'Faable Auth',
+  challenge: 'Faable Challenge'
 }
 
 // Product of a docs path or mdxPath segment list, or null for the platform

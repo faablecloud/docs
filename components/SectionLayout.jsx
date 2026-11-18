@@ -4,9 +4,9 @@ import { useMemo } from 'react'
 import { usePathname } from 'next/navigation'
 import { Layout } from 'nextra-theme-docs'
 
-// Sections with their own tree of pages: the two products and the platform
+// Sections with their own tree of pages: the products and the platform
 // policies. CLI, FAQ and the home are single pages.
-const SECTIONS = new Set(['deploy', 'auth', 'platform'])
+const SECTIONS = new Set(['deploy', 'auth', 'challenge', 'platform'])
 
 // Nextra's mobile menu renders the whole page map, so every page used to ship
 // a link to every other page — an Auth page carried 45 links to Deploy, hidden

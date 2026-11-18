@@ -20,6 +20,7 @@ export default {
   },
   deploy: { type: 'page', title: 'Faable Deploy' },
   auth: { type: 'page', title: 'Faable Auth' },
+  challenge: { type: 'page', title: 'Faable Challenge' },
   cli: {
     type: 'page',
     title: 'CLI',

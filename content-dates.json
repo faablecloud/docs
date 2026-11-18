@@ -265,7 +265,7 @@
   },
   "content/auth/pricing.mdx": {
     "published": "2026-08-24T18:03:43+02:00",
-    "modified": "2026-11-02T13:49:23.361Z"
+    "modified": "2026-11-18T18:36:12.680Z"
   },
   "content/auth/quickstart/angular.mdx": {
     "published": "2026-07-07T12:06:31+02:00",
@@ -414,6 +414,30 @@
   "content/auth/what-is-a-multi-tenant-identity-server.mdx": {
     "published": "2026-06-26T11:51:20+02:00",
     "modified": "2026-10-19T06:55:32.936Z"
+  },
+  "content/challenge/faable-auth.md": {
+    "published": "2026-11-18T18:36:12.680Z",
+    "modified": "2026-11-18T18:36:12.680Z"
+  },
+  "content/challenge/get-started.md": {
+    "published": "2026-11-18T18:36:12.680Z",
+    "modified": "2026-11-18T18:36:12.680Z"
+  },
+  "content/challenge/index.mdx": {
+    "published": "2026-11-18T18:36:12.680Z",
+    "modified": "2026-11-18T18:36:12.680Z"
+  },
+  "content/challenge/pricing.mdx": {
+    "published": "2026-11-18T18:36:12.680Z",
+    "modified": "2026-11-18T18:36:12.680Z"
+  },
+  "content/challenge/verify.md": {
+    "published": "2026-11-18T18:36:12.680Z",
+    "modified": "2026-11-18T18:36:12.680Z"
+  },
+  "content/challenge/widget.md": {
+    "published": "2026-11-18T18:36:12.680Z",
+    "modified": "2026-11-18T18:36:12.680Z"
   },
   "content/cli.md": {
     "published": "2026-04-08T11:37:58+02:00",
@@ -669,7 +693,7 @@
   },
   "content/index.mdx": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-10-17T14:39:09.016Z"
+    "modified": "2026-11-18T18:36:12.680Z"
   },
   "content/platform/compliance.md": {
     "modified": "2026-10-06T11:48:27+02:00",
@@ -681,7 +705,7 @@
   },
   "content/platform/pricing.mdx": {
     "published": "2026-08-24T18:03:43+02:00",
-    "modified": "2026-11-07T19:55:44.901Z"
+    "modified": "2026-11-18T18:36:12.680Z"
   },
   "content/platform/privacy-policy.md": {
     "published": "2026-03-31T11:42:44+02:00",

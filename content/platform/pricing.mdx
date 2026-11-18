@@ -1,12 +1,12 @@
 ---
 title: Pricing
-description: Faable's unified pricing — one subscription covers Auth and Deploy. Three platform tiers (Free 0 €, Hobby 15 €/month, Pro 99 €/month), each a fixed monthly fee.
+description: Faable's unified pricing — one subscription covers Deploy, Auth and Challenge. Three platform tiers (Free 0 €, Hobby 15 €/month, Pro 99 €/month), each a fixed monthly fee.
 rank: entry
 ---
 
 # Pricing
 
-Faable is sold as a **single subscription that covers every product** — both Faable Deploy (compute) and Faable Auth (identity). Pick the platform tier that matches the stage you're at, and you're done.
+Faable is sold as a **single subscription that covers every product** — Faable Deploy (compute), Faable Auth (identity) and Faable Challenge (bot protection). Pick the platform tier that matches the stage you're at, and you're done.
 
 Each tier is a **fixed monthly fee** that unlocks features and entitlements, and everything the tier includes — instances, deployments, users, egress — comes with the fee. There is never a per-user charge.
 
@@ -27,11 +27,11 @@ frees a slot for another.
 
 ## Plans
 
-| Plan      | Monthly fee | What you get                                                                                                                                                                                                                                                                                                  |
-| --------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**  | 0 €         | Try Faable end-to-end, no credit card. Up to 3 projects per account, 1 free instance, up to 50 successful deployments per day, build artifacts up to 512 MB, 10 GB egress / month, up to 60 GiB-hours of compute / month, custom domains with free SSL, Faable Auth with up to 15,000 MAU, community support. |
-| **Hobby** | 15 €        | Production-ready for a single product. Unlimited MAU, 1 vCPU · 1.5 GB per app, unlimited deployments, build artifacts up to 2 GB, 50 GB egress / month, custom domains, email support.                                                                                                                        |
-| **Pro**   | 99 €        | Unlimited MAU, enterprise SSO, custom domain for your login, multiple auth accounts, 100 GB egress / month plus metered traffic beyond it, audit logs, 99.9 % uptime SLA.                                                                                                                                     |
+| Plan      | Monthly fee | What you get                                                                                                                                                                                                                                                                                                                                                     |
+| --------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**  | 0 €         | Try Faable end-to-end, no credit card. Up to 3 projects per account, 1 free instance, up to 50 successful deployments per day, build artifacts up to 512 MB, 10 GB egress / month, up to 60 GiB-hours of compute / month, custom domains with free SSL, Faable Auth with up to 15,000 MAU, Faable Challenge with 1,000 verifications / month, community support. |
+| **Hobby** | 15 €        | Production-ready for a single product. Unlimited MAU, 1 vCPU · 1.5 GB per app, unlimited deployments, build artifacts up to 2 GB, 50 GB egress / month, custom domains, Faable Challenge with 10,000 verifications / month and 5 sites, email support.                                                                                                           |
+| **Pro**   | 99 €        | Unlimited MAU, enterprise SSO, custom domain for your login, multiple auth accounts, 100 GB egress / month plus metered traffic beyond it, audit logs, Faable Challenge with 100,000 verifications / month and unlimited sites, 99.9 % uptime SLA.                                                                                                               |
 
 The fee unlocks the tier; the metered lines above are the only thing that can be added to it. The deep-dives below break down exactly what each plan includes per product.
 
@@ -44,6 +44,7 @@ Apps on Faable run on CPU today, on every plan. **GPU support is coming to the P
 The platform tier you choose maps to concrete entitlements in each product. See:
 
 - **[Faable Auth pricing](../auth/pricing.md)** — MAU allowances, auth accounts, audit logs.
+- **[Faable Challenge pricing](../challenge/pricing.mdx)** — verifications a month and sites per plan. Going over never breaks a form, and Faable Auth's Signup Protection never counts.
 - **[Faable Deploy pricing](../deploy/pricing.md)** — the compute each plan runs on (`bi.xs` … `bi.xlarge`), deployments per day, build artifact size limits, and the monthly egress allowance of each plan.
 
 ## Support

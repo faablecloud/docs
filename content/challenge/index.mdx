@@ -1,0 +1,63 @@
+---
+title: Faable Challenge documentation
+description: Faable Challenge is bot protection for any form, without puzzles, cookies or third parties. The browser solves an invisible proof of work and your server verifies a one-time token. Hosted in the EU, included in every Faable plan.
+rank: high
+---
+
+# Faable Challenge
+
+**Faable Challenge** protects your forms from scripts without asking people to prove anything. There is no puzzle to solve, no image to click and no cookie to accept: the browser does a small amount of computation in the background, and your server checks the result with Faable before it acts on the submission.
+
+It is the same service that runs [Signup Protection](/auth/signup-protection) for Faable Auth, and you can put it in front of any form of your own — a contact form, a booking request, a newsletter or a sign-up that goes to your own backend.
+
+## Start here
+
+| Page                                       | What you get                                                                         |
+| ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| [Get Started](/challenge/get-started)      | A site, the widget in your form and the check on your server, in a few minutes.      |
+| [The Widget](/challenge/widget)            | Every option, attribute, event, theme and language, and how to use it in a SPA.      |
+| [Verify API](/challenge/verify)            | The server call, its response, the error codes and the signed receipt.               |
+| [With Faable Auth](/challenge/faable-auth) | Mark the users your own form creates as verified, and how Signup Protection uses it. |
+| [Pricing](/challenge/pricing)              | The verifications and sites each plan includes.                                      |
+
+## How it works
+
+1. **The widget asks for a challenge.** A small badge sits in your form. When the person starts filling it in, the widget asks `challenge.faable.com` for a challenge, with your **site key** (`fcs_pk_…`). The challenge is only issued if the page is on one of your site's domains.
+2. **The browser solves it.** It searches for a number that, hashed with SHA-256 together with the challenge, gives a result starting with a given number of zero bits — a proof of work. It runs in a Web Worker, so the page does not freeze, and is usually done before the person reaches the send button.
+3. **The form carries a token.** The widget trades the solution for a one-time **response token** and puts it in a hidden field, `faable-challenge-response`, sent with the form.
+4. **Your server verifies it.** Before doing anything with the submission, your backend calls `POST /v1/verify` with the token and your **secret key** (`fcs_sk_…`). A token is valid for 5 minutes and only once.
+
+The cost is **asymmetric**. For a person, it is a fraction of a second their browser spends while they type. For a script sending thousands of requests, each one costs real CPU, and none can be reused.
+
+## Difficulty adapts to the request
+
+Every challenge starts at **18 bits** — about 260,000 hashes on average, around 0.3 s in a laptop browser and three to four times that on a phone. Requests that look risky pay more: **one more bit per risk signal, up to 21**. The signals are:
+
+- the request comes from a **Tor exit node**;
+- it comes from a **datacenter IP address**, not a home or mobile network;
+- its **User-Agent is malformed**, the kind a templated script sends and a browser never does.
+
+Each extra bit doubles the expected work. The server sets the difficulty; the browser cannot choose it. The signals that applied come back to your server in the verify response, so you can weigh them too.
+
+## Compared with a classic CAPTCHA
+
+|                         | Faable Challenge                                                               | Image or checkbox CAPTCHA                         |
+| ----------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------- |
+| What the person does    | Nothing: the browser solves it while they fill in the form                     | Ticks a box, and sometimes solves a visual puzzle |
+| Cookies and tracking    | None — no cookies, no fingerprinting, no cross-site profile                    | Depends on the provider                           |
+| Who processes the data  | Faable, in the EU, the same provider that already hosts your app or your users | A third party                                     |
+| What it proves          | That the browser spent CPU on this request                                     | That someone (or something) solved the puzzle     |
+| Accessibility           | No task to perform; the badge is announced to screen readers                   | Visual and audio tasks can be a barrier           |
+| Server-side integration | One `POST /v1/verify`, the same shape as the common `siteverify` APIs          | One `siteverify` call                             |
+
+## What it does not do
+
+- **It does not prove there is a person.** A real browser driven by automation (Playwright, Puppeteer) solves the challenge the way any browser does. Proof of work makes abuse in bulk slow and expensive; it does not make it impossible.
+- **It is not a rate limit.** Faable Challenge limits how many challenges one IP can ask for (60 a minute), but your endpoint should still limit what it accepts.
+- **It does not see your form's data.** The widget sends your site key and an optional action label, never the fields of the form.
+
+## Where you manage it
+
+In the [Faable Dashboard](https://dashboard.faable.com), pick **Challenge** in the product menu. Each **site** has a name, the domains its widget may run on, a site key for your page and a secret key for your server. The page also shows this month's verifications against your plan.
+
+For Faable Auth's own protection there is nothing to set up here: it is the **Security** tab of each Auth client. See [Signup Protection](/auth/signup-protection).

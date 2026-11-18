@@ -8,7 +8,8 @@ import { SectionLayout } from '../../components/SectionLayout'
 
 const navbar = (
   <Navbar
-    // Product name and icon on /deploy and /auth, "Faable Docs" elsewhere.
+    // Product name and icon on /deploy, /auth and /challenge, "Faable Docs"
+    // elsewhere.
     logo={<NavbarLogo />}
   >
     {/* Persistent conversion CTA — docs are the paid/organic landing for many
