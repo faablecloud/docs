@@ -71,6 +71,18 @@ export default withNextra({
         destination: '/platform/pricing',
         permanent: false
       },
+      // Guessed URLs that 404 in GA4 (Nov 2026)
+      {
+        source: '/platform/terms',
+        destination: '/platform/terms-of-service',
+        permanent: false
+      },
+      {
+        source: '/faable-json',
+        destination:
+          '/deploy/build-requirements#%EF%B8%8F-faablejson-reference',
+        permanent: false
+      },
       // NOTE: /auth/quickstart is NOT here — it has a real index page now, and
       // a redirect would shadow it. This is why these are 302s.
       {
