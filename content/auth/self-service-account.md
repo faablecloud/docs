@@ -27,13 +27,19 @@ if (error?.code === 'reauth_required') {
   await auth.authorize({ queryParams: { max_age: '0' } })
 }
 
-// Name, company and country, and your app's own profile fields.
+// Name, company, country and phone, and your app's own profile fields.
 // Keys you leave out are not touched.
 await auth.updateProfile({
   name: 'Ada Lovelace',
   country_iso: 'GB',
   fields: [{ key: 'profile', value: 'teacher' }]
 })
+
+// The phone is normalised with the tenant's default country; null removes it.
+const { error: phoneError } = await auth.updateProfile({ phone: '636 123 456' })
+if (phoneError?.code === 'phone_verified') {
+  // The current phone is verified: changing it needs an SMS code (phone verification).
+}
 
 // One field at a time (null removes it), and reading it back from the session.
 await auth.updateProfileField('profile', 'teacher')
@@ -55,7 +61,7 @@ const { data: ended } = await auth.revokeOtherSessions() // { revoked: 2 }
 await auth.deleteAccount()
 ```
 
-These methods need `@faable/auth-js` 2.19 or later; `updateProfileField()` and `getProfileField()` need 3.0. `updateProfile()` and `updateProfileField()` also update the stored session's user and fire `USER_UPDATED`, so `getSession()` and your `onAuthStateChange` handlers see the new values without waiting for a token refresh.
+These methods need `@faable/auth-js` 2.19 or later; `updateProfileField()` and `getProfileField()` need 3.0, and `updateProfile({ phone })` needs 3.9. `updateProfile()` and `updateProfileField()` also update the stored session's user and fire `USER_UPDATED`, so `getSession()` and your `onAuthStateChange` handlers see the new values without waiting for a token refresh.
 
 Errors come back as an `AuthApiError` whose `code` is one of the [error codes](#errors) below.
 
@@ -63,15 +69,15 @@ Errors come back as an `AuthApiError` whose `code` is one of the [error codes](#
 
 All of them are on your auth tenant and accept either an `Authorization: Bearer <access_token>` header or the session cookie, like `GET /me`.
 
-| Method   | Path                            | auth-js                                   | Purpose                                                           |
-| -------- | ------------------------------- | ----------------------------------------- | ----------------------------------------------------------------- |
-| `GET`    | `/me/credentials`               | `getCredentials()`                        | Whether the user has a password, and the connections they use.    |
-| `POST`   | `/me/password`                  | `setPassword()`                           | Set or change the user's password.                                |
-| `PATCH`  | `/me`                           | `updateProfile()`, `updateProfileField()` | Update the name, company, country and your app's custom `fields`. |
-| `DELETE` | `/me/identities/:connection_id` | `unlinkIdentity()`                        | Unlink one of the user's social or enterprise accounts.           |
-| `GET`    | `/me/sessions`                  | `listSessions()`                          | The user's active sessions. See [Sessions](sessions.md).          |
-| `POST`   | `/me/sessions/revoke-others`    | `revokeOtherSessions()`                   | Sign the user out everywhere else.                                |
-| `DELETE` | `/me`                           | `deleteAccount()`                         | Delete the user's account.                                        |
+| Method   | Path                            | auth-js                                   | Purpose                                                                  |
+| -------- | ------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------ |
+| `GET`    | `/me/credentials`               | `getCredentials()`                        | Whether the user has a password, and the connections they use.           |
+| `POST`   | `/me/password`                  | `setPassword()`                           | Set or change the user's password.                                       |
+| `PATCH`  | `/me`                           | `updateProfile()`, `updateProfileField()` | Update the name, company, country, phone and your app's custom `fields`. |
+| `DELETE` | `/me/identities/:connection_id` | `unlinkIdentity()`                        | Unlink one of the user's social or enterprise accounts.                  |
+| `GET`    | `/me/sessions`                  | `listSessions()`                          | The user's active sessions. See [Sessions](sessions.md).                 |
+| `POST`   | `/me/sessions/revoke-others`    | `revokeOtherSessions()`                   | Sign the user out everywhere else.                                       |
+| `DELETE` | `/me`                           | `deleteAccount()`                         | Delete the user's account.                                               |
 
 A bearer token must be a **user** token issued by **this** tenant; a `client_credentials` token, or one from another tenant, gets `403 forbidden`. A suspended user, or a session still waiting for its second factor, is refused the same way `GET /me` refuses them.
 
@@ -123,7 +129,7 @@ In both cases:
 
 The endpoint is rate-limited to 5 requests per minute per IP.
 
-## Name, company and country
+## Name, company, country and phone
 
 `PATCH /me` also takes the user's own profile:
 
@@ -131,16 +137,21 @@ The endpoint is rate-limited to 5 requests per minute per IP.
 curl -X PATCH https://<your-auth-domain>/me \
   -H "Authorization: Bearer <access_token>" \
   -H "Content-Type: application/json" \
-  -d '{ "name": "Ada Lovelace", "country_iso": "GB" }'
+  -d '{ "name": "Ada Lovelace", "country_iso": "GB", "phone": "+447700900123" }'
 ```
 
-| Field          | Meaning                                                                                                  |
-| -------------- | -------------------------------------------------------------------------------------------------------- |
-| `name`         | 1 to 100 characters.                                                                                     |
-| `company_name` | Up to 100 characters, stored in `user_metadata`.                                                         |
-| `country_iso`  | An ISO 3166 code, alpha-2 or alpha-3 (`ES`, `ESP`), stored as alpha-2. An unknown code is `bad_request`. |
+| Field          | Meaning                                                                                                                                                                                                    |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | 1 to 100 characters.                                                                                                                                                                                       |
+| `company_name` | Up to 100 characters, stored in `user_metadata`.                                                                                                                                                           |
+| `country_iso`  | An ISO 3166 code, alpha-2 or alpha-3 (`ES`, `ESP`), stored as alpha-2. An unknown code is `bad_request`.                                                                                                   |
+| `phone`        | The user's phone, `null` to remove it. Stored in E.164 with the tenant's default country (`636 123 456` → `+34636123456`); one that does not normalise is `invalid_phone`. See below for a verified phone. |
 
 Send only what changes: keys you leave out are not touched. Nothing else about the user can be written this way: `email_verified`, `app_metadata` or anything outside this list is ignored. The new values reach the session's claims on the next token refresh.
+
+The `phone` is the user's own, the one the dashboard, `/userinfo` (`phone_number`) and SMS recovery use, normalised the same way as every other write (see [Phone verification](phone-verification.md)). If the request fails, nothing in it is written.
+
+**A verified phone can't be changed here.** Once `phone_verified` is `true` the phone is a recovery channel and can be a second factor, so a session alone must not be able to swap it or take it away: a different number, or `null`, fails with **409** `phone_verified` and nothing changes. Change it with [`POST /user/{id}/verify-phone/start`](phone-verification.md), which proves the new number with an SMS code. Sending the number the user already has, in any format, is not an error. Changing an unverified phone leaves it unverified (`phone_verified: false`).
 
 ## Custom profile fields
 
@@ -235,6 +246,8 @@ A suspended user cannot delete their own account (`user_suspended`).
 | `no_database_connection`   | 400    | The tenant has no password sign-in.                                       |
 | `conflict`                 | 409    | Another user already has a password for this email.                       |
 | `invalid_profile_field`    | 400    | A field isn't declared, or its value doesn't match the declaration.       |
+| `invalid_phone`            | 400    | The `phone` doesn't normalise to E.164. Include the country code.         |
+| `phone_verified`           | 409    | The current phone is verified: change it through phone verification.      |
 | `last_sign_in_method`      | 409    | Unlinking this account would leave the user with no way to sign in.       |
 | `not_found`                | 404    | The user has no account on that connection.                               |
 | `user_suspended`           | 403    | A suspended user can't change or delete their account.                    |

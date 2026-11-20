@@ -11,7 +11,7 @@ Phone verification is available on **Hobby** and **Pro**. Each SMS it sends is b
 
 ## Phone numbers are stored in E.164
 
-Wherever a phone number reaches Faable Auth — `POST /user`, `POST /user/{id}`, phone verification — it is stored in E.164 (`+34636647460`) or the write is refused:
+Wherever a phone number reaches Faable Auth — `POST /user`, `POST /user/{id}`, the user's own `PATCH /me`, phone verification — it is stored in E.164 (`+34636647460`) or the write is refused:
 
 1. A number that already carries an international prefix is stored as it is.
 2. A number without one (`636647460`, how most people type it) is resolved with the account's **default country** — `default_country_iso`, set in the dashboard under _Settings_.
