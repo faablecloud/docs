@@ -81,7 +81,9 @@ Content-Type: application/json
 
 It answers like `start`, with a **new** `state` — the previous one stops working. Use `GET /verify-phone/pending?state=…` to render the screen: it returns the masked destination, the seconds left, whether the number may still be changed, and the account's default country.
 
-Correcting the number needs no session, the `state` is the proof — so it is refused with **409** `phone_already_verified` once the person has a verified phone. From that point on, a `state` that leaked cannot move where the codes go.
+Correcting the number needs no session, the `state` is the proof — so it is refused with **409** `phone_already_verified` once the person has a verified phone: there is nothing to verify. From that point on, a `state` that leaked cannot move where the codes go.
+
+The user's own `PATCH /me` (`updateProfile({ phone })`) can't change a verified phone either: it answers **409** `phone_change_requires_verification`, which means the opposite — to change it, verify the new number by SMS with `start`. See [the two phone codes](errors.md#two-phone-codes-that-look-alike).
 
 ## Confirm the code
 

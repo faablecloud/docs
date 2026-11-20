@@ -37,8 +37,8 @@ await auth.updateProfile({
 
 // The phone is normalised with the tenant's default country; null removes it.
 const { error: phoneError } = await auth.updateProfile({ phone: '636 123 456' })
-if (phoneError?.code === 'phone_verified') {
-  // The current phone is verified: changing it needs an SMS code (phone verification).
+if (phoneError?.code === 'phone_change_requires_verification') {
+  // The current phone is verified: to change it, verify the new number by SMS (phone verification).
 }
 
 // One field at a time (null removes it), and reading it back from the session.
@@ -61,7 +61,7 @@ const { data: ended } = await auth.revokeOtherSessions() // { revoked: 2 }
 await auth.deleteAccount()
 ```
 
-These methods need `@faable/auth-js` 2.19 or later; `updateProfileField()` and `getProfileField()` need 3.0, and `updateProfile({ phone })` needs 3.9. `updateProfile()` and `updateProfileField()` also update the stored session's user and fire `USER_UPDATED`, so `getSession()` and your `onAuthStateChange` handlers see the new values without waiting for a token refresh.
+These methods need `@faable/auth-js` 2.19 or later; `updateProfileField()` and `getProfileField()` need 3.0, and `updateProfile({ phone })` needs 3.9 (3.9.1 for the `phone_change_requires_verification` code). `updateProfile()` and `updateProfileField()` also update the stored session's user and fire `USER_UPDATED`, so `getSession()` and your `onAuthStateChange` handlers see the new values without waiting for a token refresh.
 
 Errors come back as an `AuthApiError` whose `code` is one of the [error codes](#errors) below.
 
@@ -151,7 +151,7 @@ Send only what changes: keys you leave out are not touched. Nothing else about t
 
 The `phone` is the user's own, the one the dashboard, `/userinfo` (`phone_number`) and SMS recovery use, normalised the same way as every other write (see [Phone verification](phone-verification.md)). If the request fails, nothing in it is written.
 
-**A verified phone can't be changed here.** Once `phone_verified` is `true` the phone is a recovery channel and can be a second factor, so a session alone must not be able to swap it or take it away: a different number, or `null`, fails with **409** `phone_verified` and nothing changes. Change it with [`POST /user/{id}/verify-phone/start`](phone-verification.md), which proves the new number with an SMS code. Sending the number the user already has, in any format, is not an error. Changing an unverified phone leaves it unverified (`phone_verified: false`).
+**A verified phone can't be changed here.** Once `phone_verified` is `true` the phone is a recovery channel and can be a second factor, so a session alone must not be able to swap it or take it away: a different number, or `null`, fails with **409** `phone_change_requires_verification` and nothing changes. To change it, verify the new number by SMS with [`POST /user/{id}/verify-phone/start`](phone-verification.md). Sending the number the user already has, in any format, is not an error. Changing an unverified phone leaves it unverified (`phone_verified: false`).
 
 ## Custom profile fields
 
@@ -235,21 +235,21 @@ A suspended user cannot delete their own account (`user_suspended`).
 
 ## Errors
 
-| Code                       | Status | When                                                                      |
-| -------------------------- | ------ | ------------------------------------------------------------------------- |
-| `forbidden`                | 403    | The bearer token is from another tenant, or isn't a user token.           |
-| `invalid_current_password` | 400    | `current_password` is missing or wrong.                                   |
-| `too_many_login_attempts`  | 429    | Too many wrong current passwords. Wait and retry.                         |
-| `reauth_required`          | 403    | Setting a first password needs a recent sign-in (with the second factor). |
-| `email_not_verified`       | 403    | Setting a first password needs a verified email.                          |
-| `password_too_weak`        | 400    | The password doesn't meet the connection's policy.                        |
-| `no_database_connection`   | 400    | The tenant has no password sign-in.                                       |
-| `conflict`                 | 409    | Another user already has a password for this email.                       |
-| `invalid_profile_field`    | 400    | A field isn't declared, or its value doesn't match the declaration.       |
-| `invalid_phone`            | 400    | The `phone` doesn't normalise to E.164. Include the country code.         |
-| `phone_verified`           | 409    | The current phone is verified: change it through phone verification.      |
-| `last_sign_in_method`      | 409    | Unlinking this account would leave the user with no way to sign in.       |
-| `not_found`                | 404    | The user has no account on that connection.                               |
-| `user_suspended`           | 403    | A suspended user can't change or delete their account.                    |
+| Code                                 | Status | When                                                                       |
+| ------------------------------------ | ------ | -------------------------------------------------------------------------- |
+| `forbidden`                          | 403    | The bearer token is from another tenant, or isn't a user token.            |
+| `invalid_current_password`           | 400    | `current_password` is missing or wrong.                                    |
+| `too_many_login_attempts`            | 429    | Too many wrong current passwords. Wait and retry.                          |
+| `reauth_required`                    | 403    | Setting a first password needs a recent sign-in (with the second factor).  |
+| `email_not_verified`                 | 403    | Setting a first password needs a verified email.                           |
+| `password_too_weak`                  | 400    | The password doesn't meet the connection's policy.                         |
+| `no_database_connection`             | 400    | The tenant has no password sign-in.                                        |
+| `conflict`                           | 409    | Another user already has a password for this email.                        |
+| `invalid_profile_field`              | 400    | A field isn't declared, or its value doesn't match the declaration.        |
+| `invalid_phone`                      | 400    | The `phone` doesn't normalise to E.164. Include the country code.          |
+| `phone_change_requires_verification` | 409    | The current phone is verified: to change it, verify the new number by SMS. |
+| `last_sign_in_method`                | 409    | Unlinking this account would leave the user with no way to sign in.        |
+| `not_found`                          | 404    | The user has no account on that connection.                                |
+| `user_suspended`                     | 403    | A suspended user can't change or delete their account.                     |
 
 The full list is in [Error Codes](errors.md).
