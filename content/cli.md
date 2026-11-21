@@ -252,7 +252,7 @@ faable deploy deployments
 
 ### Inspect — one deployment, by id
 
-Everything the platform recorded about a single deployment: phase, commit and author, release, detected stack, the packaged runnable (profile, runtime, size), the runtime image it was pinned to, and the **full failure reason** when it went red. Without an id it inspects the latest deployment of the app.
+Everything the platform recorded about a single deployment: phase, commit and author, release, detected stack, the packaged runnable (profile, runtime, size), the runtime image it was pinned to, and the **full failure reason** when it went red. Without an id it inspects the latest deployment of the app. With an id, `--app` is not needed: the deployment says which app it belongs to (the same goes for `deploy logs --build -d`, `redeploy` and `cancel`).
 
 ```bash
 faable deploy inspect deployment_a1b2c3
@@ -323,7 +323,15 @@ faable deploy open --dashboard
 
 ```bash
 faable deploy apps list                    # the apps of the active project
+faable deploy apps list --latest           # …each with its latest deployment, whatever its phase
 faable deploy apps get --app shop-api      # one app: what is live, latest deployment, stack
+```
+
+An app can be live on an older deployment while its latest one failed: its phase alone does not say so. `--latest` adds each app's newest deployment (`latest_deployment` in `--json`, `null` for an app that never deployed), so "which apps have a failed last deploy?" is one command:
+
+```bash
+faable deploy apps list --latest --all --json \
+  | jq -r '.data[] | select(.latest_deployment.status.phase // "" | test("ERROR")) | .name'
 ```
 
 `--app` takes an app **id, name or slug**. A name or slug is looked up among the apps of the active project and must match exactly one.
@@ -1020,7 +1028,7 @@ faable auth logs get log_xyz                       # full entry, including its d
 claude mcp add faable -- npx -y @faable/faable mcp
 ```
 
-For other clients, add a stdio server that runs `npx -y @faable/faable mcp`.
+For other clients, add a stdio server that runs `npx -y @faable/faable mcp`. An agent with a shell can also use the CLI directly with the [Faable skill](#coding-agents).
 
 Step-by-step guides: [Claude Code](/deploy/guides/guide-claude-code), [Cursor](/deploy/guides/guide-cursor), [Codex](/deploy/guides/guide-codex) and [Windsurf](/deploy/guides/guide-windsurf).
 
@@ -1117,6 +1125,49 @@ Set `FAABLE_NONINTERACTIVE=1` (or pass `--non-interactive`) whenever a program r
 
 CI keeps working without it: in GitHub Actions `faable deploy` authenticates with OIDC and deploys unattended as before.
 
+### Finding a command
+
+`faable commands` is the CLI described as data — every command with its usage, positionals, flags and what it does — so a program searches it instead of walking `--help`:
+
+```bash
+faable commands domain add --json    # commands matching every word: usage, flags, effect
+faable commands --effect read        # everything that changes nothing
+```
+
+Each command has an `effect`: `read`, `write`, `destructive` (deletes or overwrites what cannot be brought back) or `local` (only this machine's session). A few depend on their arguments and say when they are only a read (`read_when`).
+
+### Read-only mode
+
+`FAABLE_READONLY=1` (or `--read-only`) refuses every `write` and `destructive` command **before it sends anything** — exit 1 with `{"error": {"code": "read_only"}}` — and lets reads and `local` commands through. Turn it on for an agent you let run the CLI on its own; `faable commands --json` reports whether it is on (`read_only`). `FAABLE_READONLY=0` turns it off.
+
+## Coding agents
+
+An agent with a shell — Claude Code, Codex, Cursor — can drive the CLI directly, as an alternative to the [MCP server](#mcp-server). The **Faable skill** gives it what it would otherwise read `--help` for: the commands that answer the usual questions, the JSON contract, and the rules — read-only by default, ask before any change, and a bare `faable deploy` deploys the current directory.
+
+In Claude Code, install the plugin from the CLI's repository:
+
+```bash
+claude plugin marketplace add faablecloud/faable
+claude plugin install faable@faable
+```
+
+It adds the skill and starts every session in read-only and non-interactive mode (`FAABLE_READONLY=1`, `FAABLE_NONINTERACTIVE=1`). A variable you set yourself wins: `FAABLE_READONLY=0` in your environment keeps writes on.
+
+Or install just the skill, from the CLI you have:
+
+```bash
+faable agent install                   # ~/.claude/skills/faable — every project
+faable agent install --scope project   # ./.claude/skills/faable — commit it for your team
+faable agent install --agents          # ~/.agents/skills/faable — for other agents
+faable agent skill                     # print it, to paste into AGENTS.md or a prompt
+```
+
+The installed skill matches the CLI that wrote it; run the command again after `faable upgrade`. It never replaces a `SKILL.md` it did not write unless you pass `--force`.
+
+**Permissions.** To let the agent read without asking each time, allow `Bash(faable:*)`. Nothing that changes Faable gets through that rule: in read-only mode such a command fails before it sends anything, and a change you asked for runs as `FAABLE_READONLY=0 faable …`, which the rule does not match — Claude Code asks you first.
+
+**MCP or the skill?** Both act with your `faable login` session and give the same answers. The MCP server suits clients without a shell (claude.ai, ChatGPT) and the hosted endpoint needs no install. With a shell, the skill uses the full CLI — every command, `jq` over the output — at about the same token cost.
+
 ## Command Reference
 
 | Command                              | Description                                                                               |
@@ -1125,6 +1176,9 @@ CI keeps working without it: in GitHub Actions `faable deploy` authenticates wit
 | `faable whoami`                      | Show current user                                                                         |
 | `faable logout`                      | End the local session                                                                     |
 | `faable mcp`                         | Run the Faable MCP server over stdio (`--writes` for the reversible writes)               |
+| `faable commands`                    | Search the commands: usage, flags and effect (`--json`, `--effect read`)                  |
+| `faable agent install`               | Install the Faable skill for coding agents (`--scope project`, `--agents`)                |
+| `faable agent skill`                 | Print the Faable skill                                                                    |
 | `faable project`                     | Show, list, pick (`use`) or clear the active project                                      |
 | `faable deploy`                      | Deploy project to production (alias of `faable deploy launch`)                            |
 | `faable deploy launch`               | The deploy itself — `--app` to target another app, `--workdir` to deploy elsewhere        |
