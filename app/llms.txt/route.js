@@ -56,7 +56,7 @@ const PACKAGES = `## SDKs & Libraries
 - [@faable/auth-sdk](https://www.npmjs.com/package/@faable/auth-sdk): Node.js server SDK — verify access tokens and call the Auth Management API with client credentials.
 - [@faable/challenge](https://www.npmjs.com/package/@faable/challenge): Faable Challenge widget for the browser — \`render\`, \`getResponse\`, \`execute\`, \`reset\`, \`remove\`; the same code as the \`challenge.faable.com/v1/api.js\` script.
 - [@faable/deploy-sdk](https://www.npmjs.com/package/@faable/deploy-sdk): Node.js client for the Faable Deploy API — manage apps, deployments, domains and secrets programmatically.
-- [@faable/faable](https://www.npmjs.com/package/@faable/faable): The Faable CLI — \`npm i -g @faable/faable\` to deploy and manage apps from the terminal.`
+- [@faable/faable](https://www.npmjs.com/package/@faable/faable): The Faable CLI — \`npm i -g @faable/faable\` to deploy and manage apps from the terminal. Coding agents with a shell: \`faable agent install\` (or the Claude Code plugin \`faable@faable\` from \`faablecloud/faable\`) adds the Faable skill, read-only by default; \`faable commands --json\` searches every command.`
 
 const COMPANY = `## Company
 

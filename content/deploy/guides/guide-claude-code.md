@@ -74,6 +74,17 @@ The usual platform rules apply. Your app has to [serve HTTP on `$PORT`](../build
 - **`plan_required`.** The repository has a Dockerfile and the project is on Free. Remove the Dockerfile so the managed build applies, or move to Hobby.
 - **The deploy failed.** Ask why. The answer says whether it is `user` (your code or configuration) or `platform` (Faable). The [build failures page](../build-failures.md) lists the common causes.
 
+## Without MCP: the Faable plugin
+
+If you have the [Faable CLI](../../cli.md) installed, Claude Code can drive it directly instead of connecting the MCP server. The Faable plugin teaches it the commands and keeps the session read-only until you ask for a change:
+
+```bash
+claude plugin marketplace add faablecloud/faable
+claude plugin install faable@faable
+```
+
+It uses your `faable login` session. Details, and how to install just the skill with `faable agent install`, are in [Coding agents](../../cli.md#coding-agents).
+
 ## Related
 
 - [Deploy from Cursor](guide-cursor.md)
