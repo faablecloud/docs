@@ -1043,7 +1043,7 @@ claude mcp add --transport http faable https://mcp.faable.com/mcp
 The consent screen shows which app is asking and where it will send you back, and lets you choose **one project** the connection acts on. A new connection may read and deploy (`deploy:read`, `deploy:deploy`); the first time the agent calls a tool that changes something else — secrets, domains, a new app — your client asks you to allow that too (`deploy:write`). Nothing is ever deleted from the hosted server.
 
 - **Disconnect** an app from your [account page](https://faable.auth.faable.link/flow/account/security) (**Connected apps**): it loses access within a minute.
-- `?mode=write` also lists the reversible writes, so the agent can ask for them; `?readonly=1` leaves only the reads.
+- `?mode=write` also lists the reversible writes, so the agent can ask for them; `?readonly=1` leaves only the reads; `?mode=code` is [Code Mode](#code-mode).
 - The tool catalog is published at [`mcp.faable.com/tools.json`](https://mcp.faable.com/tools.json) and [`mcp.faable.com/llms.txt`](https://mcp.faable.com/llms.txt).
 
 #### With an API key instead
@@ -1091,6 +1091,27 @@ What the server guarantees:
 - **What your users typed is data too.** Names, log messages and device strings from Faable Auth come back marked as untrusted content, like build logs.
 - **Suspending is by one exact user.** An email that matches no user — or more than one — changes nothing.
 - **Errors say what to do next** — for example, to run `faable login` when the session has expired.
+
+### Code Mode
+
+Instead of one tool per action, Code Mode gives the agent two: `search`, which returns the CLI commands as TypeScript signatures, and `execute`, which runs JavaScript that calls them. A question that spans every app — which ones failed their last deploy, and why — becomes one `execute` instead of a tool call per app:
+
+```js
+const apps = await faable.deploy.apps.list({ latest: true, all: true })
+return apps.data
+  .filter(a => a.latest_deployment?.status?.phase === 'BUILD_ERROR')
+  .map(a => a.name)
+```
+
+```bash
+claude mcp add --transport http faable "https://mcp.faable.com/mcp?mode=code"   # hosted
+claude mcp add faable -- npx -y @faable/faable mcp --code                        # local
+```
+
+- Each `faable.*` call runs one CLI command with the connection's own credential and returns its `--json` output. Lists come as `{ object: 'list', data, has_more, next_cursor }`.
+- The same permissions as the tools apply: reads always, deploys unless `?readonly=1`, and the reversible writes only with `?mode=code,write` or an OAuth connection that allows them. Commands that delete are not on the object.
+- The code runs in a sandbox on the server (QuickJS): no network, files or timers, only the `faable` object and `console.log`. One `execute` makes at most 50 calls, four at a time.
+- Output written by third parties (logs, commit messages, user names) comes back marked as untrusted content, as with the tools.
 
 ## Scripting and agents
 
