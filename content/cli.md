@@ -942,7 +942,16 @@ Revoking ends the session cookie and every refresh token issued through it; acce
 
 ```bash
 faable auth connections list            # social, passwordless and username/password, and which are enabled
+faable auth connections create -n email -t passwordless_email     # log in with a code sent by email
+faable auth connections create -n google -t google_oauth2         # Google, on Faable's shared app
+printf %s "$SECRET" | faable auth connections create -n okta -t oidc \
+  --issuer https://acme.okta.com --client-id 0oa1abc --client-secret-file -
+faable auth connections disable google  # reversible; `enable` turns it back on
+faable auth connections update google --name "Google Workspace"
+faable auth connections rm google       # confirmation, `--yes`
 ```
+
+A new tenant has no login method, and its applications fail at `/authorize` with "has no login method available" until you create one: `passwordless_email` needs no setup. Every application of the tenant offers a new connection unless it removed it (`faable auth clients update <client> --disable-connection <name>`). Google, GitHub and Microsoft work without `--client-id` (Faable's shared app); the other providers and `oidc` take your own OAuth app. The client secret is read from a file, or from stdin with `--client-secret-file -`, never from the command line, and the CLI never prints it back.
 
 ### Actions
 
@@ -1079,7 +1088,7 @@ By default the server exposes **reads plus one deploy**:
 
 When a deploy failed, `get_deployment` also says whose side it is on: `user` (your code, configuration or repository) or `platform` (Faable's).
 
-`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain` (`www` adds the root and its `www` as a pair), `attach_domain` (link a domain of the project to an app, e.g. one whose app was deleted), `set_domain_redirect` (redirect a domain to another of the project, or stop it), `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists), `add_waf_rule` and `remove_waf_rule` (an edge rule by path, user-agent, query parameter or `client_ip`: deny, sink, monitor, limit or allow); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). The local server also has the role and API writes — `create_auth_role`, `update_auth_role_permissions`, `update_auth_user_roles`, `create_auth_api` and `update_auth_api` (token lifetime, RBAC, the `roles` and `teams` claims) —, which the hosted server never exposes: they change what your users' tokens carry. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path, and `delete_app`, the one destructive tool: it deletes an app with its deployments and secrets — its domains stay in the project, linked to no app — and is marked destructive so your client asks before running it. The local server can also delete a [Challenge site](#faable-challenge). Deleting domains, secrets or users stays in the CLI and the dashboard. The hosted server deletes nothing. Its one destructive tool is `rotate_challenge_secret`, which replaces a leaked Challenge secret.
+`faable mcp --writes` adds the reversible writes: `create_app` (from a GitHub repository, first deploy included; with `wait`, until it is live), `set_secrets`, `add_domain` (`www` adds the root and its `www` as a pair), `attach_domain` (link a domain of the project to an app, e.g. one whose app was deleted), `set_domain_redirect` (redirect a domain to another of the project, or stop it), `redeploy`, `cancel_deployment`, `configure_repo` and `link_repo` (link a repository to an app that already exists), `add_waf_rule` and `remove_waf_rule` (an edge rule by path, user-agent, query parameter or `client_ip`: deny, sink, monitor, limit or allow); for Faable Auth, `suspend_auth_user`, `reinstate_auth_user`, `revoke_auth_sessions`, `send_password_setup` and `update_auth_client_fields` (which profile fields an application accepts — only that, never its URLs). The local server also has the role and API writes — `create_auth_role`, `update_auth_role_permissions`, `update_auth_user_roles`, `create_auth_api` and `update_auth_api` (token lifetime, RBAC, the `roles` and `teams` claims), and the login-method writes `create_auth_connection` (the client secret travels on stdin and never comes back) and `update_auth_connection` (on or off) —, which the hosted server never exposes: they change what your users' tokens carry and who can log in. Only the local server has `deploy_directory`, which uploads a folder of your machine you name by its absolute path, and `delete_app`, the one destructive tool: it deletes an app with its deployments and secrets — its domains stay in the project, linked to no app — and is marked destructive so your client asks before running it. The local server can also delete a [Challenge site](#faable-challenge). Deleting domains, secrets or users stays in the CLI and the dashboard. The hosted server deletes nothing. Its one destructive tool is `rotate_challenge_secret`, which replaces a leaked Challenge secret.
 
 With an API key, the hosted server reaches the Faable Auth tenants of the key's own project, with a narrower set of permissions: it can read users, logins, sessions, settings, roles and APIs, suspend and reinstate users, end sessions, send password emails and update an application's settings (the MCP only sets its profile fields) — never delete anything or change the tenant itself.
 
@@ -1253,6 +1262,10 @@ The installed skill matches the CLI that wrote it; run the command again after `
 | `faable auth sessions list`          | A user's sessions: devices, IP, last seen                                                 |
 | `faable auth sessions revoke`        | End sessions — one, or every active one of a user (`--user`)                              |
 | `faable auth connections list`       | The tenant's login methods                                                                |
+| `faable auth connections create`     | Create a login method: email code, password, social or OIDC (`--no-enabled`)              |
+| `faable auth connections update`     | Turn a login method on or off (`--no-enabled`), or rename it                              |
+| `faable auth connections enable`     | Turn a login method on (`disable` turns it off)                                           |
+| `faable auth connections rm`         | Delete a login method (confirmation, `--yes`)                                             |
 | `faable auth actions list`           | List login-flow actions                                                                   |
 | `faable auth actions get`            | Show an action (`--code` prints the source)                                               |
 | `faable auth actions create`         | Create an action from a JS file                                                           |
