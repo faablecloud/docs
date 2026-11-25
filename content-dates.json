@@ -495,9 +495,13 @@
     "modified": "2026-09-19T12:00:03+02:00",
     "published": "2026-09-19T12:00:03+02:00"
   },
+  "content/deploy/domains/cookies.md": {
+    "published": "2026-11-25T07:46:19.598Z",
+    "modified": "2026-11-25T07:46:19.598Z"
+  },
   "content/deploy/domains/custom-domain.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-11-13T00:06:28.162Z"
+    "modified": "2026-11-25T07:46:19.598Z"
   },
   "content/deploy/domains/godaddy.md": {
     "modified": "2026-09-19T12:00:03+02:00",
@@ -717,7 +721,7 @@
   },
   "content/platform/security-compliance.md": {
     "published": "2026-03-31T11:42:44+02:00",
-    "modified": "2026-11-07T19:55:44.901Z"
+    "modified": "2026-11-25T07:46:19.598Z"
   },
   "content/platform/sla.md": {
     "published": "2026-10-06T11:38:39+02:00",

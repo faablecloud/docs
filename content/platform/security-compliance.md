@@ -5,7 +5,7 @@ description: How Faable Cloud protects your applications and data — European i
 
 # Security
 
-**Last updated:** 6 October 2026
+**Last updated:** 25 November 2026
 
 This page describes the security controls that are actually in place on the Faable platform. For GDPR, the DPA and the frameworks your procurement may ask about, see [Compliance](compliance.md). If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
 
@@ -32,6 +32,7 @@ Within the workload cluster:
 
 - Each application runs in its **own pod with its own identity, network configuration, and domains**.
 - Environment variables and secrets are **scoped to the app that owns them**; access through the API is bound to the same authorization as access to the app itself.
+- `faable.link` is on the **Public Suffix List**, so up-to-date browsers do not let one `<app>.faable.link` set cookies for another. See [Cookies on faable.link](../deploy/domains/cookies.md).
 - Production and staging environments run in **separate namespaces** with separate credentials.
 
 ## Traffic protection

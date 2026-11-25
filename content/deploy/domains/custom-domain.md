@@ -87,5 +87,6 @@ Keep the `_acme-challenge` record afterwards: Faable renews the certificate thro
 - [Cloudflare](cloudflare.md)
 - [GoDaddy](godaddy.md)
 - [Namecheap](namecheap.md)
+- [Cookies on faable.link](cookies.md)
 - [SSL Certificates](ssl-certificates.md)
 - [Get Started with Faable Deploy](../get-started.md)
