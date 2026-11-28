@@ -22,11 +22,13 @@ Your editors and administrators sign in with the same account they use in the re
 
 It works with any Faable Auth plan, including Free. WordPress 6.4 or later and PHP 8.1 or later. Multisite is not supported in this version.
 
+The plugin is free, GPL-licensed and listed in the WordPress.org plugin directory: [wordpress.org/plugins/faable-auth](https://wordpress.org/plugins/faable-auth/).
+
 ## Two ways it runs
 
 |                                | On Faable Deploy                                          | Self-hosted WordPress                                                     |
 | ------------------------------ | --------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Install                        | Comes in the image of WordPress from the Faable catalogue | Install and activate the plugin                                           |
+| Install                        | Comes in the image of WordPress from the Faable catalogue | From the WordPress.org plugin directory                                   |
 | Connect                        | Already connected when the site is installed              | Settings → Faable Auth → **Connect with Faable**, or manual configuration |
 | Client in your tenant          | Created by the platform                                   | Created by the dashboard (Connect) or by you (manual)                     |
 | Disconnect or deactivate       | Not possible while the site is hosted on Faable           | Yes; the native login comes back                                          |
@@ -46,7 +48,13 @@ Who can get in, and with which role, is managed there: invite a user to the tena
 
 ### Self-hosted WordPress
 
-Install and activate the plugin. Until the site is connected, the normal WordPress login stays on, so the administrator who connects it can still log in.
+In wp-admin, go to **Plugins → Add New**, search for **Faable Auth**, then install and activate it. You can also download it from [its page in the directory](https://wordpress.org/plugins/faable-auth/) and upload the zip, or use WP-CLI:
+
+```bash
+wp plugin install faable-auth --activate
+```
+
+Until the site is connected, the normal WordPress login stays on, so the administrator who connects it can still log in. Updates arrive through the normal WordPress plugin updates.
 
 **Connect with Faable (recommended).** Go to Settings → Faable Auth and press **Connect with Faable**. You log in to Faable, pick the project and the Auth tenant, and the dashboard creates the site's client and sends you back connected. From then on, the site signs in with Faable only.
 
