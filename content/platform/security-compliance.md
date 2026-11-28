@@ -5,7 +5,7 @@ description: How Faable Cloud protects your applications and data — European i
 
 # Security
 
-**Last updated:** 25 November 2026
+**Last updated:** 28 November 2026
 
 This page describes the security controls that are actually in place on the Faable platform. For GDPR, the DPA and the frameworks your procurement may ask about, see [Compliance](compliance.md). If something here is not precise enough for your procurement process, write to [support@faable.com](mailto:support@faable.com) and we will answer specifics.
 
@@ -49,6 +49,38 @@ Within the workload cluster:
 | WordPress                           | WordPress sites on Faable       | XML-RPC, `wp-config.php` and its backups, debug logs, the installer, PHP in `uploads/`, user enumeration                            |
 
 Matching requests are rejected with `403` **at the edge, before they reach your application** — so they do not consume your compute, do not keep a scaled-to-zero app awake, and do not appear as load in your app. Each app can add its own rules by path, user-agent or query parameter from the CLI or the dashboard; see the [WAF documentation](../deploy/security-waf.md) for the rules, what was stopped, and what the firewall does not inspect. The firewall matches **path, `User-Agent` and query parameter name**: it does not read request bodies and is not a signature engine such as the OWASP Core Rule Set, so it does not detect SQL injection or cross-site scripting — input validation stays in your code.
+
+**Forwarded headers are set by the edge.** Faable's edge does not trust `X-Forwarded-*` headers sent by clients: on every public route it replaces `X-Forwarded-Proto` and `X-Forwarded-Host` with its own values before the request reaches your app. Read the original scheme and host from them, not from the socket: the connection your app sees always comes from an internal Faable proxy, whose address changes as the platform scales and is not a stable allowlist.
+
+### Verifying that a request came through the edge
+
+If your app needs to tell requests that crossed the Faable edge apart from any other connection (for example, before it trusts `X-Forwarded-Proto: https`), use the **edge secret** instead of checking proxy IP addresses:
+
+- Your app receives a per-app secret in the `FAABLE_PROXY_SECRET` environment variable.
+- The edge adds the same value to every request it forwards to your app, in the `X-Faable-Proxy-Secret` header, on your `*.faable.link` host and on your custom domains alike.
+- The edge **overwrites** any `X-Faable-Proxy-Secret` sent by the client, never returns it in a response, and does not record it in access logs.
+
+A request that carries the header with the right value came through the edge. A request without it, or with a different value, did not, and should be rejected:
+
+```js
+import { timingSafeEqual } from 'node:crypto'
+
+const expected = Buffer.from(process.env.FAABLE_PROXY_SECRET ?? '')
+
+export function fromFaableEdge(req) {
+  const got = Buffer.from(req.headers['x-faable-proxy-secret'] ?? '')
+  return (
+    expected.length > 0 &&
+    got.length === expected.length &&
+    timingSafeEqual(got, expected)
+  )
+}
+```
+
+Compare in constant time, as above, and never log the header or the variable.
+
+> [!NOTE]
+> The edge secret is enabled per app on request while it rolls out. Write to [support@faable.com](mailto:support@faable.com) with your app ID and we will turn it on; your app restarts once to receive the variable. Until it is enabled, `FAABLE_PROXY_SECRET` is not set, so code that requires it should fail closed, as the example does.
 
 **Traffic visibility.** Every HTTP request to your apps is recorded with its host, status, and timing, which is what drives usage metering and lets us spot abusive traffic patterns per app.
 

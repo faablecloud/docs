@@ -13,15 +13,16 @@ process can read them while it serves.
 
 ## Platform-injected variables
 
-| Variable            | Example            | When          | What it is                                                           |
-| :------------------ | :----------------- | :------------ | :------------------------------------------------------------------- |
-| `PORT`              | `80`               | Always        | The port your app **must** listen on (bind `0.0.0.0`).               |
-| `FAABLE_HOST`       | `myapp.faable.app` | Always        | Your app's public URL (host).                                        |
-| `FAABLE_APP_ID`     | `app_a1b2c3…`      | Always        | The app this deployment belongs to.                                  |
-| `FAABLE_DEPLOY_ID`  | `deployment_9f8e…` | Always        | This deployment's unique id. Also used as the Next.js `buildId`.     |
-| `FAABLE_RELEASE`    | `1.4.2`            | When resolved | The release version (see below). Absent when none could be resolved. |
-| `FAABLE_GIT_COMMIT` | `575bfa8…` (full)  | When known    | The full commit SHA the deployment was built from.                   |
-| `FAABLE_GIT_REF`    | `refs/heads/main`  | When known    | The git ref (branch) of the deployment.                              |
+| Variable              | Example            | When          | What it is                                                                                                                                                      |
+| :-------------------- | :----------------- | :------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`                | `80`               | Always        | The port your app **must** listen on (bind `0.0.0.0`).                                                                                                          |
+| `FAABLE_HOST`         | `myapp.faable.app` | Always        | Your app's public URL (host).                                                                                                                                   |
+| `FAABLE_APP_ID`       | `app_a1b2c3…`      | Always        | The app this deployment belongs to.                                                                                                                             |
+| `FAABLE_DEPLOY_ID`    | `deployment_9f8e…` | Always        | This deployment's unique id. Also used as the Next.js `buildId`.                                                                                                |
+| `FAABLE_RELEASE`      | `1.4.2`            | When resolved | The release version (see below). Absent when none could be resolved.                                                                                            |
+| `FAABLE_GIT_COMMIT`   | `575bfa8…` (full)  | When known    | The full commit SHA the deployment was built from.                                                                                                              |
+| `FAABLE_GIT_REF`      | `refs/heads/main`  | When known    | The git ref (branch) of the deployment.                                                                                                                         |
+| `FAABLE_PROXY_SECRET` | `3f9c…` (64 hex)   | When enabled  | The [edge secret](../platform/security-compliance.md#verifying-that-a-request-came-through-the-edge): the edge sends the same value in `X-Faable-Proxy-Secret`. |
 
 > [!NOTE]
 > `PORT` and `FAABLE_HOST` are the two you'll actually build against — the rest
