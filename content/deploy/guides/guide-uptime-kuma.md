@@ -1,74 +1,85 @@
 ---
 schema: faq
-title: Deploy Uptime Kuma
-description: Self-host Uptime Kuma on Faable Deploy by forking the repo — no Dockerfile, no config. Why you must pick MariaDB over SQLite, what scale-to-zero means for a monitor, and which plan keeps its checks running continuously. European hosting.
+title: Install Uptime Kuma
+description: Self-host Uptime Kuma on Faable Deploy from the catalogue, hosted in Europe. Always on so its checks never stop, its data in a managed MariaDB with daily backups, and you as its owner from the first minute. From the dashboard, the CLI or your AI agent.
 rank: high
 ---
 
-# Deploy Uptime Kuma 📈
+# Install Uptime Kuma 📈
 
-**[Uptime Kuma](https://github.com/louislam/uptime-kuma) is a self-hosted status and uptime monitor, and it deploys on Faable straight from a fork — no Dockerfile, no YAML, nothing to edit.** Fork the repository, point an app at it, and the managed Node buildpack does the rest.
+**[Uptime Kuma](https://github.com/louislam/uptime-kuma) is an app of the Faable catalogue: you pick it, give it a name, and Faable installs and runs it for you.** A few minutes later your monitor is live at `https://<name>.faable.link`, hosted in Europe, and you add monitors and status pages in its dashboard like in any self-hosted Uptime Kuma.
 
-Two things about this particular app are worth deciding _before_ you deploy, because both are easier to get right now than to fix later: **where its data lives**, and **whether it is allowed to fall asleep**. This guide is honest about both.
+## What you get
 
-## Fork it and deploy it
+- **Always on.** A monitor has to run its checks whether or not anyone opens it, so Uptime Kuma never sleeps.
+- **A managed MariaDB** with TLS and daily backups, where Uptime Kuma keeps your monitors, their history, your notifications and status pages. You never handle its password, and there is no database setup screen.
+- **You are the owner from the start.** A new Uptime Kuma gives its admin account to whoever opens it first. Faable creates that account with your email and a generated password before Uptime Kuma is reachable, so nobody else can claim it.
+- **Ready behind the edge.** Real visitor IPs in its logs and login protection, and links in notifications that point at its own address.
+- **A small persistent volume** for uploaded status-page logos, backed up every night.
 
-Deploying somebody else's open-source project, unmodified, is a supported and ordinary thing to do here:
+Uptime Kuma 2 runs on the `slim` image, so browser-engine monitors (Chromium) are not available. HTTP, keyword, JSON query, TCP port, DNS and push monitors all work.
 
-1. Fork [`louislam/uptime-kuma`](https://github.com/louislam/uptime-kuma) to your own GitHub account.
-2. In the [dashboard](https://dashboard.faable.com), create an app and connect it to your fork — the repository is chosen in the first step of the create form.
-3. Deploy.
+## What it costs
 
-That is the whole build. Uptime Kuma ships a `package.json` with a `start` script, which is exactly what [detection](../build-requirements.mdx) looks for, so it builds with the managed Node buildpack and needs **no paid plan** to build.
+Uptime Kuma needs a **Hobby or Pro** project, because the Free plan has no databases and its apps sleep. On top of the plan:
 
-You do not have to change a single file for it to boot, either. Uptime Kuma reads its port from `PORT` when it is set — `server/config.js` checks `UPTIME_KUMA_PORT`, then `PORT`, then falls back to 3001 — and Faable sets `PORT` for you. The [`$PORT` contract](../runtime.md) is satisfied out of the box.
+- **Its database**: a `db-s` MariaDB, **10 €/month** (15 connections, 7 days of backups).
+- **Its compute hours.** An app that never sleeps uses the project's [compute hours](../always-on-and-workers.md#compute-hours): the memory it actually uses × the hours it runs. Uptime Kuma is light, about 130 MB with a handful of monitors, so about **90 GiB-hours a month**. Hobby includes 365 and Pro 1,460, shared with the project's other always-on apps. **The installer shows the estimate for your project** before you install.
 
-## Decision 1: MariaDB, not SQLite
+## Install it
 
-On first run Uptime Kuma asks you which database to use. **Choose MariaDB/MySQL and point it at a database outside the app. Do not choose SQLite.**
+### From the dashboard
 
-SQLite would put your entire monitor history in a file on the instance's disk, and that disk [does not survive](databases.md) a redeploy, a restart, or waking from sleep. The app would work perfectly and then quietly lose every monitor, every notification setting, and every minute of history the first time it restarts — including your admin account.
+Open your project, go to **Deploy › Installations** and click **Install an app**. Pick **Uptime Kuma**, give it a name and click install. The database tier is preselected.
 
-Uptime Kuma bundles the `mysql2` driver, so MariaDB and MySQL work natively with no code changes. Any managed MySQL-compatible database with an EU region will do; the setup screen asks for host, port, database name, username and password.
+You don't enter an email: **you are the owner**, with the email of your Faable account, which has to be verified. The installation's page follows the install, which takes a few minutes.
 
-> This is not an Uptime Kuma quirk — it is how the platform works for every app. [Databases & SQLite](databases.md) covers the general rule and the free EU-hosted options.
+### From the CLI
 
-## Decision 2: a sleeping monitor is not monitoring
+```bash
+faable deploy install uptime-kuma --name status --wait
+```
 
-This is the one that surprises people, so be clear-eyed about it.
+You are the owner, by the verified email of the account you logged in with. To make someone else the owner, add `--input admin_email=them@example.com`. `--wait` returns when Uptime Kuma is ready, with its URL. See [the CLI](../../cli.md).
 
-An app sleeps when **no inbound HTTP request** has reached it for a while, and wakes on the next one. For most apps that is ideal — it costs nothing while idle. For a monitor it is a genuine limitation: **a sleeping Uptime Kuma is not running its checks.** It cannot poll your services, evaluate uptime, or send you a notification about an outage, because nothing of it is running to do so.
+### From Claude, Cursor or any MCP client
 
-The word to hold on to is **inbound**. Uptime Kuma's checks go _out_, so they never count as traffic and never keep it awake by themselves. What keeps it awake is somebody — or something — opening it: its dashboard, its status page, an external ping.
+With the [Faable MCP server](../../cli.md#mcp-server) connected and writes allowed, ask:
 
-That makes the plan difference concrete:
+> Install Uptime Kuma in my project and call it status.
 
-| You want                                                                | Plan             | What happens                                                                                                                                                                                |
-| :---------------------------------------------------------------------- | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| A dashboard you open occasionally, checks running only while you use it | Free             | Sleeps after **30 minutes** idle, and the platform answers monitor pings on the app's behalf, so it cannot be kept awake from outside                                                       |
-| A monitor that watches your services continuously                       | **Hobby or Pro** | A four-times longer window (**2 hours**), and inbound traffic reaches your app instead of being answered for it — so its dashboard, its status page or an external ping all keep it running |
+## After the install
 
-On Hobby and Pro you can also switch on [Always on](../always-on-and-workers.md#always-on) from the app page's **Runs as** row: the app then never sleeps, traffic or not, and its checks run around the clock. Without it, nothing sleeps while it is being used. The two-hour window only expires if genuinely nothing touches the app for two hours — so if your Uptime Kuma has a status page people load, or you point a second monitor at it, it simply keeps running.
+1. Open the installation in the dashboard (**Deploy › Installations**) and click **Show initial password**.
+2. Open your Uptime Kuma's address and sign in with your Faable account's email as the username and that password.
+3. Change the password in **Settings › Security**, and turn on two-factor authentication there if you want it.
 
-If continuous monitoring is the point, Hobby or Pro is the supported way to get it. Pinging your own app from somewhere else to keep it awake does not turn a Free app into a reliable monitor: the checks still only run when something happens to be poking it, you are paying for it in wake time either way, and you have built a monitor whose reliability depends on a second thing you also have to monitor.
+Then add your monitors and, if you want one, a status page. To publish a status page on your own domain, add the domain to the app like any other ([custom domains](../domains/custom-domain.md)).
 
-## Sizing
+## FAQ
 
-Uptime Kuma is comfortable in a small instance, but it is a real Node server with a database connection and a scheduler. The free `bi.xs` (0.6 vCPU · 512 MB) runs it; if you add a lot of monitors with short intervals, Hobby moves it to 1 vCPU · 1.5 GB — see the [compute catalog](../pricing.mdx#compute-catalog).
+### Do the checks keep running when nobody has the dashboard open?
 
-## First run
+Yes. Uptime Kuma is installed always on: it never sleeps, so its checks and notifications run around the clock.
 
-The first request lands on `/setup-database`, where you pick MariaDB and enter the connection details. After that Uptime Kuma asks you to create the admin account — do this promptly, since until you do, whoever reaches the URL first can claim it.
+### Who updates Uptime Kuma?
 
-Your app is served at `https://<app>.faable.link` with a valid certificate from the first deploy, behind the [WAF](../security-waf.md). You can add a [custom domain](../domains/custom-domain.md) whenever you like.
+Faable does. You get a stable Uptime Kuma 2 release, pinned and tested, and Faable moves it to newer releases.
 
-## Keeping your fork current
+### I deployed Uptime Kuma from a fork before. Should I move?
 
-Uptime Kuma releases regularly. Because you deployed a fork, updating is a GitHub operation, not a Faable one: sync your fork with upstream, and the push triggers a new deploy automatically. Your data is untouched — it lives in the database, not in the app.
+Install it from the catalogue: it comes with its database, never sleeps and is updated for you. Your fork's database is yours, so you can keep both running while you recreate your monitors in the new one.
+
+### Can I bring back an Uptime Kuma I uninstalled?
+
+Yes, within 30 days, if you did not delete its database with it. Open the installation in the dashboard and click **Restore**, or run `faable deploy install restore`. It comes back with its monitors, its history and its users: sign in with the password you had.
+
+### Is it hosted in Europe?
+
+Yes. Uptime Kuma, its database and its backups stay in the EU. Its checks run from the EU too.
 
 ## Related
 
-- [Databases & SQLite](databases.md) — why the filesystem is ephemeral, and where to put your data
-- [Pricing and plans](../pricing.mdx) — sleep behaviour, instance sizes, what each plan includes
-- [Build requirements](../build-requirements.mdx) — how detection picks the Node buildpack
-- [Runtime and secrets](../runtime.md) — the `$PORT` contract and environment variables
+- [Always on and background workers](../always-on-and-workers.md)
+- [Install n8n](guide-n8n.md)
+- [Databases](databases.md)
