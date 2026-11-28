@@ -79,6 +79,8 @@ export function fromFaableEdge(req) {
 
 Compare in constant time, as above, and never log the header or the variable.
 
+**Where the secret lives.** It is one secret per app, the same for every deployment of that app, on its `*.faable.link` host and on all its custom domains. Faable generates it for you: you never set it and it is never displayed. It is not stored with your [environment variables](../deploy/environment.md#platform-injected-variables): the dashboard's variables page lists `FAABLE_PROXY_SECRET` under the variables Faable provides, without its value, and if you set a variable with that name yourself it is ignored. If your app moves to another cluster, its secret stays the same. Your app reads it from the environment at runtime. It is **not available during the build**, so read it when a request arrives, not at build time. Locally the variable does not exist, so a check like the one above rejects every request: skip it in development.
+
 > [!NOTE]
 > The edge secret is enabled per app on request while it rolls out. Write to [support@faable.com](mailto:support@faable.com) with your app ID and we will turn it on; your app restarts once to receive the variable. Until it is enabled, `FAABLE_PROXY_SECRET` is not set, so code that requires it should fail closed, as the example does.
 
