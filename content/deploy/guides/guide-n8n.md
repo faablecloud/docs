@@ -22,11 +22,9 @@ rank: high
 n8n needs a **Hobby or Pro** project, because the Free plan has no volumes and no databases. On top of the plan:
 
 - **Its database**: a `db-s` Postgres, **10 €/month** (15 connections, 7 days of backups).
-- **Its compute hours.** An app that never sleeps uses the project's [compute hours](../always-on-and-workers.md), measured in GiB-hours (memory × hours running):
-  - **On Hobby**, n8n runs on `bi.small` (1.5 GB): about 1,095 GiB-hours a month. Hobby includes 365, and the rest is billed at 0.02 € per GiB-hour, **about 14.60 €/month** if nothing else in the project is always on.
-  - **On Pro**, n8n runs on `bi.base` (2 GB): about 1,460 GiB-hours a month, the whole pool Pro includes.
+- **Its compute hours.** An app that never sleeps uses the project's [compute hours](../always-on-and-workers.md), measured in GiB-hours: the memory it actually uses × the hours it runs. An idle n8n uses about 400–500 MB, so about **300–365 GiB-hours a month**, more while workflows run. Hobby includes 365 and Pro 1,460, shared with the project's other always-on apps and workers. Above them, each GiB-hour is billed at **0.02 €** with the next invoice.
 
-So an n8n on Hobby is the Hobby plan (15 €/month), 10 € for its database and about 15 € of compute hours. The project's owners get an email at 80 % and 100 % of the included hours. See [pricing](../pricing.mdx).
+On Hobby, an n8n alone in its project usually fits in the included hours; next to other always-on apps, expect a few euros a month on top. **The installer shows the estimate for your project** before you install: what n8n typically uses, what the project already uses this month, and what would go above the plan, in euros. The project's owners get an email at 80 % and 100 % of the included hours. See [pricing](../pricing.mdx).
 
 ## Install it
 
