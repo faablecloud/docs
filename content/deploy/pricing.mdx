@@ -108,7 +108,7 @@ How long an app has to be idle before that happens depends on the plan:
 
 **On Hobby and Pro an app that is being used never sleeps.** There is no forced downtime and no daily rest window — as long as traffic keeps arriving, your app keeps running, around the clock. The two-hour window only ever applies to an app nobody is using, and the first request after it wakes it again.
 
-To keep an app running with **no** traffic, turn on [Always on](always-on-and-workers.md#always-on), or run a process with no web server as a [background worker](always-on-and-workers.md#workers). Both are Hobby and Pro, from the **Runs as** row of the app page, and use the project's compute hours: **365 GiB-hours a month on Hobby, 1,460 on Pro** (memory × hours running; apps that sleep don't count). To run a command on a timer instead, use [scheduled tasks](scheduled-tasks.md): **500 task minutes a month on Hobby, 2,000 on Pro**.
+To keep an app running with **no** traffic, turn on [Always on](always-on-and-workers.md#always-on), or run a process with no web server as a [background worker](always-on-and-workers.md#workers). Both are Hobby and Pro, from the **Runs as** row of the app page, and use the project's compute hours: **365 GiB-hours a month on Hobby, 1,460 on Pro** (the memory the app actually uses × the hours it runs; apps that sleep don't count). To run a command on a timer instead, use [scheduled tasks](scheduled-tasks.md): **500 task minutes a month on Hobby, 2,000 on Pro**.
 
 Free is shorter by design: a free instance holds its CPU and memory reservation whether or not anyone is using it, so it is released sooner.
 

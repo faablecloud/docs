@@ -58,7 +58,9 @@ Set the variables each app needs on each of them.
 
 ## Compute hours
 
-What never sleeps — always-on apps and workers — uses the project's **compute hours**, measured in **GiB-hours**: the memory of the app's instance × the hours it runs. A project includes **365 GiB-hours a month on Hobby** (about 512 MB running all month) and **1,460 on Pro** (about 2 GB). Apps that sleep don't count. Above the included hours, each GiB-hour is billed at **€0.02** with the next invoice (512 MB running all month above the pool is about €7.30). The project's owners get an email at 80 % and at 100 % of the included hours.
+What never sleeps — always-on apps and workers — uses the project's **compute hours**, measured in **GiB-hours**: the memory the app uses × the hours it runs. Every hour counts the memory the app **actually used** that hour, added up across its instances, or the memory **reserved** for its instance size if that is more. The reservation is small (128 MB on `bi.small`, 256 MB on `bi.base`), so in practice you pay for what the app really uses, not for the size's limit: an app that sits at 300 MB all month uses about 214 GiB-hours, whether it runs on `bi.small` or on a larger size. **Deploy › Usage** shows what each app used this month.
+
+A project includes **365 GiB-hours a month on Hobby** (about 512 MB running all month) and **1,460 on Pro** (about 2 GB). Apps that sleep don't count. Above the included hours, each GiB-hour is billed at **€0.02** with the next invoice (512 MB running all month above the pool is about €7.30). The project's owners get an email at 80 % and at 100 % of the included hours.
 
 At **3× the included hours** in a month, no more apps can be switched to always on or worker until the next month (or a larger plan); what is already running keeps running.
 
