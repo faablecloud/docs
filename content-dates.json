@@ -91,13 +91,17 @@
     "modified": "2026-09-24T09:46:00+02:00",
     "published": "2026-05-08T13:04:43+02:00"
   },
+  "content/auth/disable-tenant.md": {
+    "published": "2026-11-28T13:02:35.398Z",
+    "modified": "2026-11-28T13:02:35.398Z"
+  },
   "content/auth/email-sending.md": {
     "modified": "2026-09-08T17:36:39+02:00",
     "published": "2026-09-08T17:36:39+02:00"
   },
   "content/auth/errors.md": {
     "published": "2026-09-17T11:53:00+02:00",
-    "modified": "2026-11-17T13:53:15.790Z"
+    "modified": "2026-11-28T13:02:35.398Z"
   },
   "content/auth/european-alternatives.mdx": {
     "published": "2026-10-17T19:03:21.619Z",

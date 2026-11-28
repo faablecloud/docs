@@ -33,6 +33,7 @@ export default {
   organizations: 'Organizations & Enterprise SSO',
   'jit-provisioning': 'Just-in-Time Provisioning',
   'suspend-users': 'Suspend Users',
+  'disable-tenant': 'Disable a Tenant',
   sessions: 'Sessions',
   mfa: 'Two-Step Verification',
   logs: 'Logs',
