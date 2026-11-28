@@ -9,6 +9,7 @@ export default {
   'guide-flask': 'Deploy Flask',
   'guide-php': 'Deploy PHP & Laravel',
   'guide-wordpress': 'Install WordPress',
+  'guide-n8n': 'Install n8n',
   'guide-whatsapp-bot': 'Deploy a WhatsApp Bot',
   'guide-discord-bot': 'Deploy a Discord Bot',
   'guide-slack-bot': 'Deploy a Slack App',

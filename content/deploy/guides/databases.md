@@ -1,13 +1,13 @@
 ---
 schema: faq
 title: Databases & SQLite
-description: Where to store your app's data on Faable Deploy. Why the filesystem is ephemeral, what that means for SQLite, and how to connect a free EU-hosted database like Neon or Turso in minutes.
+description: Where to store your app's data on Faable Deploy. Why the filesystem is ephemeral, what that means for SQLite, Faable's managed Postgres and MariaDB, and how to connect an EU-hosted database like Neon or Turso in minutes.
 rank: high
 ---
 
 # Databases & SQLite 💾
 
-**The short version: your app's filesystem on Faable is writable but ephemeral — anything written to disk is gone the next time your app is redeployed, restarted, or wakes from sleep. Keep your data in a database that lives outside the app.** This guide shows you how, with free EU-hosted options that take minutes to set up.
+**The short version: your app's filesystem on Faable is writable but ephemeral — anything written to disk is gone the next time your app is redeployed, restarted, or wakes from sleep. Keep your data in a database that lives outside the app.** This guide shows you how: a Faable managed Postgres or MariaDB on Hobby and Pro, or a free EU-hosted provider.
 
 ## Why files don't survive
 
@@ -30,9 +30,39 @@ SQLite stores everything in a single file next to your code — `database.db`, `
 
 On Faable, that file lives on the ephemeral disk. **The app will deploy and run fine — and then silently lose every row when the instance is replaced.** If your app registers users, takes orders, or stores anything you'd miss, move that data out of the instance before you share the URL.
 
-> We're exploring first-class persistence for SQLite apps. Today, the options below are the supported path — and they're genuinely good: both have free tiers and EU regions, matching your app's European hosting.
+> We're exploring first-class persistence for SQLite apps. Today, the options below are the supported path.
 
-## Option 1: Neon — serverless Postgres (recommended)
+## Option 1: a Faable managed database — Postgres or MariaDB
+
+On **Hobby and Pro**, Faable gives your app its own managed database, on servers next to it in the EU. You never handle a password or a certificate: the app receives the connection as variables.
+
+1. In your project, open **Deploy › Databases** and create a database.
+2. Pick **which app uses it**, the **engine** — **PostgreSQL** (Django, Rails, Prisma and most new apps, with `pgvector`) or **MariaDB** (MySQL-compatible: Laravel and most PHP apps) — and the **tier**.
+3. Redeploy the app. It gets `FAABLE_DATABASE_URL`, `FAABLE_DATABASE_HOST`, `FAABLE_DATABASE_PORT`, `FAABLE_DATABASE_NAME`, `FAABLE_DATABASE_USER` and `FAABLE_DATABASE_PASSWORD`. Your own variables are not touched.
+
+TLS is required and verified. The app also gets the server's CA at `FAABLE_DATABASE_CA_FILE`, and `FAABLE_DATABASE_URL` already points at it (`sslmode=verify-full` on Postgres). Most frameworks take the URL as it is:
+
+```python
+# Django (settings.py), with dj-database-url
+DATABASES = {"default": dj_database_url.parse(os.environ["FAABLE_DATABASE_URL"])}
+```
+
+```prisma
+// Prisma (schema.prisma)
+datasource db {
+  provider = "postgresql"
+  url      = env("FAABLE_DATABASE_URL")
+}
+```
+
+| Tier   | Price      | Connections | Backups kept |
+| :----- | :--------- | :---------- | :----------- |
+| `db-s` | 10 €/month | 15          | 7 days       |
+| `db-m` | 20 €/month | 40          | 30 days      |
+
+The price is the same for both engines. The database is backed up every day, and from its page you can back it up, restore it, export it and import a dump. A Postgres query is cancelled after 30 seconds: raise it for one session with `SET statement_timeout`. When you delete the app, the database is kept for 30 days before it goes. See [pricing](../pricing.mdx).
+
+## Option 2: Neon — serverless Postgres, with a free tier
 
 [Neon](https://neon.tech) is managed PostgreSQL with a generous free tier and EU regions (Frankfurt, and others). Postgres is the boring, correct choice for members, orders, and anything relational — and every framework speaks it.
 
@@ -74,7 +104,7 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
 
 **Prisma** — set `provider = "postgresql"` in `schema.prisma` and keep `url = env("DATABASE_URL")`.
 
-## Option 2: Turso — keep SQLite, hosted
+## Option 3: Turso — keep SQLite, hosted
 
 If your app is already written against SQLite and you'd rather not switch engines, [Turso](https://turso.tech) hosts your database as [libSQL](https://github.com/tursodatabase/libsql) — SQLite's dialect and semantics, served over the network. Free tier, EU regions available.
 
@@ -127,11 +157,11 @@ Your app's instance was replaced — by a deploy, a restart, or by sleeping afte
 
 ### Does Faable Deploy offer persistent disks or volumes?
 
-Not for apps deployed from your repository: their filesystem is ephemeral by design, which keeps deploys fast and rollbacks safe. Apps installed from the catalogue, such as [WordPress](guide-wordpress.md), come with a persistent volume. For your own app, on Hobby and Pro you can give it a **managed MariaDB** from the dashboard (Deploy › Databases), billed per database (10 € `db-s`, 20 € `db-m` a month); or connect a hosted database — the EU-hosted free tiers of Neon and Turso cover most projects.
+Not for apps deployed from your repository: their filesystem is ephemeral by design, which keeps deploys fast and rollbacks safe. Keep their data in a [managed database](#option-1-a-faable-managed-database--postgres-or-mariadb). Apps installed from the catalogue, such as [WordPress](guide-wordpress.md) and [n8n](guide-n8n.md), come with a persistent volume. For your own app, on Hobby and Pro you can give it a **managed MariaDB** from the dashboard (Deploy › Databases), billed per database (10 € `db-s`, 20 € `db-m` a month); or connect a hosted database — the EU-hosted free tiers of Neon and Turso cover most projects.
 
 ### Which database providers work with Faable?
 
-Any database reachable over the network: managed Postgres or MySQL, hosted SQLite/libSQL, MongoDB Atlas, Redis providers. For European hosting end to end, pick a provider with EU regions — Neon and Turso both offer them — and put the connection string in a [secret](../runtime.md).
+Faable's own [managed Postgres and MariaDB](#option-1-a-faable-managed-database--postgres-or-mariadb) on Hobby and Pro, and any database reachable over the network: managed Postgres or MySQL, hosted SQLite/libSQL, MongoDB Atlas, Redis providers. For European hosting end to end, pick a provider with EU regions — Neon and Turso both offer them — and put the connection string in a [secret](../runtime.md).
 
 ### Do I need to change my code to use Turso instead of local SQLite?
 
