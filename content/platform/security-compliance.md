@@ -37,7 +37,7 @@ Within the workload cluster:
 
 ## Traffic protection
 
-**TLS everywhere.** Every custom domain and every `*.faable.link` deployment gets a certificate automatically, issued and renewed by the platform. Traffic is served over HTTPS with modern cipher suites; plain HTTP is redirected.
+**TLS everywhere.** Every custom domain and every `*.faable.link` deployment gets a certificate automatically, issued and renewed by the platform. Traffic is served over HTTPS with modern cipher suites. Plain HTTP is not yet redirected for app hostnames: a request to `http://` on your `*.faable.link` host or on a custom domain linked to your app still reaches your app. A setting to redirect it to HTTPS on the same hostname, per app and per domain, is on the way. Until then, if your app must only be used over HTTPS, check `X-Forwarded-Proto` and redirect or reject the request in your app.
 
 **Managed request filtering at the edge.** Faable operates a managed [Web Application Firewall](../deploy/security-waf.md) in front of every application, on every plan. Rules are maintained by us as **rulesets** applied fleet-wide, so protection improves for all apps without you changing anything:
 
